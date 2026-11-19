@@ -262,7 +262,7 @@ function crayStep(dt) {
 // ---------- 死ぬ・カエれた ----------
 function die(c) {
   ST = 'dying'; SEQ = { c, t: 0, snap: false, shot: false, yaw0: Pl.yaw, pit0: Pl.pitch }; held = false; queued = 0; Pl.hop = null;
-  const cs = Math.round((performance.now() - tStart) / 10), left = Math.max(0, Math.hypot(BUR.x - Pl.x, BUR.z - Pl.z) - GOALR);
+  const cs = Math.round((clock() - tStart) / 10), left = Math.max(0, Math.hypot(BUR.x - Pl.x, BUR.z - Pl.z) - GOALR);
   LAST = { s: 0, t: cs, k: met, left, run: null, route: ROUTE.concat([[Pl.x, Pl.z]]), marks: MARKS.slice(), bur: { ...BUR }, start: { ...START }, end: [Pl.x, Pl.z], shot: null, card: null };
   $('hopBtn').hidden = true; $('hint').hidden = true; ambient(false); sfx('scream');
   try { if (typeof gtag === 'function') gtag('event', 'game_end', { game: 'kaeru', lang: L, s: 0, t: cs, k: met }); } catch (e) { }
@@ -270,7 +270,7 @@ function die(c) {
 function goal() {
   ST = 'goal'; SEQ = { t: 0, shot: false }; held = false; queued = 0;
   { const dx = BUR.x - Pl.x, dz = BUR.z - Pl.z, d = Math.hypot(dx, dz) || 1; FRIEND.position.set(BUR.x + dx / d * 1.1, 0.22, BUR.z + dz / d * 1.1); FRIEND.rotation.y = Math.atan2(-dx, -dz); SEQ.fy = 0.3; }
-  const cs = Math.round((performance.now() - tStart) / 10);
+  const cs = Math.round((clock() - tStart) / 10);
   LAST = { s: 1, t: cs, k: met, left: 0, run: RUN, route: ROUTE.concat([[Pl.x, Pl.z]]), marks: MARKS.slice(), bur: { ...BUR }, start: { ...START }, end: [Pl.x, Pl.z], shot: null, card: null };
   $('hopBtn').hidden = true; $('hint').hidden = true; $('timer').textContent = fmt(cs); ambient(false); sfx('fanfare');
   CRAYS.forEach(c => { if (c.st !== 'off') { c.st = 'leave'; c.t = 0; } });
@@ -302,10 +302,11 @@ function seqStep(dt) {
 }
 
 // ---------- 毎フレーム ----------
-let lastF = 0, fAcc = 0, fN = 0, tuned = false;
+let lastF = 0, fAcc = 0, fN = 0, tuned = false, MAN = false, simT = 0;
+const clock = () => MAN ? simT : performance.now();
 const camDir = new THREE.Vector3();
 function frame(now) {
-  requestAnimationFrame(frame);
+  if (!MAN) requestAnimationFrame(frame);
   const dt = Math.min(0.05, (now - lastF) / 1000 || 0.016); lastF = now; tNow += dt;
   if (ST === 'play') {
     const tr = (keys.ArrowLeft || keys.a ? 1 : 0) - (keys.ArrowRight || keys.d ? 1 : 0); Pl.yaw += tr * 2.0 * dt;
@@ -318,7 +319,7 @@ function frame(now) {
     }
     routeT -= dt; if (routeT <= 0) { routeT = 0.5; if (ROUTE.length < 4000) ROUTE.push([Math.round(Pl.x * 10) / 10, Math.round(Pl.z * 10) / 10]); }
     crayCheck -= dt; if (crayCheck <= 0) { crayCheck = 0.15; crayScan(); }
-    $('timer').textContent = fmt((performance.now() - tStart) / 10);
+    $('timer').textContent = fmt((clock() - tStart) / 10);
     if (Math.hypot(BUR.x - Pl.x, BUR.z - Pl.z) < GOALR) goal();
     if (tNow >= nextCroak) { nextCroak = tNow + 3.6; croak(); }
     let dng = 0; for (const c of CRAYS) if (c.st === 'chase') dng = Math.max(dng, 1 - Math.hypot(c.x - Pl.x, c.z - Pl.z) / 6); $('danger').style.opacity = Math.max(0, dng) * 0.8;
@@ -388,7 +389,7 @@ async function start(btn) {
   let st = null; try { st = await Promise.race([netStart(), new Promise(r => setTimeout(() => r(null), 3500))]); } catch (e) { st = null; }
   if (st == null) RUN = null; btn.classList.remove('busy');
   resetWorld(st != null ? Math.floor(st) % 2147483647 : Math.floor(Math.random() * 2147483647));
-  ST = 'play'; tStart = performance.now(); nextCroak = tNow + 1.2; tuned = false; fAcc = 0; fN = 0;
+  ST = 'play'; tStart = clock(); nextCroak = tNow + 1.2; tuned = false; fAcc = 0; fN = 0;
   $('title').hidden = true; $('result').hidden = true; $('rank').hidden = true; $('verd').hidden = true; $('timer').hidden = false; $('timer').textContent = fmt(0); hb.hidden = false; $('hint').hidden = false; $('hint').style.opacity = 1; $('hint').innerHTML = IS_PHONE ? T.hint : T.hintPC;
   gsap.set(['#iris', '#flash', '#danger'], { opacity: 0 });
   try { if (typeof gtag === 'function') gtag('event', 'game_start', { game: 'kaeru' }); } catch (e) { }
@@ -533,4 +534,4 @@ $('load').textContent = T.loading;
 new GLTFLoader().load('kaeru.glb', gl => {
   setupModels(gl); resetWorld(Math.floor(Math.random() * 1e9)); ST = 'title'; titleYaw = Pl.yaw; $('load').hidden = true; $('title').hidden = false; requestAnimationFrame(frame);
 }, undefined, () => { $('load').textContent = T.nogl; });
-if (DEV) window.__K = { get ST() { return ST; }, set ST(v) { ST = v; }, Pl, BUR, START, CRAYS, UNI, grass, get FRIEND() { return FRIEND; }, get LAST() { return LAST; }, get met() { return met; }, resetWorld, start: () => start($('startBtn')), tp(x, z, yaw) { Pl.x = x; Pl.z = z; if (yaw != null) Pl.yaw = yaw; }, spawn(dist, st) { const c = CRAYS[0], f = fwd(Pl.yaw); c.x = Pl.x + f[0] * dist; c.z = Pl.z + f[1] * dist; c.st = st || 'emerge'; c.t = 0; c.key = 'dev'; c.ang = Pl.yaw + Math.PI; c.holder.visible = st !== 'rustle'; if (st === 'chase') { c.holder.position.set(c.x, 0, c.z); c.holder.rotation.y = c.ang; } }, die: () => die(CRAYS[0]), goal, board, submit, realRec, showResult, crayAt, hold(v) { held = v; }, shot: () => new Promise(r => { SHOT = r; }), cardURL: async () => { const b = await LAST.card; if (!b) return null; return await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(b); }); } };
+if (DEV) window.__K = { get ST() { return ST; }, set ST(v) { ST = v; }, Pl, BUR, START, CRAYS, UNI, grass, get FRIEND() { return FRIEND; }, get LAST() { return LAST; }, get met() { return met; }, resetWorld, start: () => start($('startBtn')), tp(x, z, yaw) { Pl.x = x; Pl.z = z; if (yaw != null) Pl.yaw = yaw; }, spawn(dist, st) { const c = CRAYS[0], f = fwd(Pl.yaw); c.x = Pl.x + f[0] * dist; c.z = Pl.z + f[1] * dist; c.st = st || 'emerge'; c.t = 0; c.key = 'dev'; c.ang = Pl.yaw + Math.PI; c.holder.visible = st !== 'rustle'; if (st === 'chase') { c.holder.position.set(c.x, 0, c.z); c.holder.rotation.y = c.ang; } }, die: () => die(CRAYS[0]), goal, board, submit, realRec, showResult, crayAt, hold(v) { held = v; }, man() { MAN = true; simT = performance.now(); lastF = simT; }, step(ms) { simT += ms; frame(simT); }, play() { ST = 'play'; tStart = clock(); nextCroak = tNow + 1.0; tuned = true; }, croakIn(t) { nextCroak = tNow + t; }, shot: () => new Promise(r => { SHOT = r; }), cardURL: async () => { const b = await LAST.card; if (!b) return null; return await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(b); }); } };
