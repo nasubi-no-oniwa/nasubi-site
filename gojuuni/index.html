@@ -1,0 +1,1276 @@
+<!doctype html>
+<html lang="ja">
+<head><script>/* nsb-mig: github.io から引き継いだ保存情報を受け取る */(function(){try{var h=location.hash,i=h.indexOf('nsbmig=');if(i<0)return;var r=h.slice(i+7),j=r.indexOf('&nsbh='),m=j<0?r:r.slice(0,j),oh=j<0?'':decodeURIComponent(r.slice(j+6)),d=JSON.parse(decodeURIComponent(m));for(var k in d){try{if(localStorage.getItem(k)===null)localStorage.setItem(k,d[k])}catch(e){}}history.replaceState(null,'',location.pathname+location.search+oh)}catch(e){}})();</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RB6XMN0QR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-5RB6XMN0QR');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>ごジュウに</title>
+<meta name="description" content="銃身はご自由に。銃身を自由に描いて撃つ役と、射撃場の紙の的になって弾をよける役。描いた形で弾の飛び方が変わる。">
+<meta property="og:title" content="ごジュウに">
+<meta property="og:description" content="銃身はご自由に。銃身を自由に描いて撃つ役と、紙の的になって弾をよける役。描いた形で弾の飛び方が変わる。">
+<meta property="og:image" content="https://nasubi-no-oniwa.com/gojuuni/ogp.png?v=2">
+<meta property="og:url" content="https://nasubi-no-oniwa.com/gojuuni/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon.png">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+:root{--bg:#bfe3f5;--ink:#1d1d1d;--sub:#5d6670;--accent:#ff7a1a;--blue:#2a6bd7;--red:#e8322a;--ok:#1aa34a;--card:#fffdf6}
+[hidden]{display:none!important}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Maru Gothic ProN","Rounded Mplus 1c",system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;overscroll-behavior:none;touch-action:none}
+body{position:fixed;inset:0;width:100%}
+#c,#dc{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#inPanel{z-index:40}#inT{font-size:21px}#inB{white-space:pre-line;text-align:left;font-size:13.5px;line-height:1.6}
+#dc{z-index:2;background:#eaf4ff}
+#big{position:fixed;left:0;right:0;top:28%;text-align:center;font-size:52px;font-weight:900;color:#fff;text-shadow:0 4px 0 #0006,0 0 14px #0007;z-index:8;pointer-events:none;line-height:1.15;padding:0 10px}
+#big small{display:block;font-size:20px;margin-top:6px}
+#big.pop{animation:pop .45s ease-out}
+#big.red{color:#ffd0cc}
+@keyframes pop{0%{transform:scale(1.6);opacity:0}60%{transform:scale(.95);opacity:1}100%{transform:scale(1)}}
+.bar{position:fixed;left:0;right:0;z-index:5;padding:8px 10px;display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+#dTop{top:0;padding-top:calc(env(safe-area-inset-top,0px) + 6px);flex-direction:column;gap:3px;pointer-events:none}
+#dBot{bottom:0;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 8px);flex-direction:column;gap:5px}
+#inkWrap{width:min(92vw,420px);height:16px;border:3px solid var(--ink);border-radius:10px;background:#fff;overflow:hidden;position:relative}
+#inkBar{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#26a5ff,#7fd8ff);width:100%}
+#inkTx{font-size:12px;font-weight:900}
+#stats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+#stats span{background:#fff;border:2px solid var(--ink);border-radius:9px;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap}
+#dHint{font-size:12px;font-weight:800;color:#2d4a6b;text-align:center;max-width:94vw}
+.btns{display:flex;gap:7px;width:min(96vw,460px)}
+.btns button,.tbtn{flex:1;padding:11px 4px;border:none;border-radius:12px;font-size:15px;font-weight:900;font-family:inherit;background:#fff;color:var(--ink);border:3px solid var(--ink);cursor:pointer;box-shadow:0 3px 0 #0003}
+.btns button.go{background:var(--accent);color:#fff}
+#manPanel{z-index:14}
+.card.man{max-width:460px;text-align:left;display:flex;flex-direction:column;max-height:92vh}
+.card.man h2{text-align:center}
+#manTabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+#manTabs button{width:auto;flex:none;margin:0;padding:6px 10px;font-size:13px;background:#eee;color:var(--ink);border-radius:9px}
+#manTabs button.on{background:var(--ink);color:#fff}
+#manBody{overflow:auto;flex:1;min-height:120px;border-top:2px solid #e6dfcf;padding-top:6px;font-size:13.5px;line-height:1.65;color:#2b2b2b}
+#manBody h3{margin:4px 0 6px;font-size:17px}
+#manBody ul{margin:0;padding-left:1.2em}#manBody li{margin:5px 0}
+.toprow{display:flex;gap:8px;align-items:center;pointer-events:auto}
+#dMan{border:3px solid var(--ink);border-radius:12px;background:#fff7d6;font-family:inherit;font-weight:900;font-size:14px;padding:6px 12px;color:var(--ink)}
+.vtabs{display:flex;gap:0;border:3px solid var(--ink);border-radius:12px;overflow:hidden;pointer-events:auto;background:#fff}
+.vtabs button{border:none;background:#fff;font-family:inherit;font-weight:900;font-size:14px;padding:7px 16px;color:var(--ink)}
+.vtabs button.on{background:var(--ink);color:#fff}
+.tools{display:flex;gap:5px;width:min(98vw,480px);flex-wrap:nowrap}
+.tools button{flex:1;min-width:0;padding:8px 2px;border-radius:10px;border:2.5px solid var(--ink);background:#fff;font-family:inherit;font-weight:900;font-size:12px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tools button.on{background:var(--accent);color:#fff}
+.tools.sub button{font-size:12px;padding:6px 2px;border-width:2px}
+.tools.sub button.on{background:var(--ink);color:#fff}
+.tools.sub span{flex:1;text-align:center;font-size:12px;font-weight:800;color:#2d4a6b;padding:7px 0}
+#tUI{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:5;display:flex;justify-content:center;align-items:flex-end;gap:10px;pointer-events:none}
+#trig{pointer-events:auto;width:132px;height:132px;border-radius:50%;border:5px solid var(--ink);background:radial-gradient(circle at 40% 35%,#ff8f6b,#e8322a);color:#fff;font-size:22px;font-weight:900;font-family:inherit;box-shadow:0 6px 0 #0005;touch-action:none}
+#tDone{pointer-events:auto;flex:none;position:absolute;right:12px;bottom:0;padding:10px 12px;font-size:13px}
+#trig:active{transform:translateY(3px);box-shadow:0 3px 0 #0005}
+#trig:disabled{filter:grayscale(1) brightness(1.2);opacity:.6}
+#trig small{display:block;font-size:13px;margin-top:2px}
+#hudTop{position:fixed;left:64px;right:64px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:5;text-align:center;pointer-events:none;color:#fff;text-shadow:0 0 6px #000,0 0 3px #000}
+#hudTop b{display:block;font-size:20px;font-weight:900}
+#hudTop span{display:block;font-size:13px;font-weight:800;color:#ffd23a}
+#hudTop i{display:block;font-style:normal;font-size:15px;font-weight:900;color:#fff;margin-top:3px}
+#ctl{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);z-index:5;text-align:center;font-size:12px;font-weight:900;color:#fff;text-shadow:0 0 4px #000,0 0 2px #000;pointer-events:none}
+#quit{position:fixed;right:10px;color:#1d1d1d;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:6;border:2px solid var(--ink);background:#fffc;border-radius:10px;font-weight:900;font-family:inherit;font-size:12px;padding:6px 10px}
+.panel{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:#0005;padding:14px}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:18px;max-width:400px;width:100%;text-align:center;max-height:100%;overflow:auto;box-shadow:0 8px 0 #0004}
+.card h1{margin:0 0 4px;font-size:40px;line-height:1.15}
+.card h1 em{font-style:normal;color:var(--accent)}
+.card h1 small{display:block;font-size:13px;color:var(--sub);margin-top:4px;letter-spacing:.1em}
+.card h2{margin:0 0 6px;font-size:24px}
+.card p{margin:8px 0;line-height:1.6;font-size:13px;color:var(--sub);text-align:left}
+.card p.c{text-align:center}
+.card button{display:block;width:100%;margin-top:9px;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:800;font-family:inherit;background:var(--blue);color:#fff;cursor:pointer}
+.card button.or{background:var(--accent)}
+.card button.sub{background:#ece7da;color:var(--ink);font-size:15px}
+.card button.x{background:#000;color:#fff}
+.card button.vid{background:#d8352a;color:#fff}
+.card button:disabled{opacity:.45}
+.card input{width:100%;font-size:16px;border-radius:10px;border:2px solid #bbb;padding:9px;font-family:inherit;margin-top:6px;text-align:center}
+.card input.code{font-size:22px;letter-spacing:.18em;font-weight:900;text-transform:uppercase}
+.sec{border:2px dashed #c9c2b2;border-radius:14px;padding:10px;margin-top:10px}
+.sec h3{margin:0;font-size:15px}
+.row{display:flex;gap:8px}.row button{flex:1}
+#langs{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+#langs button{width:auto;flex:none;padding:6px 10px;font-size:13px;margin:0;background:#eee;color:var(--ink)}
+#langs button.on{background:var(--ink);color:#fff}
+.big2{font-size:44px;font-weight:900;line-height:1.15;margin:6px 0}
+.big2.red{color:var(--red)}.big2.ok{color:var(--ok)}
+.gunN{font-size:20px;font-weight:900}
+.nick{display:inline-block;background:#222;color:#ffd23a;border-radius:8px;padding:3px 10px;font-weight:900;font-size:14px;margin-top:4px}
+.codeBig{font-size:34px;font-weight:900;letter-spacing:.16em;color:var(--blue);margin:6px 0;font-variant-numeric:tabular-nums}
+.note{font-size:13px;min-height:1.3em;text-align:center!important}
+.note.err{color:#d23}.note.ok{color:var(--ok)}
+table.rank{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+table.rank td{padding:6px 3px;border-bottom:1px solid #eee;text-align:left;vertical-align:middle}
+table.rank td.r{color:var(--blue);font-weight:900;width:2.4em}
+table.rank td.n{max-width:11em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table.rank td.n small{display:block;color:var(--sub);font-size:11px}
+table.rank td.c{text-align:right;font-weight:900;white-space:nowrap}
+table.rank td.c small{display:block;font-size:10px;color:var(--sub);font-weight:700}
+table.rank tr{cursor:pointer}
+table.rank tr.me td{background:#fff2c4}
+#rankBox{max-height:58vh;overflow:auto}
+#vidPrev{width:100%;max-height:46vh;border-radius:12px;background:#000;display:block;margin:6px 0}
+#recBadge{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);z-index:30;background:#1d1d1de6;color:#fff;font-weight:900;padding:16px 22px;border-radius:14px;font-size:16px}
+#vig{position:fixed;inset:0;pointer-events:none;z-index:6;box-shadow:inset 0 0 140px 50px rgba(255,20,10,.75);opacity:0}
+#warn{position:fixed;inset:0;pointer-events:none;z-index:6;box-shadow:inset 0 0 90px 20px rgba(255,40,40,.45);opacity:0;transition:opacity .08s}
+#pop{position:fixed;left:0;right:0;top:36%;text-align:center;z-index:8;pointer-events:none;font-size:46px;font-weight:900;color:#ffe14a;opacity:0;text-shadow:3px 3px 0 #000,-3px 3px 0 #000,3px -3px 0 #000,-3px -3px 0 #000,0 0 18px #ff8a00}
+#pop.go{animation:popg .7s ease-out}
+@keyframes popg{0%{opacity:0;transform:scale(1.8)}15%{opacity:1;transform:scale(1)}70%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
+#dBtns{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 34px);z-index:7;display:flex;justify-content:space-between;padding:0 14px;pointer-events:none}
+#dBtns button{pointer-events:auto;width:96px;height:96px;border-radius:50%;border:4px solid #fff;background:#ffffff22;color:#fff;font-family:inherit;font-weight:900;font-size:16px;backdrop-filter:blur(2px);touch-action:none;text-shadow:0 0 4px #000}
+#dBtns button.on{background:#ff8a1f88}
+#toast{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:9;background:#1d1d1de6;color:#fff;font-weight:900;padding:10px 16px;border-radius:12px;font-size:14px;pointer-events:none;max-width:90vw;text-align:center}
+#ogpT{position:fixed;left:4%;top:10%;z-index:20;pointer-events:none;color:#fff;font-weight:900;text-shadow:0 4px 0 #000,0 0 14px #000,0 0 6px #000}
+#ogpT b{display:block;font-size:120px;line-height:1}
+#ogpT b em{font-style:normal;color:#ff7a1a}
+#ogpT i{display:block;font-style:normal;font-size:46px;margin-top:14px}
+#ogpT s{display:block;text-decoration:none;font-size:30px;margin-top:10px;color:#ffd23a}
+</style>
+<!-- nasubi-track: 結果画面とXへの投稿の回数を記録（ゲームの動きには影響しない） -->
+<script>(function(){try{var G="gojuuni",IDS=["resPanel","regPanel"];
+function ev(n){try{if(typeof gtag==='function')gtag('event',n,{game:G});}catch(e){}}
+var o=window.open;window.open=function(u){try{if(/intent\/(post|tweet)/.test(String(u)))ev('x_share');}catch(e){}return o.apply(window,arguments);};
+function vis(e){if(!e||!e.isConnected||e.closest('[hidden]'))return false;var r=e.getBoundingClientRect();return r.width>1&&r.height>1;}
+var was={};setInterval(function(){try{var any=false;for(var i=0;i<IDS.length;i++){if(vis(document.getElementById(IDS[i])))any=true;}if(any&&!was.v)ev('result_view');was.v=any;}catch(e){}},700);
+}catch(e){}})();</script>
+<!-- nasubi-ad: スマホのとき、結果画面とタイトル画面の決めた場所に広告の帯（と、決めた場所だけその下に大きい広告）を出す（遊んでいる最中は出さない・ボタンに重ねない・広告の幅320pxを切らない・画面が出たらすぐ見せるが、最初の1.2秒は押しても反応しない・画面が出るたびに新しい広告を読みこむ（場所ごとに30秒に1回まで）・画面が隠れて2秒たったら広告を外して止める・タイトル画面はタイトル用の広告枠を使う） -->
+<script>(function(){try{var C=[{"a": "#resPanel .card", "v": "#resPanel"}, {"a": "#regPanel .card", "v": "#regPanel"}, {"a": "#title div.card", "v": "#title", "t": 1, "b": 1, "m": 20, "x": "", "x2": ""}],BIG=1,M=20,EX="",EX2="",AD='https://nasubi-no-oniwa.com/ad/',AD2='https://nasubi-no-oniwa.com/ad/big.html',TAD='https://nasubi-no-oniwa.com/ad/t.html',TAD2='https://nasubi-no-oniwa.com/ad/tbig.html',LOCK=1200,HOLD=2000,MIN=30000;
+if(/[?&]noad=1/.test(location.search))return;
+if(!/iPhone|iPod|Android|Mobile|Windows Phone|BlackBerry/i.test(navigator.userAgent||''))return;
+var S=[];
+function vis(e){if(!e||!e.isConnected||e.closest('[hidden]'))return false;var r=e.getBoundingClientRect();if(r.width<1||r.height<1)return false;for(var n=e;n&&n.nodeType===1;n=n.parentElement){var s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden'||parseFloat(s.opacity)<0.05)return false;}return true;}
+function opt(i,k,d){return C[i][k]===undefined?d:C[i][k];}
+function mk(i){var b=document.createElement('div');b.className='nsb-ad';b.style.cssText='display:block;position:static;float:none;box-sizing:content-box;width:320px;min-width:320px;max-width:none;height:50px;margin:'+opt(i,'m',M)+'px calc((100% - 320px) / 2) 0;padding:0;border:0;background:none;box-shadow:none;border-radius:0;transform:none;overflow:hidden;flex:0 0 auto;align-self:center;'+opt(i,'x',EX);return b;}
+function mk2(i){var g=document.createElement('div');g.className='nsb-ad nsb-big';g.style.cssText='display:block;position:static;float:none;box-sizing:content-box;width:300px;min-width:300px;max-width:none;height:250px;margin:20px calc((100% - 300px) / 2) 0;padding:0;border:0;background:none;box-shadow:none;border-radius:0;transform:none;overflow:hidden;flex:0 0 auto;align-self:center;'+opt(i,'x2',EX2);return g;}
+function mkf(u,w,h){var f=document.createElement('iframe');f.title='ad';f.setAttribute('scrolling','no');f.width=w;f.height=h;f.style.cssText='border:0;margin:0;padding:0;width:'+w+'px;height:'+h+'px;display:block;max-width:none;visibility:hidden;pointer-events:none';f.src=u;return f;}
+function place(){for(var i=0;i<C.length;i++){var a=document.querySelector(C[i].a);if(!a)continue;var s=S[i]||(S[i]={b:mk(i),g:opt(i,'b',BIG)?mk2(i):null,on:false,since:0,hid:0,last:0,f:null,f2:null});var b=s.b;
+if(C[i].p==='first'){if(a.firstElementChild!==b)a.insertBefore(b,a.firstChild);}else if(b.parentNode!==a)a.appendChild(b);
+if(s.g&&b.nextSibling!==s.g)a.insertBefore(s.g,b.nextSibling);}}
+function off(s,now){if(s.f){s.f.style.visibility='hidden';s.f.style.pointerEvents='none';}if(s.f2){s.f2.style.visibility='hidden';s.f2.style.pointerEvents='none';}s.on=false;s.since=0;s.hid=now;}
+function kill(s){if(s.f){if(s.f.parentNode)s.f.parentNode.removeChild(s.f);s.f=null;}if(s.f2){if(s.f2.parentNode)s.f2.parentNode.removeChild(s.f2);s.f2=null;}}
+function tick(){try{place();var k=-1,i,s,res=false,now=Date.now();
+for(i=0;i<C.length;i++){s=S[i];if(!C[i].t&&s&&vis(document.querySelector(C[i].v))&&vis(s.b)){k=i;res=true;break;}}
+if(k<0)for(i=0;i<C.length;i++){s=S[i];if(C[i].t&&s&&vis(document.querySelector(C[i].v))&&vis(s.b)){k=i;break;}}
+if(document.hidden)k=-1;
+for(i=0;i<C.length;i++){s=S[i];if(!s)continue;
+if(C[i].t){var d=(res&&vis(document.querySelector(C[i].v)))?'none':'block';if(s.b.style.display!==d){s.b.style.display=d;if(s.g)s.g.style.display=d;}}
+if(i!==k){if(s.on)off(s,now);if(s.f&&now-s.hid>=HOLD&&now-s.last>=MIN)kill(s);}}
+if(k<0)return;
+s=S[k];
+if(!s.on){s.on=true;s.since=now;}
+if(!s.f){var t=!!C[k].t;s.f=mkf(t?TAD:AD,320,50);s.b.appendChild(s.f);if(s.g){s.f2=mkf(t?TAD2:AD2,300,250);s.g.appendChild(s.f2);}s.last=now;}
+if(s.f.parentNode!==s.b)s.b.appendChild(s.f);if(s.f2&&s.f2.parentNode!==s.g)s.g.appendChild(s.f2);
+var pe=(now-s.since<LOCK)?'none':'auto';
+s.f.style.visibility='visible';s.f.style.pointerEvents=pe;if(s.f2){s.f2.style.visibility='visible';s.f2.style.pointerEvents=pe;}
+}catch(_){}}
+function go(){place();try{new MutationObserver(place).observe(document.body,{childList:true,subtree:true});}catch(_){}setInterval(tick,300);}
+if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
+}catch(e){}})();</script>
+<!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
+<script>window.NSB_NEXT={"g": "gojuuni", "r": [{"a": "#resPanel .card", "v": "#resPanel"}, {"a": "#regPanel .card", "v": "#regPanel"}], "ad": 1};</script>
+<script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<canvas id="dc" hidden></canvas>
+<div id="big"></div>
+<div id="toast" hidden></div>
+<div id="vig"></div><div id="warn"></div><div id="pop"></div>
+<div id="dBtns" hidden><button id="bCrouch"></button><button id="bJump"></button></div>
+<div id="ogpT" hidden></div>
+
+<!-- 銃身を描く -->
+<div class="bar" id="dTop" hidden>
+ <div class="toprow"><div class="vtabs"><button id="vSide"></button><button id="vTop"></button></div><button id="dMan"></button></div>
+ <div id="inkWrap"><div id="inkBar"></div></div>
+ <div id="inkTx"></div>
+ <div id="stats"></div>
+ <div id="dHint"></div>
+</div>
+<div class="bar" id="dBot" hidden>
+ <div class="tools"><button id="mDraw"></button><button id="mBend"></button><button id="mPart"></button><button id="bHand"></button><button id="bGrip"></button></div>
+ <div class="tools sub" id="subRow"></div>
+ <div class="btns"><button id="dUndo"></button><button id="dClear"></button><button id="dBack"></button><button class="go" id="dNext"></button></div>
+</div>
+<div class="panel" id="manPanel" hidden><div class="card man"><h2 id="manTitle"></h2><div id="manTabs"></div><div id="manBody"></div><button class="sub" id="manClose"></button></div></div>
+<div class="panel" id="inPanel" hidden><div class="card"><h2 id="inT"></h2><p class="c" id="inB"></p><button class="or" id="inCopy"></button><button id="inOk"></button></div></div>
+<div class="panel" id="askPanel" hidden><div class="card"><h2 id="askQ"></h2><p class="c" id="askS"></p><button class="or" id="askA"></button><button id="askB"></button><button class="sub" id="askC" hidden></button></div></div>
+
+<!-- 試し撃ち・よける -->
+<div id="hudTop" hidden><b id="hudA"></b><span id="hudB"></span><i id="hudC"></i></div>
+<div id="tUI" hidden><button id="trig"></button><button id="tDone" class="tbtn" hidden></button></div>
+<div id="ctl" hidden></div>
+<button id="quit" hidden></button>
+
+<div class="panel" id="title" hidden>
+ <div class="card">
+  <h1 id="tTitle"></h1>
+  <p id="tHow"></p>
+  <button class="or" id="bShoot"></button>
+  <div class="sec">
+   <h3 id="tTarget"></h3>
+   <input id="codeIn" class="code" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false">
+   <button id="bCode"></button>
+   <button class="sub" id="bRandom"></button>
+   <p class="note" id="tMsg"></p>
+  </div>
+  <div class="row"><button class="sub" id="bRank"></button><button class="sub" id="bMan"></button></div>
+  <div id="langs"></div>
+ </div>
+</div>
+
+<div class="panel" id="regPanel" hidden>
+ <div class="card">
+  <div class="big2" id="gHead"></div>
+  <p class="c" id="gSub"></p>
+  <div id="gOk" hidden>
+   <div class="nick" id="gNick"></div>
+   <p class="c" id="gNameL" style="margin-bottom:0"></p>
+   <input id="gName" maxlength="16" autocomplete="off">
+   <button class="or" id="gReg"></button>
+  </div>
+  <div id="gDone" hidden>
+   <p class="c" id="gCodeL" style="margin-bottom:0"></p>
+   <div class="codeBig" id="gCode"></div>
+   <button class="x" id="gX"></button>
+   <button class="sub" id="gCopy"></button>
+   <button id="gSelf"></button>
+  </div>
+  <p class="note" id="gMsg"></p>
+  <button class="vid" id="gVid" hidden></button>
+  <button class="x" id="gXf" hidden></button>
+  <div class="row"><button class="sub" id="gRetest"></button><button class="sub" id="gRedraw"></button></div>
+  <button class="sub" id="gTop"></button>
+ </div>
+</div>
+
+<div class="panel" id="resPanel" hidden>
+ <div class="card">
+  <div class="big2" id="rHead"></div>
+  <div class="gunN" id="rGun"></div>
+  <div class="nick" id="rNick"></div>
+  <p class="c" id="rCode"></p>
+  <p class="note" id="rStat"></p>
+  <button id="rAgain"></button>
+  <button class="or" id="rNext"></button>
+  <button class="vid" id="rVid"></button>
+  <button class="x" id="rX"></button>
+  <div class="row"><button class="sub" id="rRank"></button><button class="sub" id="rTop"></button></div>
+ </div>
+</div>
+
+<div class="panel" id="rankPanel" hidden>
+ <div class="card">
+  <h2 id="rkTitle"></h2>
+  <p class="note" id="rkNote"></p>
+  <div id="rankBox"></div>
+  <button class="sub" id="rankBack"></button>
+ </div>
+</div>
+
+<div class="panel" id="vidPanel" hidden>
+ <div class="card">
+  <video id="vidPrev" playsinline controls loop></video>
+  <p class="note" id="vMsg"></p>
+  <button class="x" id="vShare"></button>
+  <button id="vSave"></button>
+  <button class="x" id="vX"></button>
+  <button class="sub" id="vBack"></button>
+ </div>
+</div>
+<div id="recBadge" hidden></div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import * as S from './sim.js?v=2';
+const $=id=>document.getElementById(id);
+const GAME_URL='https://nasubi-no-oniwa.com/gojuuni/';
+const QS=new URLSearchParams(location.search);
+const OGP=QS.has('ogp'),ICON=QS.has('icon'),PV=window.__GJPV||null;
+const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+const clamp=(x,a,b)=>x<a?a:x>b?b:x,lerp=(a,b,k)=>a+(b-a)*k,sm=x=>{x=clamp(x,0,1);return x*x*(3-2*x);};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CODE_CH='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const cleanCode=s=>String(s||'').toUpperCase().replace(/O/g,'0').replace(/[IL]/g,'1').split('').filter(c=>CODE_CH.includes(c)).join('').slice(0,8);
+
+// ===== ことば =====
+const TX={
+ja:{title:'ごジュウに',jumpB:'ジャンプ',crouchB:'しゃがむ',close1:'ギリギリ！',hudCnt:'残り {n} 回　よけた弾 {d}',resLine:'よけた弾 {d} 発・ギリギリ {g} 回',ctlK:'←→ 移動　↑・スペース ジャンプ　↓ しゃがむ',inT:'ブラウザで開くと描きやすいよ',inB:'Xなどのアプリの中で開いていると、描いている途中に画面のバーが上下に動いて、描きにくいことがあります。\nSafari や Chrome で開くと、画面が動かずに描けます。\n\n開き方：画面のメニュー（「…」やコンパスのマーク）から「ブラウザで開く」「Safariで開く」を押す。または下のボタンでリンクをコピーして、Safari に貼りつける。',inCopy:'リンクをコピー',inOk:'このまま描く',inDone:'コピーしました。Safari や Chrome に貼りつけて開いてね',man:'📖説明書',close:'閉じる',readMan:'📖説明書を読む',
+ mDraw:'✏️描く',mBend:'✋曲げる',mPart:'🔩パーツ',vSide:'横から',vTop:'上から',tapSw:'押すと切りかえ',toTarget:'的',needBarrel:'銃身の上を押してね',partMax:'パーツは8個まで',
+ handR:'🔫右手',handL:'🔫左手',handRT:'右手の銃を描きます',handLT:'左手の銃を描きます（描くと2丁拳銃になる）',g0:'🤚片手',g1:'🙌頭の上',g2:'🦵股の下',g3:'🔙背中ごし',
+ w0:'細い',w1:'ふつう',w2:'太い',w3:'極太',p_sp:'バネ',p_ic:'氷',p_pw:'火薬',p_cl:'分身',p_ho:'穴',
+ pd_sp:'バネ：通ると弾が速くなる',pd_ic:'氷：通ると弾が遅くなる',pd_pw:'火薬：その場で急加速',pd_cl:'分身：そこで弾が2つに分かれる',pd_ho:'穴：弾がこぼれて床を転がる',
+ bendHint:'線をつまんで動かすと、そのまわりがなめらかに曲がる',partHint:'銃身の上を押してパーツを置く。もう一度押すと外れる',dNextL:'次へ',
+ askFirst:'どちらから描く？',askSub1:'横から描くと上下に、上から描くと左右に曲がる。あとからもう一方の向きでも描ける',firstSide:'横から描く',firstTop:'上から描く',
+ askTop:'上からも描く？',askSide:'横からも描く？',askSub2:'さっきの線を、もう一方の向きから曲げたり描き足したりできる',yesDraw:'描く',noTest:'描かないで試し撃ちへ',walkHint:'画面の左右を押すと歩ける',g3T:'銃口が後ろ向き。U字に描かないと的に届かない',
+ sub:'銃身はご自由に',
+ how:'<b>撃つ役</b>：銃の口から先の銃身を、指で自由に描く。描いた形で弾の飛び方が変わる。試し撃ちで自分に当たらなければ登録できて、8文字の合言葉がもらえる。<br><b>撃たれる役</b>：射撃場の紙の的になって、だれかの銃の弾をよける。一瞬だけ出る予測線を見て、左右・ジャンプ・しゃがむ。',
+ bShoot:'撃つ役（銃身を描く）',tTarget:'撃たれる役（紙の的になってよける）',codePh:'合言葉（8文字）',bCode:'この合言葉の銃でよける',bRandom:'おまかせの銃でよける',bRank:'ランキング（K/D）',
+ needCode:'合言葉は8文字です',loading:'読みこみ中…',notFound:'その合言葉の銃は見つかりません',netErr:'つながりませんでした。もう一度ためしてください',noGuns:'まだ銃がありません。撃つ役で作ってみてください',
+ ink:'インク',inkLeft:'インクのこり {p}%',spd:'弾の速さ 時速{v}km',cnt:'弾の数 {n}発',dly:'出るまで {s}秒',spdQ:'弾の速さ ？',
+ dHint:'銃の口（光っている所）から描くと銃身になる。とちゅうから描くと枝分かれ。右下の小さい図は、もう一方の向き',
+ needMuzzle:'銃の口か、銃身から描きはじめてね',noInk:'インクがなくなった',tilt:'かたむき',deg:'{d}度',
+ undo:'ひとつ戻す',clear:'全部消す',back:'もどる',toTest:'試し撃ちへ',
+ tDone:'これで決定',testA:'試し撃ち',testB:'引き金を押すと撃つ（10発まで）。押したタイミングがそのまま記録される',trig:'引き金',left:'のこり{n}発',quit:'やめる',
+ ready:'よーい',go:'撃て！',dodgeGo:'よけろ！',
+ self:'自分を撃った！',jam:'暴発！',noReach:'的まで届いていない…',none:'撃たなかった',okHead:'いい銃だ',
+ selfSub:'銃口が自分を向いていた。描きなおそう',jamSub:'カクカクすぎて弾がつまった。描きなおそう',noReachSub:'登録できるのは、1発以上が紙の的のいる所まで届く銃だけです',noneSub:'引き金を押して撃ってください',okSub:'この銃を登録すると、合言葉がもらえます',
+ gNameL:'銃の名前（自分でつけられる）',defName:'名無しの銃',reg:'この銃を登録する',regging:'登録しています…',regErr:'登録できませんでした。少し待ってもう一度',regWait:'続けて登録するときは、15秒ほど待ってください',
+ regDone:'登録しました',codeL:'合言葉',xGun:'Xに銃を投稿する',copy:'合言葉をコピー',copied:'コピーしました',selfTry:'自分で撃たれてみる',
+ retest:'撃ちなおす',redraw:'描きなおす',top:'タイトルへ',
+ ctl:'左右になぞって移動　上下にはらうかボタンでジャンプ・しゃがむ',
+ gunBy:'「{n}」',dodged:'よけきった！',hit:'当たった…',shooterSelf:'撃った人が自分を撃った',
+ resNote:'合言葉：{c}',ownGun:'自分の銃なので、記録には入りません',already:'この銃の記録に入るのは、1回目だけです',sending:'記録しています…',sent:'記録しました',sendErr:'記録できませんでした',
+ kdLine:'この銃のK/D {kd}（当てた {h}・よけられた {d}）',again:'もう一度',next:'次の銃（おまかせ）',vid:'結果を動画にする',xRes:'Xに投稿',rank:'ランキング',
+ rkTitle:'K/D ランキング（銃）',rkNote:'10回以上遊ばれた銃だけ。K/D＝当てた回数÷よけられた回数（0回は1として計算）。押すとその銃でよけられる',rkEmpty:'まだランキングに入った銃はありません',rkErr:'読みこめませんでした',kdS:'当て{h}・よけ{d}',
+ postGun:'銃身をご自由にした「{n}」（{f}）を作った。よけてみろ\n合言葉：{c}\n#ごジュウに #ブラウザゲーム',
+ postDodge:'「{n}」（{f}）の弾を{d}発よけきった（ギリギリ{g}回）\n合言葉：{c}\n#ごジュウに #ブラウザゲーム',postHit:'「{n}」（{f}）の弾を{d}発よけたけど撃たれた\n合言葉：{c}\n#ごジュウに #ブラウザゲーム',
+ postSelf:'銃身をご自由にした結果、自分を撃った\n#ごジュウに #ブラウザゲーム',postJam:'銃身をご自由にした結果、暴発した\n#ごジュウに #ブラウザゲーム',
+ making:'動画を作っています…',vfail:'この端末では動画を作れませんでした',vmade:'「共有する」からXアプリを選ぶと、動画つきで投稿できます',shareHint:'保存してからXに投稿してください',vShare:'共有する（Xアプリへ）',vSave:'保存する',vX:'Xに投稿（文だけ）',
+ nk:{b7:'七つ首',b4:'千手',b2:'二股',cl:'無限回廊',sp:'渦巻き',l3:'三重ばね',l1:'ばね',wv:'うねり',cn:'カクカク',up:'山なり',dn:'跳ね返り',cv:'曲がり',lg:'長すぎる',sh:'ふつうの',st:'まっすぐ',tw:'ねじれ',sd:'横向き',ho:'穴あき',fx:'極太',dw:'二丁',oh:'頭上',cr:'股下',bk:'背中撃ち',sep:'・',suf:'銃'},
+ ogp2:'銃身はご自由に',ogp3:'描いて撃つ ／ 紙になってよける'},
+en:{title:'GOJUUNI',jumpB:'JUMP',crouchB:'CROUCH',close1:'CLOSE CALL!',hudCnt:'{n} shots left · dodged {d}',resLine:'Dodged {d} · close calls {g}',ctlK:'←→ move · ↑/Space jump · ↓ crouch',inT:'Drawing is easier in a browser',inB:'Inside apps like X, the browser bar can slide up and down while you draw.\nOpen this page in Safari or Chrome and the screen stays still.\n\nHow: use the app menu (… or the compass icon) → "Open in browser" / "Open in Safari". Or copy the link below and paste it into Safari.',inCopy:'Copy link',inOk:'Keep drawing here',inDone:'Copied. Paste it into Safari or Chrome.',man:'📖Manual',close:'Close',readMan:'📖Read the manual',
+ mDraw:'✏️Draw',mBend:'✋Bend',mPart:'🔩Parts',vSide:'Side',vTop:'Top',tapSw:'tap to switch',toTarget:'target',needBarrel:'Tap on the barrel',partMax:'Up to 8 parts',
+ handR:'🔫Right',handL:'🔫Left',handRT:'Drawing the right-hand gun',handLT:'Drawing the left-hand gun (draw it to dual-wield)',g0:'🤚1 hand',g1:'🙌Overhead',g2:'🦵Crotch',g3:'🔙Backward',
+ w0:'Thin',w1:'Normal',w2:'Thick',w3:'Huge',p_sp:'Spring',p_ic:'Ice',p_pw:'Powder',p_cl:'Clone',p_ho:'Hole',
+ pd_sp:'Spring: bullets speed up',pd_ic:'Ice: bullets slow down',pd_pw:'Powder: sudden boost',pd_cl:'Clone: the bullet splits in two',pd_ho:'Hole: a bullet leaks out and rolls on the floor',
+ bendHint:'Grab the line and drag. The area around it bends smoothly',partHint:'Tap the barrel to place a part. Tap again to remove',dNextL:'Next',
+ askFirst:'Which view first?',askSub1:'From the side it bends up/down, from the top left/right. You can add the other view later',firstSide:'Draw from the side',firstTop:'Draw from the top',
+ askTop:'Draw from the top too?',askSide:'Draw from the side too?',askSub2:'You can bend or add to your line from the other view',yesDraw:'Draw',noTest:'Skip, test fire',walkHint:'Hold left/right side to walk',g3T:'The muzzle faces backward. Draw a U-turn to reach the target',
+ sub:'Draw your own barrel',
+ how:'<b>Shooter</b>: draw the barrel freely from the muzzle. Its shape decides how bullets fly. If the test fire doesn\'t hit you, register it and get an 8-letter code.<br><b>Target</b>: become the paper target at the range and dodge someone\'s bullets. Watch the split-second prediction line: move, jump, crouch.',
+ bShoot:'Shooter (draw a barrel)',tTarget:'Target (dodge as the paper)',codePh:'CODE (8 letters)',bCode:'Dodge this code\'s gun',bRandom:'Dodge a random gun',bRank:'Ranking (K/D)',
+ needCode:'Codes are 8 letters',loading:'Loading…',notFound:'No gun with that code',netErr:'Could not connect. Please try again',noGuns:'No guns yet. Make one as the shooter',
+ ink:'Ink',inkLeft:'Ink left {p}%',spd:'Speed {v} km/h',cnt:'Bullets {n}',dly:'Delay {s}s',spdQ:'Speed ?',
+ dHint:'Draw from the glowing muzzle. Start from the middle to branch. The small view shows the other side',
+ needMuzzle:'Start from the muzzle or a barrel',noInk:'Out of ink',tilt:'Tilt',deg:'{d}°',
+ undo:'Undo',clear:'Clear',back:'Back',toTest:'Test fire',
+ tDone:'Done',testA:'Test fire',testB:'Press the trigger to shoot (up to 10). Your timing is recorded as is',trig:'TRIGGER',left:'{n} left',quit:'Quit',
+ ready:'Ready',go:'Fire!',dodgeGo:'Dodge!',
+ self:'You shot yourself!',jam:'Misfire!',noReach:'Didn\'t reach the target…',none:'You didn\'t shoot',okHead:'Nice gun',
+ selfSub:'The muzzle was pointing at you. Draw again',jamSub:'Too many sharp corners jammed the bullet. Draw again',noReachSub:'Only guns with at least one bullet reaching the target area can be registered',noneSub:'Press the trigger to shoot',okSub:'Register this gun to get a code',
+ gNameL:'Gun name (your choice)',defName:'Nameless Gun',reg:'Register this gun',regging:'Registering…',regErr:'Could not register. Wait a bit and retry',regWait:'Wait about 15 seconds between registrations',
+ regDone:'Registered',codeL:'Code',xGun:'Post the gun on X',copy:'Copy code',copied:'Copied',selfTry:'Get shot by it yourself',
+ retest:'Shoot again',redraw:'Redraw',top:'Title',
+ ctl:'Slide to move · Swipe up/down or use the buttons to jump/crouch',
+ gunBy:'"{n}"',dodged:'Dodged it all!',hit:'Hit…',shooterSelf:'The shooter shot himself',
+ resNote:'Code: {c}',ownGun:'Your own gun doesn\'t count',already:'Only your first try counts for this gun',sending:'Recording…',sent:'Recorded',sendErr:'Could not record',
+ kdLine:'This gun\'s K/D {kd} (hits {h} / dodged {d})',again:'Again',next:'Next gun (random)',vid:'Make a video',xRes:'Post on X',rank:'Ranking',
+ rkTitle:'K/D Ranking (guns)',rkNote:'Guns played 10+ times. K/D = hits ÷ dodges (0 counts as 1). Tap to dodge that gun',rkEmpty:'No ranked guns yet',rkErr:'Could not load',kdS:'hit {h} / dodged {d}',
+ postGun:'I drew my own barrel: "{n}" ({f}). Dodge it\nCode: {c}\n#ごジュウに #ブラウザゲーム',
+ postDodge:'Dodged all {d} bullets of "{n}" ({f}), {g} close calls\nCode: {c}\n#ごジュウに #ブラウザゲーム',postHit:'Dodged {d} bullets of "{n}" ({f}), then got shot\nCode: {c}\n#ごジュウに #ブラウザゲーム',
+ postSelf:'Drew my own barrel and shot myself\n#ごジュウに #ブラウザゲーム',postJam:'Drew my own barrel and it blew up\n#ごジュウに #ブラウザゲーム',
+ making:'Making the video…',vfail:'Could not make a video on this device',vmade:'Tap "Share" and pick the X app to post with the video',shareHint:'Save it, then post on X',vShare:'Share (to the X app)',vSave:'Save',vX:'Post on X (text only)',
+ nk:{b7:'Seven-Headed',b4:'Thousand-Armed',b2:'Forked',cl:'Endless Loop',sp:'Swirling',l3:'Triple-Spring',l1:'Spring',wv:'Wobbly',cn:'Zigzag',up:'Lobbing',dn:'Bouncing',cv:'Curving',lg:'Way Too Long',sh:'Plain',st:'Straight',tw:'Twisted',sd:'Sideways',ho:'Leaky',fx:'Huge',dw:'Dual',oh:'Overhead',cr:'Crotch',bk:'Backwards',sep:' ',suf:' Gun'},
+ ogp2:'Draw your own barrel',ogp3:'Draw & shoot / Dodge as the paper'},
+zh:{title:'ごジュウに',sub:'槍管隨你畫',jumpB:'跳',crouchB:'蹲',close1:'好險！',hudCnt:'剩 {n} 次　躲過 {d} 發',resLine:'躲過 {d} 發・好險 {g} 次',ctlK:'←→ 移動　↑・空白鍵 跳　↓ 蹲',inT:'用瀏覽器開比較好畫',inB:'在X等App裡開啟時，畫的途中畫面的列可能會上下移動，不好畫。\n用 Safari 或 Chrome 開啟，畫面就不會動。\n\n開法：從App的選單（「…」或指南針圖示）選「用瀏覽器開啟」「用Safari開啟」。或用下面的按鈕複製連結，貼到 Safari。',inCopy:'複製連結',inOk:'就這樣畫',inDone:'已複製。貼到 Safari 或 Chrome 開啟吧',man:'📖說明書',close:'關閉',readMan:'📖看說明書',
+ mDraw:'✏️畫',mBend:'✋彎',mPart:'🔩零件',vSide:'側面',vTop:'上面',tapSw:'點一下切換',toTarget:'靶',needBarrel:'請點在槍管上',partMax:'零件最多8個',
+ handR:'🔫右手',handL:'🔫左手',handRT:'畫右手的槍',handLT:'畫左手的槍（畫了就是雙槍）',g0:'🤚單手',g1:'🙌頭上',g2:'🦵胯下',g3:'🔙背後',
+ w0:'細',w1:'普通',w2:'粗',w3:'超粗',p_sp:'彈簧',p_ic:'冰',p_pw:'火藥',p_cl:'分身',p_ho:'洞',
+ pd_sp:'彈簧：通過後子彈變快',pd_ic:'冰：通過後子彈變慢',pd_pw:'火藥：瞬間加速',pd_cl:'分身：子彈在那裡分成2顆',pd_ho:'洞：子彈漏出來在地上滾',
+ bendHint:'抓住線拖動，周圍會滑順地彎曲',partHint:'點槍管放零件，再點一次拿掉',dNextL:'下一步',
+ askFirst:'先從哪邊畫？',askSub1:'從側面畫是上下彎，從上面畫是左右彎。之後也能從另一邊畫',firstSide:'從側面畫',firstTop:'從上面畫',
+ askTop:'也從上面畫嗎？',askSide:'也從側面畫嗎？',askSub2:'可以從另一個方向彎曲或加畫剛才的線',yesDraw:'畫',noTest:'不畫，去試射',walkHint:'按住畫面左右可以走動',g3T:'槍口朝後。要畫U字才打得到靶',
+ 
+ how:'<b>射擊方</b>：從槍口用手指自由畫出槍管。形狀決定子彈怎麼飛。試射沒打到自己就能登錄，拿到8個字的暗號。<br><b>被射方</b>：變成靶場的紙靶，閃躲別人的子彈。看準一瞬間的預測線，左右移動、跳、蹲。',
+ bShoot:'射擊方（畫槍管）',tTarget:'被射方（當紙靶閃躲）',codePh:'暗號（8個字）',bCode:'用這個暗號的槍來躲',bRandom:'隨機的槍來躲',bRank:'排行榜（K/D）',
+ needCode:'暗號是8個字',loading:'讀取中…',notFound:'找不到這個暗號的槍',netErr:'連不上，請再試一次',noGuns:'還沒有槍。先當射擊方做一把吧',
+ ink:'墨水',inkLeft:'墨水剩 {p}%',spd:'彈速 時速{v}km',cnt:'子彈 {n}發',dly:'射出前 {s}秒',spdQ:'彈速 ？',
+ dHint:'從發光的槍口畫就是槍管。從中間畫會分岔。右下小圖是另一個方向',
+ needMuzzle:'請從槍口或槍管開始畫',noInk:'墨水用完了',tilt:'傾斜',deg:'{d}度',
+ undo:'復原一步',clear:'全部清除',back:'返回',toTest:'去試射',
+ tDone:'就這樣',testA:'試射',testB:'按扳機就開槍（最多10發）。按下的時機會直接記錄',trig:'扳機',left:'剩{n}發',quit:'放棄',
+ ready:'預備',go:'開槍！',dodgeGo:'快躲！',
+ self:'打到自己了！',jam:'走火！',noReach:'沒打到靶子那邊…',none:'沒有開槍',okHead:'好槍',
+ selfSub:'槍口對著自己。重畫吧',jamSub:'轉角太多，子彈卡住了。重畫吧',noReachSub:'至少有1發能到達紙靶所在範圍的槍才能登錄',noneSub:'請按扳機開槍',okSub:'登錄這把槍就能拿到暗號',
+ gNameL:'槍的名字（自己取）',defName:'無名之槍',reg:'登錄這把槍',regging:'登錄中…',regErr:'無法登錄，請稍等再試',regWait:'連續登錄請等15秒左右',
+ regDone:'登錄完成',codeL:'暗號',xGun:'把槍發到X',copy:'複製暗號',copied:'已複製',selfTry:'自己來被射看看',
+ retest:'重新試射',redraw:'重畫',top:'回標題',
+ ctl:'左右滑動移動　上下滑或按鈕跳・蹲',
+ gunBy:'「{n}」',dodged:'全部躲過！',hit:'被打中了…',shooterSelf:'開槍的人打到自己了',
+ resNote:'暗號：{c}',ownGun:'自己的槍不會計入紀錄',already:'這把槍只計第一次的紀錄',sending:'記錄中…',sent:'已記錄',sendErr:'無法記錄',
+ kdLine:'這把槍的K/D {kd}（命中 {h}・被躲 {d}）',again:'再一次',next:'下一把（隨機）',vid:'把結果做成影片',xRes:'發到X',rank:'排行榜',
+ rkTitle:'K/D 排行榜（槍）',rkNote:'只列被玩過10次以上的槍。K/D＝命中次數÷被躲次數（0次算1）。點一下就能躲那把槍',rkEmpty:'還沒有上榜的槍',rkErr:'讀取失敗',kdS:'中{h}・躲{d}',
+ postGun:'隨我畫槍管的「{n}」（{f}）做好了。來躲躲看\n暗號：{c}\n#ごジュウに #ブラウザゲーム',
+ postDodge:'躲過了「{n}」（{f}）全部{d}發子彈（好險{g}次）\n暗號：{c}\n#ごジュウに #ブラウザゲーム',postHit:'躲過「{n}」（{f}）{d}發後被打中了\n暗號：{c}\n#ごジュウに #ブラウザゲーム',
+ postSelf:'隨我畫槍管的結果，打到自己\n#ごジュウに #ブラウザゲーム',postJam:'隨我畫槍管的結果，走火了\n#ごジュウに #ブラウザゲーム',
+ making:'影片製作中…',vfail:'這台裝置無法製作影片',vmade:'按「分享」選X應用程式，就能附影片發文',shareHint:'請先存檔再發到X',vShare:'分享（到X應用程式）',vSave:'存檔',vX:'發到X（只有文字）',
+ nk:{b7:'七頭',b4:'千手',b2:'雙叉',cl:'無限迴廊',sp:'漩渦',l3:'三重彈簧',l1:'彈簧',wv:'扭動',cn:'鋸齒',up:'拋物',dn:'反彈',cv:'彎曲',lg:'過長',sh:'普通',st:'筆直',tw:'扭曲',sd:'橫向',ho:'漏洞',fx:'超粗',dw:'雙',oh:'頭上',cr:'胯下',bk:'背射',sep:'・',suf:'槍'},
+ ogp2:'槍管隨你畫',ogp3:'畫了就射／當紙靶閃躲'},
+ko:{title:'ごジュウに',sub:'총신은 마음대로',jumpB:'점프',crouchB:'앉기',close1:'아슬아슬!',hudCnt:'남은 {n}번　피한 총알 {d}',resLine:'피한 총알 {d}발・아슬아슬 {g}번',ctlK:'←→ 이동　↑·스페이스 점프　↓ 앉기',inT:'브라우저로 열면 그리기 쉬워요',inB:'X 같은 앱 안에서 열면, 그리는 도중에 화면의 바가 위아래로 움직여서 그리기 어려울 수 있어요.\nSafari나 Chrome으로 열면 화면이 움직이지 않아요.\n\n여는 법: 앱의 메뉴(「…」나 나침반 아이콘)에서 「브라우저로 열기」「Safari로 열기」를 누르기. 또는 아래 버튼으로 링크를 복사해서 Safari에 붙여넣기.',inCopy:'링크 복사',inOk:'그대로 그리기',inDone:'복사했어요. Safari나 Chrome에 붙여넣어 열어 주세요',man:'📖설명서',close:'닫기',readMan:'📖설명서 읽기',
+ mDraw:'✏️그리기',mBend:'✋구부리기',mPart:'🔩부품',vSide:'옆에서',vTop:'위에서',tapSw:'누르면 전환',toTarget:'과녁',needBarrel:'총신 위를 눌러 주세요',partMax:'부품은 8개까지',
+ handR:'🔫오른손',handL:'🔫왼손',handRT:'오른손 총을 그립니다',handLT:'왼손 총을 그립니다 (그리면 쌍권총)',g0:'🤚한 손',g1:'🙌머리 위',g2:'🦵가랑이',g3:'🔙등 뒤로',
+ w0:'가늘게',w1:'보통',w2:'굵게',w3:'초굵게',p_sp:'스프링',p_ic:'얼음',p_pw:'화약',p_cl:'분신',p_ho:'구멍',
+ pd_sp:'스프링: 지나가면 총알이 빨라진다',pd_ic:'얼음: 지나가면 총알이 느려진다',pd_pw:'화약: 그 자리에서 급가속',pd_cl:'분신: 거기서 총알이 2개로 갈라진다',pd_ho:'구멍: 총알이 새어 나와 바닥을 구른다',
+ bendHint:'선을 잡고 끌면 그 주변이 부드럽게 휜다',partHint:'총신 위를 눌러 부품을 놓는다. 다시 누르면 빠진다',dNextL:'다음',
+ askFirst:'어느 쪽부터 그릴까?',askSub1:'옆에서 그리면 위아래로, 위에서 그리면 좌우로 휜다. 나중에 다른 쪽에서도 그릴 수 있다',firstSide:'옆에서 그리기',firstTop:'위에서 그리기',
+ askTop:'위에서도 그릴까?',askSide:'옆에서도 그릴까?',askSub2:'방금 그린 선을 다른 방향에서 구부리거나 더 그릴 수 있다',yesDraw:'그리기',noTest:'안 그리고 시험 사격',walkHint:'화면 좌우를 누르면 걸을 수 있다',g3T:'총구가 뒤를 향한다. U자로 그려야 과녁에 닿는다',
+ 
+ how:'<b>쏘는 쪽</b>: 총구에서부터 총신을 손가락으로 자유롭게 그린다. 모양에 따라 총알이 날아가는 방식이 바뀐다. 시험 사격에서 자신이 맞지 않으면 등록하고 8글자 암호를 받는다.<br><b>맞는 쪽</b>: 사격장의 종이 과녁이 되어 누군가의 총알을 피한다. 한순간 보이는 예측선을 보고 좌우 이동·점프·앉기.',
+ bShoot:'쏘는 쪽 (총신 그리기)',tTarget:'맞는 쪽 (종이 과녁이 되어 피하기)',codePh:'암호 (8글자)',bCode:'이 암호의 총으로 피하기',bRandom:'랜덤 총으로 피하기',bRank:'랭킹 (K/D)',
+ needCode:'암호는 8글자입니다',loading:'불러오는 중…',notFound:'그 암호의 총이 없습니다',netErr:'연결되지 않았습니다. 다시 시도하세요',noGuns:'아직 총이 없습니다. 쏘는 쪽으로 만들어 보세요',
+ ink:'잉크',inkLeft:'잉크 남음 {p}%',spd:'탄속 시속 {v}km',cnt:'총알 {n}발',dly:'발사까지 {s}초',spdQ:'탄속 ?',
+ dHint:'빛나는 총구에서 그리면 총신이 된다. 중간에서 그리면 갈라진다. 오른쪽 아래 작은 그림은 다른 방향',
+ needMuzzle:'총구나 총신에서 그리기 시작하세요',noInk:'잉크가 다 떨어졌다',tilt:'기울기',deg:'{d}도',
+ undo:'하나 되돌리기',clear:'모두 지우기',back:'돌아가기',toTest:'시험 사격',
+ tDone:'이걸로 결정',testA:'시험 사격',testB:'방아쇠를 누르면 쏜다 (10발까지). 누른 타이밍이 그대로 기록된다',trig:'방아쇠',left:'남은 {n}발',quit:'그만두기',
+ ready:'준비',go:'발사!',dodgeGo:'피해!',
+ self:'자기를 쐈다!',jam:'폭발!',noReach:'과녁까지 닿지 않았다…',none:'쏘지 않았다',okHead:'좋은 총이다',
+ selfSub:'총구가 자기를 향하고 있었다. 다시 그리자',jamSub:'너무 각져서 총알이 막혔다. 다시 그리자',noReachSub:'1발 이상이 과녁이 있는 곳까지 닿는 총만 등록할 수 있습니다',noneSub:'방아쇠를 눌러 쏘세요',okSub:'이 총을 등록하면 암호를 받습니다',
+ gNameL:'총 이름 (직접 지을 수 있다)',defName:'이름 없는 총',reg:'이 총 등록하기',regging:'등록 중…',regErr:'등록하지 못했습니다. 잠시 후 다시',regWait:'연속 등록은 15초쯤 기다려 주세요',
+ regDone:'등록했습니다',codeL:'암호',xGun:'X에 총 올리기',copy:'암호 복사',copied:'복사했습니다',selfTry:'직접 맞아 보기',
+ retest:'다시 쏘기',redraw:'다시 그리기',top:'타이틀로',
+ ctl:'좌우로 밀어 이동　위아래로 쓸거나 버튼으로 점프·앉기',
+ gunBy:'「{n}」',dodged:'다 피했다!',hit:'맞았다…',shooterSelf:'쏜 사람이 자기를 쐈다',
+ resNote:'암호: {c}',ownGun:'자기 총은 기록되지 않습니다',already:'이 총의 기록은 첫 번째만 들어갑니다',sending:'기록 중…',sent:'기록했습니다',sendErr:'기록하지 못했습니다',
+ kdLine:'이 총의 K/D {kd} (맞힘 {h}·피함 {d})',again:'한 번 더',next:'다음 총 (랜덤)',vid:'결과를 동영상으로',xRes:'X에 올리기',rank:'랭킹',
+ rkTitle:'K/D 랭킹 (총)',rkNote:'10번 이상 플레이된 총만. K/D＝맞힌 횟수÷피한 횟수 (0회는 1로 계산). 누르면 그 총으로 피할 수 있다',rkEmpty:'아직 랭킹에 든 총이 없습니다',rkErr:'불러오지 못했습니다',kdS:'맞힘{h}·피함{d}',
+ postGun:'총신을 마음대로 그린 「{n}」({f})을 만들었다. 피해 봐\n암호: {c}\n#ごジュウに #ブラウザゲーム',
+ postDodge:'「{n}」({f})의 총알 {d}발을 다 피했다 (아슬아슬 {g}번)\n암호: {c}\n#ごジュウに #ブラウザゲーム',postHit:'「{n}」({f})의 총알을 {d}발 피했지만 맞았다\n암호: {c}\n#ごジュウに #ブラウザゲーム',
+ postSelf:'총신을 마음대로 그렸더니 자기를 쐈다\n#ごジュウに #ブラウザゲーム',postJam:'총신을 마음대로 그렸더니 폭발했다\n#ごジュウに #ブラウザゲーム',
+ making:'동영상 만드는 중…',vfail:'이 기기에서는 동영상을 만들 수 없습니다',vmade:'「공유」에서 X 앱을 고르면 동영상과 함께 올릴 수 있습니다',shareHint:'저장한 뒤 X에 올려 주세요',vShare:'공유 (X 앱으로)',vSave:'저장',vX:'X에 올리기 (글만)',
+ nk:{b7:'일곱머리',b4:'천수',b2:'두갈래',cl:'무한회랑',sp:'소용돌이',l3:'삼중스프링',l1:'스프링',wv:'꿀렁',cn:'지그재그',up:'포물선',dn:'튕김',cv:'휘는',lg:'너무긴',sh:'평범한',st:'곧은',tw:'뒤틀린',sd:'옆으로',ho:'구멍난',fx:'초굵은',dw:'쌍',oh:'머리위',cr:'가랑이',bk:'등뒤',sep:' ',suf:' 총'},
+ ogp2:'총신은 마음대로',ogp3:'그려서 쏘기 / 종이가 되어 피하기'}};
+const LANGS=[['ja','日本語'],['en','English'],['zh','繁中'],['ko','한국어']];
+let lang=(q=>['ja','en','zh','ko'].includes(q)?q:null)(QS.get('lang'))||ls.get('gj_lang',null)||(n=>n.startsWith('ja')?'ja':n.startsWith('zh')?'zh':n.startsWith('ko')?'ko':'en')((navigator.language||'ja').toLowerCase());
+function t(k,o){let s=(TX[lang]&&TX[lang][k]!=null)?TX[lang][k]:(TX.ja[k]!=null?TX.ja[k]:k);if(o)for(const x in o)s=String(s).split('{'+x+'}').join(o[x]);return s;}
+function nick(f){const W=(TX[lang]||TX.ja).nk;const ws=(String(f||'st').match(/../g)||['st']).map(p=>W[p]).filter(Boolean);return (ws.length?ws:[W.st]).join(W.sep)+W.suf;}
+let toastT=0;function toast(s,ms){const e=$('toast');e.textContent=s;e.hidden=!s;toastT=performance.now()+(ms||1800);}
+
+// ===== 音 =====
+let AC=null,master=null,NB=null;
+function ac(){try{if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=.8;master.connect(AC.destination);}if(AC.state==='suspended')AC.resume();}catch(e){}return AC;}
+function nbuf(){if(!NB){NB=AC.createBuffer(1,AC.sampleRate,AC.sampleRate);const d=NB.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}return NB;}
+function noise(at,dur,type,f,q,vol,f2){if(!AC)return;const s=AC.createBufferSource();s.buffer=nbuf();s.loop=true;const fl=AC.createBiquadFilter();fl.type=type;fl.frequency.setValueAtTime(f,at);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,at+dur);fl.Q.value=q;const g=AC.createGain();g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(vol,at+.006);g.gain.exponentialRampToValueAtTime(.0001,at+dur);s.connect(fl).connect(g).connect(master);s.start(at);s.stop(at+dur+.02);}
+function tone(at,f,dur,type,vol,f2){if(!AC)return;const o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,at);if(f2)o.frequency.exponentialRampToValueAtTime(f2,at+dur);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(vol,at+.006);g.gain.exponentialRampToValueAtTime(.0001,at+dur);o.connect(g).connect(master);o.start(at);o.stop(at+dur+.02);}
+const SND={
+ trig(){if(!ac())return;const n=AC.currentTime;tone(n,1800,.03,'square',.06);tone(n+.02,1300,.04,'square',.04);},
+ line(){if(!ac())return;const n=AC.currentTime;tone(n,2400,.12,'sine',.06,3200);},
+ shot(){if(!ac())return;const n=AC.currentTime;noise(n,.22,'lowpass',2600,1,.35,300);tone(n,140,.18,'sine',.22,55);},
+ whoosh(d){if(!ac())return;const n=AC.currentTime;tone(n,300,Math.max(.05,d),'sawtooth',.03,1400);},
+ hit(){if(!ac())return;const n=AC.currentTime;noise(n,.18,'bandpass',1800,1.4,.3);tone(n,220,.25,'square',.08,90);},
+ graze(){if(!ac())return;const n=AC.currentTime;noise(n,.12,'highpass',3500,1,.12,6000);},
+ ping(){if(!ac())return;const n=AC.currentTime;tone(n,2600,.25,'sine',.06,1700);},
+ self(){if(!ac())return;const n=AC.currentTime;tone(n,520,.12,'square',.1,260);tone(n+.13,260,.35,'square',.1,130);},
+ boom(){if(!ac())return;const n=AC.currentTime;noise(n,.9,'lowpass',900,1,.5,80);tone(n,70,.8,'sine',.3,30);},
+ tick(){if(!ac())return;const n=AC.currentTime;tone(n,1100,.05,'sine',.08);},
+ go(){if(!ac())return;const n=AC.currentTime;tone(n,660,.1,'triangle',.1);tone(n+.1,990,.18,'triangle',.1);},
+ win(){if(!ac())return;const n=AC.currentTime;[523,659,784,1047].forEach((f,i)=>tone(n+i*.09,f,.3,'triangle',.1));},
+ lose(){if(!ac())return;const n=AC.currentTime;tone(n,330,.2,'triangle',.1);tone(n+.2,247,.4,'triangle',.1);}};
+
+// 音楽：よける・試し撃ちのあいだに流す（少し先まで予約して鳴らす）
+let bgm=null;
+function bgmStart(kind){if(PV||!ac())return;bgmStop();const out=AC.createGain();out.gain.setValueAtTime(.0001,AC.currentTime);out.gain.exponentialRampToValueAtTime(kind==='dodge'?.5:.36,AC.currentTime+.6);out.connect(master);
+ const st={next:AC.currentTime+.08,step:0,out};const sp=60/(kind==='dodge'?148:128)/4;const bass=[33,33,36,33,31,31,29,28];
+ const T=(at,f,d,type,v,f2)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,at);if(f2)o.frequency.exponentialRampToValueAtTime(f2,at+d);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(v,at+.005);g.gain.exponentialRampToValueAtTime(.0001,at+d);o.connect(g).connect(out);o.start(at);o.stop(at+d+.02);};
+ const Nz=(at,d,f,v)=>{const s2=AC.createBufferSource();s2.buffer=nbuf();const fl=AC.createBiquadFilter();fl.type='highpass';fl.frequency.value=f;const g=AC.createGain();g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(v,at+.003);g.gain.exponentialRampToValueAtTime(.0001,at+d);s2.connect(fl).connect(g).connect(out);s2.start(at);s2.stop(at+d+.02);};
+ const mf=m=>440*Math.pow(2,(m-69)/12);
+ st.timer=setInterval(()=>{if(!AC)return;if(st.next<AC.currentTime-.05)st.next=AC.currentTime+.02;
+  while(st.next<AC.currentTime+.12){const at=st.next,i=st.step%16,bar=Math.floor(st.step/16);
+   if(i%4===0)T(at,120,.26,'sine',.34,45);if(i===4||i===12)Nz(at,.12,1500,.18);Nz(at,.03,7000,i%2?.03:.055);
+   if(i%2===0){const m=bass[(bar*2+(i>>3))%8];T(at,mf(m+12),sp*1.8,'sawtooth',.06,mf(m+12)*.98);}
+   if(kind==='dodge'&&i%4===2)T(at,mf(69+[0,3,7,10][bar%4]),.09,'square',.02);
+   st.step++;st.next+=sp;}},25);bgm=st;}
+function bgmStop(){if(!bgm)return;clearInterval(bgm.timer);const o=bgm.out;bgm=null;try{o.gain.cancelScheduledValues(AC.currentTime);o.gain.setTargetAtTime(.0001,AC.currentTime,.12);setTimeout(()=>{try{o.disconnect();}catch(_){}},800);}catch(e){}}
+
+// ===== 3D =====
+const R=new THREE.WebGLRenderer({canvas:$('c'),antialias:true,preserveDrawingBuffer:OGP||ICON||!!PV});
+R.setPixelRatio(Math.min(2,devicePixelRatio||1));R.outputColorSpace=THREE.SRGBColorSpace;
+const SC=new THREE.Scene();SC.background=new THREE.Color(0x0c0f15);SC.fog=new THREE.Fog(0x0c0f15,16,42);
+const CAM=new THREE.PerspectiveCamera(50,1,.05,200);
+SC.add(new THREE.HemisphereLight(0x9fb4ff,0x1a140e,.75));
+const SUN=new THREE.DirectionalLight(0xffffff,.7);SUN.position.set(2,8,4);SC.add(SUN);
+const M=(c,o)=>new THREE.MeshStandardMaterial({color:c,roughness:.55,metalness:0,...(o||{})});
+const RB=(w,h,d,r)=>new RoundedBoxGeometry(w,h,d,4,r==null?Math.min(w,h,d)*.25:r);
+const L=S.L;
+const GLOW=(c,o)=>new THREE.MeshBasicMaterial({color:c,...(o||{})});
+// 室内の射撃場（せまいレーン・天井の照明・仕切り・奥の壁）
+const LANEW=2.35;
+{const fl=new THREE.Mesh(new THREE.BoxGeometry(LANEW*2+.6,.1,L+11),M(0x2b2f36,{roughness:.85}));fl.position.set(0,-.05,-L/2-.7);SC.add(fl);
+ for(const sd of [-1,1]){const ln=new THREE.Mesh(new THREE.BoxGeometry(.05,.012,L+6),GLOW(0xff8a1f));ln.position.set(sd*(S.XMAX+.38),.006,-L/2+.3);SC.add(ln);
+  const w=new THREE.Mesh(new THREE.BoxGeometry(.25,3.6,L+11),M(0x252932,{roughness:.9}));w.position.set(sd*(LANEW+.12),1.8,-L/2-.7);SC.add(w);
+  for(let z=2;z>-L-6;z-=1.2){const pn=new THREE.Mesh(RB(.08,2.6,1.05,.03),M(z%2.4?0x343a45:0x2e333d,{roughness:1}));pn.position.set(sd*(LANEW-.02),1.55,z);SC.add(pn);}
+  const st=new THREE.Mesh(new THREE.BoxGeometry(.06,.05,9.5),GLOW(0x9fd8ff));st.position.set(sd*1.15,3.33,-5.75);SC.add(st);}
+ const ce=new THREE.Mesh(new THREE.BoxGeometry(LANEW*2+.6,.12,L+11),M(0x15181e));ce.position.set(0,3.42,-L/2-.7);SC.add(ce);
+ for(let z=-1.5;z>-L+.5;z-=3){const bf=new THREE.Mesh(new THREE.BoxGeometry(LANEW*2,.45,.12),M(0x1c2027));bf.position.set(0,3.12,z);SC.add(bf);
+  const hz=new THREE.Mesh(new THREE.BoxGeometry(LANEW*2,.05,.13),GLOW(0xffc83a));hz.position.set(0,2.88,z);SC.add(hz);}
+ for(let i=1;i<=3;i++){const mk=new THREE.Mesh(new THREE.BoxGeometry(S.XMAX*2+.7,.01,.04),GLOW(0x6f7c90));mk.position.set(0,.007,-i*L/4);SC.add(mk);}
+ const bw=new THREE.Mesh(new THREE.BoxGeometry(LANEW*2+.6,3.6,.3),M(0x1d2026));bw.position.set(0,1.8,-L-6.2);SC.add(bw);
+ for(let i=0;i<5;i++){const pl=new THREE.Mesh(RB(LANEW*2,.55,.08,.03),M(0x2c3038,{metalness:.4,roughness:.5}));pl.position.set(0,.4+i*.62,-L-5.95);pl.rotation.x=-.5;SC.add(pl);}
+ const rail=new THREE.Mesh(new THREE.BoxGeometry(S.XMAX*2+.6,.03,.08),GLOW(0xff3b2f));rail.position.set(0,.02,-L+.25);SC.add(rail);
+ const rear=new THREE.Mesh(new THREE.BoxGeometry(LANEW*2+.6,3.6,.3),M(0x1a1d23));rear.position.set(0,1.8,4.6);SC.add(rear);
+ const sign=new THREE.Mesh(new THREE.BoxGeometry(1.4,.32,.05),GLOW(0xff3b2f));sign.position.set(0,2.6,-L-6.0);SC.add(sign);}
+const SPOT_T=new THREE.SpotLight(0xfff2dc,40,14,.55,.5,1.2);SPOT_T.position.set(0,3.3,-L+1.5);SPOT_T.target.position.set(0,.8,-L);SC.add(SPOT_T,SPOT_T.target);
+const SPOT_B=new THREE.SpotLight(0xfff4e0,26,10,.65,.6,1.2);SPOT_B.position.set(0,3.25,-L-3.2);SPOT_B.target.position.set(0,.9,-L);SC.add(SPOT_B,SPOT_B.target);
+const SPOT_S=new THREE.SpotLight(0xdfe9ff,26,9,.6,.6,1.2);SPOT_S.position.set(0,3.3,1.2);SPOT_S.target.position.set(0,1,-.5);SC.add(SPOT_S,SPOT_S.target);
+const FLASH=new THREE.PointLight(0xffb040,0,6,1.5);SC.add(FLASH);let flashT=0;
+
+// 撃つ人（棒人間）
+const SHOOT=new THREE.Group();SC.add(SHOOT);
+const SKIN=M(0xf3cdb0),SHIRT=M(0x2f6fd6),PANTS=M(0x30343c);
+function limb(a,b,r,mat){const d=new THREE.Vector3().subVectors(b,a);const m=new THREE.Mesh(new THREE.CapsuleGeometry(r,Math.max(.01,d.length()-2*r),6,10),mat);m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return m;}
+{const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+ SHOOT.add(limb(V(-.1,.05,0),V(-.1,.82,0),.07,PANTS),limb(V(.1,.05,0),V(.1,.82,0),.07,PANTS));
+ const body=new THREE.Mesh(RB(.42,.62,.26,.12),SHIRT);body.position.set(0,1.12,0);SHOOT.add(body);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.17,22,16),SKIN);head.position.set(0,1.62,0);SHOOT.add(head);
+ for(const x of [-.06,.06]){const e=new THREE.Mesh(new THREE.SphereGeometry(.022,8,6),M(0x111111));e.position.set(x,1.65,-.155);SHOOT.add(e);}
+ const cap=new THREE.Mesh(new THREE.SphereGeometry(.18,20,12,0,Math.PI*2,0,Math.PI/2),M(0x30343c));cap.position.set(0,1.66,0);SHOOT.add(cap);
+ const ear=new THREE.Mesh(RB(.42,.08,.1,.04),M(0xff7a1a));ear.position.set(0,1.64,.02);SHOOT.add(ear);}
+// 銃（銃の口が回転の中心）。右手と左手の2つ
+const TUBE_M=new THREE.MeshStandardMaterial({color:0x7fd8ff,transparent:true,opacity:.5,roughness:.15,metalness:.05,depthWrite:false});
+const TUBE_E=new THREE.MeshStandardMaterial({color:0x2a8fd0,roughness:.3,transparent:true,opacity:.9});
+const PART_M={sp:M(0xc0c6cc,{metalness:.6,roughness:.3}),ic:new THREE.MeshStandardMaterial({color:0xbfefff,transparent:true,opacity:.75,roughness:.1}),pw:M(0xd8352a),cl:M(0xa45cff),ho:M(0x111111)};
+const PIVS=[0,1].map(()=>{const piv=new THREE.Group();const tilt=new THREE.Group();piv.add(tilt);
+ const slide=new THREE.Mesh(RB(.07,.09,.32,.025),M(0xff8a1f));slide.position.set(0,0,.16);const gp=new THREE.Mesh(RB(.06,.17,.08,.025),M(0x2bb3a3));gp.position.set(0,-.1,.27);gp.rotation.x=-.25;
+ const tip=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,.03,16),M(0xff3b2f));tip.rotation.x=Math.PI/2;tilt.add(slide,gp,tip);const bar=new THREE.Group();piv.add(bar);SC.add(piv);return {piv,tilt,bar};});
+const PIV=PIVS[0].piv;
+const L3=q=>new THREE.Vector3(q[2]||0,q[1],-q[0]);// 描く面の点（前・上・右）→ 銃の中の点
+function buildHand(h,st,parts){const B=PIVS[h].bar;B.children.slice().forEach(c=>{B.remove(c);if(c.geometry)c.geometry.dispose();});
+ for(const s of st){if(s.p.length<2)continue;const pts=s.p.map(L3);const wf=S.WF[s.w!=null?s.w:1];
+  const cv=new THREE.CatmullRomCurve3(pts,false,'centripetal');const tb=new THREE.Mesh(new THREE.TubeGeometry(cv,Math.max(4,pts.length*2),.034*wf,8,false),TUBE_M);tb.renderOrder=3;B.add(tb);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(.036*wf,.008*wf,6,14),TUBE_E);ring.position.copy(pts[pts.length-1]);const tg=pts[pts.length-1].clone().sub(pts[Math.max(0,pts.length-2)]).normalize();ring.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),tg);B.add(ring);}
+ for(const q of parts||[]){const s=st[q.k];if(!s||!s.p[q.i])continue;const pos=L3(s.p[q.i]);const wf=S.WF[s.w!=null?s.w:1];let m;
+  if(q.t==='sp'){m=new THREE.Group();for(let i=0;i<3;i++){const r=new THREE.Mesh(new THREE.TorusGeometry(.05*wf,.01,6,14),PART_M.sp);r.position.z=(i-1)*.025;m.add(r);}}
+  else if(q.t==='ic')m=new THREE.Mesh(RB(.1*wf,.1*wf,.1*wf,.02),PART_M.ic);
+  else if(q.t==='pw')m=new THREE.Mesh(new THREE.CylinderGeometry(.05*wf,.05*wf,.09,12),PART_M.pw);
+  else if(q.t==='cl'){m=new THREE.Group();for(const x of [-.03,.03]){const r=new THREE.Mesh(new THREE.TorusGeometry(.05*wf,.012,6,14),PART_M.cl);r.position.x=x;r.rotation.y=Math.PI/2;m.add(r);}}
+  else m=new THREE.Mesh(new THREE.CylinderGeometry(.045*wf,.045*wf,.012,12),PART_M.ho);
+  m.position.copy(pos);const nx=s.p[Math.min(s.p.length-1,q.i+1)],pv=s.p[Math.max(0,q.i-1)];const tg=L3(nx).sub(L3(pv));if(tg.lengthSq()>1e-8)m.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),tg.normalize());if(q.t==='ho')m.rotateX(Math.PI/2);B.add(m);}}
+let ARMS=new THREE.Group();SHOOT.add(ARMS);
+function buildGun(gun){const g=S.GRIPS[gun.grip||0];for(let h=0;h<2;h++){const on=h===0||gun.two;PIVS[h].piv.visible=on;if(on)buildHand(h,gun.hands[h].strokes,gun.hands[h].parts);}
+ SHOOT.remove(ARMS);ARMS.children.forEach(c=>c.geometry.dispose());ARMS=new THREE.Group();SHOOT.add(ARMS);const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+ for(const side of [1,-1]){const h=gun.two?(side>0?0:1):0;const o=S.originOf(gun.grip,h,gun.two,0);const fw=[-Math.sin(g.y0)*0,0,-Math.cos(g.y0)];const hp=V(o[0]-fw[0]*.27,o[1]-.06,o[2]-fw[2]*.27);ARMS.add(limb(V(side*.16,1.38,0),hp,.05,SHIRT));}
+ placeGun(gun,0,[null,null]);}
+function placeGun(gun,sx,aims,fall){const g=S.GRIPS[gun.grip||0];fall=fall||0;const c=Math.cos(fall),sn=Math.sin(fall);for(let h=0;h<2;h++){const o=S.originOf(gun.grip||0,h,gun.two,sx);const a=aims&&aims[h];PIVS[h].piv.position.set(o[0],o[1]*c-o[2]*sn,o[1]*sn+o[2]*c);PIVS[h].piv.rotation.set((a?a.pitch:0)+fall,(a?a.yaw:0)+g.y0,0,'YXZ');}SHOOT.position.x=sx;SHOOT.rotation.x=fall;}
+function setAim(a){PIV.rotation.set(a?a.pitch:0,a?a.yaw:0,0,'YXZ');}
+// 紙の的
+const PAPER=new THREE.Group();SC.add(PAPER);
+const PT=document.createElement('canvas');PT.width=256;PT.height=512;const PG=PT.getContext('2d');const PTEX=new THREE.CanvasTexture(PT);PTEX.colorSpace=THREE.SRGBColorSpace;
+const PX=u=>(u+.4)*320,PY=w=>(1.6-w)*320;
+function silPath(g){g.beginPath();g.moveTo(PX(-.33),PY(0));g.lineTo(PX(.33),PY(0));g.lineTo(PX(.33),PY(1.0));g.quadraticCurveTo(PX(.33),PY(1.1),PX(.22),PY(1.1));g.lineTo(PX(.1),PY(1.1));g.lineTo(PX(.1),PY(1.215));
+ const a0=Math.atan2(-(1.215-1.38),.1);g.arc(PX(0),PY(1.38),.19*320,a0,Math.PI-a0,true);g.lineTo(PX(-.1),PY(1.1));g.lineTo(PX(-.22),PY(1.1));g.quadraticCurveTo(PX(-.33),PY(1.1),PX(-.33),PY(1.0));g.closePath();}
+function paperReset(){const g=PG;g.clearRect(0,0,256,512);silPath(g);g.fillStyle='#f4ead2';g.fill();g.save();g.clip();
+ g.strokeStyle='#2b2b2b';g.lineWidth=3;for(const r of [.07,.14,.21,.28]){g.beginPath();g.ellipse(PX(0),PY(.72),r*320,r*320*1.15,0,0,Math.PI*2);g.stroke();}
+ g.beginPath();g.arc(PX(0),PY(1.38),.09*320,0,Math.PI*2);g.stroke();g.fillStyle='#e8322a';g.beginPath();g.arc(PX(0),PY(.72),9,0,Math.PI*2);g.fill();g.restore();
+ silPath(g);g.strokeStyle='#1d1d1d';g.lineWidth=6;g.stroke();PTEX.needsUpdate=true;}
+function paperMark(u,w,hole){const g=PG,x=PX(u),y=PY(w);g.save();silPath(g);g.clip();
+ if(hole){const gr=g.createRadialGradient(x,y,2,x,y,16);gr.addColorStop(0,'rgba(60,30,10,.9)');gr.addColorStop(1,'rgba(60,30,10,0)');g.fillStyle=gr;g.beginPath();g.arc(x,y,16,0,Math.PI*2);g.fill();g.fillStyle='#0b0b0b';g.beginPath();g.arc(x,y,6.5,0,Math.PI*2);g.fill();}
+ else{const ex=PX(clamp(u,-.33,.33)),ey=PY(clamp(w,.02,1.55));const gr=g.createRadialGradient(ex,ey,1,ex,ey,22);gr.addColorStop(0,'rgba(70,40,15,.75)');gr.addColorStop(1,'rgba(70,40,15,0)');g.fillStyle=gr;g.beginPath();g.arc(ex,ey,22,0,Math.PI*2);g.fill();}
+ g.restore();PTEX.needsUpdate=true;}
+{const sh=new THREE.Shape();const P=S.PAPER;sh.moveTo(-.33,0);sh.lineTo(.33,0);sh.lineTo(.33,1.0);sh.quadraticCurveTo(.33,1.1,.22,1.1);sh.lineTo(.1,1.1);sh.lineTo(.1,1.215);
+ const a0=Math.atan2(1.215-1.38,.1);sh.absarc(0,1.38,.19,a0,Math.PI-a0,false);sh.lineTo(-.1,1.1);sh.lineTo(-.22,1.1);sh.quadraticCurveTo(-.33,1.1,-.33,1.0);sh.closePath();
+ const geo=new THREE.ShapeGeometry(sh,16);const pos=geo.attributes.position,uv=geo.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,(pos.getX(i)+.4)/.8,pos.getY(i)/1.6);uv.needsUpdate=true;
+ const pm=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({map:PTEX,emissive:0x5a5a5a,emissiveMap:PTEX,side:THREE.DoubleSide,roughness:.9}));pm.position.y=P.BASE;PAPER.add(pm);PAPER.userData.sheet=pm;
+ const st=M(0x7a5a3a);for(const x of [-.2,.2]){const lg=new THREE.Mesh(RB(.035,P.BASE+.15,.035,.012),st);lg.position.set(x,(P.BASE+.15)/2-.02,-.02);PAPER.add(lg);}
+ const ft=new THREE.Mesh(RB(.6,.05,.25,.02),st);ft.position.set(0,.02,-.02);PAPER.add(ft);paperReset();}
+function paperPose(P){PAPER.position.set(P.x,P.y,-L);PAPER.rotation.y=P.yaw;PAPER.userData.sheet.scale.y=P.hs;}
+// 弾・予測線・火花
+const FX=new THREE.Group();SC.add(FX);
+const BUL_G=new THREE.SphereGeometry(1,12,10),BUL_M=new THREE.MeshBasicMaterial({color:0xfff6c8});
+const GLOW_TEX=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');const gr=g.createRadialGradient(32,32,0,32,32,32);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.25,'rgba(255,210,120,.85)');gr.addColorStop(.6,'rgba(255,140,40,.25)');gr.addColorStop(1,'rgba(255,120,20,0)');g.fillStyle=gr;g.fillRect(0,0,64,64);const t2=new THREE.CanvasTexture(c);t2.colorSpace=THREE.SRGBColorSpace;return t2;})();
+const GLOW_M=new THREE.SpriteMaterial({map:GLOW_TEX,color:0xffb060,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true});
+const FLASH_M=new THREE.SpriteMaterial({map:GLOW_TEX,color:0xffe0a0,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true});
+const LINE_M=new THREE.MeshBasicMaterial({color:0xff2a2a,transparent:true,opacity:.9,depthWrite:false,blending:THREE.AdditiveBlending});
+const TRAIL_M=new THREE.LineBasicMaterial({color:0xffb050,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false});
+function clearFX(){FX.children.slice().forEach(c=>{FX.remove(c);if(c.geometry&&c.geometry!==BUL_G)c.geometry.dispose();if(c.material&&c.material.userData.tmp)c.material.dispose();});}
+const sparks=[];
+function spark(p,col,n,sp){for(let i=0;i<n;i++){const m=new THREE.Mesh(BUL_G,new THREE.MeshBasicMaterial({color:col,transparent:true}));m.material.userData.tmp=1;m.scale.setScalar(.03+Math.random()*.04);m.position.set(p[0],p[1],p[2]);FX.add(m);
+ const a=Math.random()*Math.PI*2,b=Math.random()*Math.PI-.3;sparks.push({m,v:[Math.cos(a)*Math.cos(b)*sp,Math.sin(b)*sp+1,Math.sin(a)*Math.cos(b)*sp],life:0,max:.5+Math.random()*.5});}}
+function stepSparks(dt){for(let i=sparks.length-1;i>=0;i--){const s=sparks[i];s.life+=dt;s.v[1]-=9*dt;s.m.position.x+=s.v[0]*dt;s.m.position.y+=s.v[1]*dt;s.m.position.z+=s.v[2]*dt;s.m.material.opacity=Math.max(0,1-s.life/s.max);if(s.life>s.max){FX.remove(s.m);s.m.material.dispose();sparks.splice(i,1);}}}
+
+// ===== 画面の大きさ =====
+let VW=innerWidth,VH=innerHeight;
+// 描いている指を離すまでは、画面の大きさを変えない（アプリの中でバーが動いても線がずれないように）
+const INAPP=/Twitter|FBAN|FBAV|FB_IAB|Instagram|Line\/|TikTok|musical_ly|Bytedance|Snapchat|; wv\)/i.test(navigator.userAgent||'');
+const FINE=!!(window.matchMedia&&matchMedia('(pointer:fine)').matches),COARSE=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
+const dcDown=new Set();let pendRs=false,inShown=false,inWant=false;
+function resize(){const nw=innerWidth,nh=innerHeight,typing=/INPUT|TEXTAREA/.test((document.activeElement||{}).tagName||'');
+ if(mode==='draw'&&COARSE&&VW&&nw===VW&&Math.abs(nh-VH)>24&&!typing)inWant=true;
+ if(mode==='draw'&&dcDown.size){pendRs=true;return;}
+ VW=nw;VH=nh;if(!OGP&&!ICON){R.setSize(VW,VH,false);CAM.aspect=VW/VH;CAM.updateProjectionMatrix();}if(mode==='draw')drawResize();
+ if(inWant)showInapp();}
+addEventListener('resize',resize);
+$('dc').addEventListener('pointerdown',e=>dcDown.add(e.pointerId),true);
+{const up=e=>{if(!dcDown.delete(e.pointerId))return;if(!dcDown.size&&(pendRs||inWant)){pendRs=false;resize();}};addEventListener('pointerup',up,true);addEventListener('pointercancel',up,true);}
+// ページそのものは指で動かさない（説明書やランキングのように、中が動く所だけは動かせる）
+const canScroll=el=>{for(;el&&el.nodeType===1&&el!==document.body;el=el.parentElement){const o=getComputedStyle(el).overflowY;if((o==='auto'||o==='scroll')&&el.scrollHeight>el.clientHeight+1)return true;}return false;};
+document.addEventListener('touchmove',e=>{if(e.touches.length>1||!canScroll(e.target))e.preventDefault();},{passive:false});
+document.addEventListener('gesturestart',e=>e.preventDefault());
+function showInapp(){inWant=false;if(PV||inShown||mode!=='draw')return;inShown=true;$('inPanel').hidden=false;}
+$('inOk').onclick=()=>{$('inPanel').hidden=true;};
+$('inCopy').onclick=async()=>{const u=location.href;let ok=false;try{await navigator.clipboard.writeText(u);ok=true;}catch(e){}
+ if(!ok){try{const ta=document.createElement('textarea');ta.value=u;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();ok=document.execCommand('copy');ta.remove();}catch(e){}}
+ toast(ok?t('inDone'):u,ok?2600:7000);};
+let shakeT=0,shakeA=0;function shake(a,t){shakeA=Math.max(shakeA*(shakeT>0?1:0),a);shakeT=Math.max(shakeT,t);}
+let camX=0;
+function camFor(kind,T,px){const por=VW<VH;px=px||0;
+ if(kind==='dodge'){const tg=px*(por?.92:.6);camX=T===0?tg:camX+(tg-camX)*.2;CAM.fov=por?62:50;CAM.position.set(camX,2.75,-L-(por?3.5:3.9));CAM.lookAt(camX*.7,por?1.05:.95,-L+8);}
+ else if(kind==='test'){CAM.fov=por?62:48;CAM.position.set(1.45+px*.6,por?2.45:2.3,por?3.4:3.0);CAM.lookAt(-.25+px*.5,1.0,por?-3.8:-4.8);}
+ else{const a=T*.22;CAM.fov=58;CAM.position.set(Math.sin(a)*1.6,2.3+Math.sin(a*.7)*.3,3.6);CAM.lookAt(Math.sin(a)*.3,1.15,-L*.6);}
+ if(shakeT>0){CAM.position.x+=(Math.random()-.5)*shakeA*shakeT;CAM.position.y+=(Math.random()-.5)*shakeA*shakeT;}
+ CAM.updateProjectionMatrix();}
+
+// ===== 画面 =====
+const PANELS=['title','regPanel','resPanel','rankPanel','vidPanel'];
+function show(id){PANELS.forEach(p=>$(p).hidden=(p!==id));}
+function big(h,cls){const b=$('big');b.innerHTML=h||'';b.className=cls||'';if(h){void b.offsetWidth;b.classList.add('pop');}}
+let mode='title',mT=0;
+function hideHud(){['dTop','dBot','hudTop','tUI','ctl','quit','dc','askPanel','manPanel','dBtns'].forEach(i=>$(i).hidden=true);$('warn').style.opacity=0;bgmStop();}
+function applyLang(){document.documentElement.lang=lang==='zh'?'zh-Hant':lang;document.title=t('title');
+ $('tTitle').innerHTML=(lang==='en'?'GO<em>JUU</em>NI':'ご<em>ジュウ</em>に')+'<small>'+esc(t('sub'))+'</small>';$('tHow').innerHTML=t('how');
+ const ids={bMan:'man',dMan:'man',bJump:'jumpB',bCrouch:'crouchB',inT:'inT',inB:'inB',inCopy:'inCopy',inOk:'inOk',tDone:'tDone',bShoot:'bShoot',tTarget:'tTarget',bCode:'bCode',bRandom:'bRandom',bRank:'bRank',dUndo:'undo',dClear:'clear',dBack:'back',mDraw:'mDraw',mBend:'mBend',mPart:'mPart',vSide:'vSide',vTop:'vTop',gReg:'reg',gX:'xGun',gCopy:'copy',gSelf:'selfTry',gRetest:'retest',gRedraw:'redraw',gTop:'top',gVid:'vid',gXf:'xRes',rAgain:'again',rNext:'next',rVid:'vid',rX:'xRes',rRank:'rank',rTop:'top',rankBack:'back',vShare:'vShare',vSave:'vSave',vX:'vX',vBack:'back',quit:'quit'};
+ for(const k in ids)$(k).textContent=t(ids[k]);
+ $('codeIn').placeholder=t('codePh');$('gNameL').textContent=t('gNameL');$('gName').placeholder=t('defName');$('gCodeL').textContent=t('codeL');
+ const LB=$('langs');LB.innerHTML='';for(const [k,nm] of LANGS){const b=document.createElement('button');b.textContent=nm;if(k===lang)b.className='on';b.onclick=()=>{lang=k;ls.set('gj_lang',k);applyLang();};LB.appendChild(b);}}
+function showTitle(){mode='title';mT=0;hideHud();show('title');big('');clearFX();resetStage();applyLang();$('tMsg').textContent='';$('tMsg').className='note';}
+function resetStage(){SHOOT.rotation.set(0,0,0);SHOOT.position.set(0,0,0);PIVS.forEach(p=>p.piv.visible=true);W=null;paperReset();paperPose(S.newPaper());}
+
+// ===== 銃身を描く（横から・上から。2丁・持ち方・太さ・パーツ） =====
+const DC=$('dc'),DG=DC.getContext('2d');
+const newHands=()=>[{strokes:[],parts:[]},{strokes:[],parts:[]}];
+let hands=newHands(),hand=0,grip=0,view='side',visited={side:0,top:0},dmode='draw',thick=1,ptype='sp',hist=[],drawing=null,bend=null;
+let DS=100,AREA={x:0,y:0,w:100,h:100},MINI=null;
+const strokesOf=h=>hands[h].strokes;
+const two=()=>hands[1].strokes.length>0;
+const frameOf=(h,sx)=>{const g=S.GRIPS[grip];return S.frame(0,0,0,S.originOf(grip,h,two()||h===1,sx||0),g.y0,sx||0);};
+function drawResize(){const dpr=Math.min(2,devicePixelRatio||1);DC.width=VW*dpr;DC.height=VH*dpr;DC.style.width=VW+'px';DC.style.height=VH+'px';DG.setTransform(dpr,0,0,dpr,0,0);
+ const top=$('dTop').offsetHeight+4,bot=$('dBot').offsetHeight+4;AREA={x:0,y:top,w:VW,h:Math.max(140,VH-top-bot)};
+ DS=Math.min(VW/3.9,AREA.h/2.9);const mw=Math.min(VW*.36,190),mh=Math.min(AREA.h*.3,150);MINI={x:VW-mw-6,y:AREA.y+AREA.h-mh-6,w:mw,h:mh};renderDraw();}
+// 画面の点と、描く面の点（前 a・上 b・右 c）
+function originPx(v,R,ds){const ox=R.x+clamp(R.w*.32,ds*1.05,R.w*.42);if(v==='top')return [ox,R.y+R.h*.5];let oy=R.y+R.h*.52;const fl=oy+(GRIPS_B()+.02)*ds;if(fl>R.y+R.h-4)oy-=fl-(R.y+R.h-4);return [ox,oy];}
+const GRIPS_B=()=>S.GRIPS[grip].o[1];
+function proj(v,q,R,ds){const [ox,oy]=originPx(v,R,ds);return v==='side'?[ox+q[0]*ds,oy-q[1]*ds]:[ox+q[0]*ds,oy+q[2]*ds];}
+function unproj(v,x,y,fixed){const [ox,oy]=originPx(v,AREA,DS);const a=(x-ox)/DS;return v==='side'?[a,(oy-y)/DS,fixed]:[a,fixed,(y-oy)/DS];}
+const FIXI=v=>v==='side'?2:1;// その面で決まらない数（横からなら右、上からなら上）
+function forbidden(q){const w=S.toWorld(frameOf(hand),q[0],q[1],q[2]);if(w[1]<.03)return true;if(Math.hypot(w[0],w[2])<.24&&w[1]<1.45)return true;return Math.hypot(w[0],w[1]-1.65,w[2])<.21;}
+function snap(){hist.push(JSON.stringify({hands,grip}));if(hist.length>60)hist.shift();}
+function analysisH(h){const st=S.roundTrip(strokesOf(h));return S.analyze(st,hands[h].parts);}
+function totalInk(){return S.inkUsed(hands[0].strokes)+S.inkUsed(hands[1].strokes)+(drawing?drawing.len*S.WINK[thick]:0);}
+function updStats(){const left=Math.max(0,1-totalInk()/S.INK);$('inkBar').style.width=(left*100)+'%';$('inkTx').textContent=t('inkLeft',{p:Math.round(left*100)});
+ const A=analysisH(hand);const ex=A.exits[0];const v=ex&&!A.jam?Math.max(...A.exits.map(e=>e.v)):null;const n=(hands[0].strokes.length||hand===0?analysisH(0).count:0)+(two()?analysisH(1).count:0);
+ $('stats').innerHTML='<span>'+esc(v?t('spd',{v:Math.round(v*3.6)}):t('spdQ'))+'</span><span>'+esc(t('cnt',{n:Math.max(1,n)}))+'</span><span>'+esc(t('dly',{s:(ex?ex.t:0).toFixed(2)}))+'</span>';}
+const PART_IC={sp:'🌀',ic:'🧊',pw:'💥',cl:'👯',ho:'🕳️'};
+function drawView(g,v,R,ds,mini){g.save();g.beginPath();g.rect(R.x,R.y,R.w,R.h);g.clip();
+ g.fillStyle=mini?'#f6fbff':'#eaf4ff';g.fillRect(R.x,R.y,R.w,R.h);
+ const [ox,oy]=originPx(v,R,ds);
+ if(!mini){g.strokeStyle='#cfe0f3';g.lineWidth=1;const st=ds*.2;for(let x=R.x+(ox-R.x)%st;x<R.x+R.w;x+=st){g.beginPath();g.moveTo(x,R.y);g.lineTo(x,R.y+R.h);g.stroke();}for(let y=R.y+(oy-R.y)%st;y<R.y+R.h;y+=st){g.beginPath();g.moveTo(R.x,y);g.lineTo(R.x+R.w,y);g.stroke();}}
+ const fr=frameOf(hand),L2=w=>S.toLocal(fr,w),P=w=>proj(v,L2(w),R,ds);
+ if(v==='side'){const fy=oy+GRIPS_B()*ds;g.fillStyle='#d8cfbb';g.fillRect(R.x,fy,R.w,R.y+R.h-fy);g.strokeStyle='#8d7f66';g.lineWidth=2;g.beginPath();g.moveTo(R.x,fy);g.lineTo(R.x+R.w,fy);g.stroke();}
+ // 的の向き
+ const tg=L2([0,1,-S.L]);g.fillStyle='#2a6bd7';g.font='900 '+Math.round((mini?10:13))+'px system-ui,sans-serif';g.textAlign='center';{const d=[tg[0],v==='side'?tg[1]:tg[2]];const l=Math.hypot(d[0],d[1])||1;const ax=ox+d[0]/l*3000,ay=oy+(v==='side'?-1:1)*d[1]/l*3000;g.fillText('🎯'+t('toTarget')+' →',clamp(ax,R.x+34,R.x+R.w-34),clamp(ay,R.y+30,R.y+R.h-8)-14);}
+ // 撃つ人
+ g.lineCap='round';g.lineJoin='round';const line=(a,b,col,wd)=>{const [x1,y1]=P(a),[x2,y2]=P(b);g.strokeStyle=col;g.lineWidth=wd;g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();};
+ if(v==='side'){line([0,.05,0],[0,.8,0],'#30343c',ds*.12);line([0,.85,0],[0,1.38,0],'#2f6fd6',ds*.3);}
+ else{line([-.2,1.4,0],[.2,1.4,0],'#2f6fd6',ds*.26);}
+ {const [hx,hy]=P([0,1.62,0]);g.fillStyle='#f3cdb0';g.beginPath();g.arc(hx,hy,ds*.17,0,Math.PI*2);g.fill();g.fillStyle='#30343c';g.beginPath();if(v==='side')g.arc(hx,hy,ds*.18,Math.PI,0);else g.arc(hx,hy,ds*.13,0,Math.PI*2);g.fill();
+  const [ex,ey]=P([0,1.66,-.16]);g.fillStyle='#111';g.beginPath();g.arc(ex,ey,ds*.03,0,Math.PI*2);g.fill();}
+ // 銃（2丁なら両方）と、もう片方の銃身
+ for(const h of (two()||hand===1?[0,1]:[0])){const fh=frameOf(h);const W2=q=>S.toWorld(fh,q[0],q[1],q[2]);
+  line(W2([-.3,0,0]),W2([0,0,0]),'#ff8a1f',ds*.09);line(W2([-.27,-.02,0]),W2([-.3,-.16,0]),'#2bb3a3',ds*.07);
+  const sh=S.originOf(grip,h,true,0);line([sh[0]>0?.2:-.2,1.38,0],W2([-.27,-.02,0]),'#2f6fd6',ds*.08);
+  if(h!==hand)for(const s of strokesOf(h)){if(s.p.length<2)continue;g.strokeStyle='rgba(27,95,147,.28)';g.lineWidth=ds*.06*S.WF[s.w];g.beginPath();s.p.forEach((q,i)=>{const [x,y]=P(W2(q));i?g.lineTo(x,y):g.moveTo(x,y);});g.stroke();}}
+ // 銃身
+ const PL=q=>proj(v,q,R,ds);
+ const drawS=(p,wd,col)=>{if(p.length<2)return;g.strokeStyle=col;g.lineWidth=wd;g.beginPath();p.forEach((q,i)=>{const [x,y]=PL(q);i?g.lineTo(x,y):g.moveTo(x,y);});g.stroke();};
+ const cur=strokesOf(hand);
+ for(const s of cur)drawS(s.p,ds*.085*S.WF[s.w]+2,'#1b5f93');for(const s of cur)drawS(s.p,ds*.085*S.WF[s.w]-1.5,'#8fdcff');
+ if(drawing){drawS(drawing.raw,ds*.085*S.WF[thick]+2,'#1b5f93');drawS(drawing.raw,ds*.085*S.WF[thick]-1.5,'#bfeaff');}
+ // パーツ
+ g.font=Math.round(ds*(mini?.16:.2))+'px system-ui,sans-serif';g.textAlign='center';g.textBaseline='middle';
+ for(const q of hands[hand].parts){const s=cur[q.k];if(!s||!s.p[q.i])continue;const [x,y]=PL(s.p[q.i]);g.fillText(PART_IC[q.t],x,y);}
+ g.textBaseline='alphabetic';
+ // 銃の口
+ const [mx,my]=PL([0,0,0]);const pulse=.5+.5*Math.sin(performance.now()/220);g.strokeStyle='rgba(255,122,26,'+(.4+.5*pulse)+')';g.lineWidth=3;g.beginPath();g.arc(mx,my,ds*.07+pulse*3,0,Math.PI*2);g.stroke();g.fillStyle='#ff3b2f';g.beginPath();g.arc(mx,my,ds*.03,0,Math.PI*2);g.fill();
+ // 見出し
+ if(mini){g.fillStyle='#555';g.font='900 11px system-ui,sans-serif';g.textAlign='left';g.fillText((v==='side'?'↔↕ ':'↔⇅ ')+t(v==='side'?'vSide':'vTop')+' ('+t('tapSw')+')',R.x+8,R.y+14);}
+ g.restore();if(mini){g.strokeStyle='#1d1d1d';g.lineWidth=2.5;g.strokeRect(R.x,R.y,R.w,R.h);}}
+function renderDraw(){const g=DG;g.clearRect(0,0,VW,VH);g.fillStyle='#d6e6f6';g.fillRect(0,0,VW,VH);drawView(g,view,AREA,DS,false);
+ if(MINI){const ov=view==='side'?'top':'side';const ds=DS*Math.min(MINI.w/AREA.w,MINI.h/AREA.h)*1.25;drawView(g,ov,MINI,ds,true);}}
+function nearestPt(v,x,y,maxPx){let best=null,bd=maxPx;strokesOf(hand).forEach((s,k)=>{const half=DS*.085*S.WF[s.w!=null?s.w:1]/2;s.p.forEach((q,i)=>{const [px,py]=proj(v,q,AREA,DS);const d=Math.hypot(px-x,py-y)-half;if(d<bd){bd=d;best=[k,i];}});});return best;}
+const HIT=k=>Math.max(DS*k,36);
+const inMini=(x,y)=>MINI&&x>=MINI.x&&x<=MINI.x+MINI.w&&y>=MINI.y&&y<=MINI.y+MINI.h;
+DC.addEventListener('pointerdown',e=>{if(mode!=='draw'||drawing||bend)return;ac();const x=e.clientX,y=e.clientY;
+ if(inMini(x,y)){setView(view==='side'?'top':'side');return;}
+ if(dmode!=='draw'){const [ox0,oy0]=originPx(view,AREA,DS);const nearMuzzle=Math.hypot(x-ox0,y-oy0)<DS*.22;
+  if(!strokesOf(hand).length||(nearMuzzle&&!nearestPt(view,x,y,HIT(.3)))){dmode='draw';toolsUi();}}
+ if((dmode==='part'||dmode==='bend')&&!nearestPt(view,x,y,HIT(.5))&&strokesOf(1-hand).length){const oh=1-hand,keep=hand;hand=oh;if(nearestPt(view,x,y,HIT(.5))){toolsUi();toast(t(hand?'handLT':'handRT'),1500);}else hand=keep;}
+ if(dmode==='part'){const pk=nearestPt(view,x,y,HIT(.4));if(!pk){toast(t('needBarrel'));return;}const ps=hands[hand].parts;const ex=ps.findIndex(q=>q.k===pk[0]&&Math.abs(q.i-pk[1])<=2);snap();
+  if(ex>=0)ps.splice(ex,1);else{if(ps.length>=S.MAXPART){toast(t('partMax'));hist.pop();return;}if(pk[0]===0&&pk[1]===0)pk[1]=1;ps.push({k:pk[0],i:pk[1],t:ptype});SND.tick();}renderDraw();updStats();return;}
+ if(dmode==='bend'){const pk=nearestPt(view,x,y,HIT(.5));if(!pk){toast(t('needBarrel'));return;}snap();bend={k:pk[0],i:pk[1],x0:x,y0:y,orig:JSON.parse(JSON.stringify(strokesOf(hand))),pid:e.pointerId};DC.setPointerCapture(e.pointerId);return;}
+ if(totalInk()>=S.INK-.05){toast(t('noInk'));return;}
+ const st=strokesOf(hand);let start=null,at=null,ext=-1;const [ox,oy]=originPx(view,AREA,DS);
+ if(!st.length){if(Math.hypot(x-ox,y-oy)<DS*.22)start=[0,0,0];}
+ else{const pk=nearestPt(view,x,y,HIT(.3));if(pk){const s=st[pk[0]];start=s.p[pk[1]].slice();if(pk[1]>=s.p.length-3){ext=pk[0];if(s.w!==thick){at=[pk[0],s.p.length-1];ext=-1;start=s.p[s.p.length-1].slice();}}else at=pk.slice();}}
+ if(!start){toast(t('needMuzzle'));return;}
+ DC.setPointerCapture(e.pointerId);drawing={raw:[start],at,ext,len:0,pid:e.pointerId,fixed:start[FIXI(view)]};renderDraw();});
+DC.addEventListener('pointermove',e=>{
+ if(bend&&e.pointerId===bend.pid){const dx=(e.clientX-bend.x0)/DS,dy=(e.clientY-bend.y0)/DS;const d=view==='side'?[dx,-dy,0]:[dx,0,dy];applyBend(d);renderDraw();updStats();return;}
+ if(!drawing||e.pointerId!==drawing.pid)return;const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+ for(const ev of evs){const q=unproj(view,ev.clientX,ev.clientY,drawing.fixed);const lp=drawing.raw[drawing.raw.length-1];const d=Math.hypot(q[0]-lp[0],q[1]-lp[1],q[2]-lp[2]);if(d<.012)continue;
+  if(forbidden(q)){drawing.stop=1;continue;}if(drawing.stop)continue;
+  const left=(S.INK-totalInk())/S.WINK[thick];if(left<=0){drawing.stop=1;toast(t('noInk'));continue;}
+  if(d>left){const k=left/d;drawing.raw.push([lp[0]+(q[0]-lp[0])*k,lp[1]+(q[1]-lp[1])*k,lp[2]+(q[2]-lp[2])*k]);drawing.len+=left;drawing.stop=1;continue;}
+  drawing.raw.push(q);drawing.len+=d;}
+ renderDraw();updStats();});
+// 曲げる：つまんだ点のまわりを、なめらかに動かす（根もとは動かない。枝はいっしょに動く）
+function applyBend(d){const st=JSON.parse(JSON.stringify(bend.orig));const s=st[bend.k];const cum=[0];for(let i=1;i<s.p.length;i++)cum.push(cum[i-1]+Math.hypot(s.p[i][0]-s.p[i-1][0],s.p[i][1]-s.p[i-1][1],s.p[i][2]-s.p[i-1][2]));
+ const R2=.5,base=cum[bend.i];const moved=s.p.map((q,i)=>{const u=Math.abs(cum[i]-base)/R2;let w=u<1?(1-u*u)*(1-u*u):0;w*=Math.min(1,cum[i]/.15);return [q[0]+d[0]*w,q[1]+d[1]*w,q[2]+d[2]*w];});
+ const disp=moved.map((q,i)=>[q[0]-s.p[i][0],q[1]-s.p[i][1],q[2]-s.p[i][2]]);s.p=moved;
+ const shift=(k,dv)=>{st.forEach((c,ci)=>{if(c.at&&c.at[0]===k){const dd=dv[c.at[1]]||[0,0,0];const cd=c.p.map(()=>dd);c.p=c.p.map(q=>[q[0]+dd[0],q[1]+dd[1],q[2]+dd[2]]);shift(ci,cd);}});};shift(bend.k,disp);
+ for(const c of st)for(const q of c.p){const w=S.toWorld(frameOf(hand),q[0],q[1],q[2]);if(w[1]<.03){q[1]+=.03-w[1];}}
+ hands[hand].strokes=st;}
+function endStroke(){if(bend){bend=null;hands[hand].strokes=S.roundTrip(strokesOf(hand));renderDraw();updStats();return;}if(!drawing)return;const d=drawing;drawing=null;
+ if(d.raw.length>=2&&d.len>=.05){let p=S.tidy(d.raw);snap();const st=strokesOf(hand);
+  if(d.ext>=0){st[d.ext].p=st[d.ext].p.concat(p.slice(1));}
+  else if(d.at){if(p.length>=2)st.push({at:d.at,p,w:thick});}
+  else st.unshift({at:null,p,w:thick});
+  let over=totalInk()-S.INK;if(over>0){const s=d.ext>=0?st[d.ext]:(d.at?st[st.length-1]:st[0]);while(over>0&&s.p.length>2){const q=s.p.pop(),r=s.p[s.p.length-1];over-=Math.hypot(q[0]-r[0],q[1]-r[1],q[2]-r[2])*S.WINK[s.w];}}
+  hands[hand].strokes=S.roundTrip(st);hands[hand].parts=hands[hand].parts.filter(q=>hands[hand].strokes[q.k]&&q.i<hands[hand].strokes[q.k].p.length);}
+ renderDraw();updStats();}
+DC.addEventListener('pointerup',endStroke);DC.addEventListener('pointercancel',endStroke);
+const GRIP_K=['g0','g1','g2','g3'];
+function toolsUi(){$('mDraw').classList.toggle('on',dmode==='draw');$('mBend').classList.toggle('on',dmode==='bend');$('mPart').classList.toggle('on',dmode==='part');
+ $('bHand').textContent=t(hand?'handL':'handR');$('bGrip').textContent=t(GRIP_K[grip]);$('vSide').classList.toggle('on',view==='side');$('vTop').classList.toggle('on',view==='top');
+ const sr=$('subRow');sr.innerHTML='';
+ if(dmode==='draw')['w0','w1','w2','w3'].forEach((k,i)=>{const b=document.createElement('button');b.textContent=t(k);if(i===thick)b.className='on';b.onclick=()=>{thick=i;toolsUi();};sr.appendChild(b);});
+ else if(dmode==='part')S.PARTS.forEach(k=>{const b=document.createElement('button');b.textContent=PART_IC[k]+t('p_'+k);if(k===ptype)b.className='on';b.onclick=()=>{ptype=k;toolsUi();toast(t('pd_'+k),2200);};sr.appendChild(b);});
+ else{const sp=document.createElement('span');sp.textContent=t('bendHint');sr.appendChild(sp);}
+ $('dNext').textContent=t(visited.side&&visited.top?'toTest':'dNextL');$('dHint').textContent=t(dmode==='bend'?'bendHint':dmode==='part'?'partHint':'dHint');if(mode==='draw')drawResize();}
+function setView(v){view=v;visited[v]=1;toolsUi();renderDraw();}
+$('vSide').onclick=()=>setView('side');$('vTop').onclick=()=>setView('top');
+$('mDraw').onclick=()=>{dmode='draw';toolsUi();};$('mBend').onclick=()=>{dmode='bend';toolsUi();};$('mPart').onclick=()=>{dmode='part';toolsUi();toast(t('pd_'+ptype),2200);};
+$('bHand').onclick=()=>{hand=1-hand;toolsUi();renderDraw();updStats();toast(t(hand?'handLT':'handRT'),2200);};
+$('bGrip').onclick=()=>{snap();grip=(grip+1)%4;toolsUi();renderDraw();updStats();toast(t(GRIP_K[grip])+(grip===3?' — '+t('g3T'):''),2000);};
+$('dUndo').onclick=()=>{if(hist.length){const o=JSON.parse(hist.pop());hands=o.hands;grip=o.grip;toolsUi();renderDraw();updStats();}};
+$('dClear').onclick=()=>{if(strokesOf(hand).length||hands[hand].parts.length){snap();hands[hand]={strokes:[],parts:[]};}dmode='draw';toolsUi();renderDraw();updStats();};
+$('dBack').onclick=()=>showTitle();
+function ask(q,sub,a,b,fa,fb,c,fc){const P=$('askPanel');P.hidden=false;$('askQ').textContent=q;$('askS').textContent=sub||'';$('askA').textContent=a;$('askB').textContent=b;$('askC').hidden=!c;if(c){$('askC').textContent=c;$('askC').onclick=()=>fc();}$('askA').onclick=()=>{P.hidden=true;fa();};$('askB').onclick=()=>{P.hidden=true;fb();};}
+$('dNext').onclick=()=>{ac();const other=view==='side'?'top':'side';if(visited[other]){startTest();return;}
+ ask(t(other==='top'?'askTop':'askSide'),t('askSub2'),t('yesDraw'),t('noTest'),()=>{setView(other);dmode='bend';toolsUi();},()=>startTest());};
+function startDraw(keep){mode='draw';if(INAPP&&!inShown)setTimeout(showInapp,350);hideHud();show(null);big('');if(!keep){hands=newHands();hand=0;grip=0;hist=[];visited={side:0,top:0};dmode='draw';thick=1;}
+ $('dTop').hidden=$('dBot').hidden=$('dc').hidden=false;toolsUi();drawResize();updStats();
+ if(!keep)ask(t('askFirst'),t('askSub1'),t('firstSide'),t('firstTop'),()=>setView('side'),()=>setView('top'),t('readMan'),()=>openMan(1));}
+$('bShoot').onclick=()=>{ac();startDraw(false);};
+
+// ===== 試し撃ち・よける（1/120 秒ずつ進める。動画はこの記録から作りなおす） =====
+const DT=1/120;
+let W=null,acc=0;
+function makeGun(spec){const hs=[0,1].map(h=>{const src=(spec.hands&&spec.hands[h])||{};const st=S.roundTrip(src.strokes||[]);const pt=(src.parts||[]).filter(q=>st[q.k]&&q.i>=0&&q.i<st[q.k].p.length).slice(0,S.MAXPART);return {strokes:st,parts:pt};});
+ const two=hs[1].strokes.length>0;const A=hs.map(h=>S.analyze(h.strokes,h.parts));const fs=[];if(spec.grip)fs.push(['','oh','cr','bk'][spec.grip]);if(two)fs.push('dw');
+ const f0=S.features(hs[0].strokes.length?hs[0].strokes:hs[1].strokes,hs[0].strokes.length?A[0]:A[1]);fs.push(...(f0.match(/../g)||[]));
+ return {hands:hs,A,two,grip:spec.grip||0,th:0,f:fs.slice(0,3).join(''),sh:spec.sh||[],mv:spec.mv||[]};}
+function newWorld(kind,gun,shots,count){return {kind,gun,shots:shots.slice(),si:0,t:-count,P:S.newPaper(),fired:[],over:null,overT:0,log:[],hits:0,lastAim:[null,null],self:0,jamT:null,ev:[],sx:0,mv:[]};}
+const mvAt=(mv,t)=>{if(!mv||!mv.length)return 0;const f=clamp(t/.1,0,mv.length-1),i=Math.floor(f),k=f-i;return (mv[i]+(mv[Math.min(mv.length-1,i+1)]-mv[i])*k)/100;};
+function fireShot(Wd){const g=Wd.gun,gp=S.GRIPS[g.grip||0];
+ for(const h of (g.two?[0,1]:[0])){const [cx,cy]=S.leadPoint(Wd.P,g.A[h]);const o=S.originOf(g.grip||0,h,g.two,Wd.sx);const sh=S.fire(g.A[h],0,cx,cy,Wd.t,o,gp.y0,Wd.sx);sh.vis=[];sh.hand=h;Wd.fired.push(sh);Wd.lastAim[h]=sh.aim;Wd.hold=Wd.hold||[0,0];Wd.hold[h]=Math.max(Wd.t+.45,sh.bullets.reduce((m,b)=>Math.max(m,b.tex),Wd.t)+.25);Wd.ev.push(['trig',sh]);
+  for(const b of sh.bullets){b.k=0;b.done=false;b.out=false;}if(sh.jam&&Wd.jamT==null)Wd.jamT=sh.jam.t;}}
+function wTick(Wd,bits){Wd.log.push(bits);
+ if(Wd.kind==='dodge'&&!Wd.over)S.stepPaper(Wd.P,bits,DT);
+ else if(Wd.kind==='test'&&!Wd.over&&Wd.t>=0){const tx=Math.sin(Wd.t*Math.PI*2/4.5)*.8;S.stepPaper(Wd.P,S.dragInput(tx),DT);}
+ if(Wd.kind==='dodge')Wd.sx=mvAt(Wd.gun.mv,Wd.t);
+ else if(Wd.t>=0&&!Wd.over&&!Wd.closed&&Wd.t<S.TESTWIN){const m=((bits&1)?1:0)-((bits&2)?1:0);Wd.sx=clamp(Wd.sx+m*S.WALK*DT,-S.SXMAX,S.SXMAX);if(Wd.mv.length<=Math.floor(Wd.t/.1+1e-6))Wd.mv.push(Math.round(Wd.sx*100));}
+ if(!Wd.over||Wd.over==='hit'){while(Wd.si<Wd.shots.length&&Wd.t>=Wd.shots[Wd.si]&&Wd.jamT==null){fireShot(Wd);Wd.si++;}}
+ if(Wd.jamT!=null&&Wd.t>=Wd.jamT&&!Wd.over){Wd.over='jam';Wd.overT=Wd.t;Wd.ev.push(['jam']);}
+ for(const sh of Wd.fired)for(const b of sh.bullets){if(b.done||Wd.jamT!=null)continue;if(Wd.t<b.tex)continue;if(!b.out){b.out=true;Wd.ev.push(['exit',b,sh]);}
+  while(b.k<b.pts.length&&b.pts[b.k][3]<=Wd.t){const q=b.pts[b.k],a=b.k>0?b.pts[b.k-1]:q;
+   const c=S.crossPaper(Wd.P,a,q,b.r);
+   if(c&&c.hit){b.done=true;b.hitPaper=1;Wd.hits++;Wd.ev.push(['hole',c,q]);if(Wd.kind==='dodge'&&!Wd.over){Wd.over='hit';Wd.overT=Wd.t;}break;}
+   if(c&&c.near&&!b.graze){b.graze=1;Wd.ev.push(['graze',c,q]);}
+   b.k++;}
+  if(!b.done&&b.k>=b.pts.length){b.done=true;const q=b.pts[b.pts.length-1]||[0,0,0];if(b.end==='self'){Wd.self++;Wd.ev.push(['self',q]);if(Wd.kind==='test'&&!Wd.over){Wd.over='self';Wd.overT=Wd.t;}}else if(b.end==='floor')Wd.ev.push(['floor',q]);}}
+ const allDone=Wd.fired.every(sh=>sh.bullets.every(b=>b.done));
+ if(!Wd.over&&allDone){if(Wd.kind==='dodge'&&Wd.si>=Wd.shots.length&&Wd.t>Wd.shots[Wd.shots.length-1]+.2){Wd.over='dodged';Wd.overT=Wd.t;}
+  if(Wd.kind==='test'&&Wd.si>=Wd.shots.length&&(Wd.shots.length>=S.MAXSHOT||Wd.t>=S.TESTWIN||Wd.closed)&&Wd.t>.1){Wd.over=Wd.shots.length?(Wd.fired.some(s=>S.reaches(s))?'ok':'noreach'):'none';Wd.overT=Wd.t;}}
+ Wd.t+=DT;}
+// 見た目：弾・予測線
+const v3=new THREE.Vector3();const LINE_T=.2;
+function shotVisuals(sh){sh.vis=sh.bullets.map(b=>{const m=new THREE.Mesh(BUL_G,BUL_M);m.scale.setScalar(Math.max(.04,b.r));m.visible=false;FX.add(m);const gl=new THREE.Sprite(GLOW_M);gl.scale.setScalar(Math.max(.3,b.r*6.5));gl.visible=false;FX.add(gl);
+  const pts=[];for(let i=0;i<b.pts.length;i+=3)pts.push(new THREE.Vector3(b.pts[i][0],b.pts[i][1],b.pts[i][2]));
+  let line=null;if(pts.length>=2){const ex=S.toWorld(sh.fr,b.ex.p[0],b.ex.p[1],b.ex.p[2]);pts.unshift(new THREE.Vector3(...ex));line=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),Math.min(160,pts.length*2),.03,5,false),LINE_M.clone());line.material.userData.tmp=1;line.renderOrder=4;FX.add(line);}
+  const tg=new THREE.BufferGeometry();tg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(48),3));const trail=new THREE.Line(tg,TRAIL_M);trail.visible=false;trail.frustumCulled=false;FX.add(trail);
+  return {m,gl,line,trail};});}
+function trackAims(Wd){const g=Wd.gun,gp=S.GRIPS[g.grip||0];if(!Wd.vis){Wd.vis=[null,null];Wd.hold=Wd.hold||[0,0];Wd.aimT=[null,null];Wd.aimN=[-99,-99];}const out=[null,null];
+ for(const h of (g.two?[0,1]:[0])){
+  if(Wd.lastAim[h]&&(Wd.t<Wd.hold[h]||Wd.over)){out[h]=Wd.lastAim[h];Wd.vis[h]={yaw:Wd.lastAim[h].yaw,pitch:Wd.lastAim[h].pitch};continue;}
+  if(!Wd.aimT[h]||Math.abs(Wd.t-Wd.aimN[h])>.2){const lp=S.leadPoint(Wd.P,g.A[h]);Wd.aimT[h]=S.aimAt(g.A[h],0,lp[0],lp[1],S.originOf(g.grip||0,h,g.two,Wd.sx),gp.y0,Wd.sx);Wd.aimN[h]=Wd.t;}
+  const v=Wd.vis[h]||{yaw:0,pitch:0},a=Wd.aimT[h];v.yaw+=(a.yaw-v.yaw)*.14;v.pitch+=(a.pitch-v.pitch)*.14;Wd.vis[h]=v;out[h]=v;}
+ return out;}
+let lineOn=false;
+function renderWorld(Wd){if(!Wd)return;paperPose(Wd.P);lineOn=false;placeGun(Wd.gun,Wd.sx,trackAims(Wd),Wd.over==='self'&&Wd.kind==='test'?Math.min(1.3,(Wd.t-Wd.overT)*3):0);
+ for(const sh of Wd.fired){if(!sh.vis.length)shotVisuals(sh);
+  sh.bullets.forEach((b,i)=>{const V=sh.vis[i];
+   // 予測線：弾が出る 0.2 秒前から、出るまでの一瞬だけ
+   if(V.line){const ls=Math.max(sh.t,b.tex-LINE_T);const k=Wd.t<ls?0:Wd.t<b.tex?1:Math.max(0,1-(Wd.t-b.tex)/.1);V.line.visible=k>0;V.line.material.opacity=.9*k;if(k>.5)lineOn=true;}
+   V.gl.visible=false;
+   if(Wd.jamT!=null&&Wd.t>=Wd.jamT){V.m.visible=false;V.trail.visible=false;return;}
+   if(Wd.t<b.tex){const ip=b.inside;const tt=Wd.t-sh.t;let j=0;while(j<ip.length-1&&ip[j+1][3]<tt)j++;const a=ip[j],c=ip[Math.min(ip.length-1,j+1)];const k=c[3]>a[3]?clamp((tt-a[3])/(c[3]-a[3]),0,1):0;
+    const w=S.toWorld(sh.fr,lerp(a[0],c[0],k),lerp(a[1],c[1],k),lerp(a[2],c[2],k));V.m.position.set(w[0],w[1],w[2]);V.m.visible=true;V.gl.position.copy(V.m.position);V.gl.visible=true;V.trail.visible=false;return;}
+   if(b.done&&(b.k>=b.pts.length||b.hitPaper)){V.m.visible=false;V.trail.visible=false;return;}
+   const k=Math.max(0,b.k-1),q=b.pts[k];if(!q){V.m.visible=false;return;}V.m.position.set(q[0],q[1],q[2]);V.m.visible=true;V.gl.position.copy(V.m.position);V.gl.visible=true;
+   const arr=V.trail.geometry.attributes.position.array;for(let n=0;n<16;n++){const qq=b.pts[Math.max(0,k-n*2)];arr[n*3]=qq[0];arr[n*3+1]=qq[1];arr[n*3+2]=qq[2];}V.trail.geometry.attributes.position.needsUpdate=true;V.trail.visible=true;});}}
+function handleEvents(Wd,live){for(const e of Wd.ev){const k=e[0];
+  if(k==='trig'){if(live){SND.trig();const d=Math.min(...e[1].bullets.map(b=>b.tex))-e[1].t;setTimeout(()=>SND.line(),Math.max(0,d-LINE_T)*1000);}const ex=e[1].bullets[0];if(live&&ex)SND.whoosh(ex.tex-e[1].t);}
+  else if(k==='exit'){const b=e[1];const p=b.pts[0];if(p&&live){SND.shot();}if(p){spark(p,0xffd23a,6,2);muzzleFlash(p);if(Wd.kind==='test')shake(.06,.15);}}
+  else if(k==='hole'){paperMark(e[1].u,e[1].w,true);spark(e[2],0xf4ead2,14,3);spark(e[2],0xff4030,10,2);if(live)SND.hit();if(Wd.kind==='dodge'){shake(.25,.5);vig(1);if(live&&navigator.vibrate)try{navigator.vibrate(220);}catch(_){}}}
+  else if(k==='graze'){paperMark(e[1].u,e[1].w,false);if(live)SND.graze();if(Wd.kind==='dodge'&&!Wd.over){Wd.grazes=(Wd.grazes||0)+1;if(live){slowT=.35;popText(t('close1'));if(navigator.vibrate)try{navigator.vibrate(25);}catch(_){}}}}
+  else if(k==='floor'){spark(e[1],0xcab89a,8,1.5);if(live)SND.ping();}
+  else if(k==='self'){spark(e[1],0xff4040,16,3);if(live)SND.self();shake(.2,.4);}
+  else if(k==='jam'){for(const P2 of PIVS){if(!P2.piv.visible)continue;const q=P2.piv.position;spark([q.x,q.y,q.z],0xff8a1f,40,5);spark([q.x,q.y,q.z],0x555555,25,3);P2.piv.visible=false;}if(live)SND.boom();}}
+ Wd.ev.length=0;}
+// 演出：銃口の光・画面のゆれ・赤い光・文字・スロー
+const flashes=[];let slowT=0;
+function muzzleFlash(p){const sp=new THREE.Sprite(FLASH_M.clone());sp.material.userData.tmp=1;sp.position.set(p[0],p[1],p[2]);sp.scale.setScalar(.9);FX.add(sp);flashes.push({sp,life:0});FLASH.position.set(p[0],p[1],p[2]);FLASH.intensity=18;flashT=.12;}
+function stepFlash(dt){for(let i=flashes.length-1;i>=0;i--){const f=flashes[i];f.life+=dt;f.sp.material.opacity=Math.max(0,1-f.life/.14);f.sp.scale.setScalar(.9+f.life*4);if(f.life>.14){FX.remove(f.sp);f.sp.material.dispose();flashes.splice(i,1);}}
+ if(flashT>0){flashT-=dt;FLASH.intensity=Math.max(0,flashT/.12)*18;}else FLASH.intensity=0;if(shakeT>0)shakeT=Math.max(0,shakeT-dt);if(slowT>0)slowT=Math.max(0,slowT-dt);}
+function vig(k){const v=$('vig');v.style.transition='none';v.style.opacity=k;void v.offsetWidth;v.style.transition='opacity .6s';v.style.opacity=0;}
+function popText(h){const e=$('pop');e.innerHTML=h;e.classList.remove('go');void e.offsetWidth;e.classList.add('go');}
+// 入力（よける）
+const keys={};const ptrs=new Map();let jumpPulse=0,btnJump=0,btnCrouch=0;
+addEventListener('keydown',e=>{keys[e.key]=1;if(mode==='test'&&(e.key===' '||e.key==='Enter')){e.preventDefault();pressTrig();}if(mode==='dodge'&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();});
+addEventListener('keyup',e=>{keys[e.key]=0;});
+// よける：指を左右になぞると、紙が指についてくる（画面のどこでもよい）。上にはらうとジャンプ、下にはらって押したままでしゃがむ
+const DRAG_K=1.35;// 画面の横はば1つぶんで、レーンの幅×1.35 動く
+$('c').addEventListener('pointerdown',e=>{if(mode!=='dodge'&&mode!=='test')return;ac();
+ if(mode==='test'){ptrs.set(e.pointerId,{kind:'move',side:e.clientX<VW/2?-1:1});return;}
+ const px=W?W.P.x:0;ptrs.set(e.pointerId,{kind:'drag',x0:e.clientX,y0:e.clientY,t0:performance.now(),px0:px,tx:px,flick:0});try{$('c').setPointerCapture(e.pointerId);}catch(_){}});
+$('c').addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p||p.kind!=='drag')return;
+ const dx=e.clientX-p.x0,dy=e.clientY-p.y0;p.tx=clamp(p.px0-dx/VW*S.XMAX*2*DRAG_K,-S.XMAX,S.XMAX);
+ // 指を動かしすぎて端に当たったら、そこを新しい基準にする（引き返しがすぐ効くように）
+ if(p.tx<=-S.XMAX||p.tx>=S.XMAX){p.px0=p.tx;p.x0=e.clientX;}
+ const now=performance.now();(p.hs=p.hs||[]).push([now,e.clientX,e.clientY]);while(p.hs.length>2&&now-p.hs[0][0]>140)p.hs.shift();
+ const o=p.hs[0],vy=e.clientY-o[2],vx=e.clientX-o[1];
+ if(now-(p.fl||0)>260&&Math.abs(vy)>40&&Math.abs(vy)>Math.abs(vx)*1.3){p.fl=now;p.hs=[[now,e.clientX,e.clientY]];if(vy<0){jumpPulse=.12;p.flick=0;}else p.flick=2;}});
+const ptrEnd=e=>ptrs.delete(e.pointerId);$('c').addEventListener('pointerup',ptrEnd);$('c').addEventListener('pointercancel',ptrEnd);
+for(const [id,on] of [['bJump',v=>{btnJump=v;if(v)jumpPulse=.12;}],['bCrouch',v=>{btnCrouch=v;}]]){const b=$(id);
+ b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();ac();on(1);b.classList.add('on');});const off=e=>{on(0);b.classList.remove('on');};b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('pointerleave',off);}
+function inputBits(){let b=0;// 画面の右＝世界の -X（bit1）、画面の左＝世界の +X（bit2）
+ if(keys.ArrowRight||keys.d||keys.D)b|=1;if(keys.ArrowLeft||keys.a||keys.A)b|=2;if(keys.ArrowUp||keys.w||keys.W||keys[' '])b|=4;if(keys.ArrowDown||keys.s||keys.S)b|=8;
+ let drag=null;for(const p of ptrs.values()){if(p.kind==='move')b|=p.side>0?1:2;else if(p.kind==='drag'){drag=p;if(p.flick===2)b|=8;}}
+ if(drag&&!(b&3))b|=S.dragInput(drag.tx);
+ if(jumpPulse>0||btnJump)b|=4;if(btnCrouch)b|=8;return b;}
+// 試し撃ち
+let GUN=null;// 遊んでいる銃
+function startTest(){GUN=makeGun({hands,grip});mode='test';mT=0;hideHud();show(null);clearFX();resetStage();buildGun(GUN);ptrs.clear();
+ W=newWorld('test',GUN,[],2.0);acc=0;$('hudTop').hidden=false;$('hudA').textContent=t('testA');$('hudB').textContent=t('testB')+' / '+t('walkHint');$('hudC').textContent=nick(GUN.f);
+ $('tUI').hidden=false;$('quit').hidden=false;updTrig();camFor('test',0);bgmStart('test');}
+function updTrig(){const n=W?S.MAXSHOT-W.shots.length:0;$('trig').innerHTML=esc(t('trig'))+'<small>'+esc(t('left',{n}))+'</small>';$('trig').disabled=!W||W.t<0||W.t>=S.TESTWIN||n<=0||!!W.over||!!W.closed;$('tDone').hidden=!W||!W.shots.length||!!W.over||!!W.closed||n<=0;}
+$('tDone').onclick=()=>{if(W&&mode==='test'&&W.shots.length){W.closed=true;updTrig();}};
+function pressTrig(){if(mode!=='test'||!W||W.over||W.closed||W.t<0||W.t>=S.TESTWIN||W.shots.length>=S.MAXSHOT)return;ac();W.shots.push(W.t+1e-9);updTrig();}
+$('trig').addEventListener('pointerdown',e=>{e.preventDefault();pressTrig();});
+$('quit').onclick=()=>{if(mode==='test'){dmode='draw';startDraw(true);}else showTitle();};
+let lastCount=99;
+function countUi(Wd){if(Wd.t<0){const k=Math.ceil(-Wd.t);if(k!==lastCount){lastCount=k;big(k>1?String(k-1):t('ready'));SND.tick();}}else if(lastCount!==0){lastCount=0;big(Wd.kind==='test'?t('go'):t('dodgeGo'));SND.go();setTimeout(()=>{if(W===Wd&&!Wd.over)big('');},650);}}
+function testEnd(){const k=W.over;mode='testEnd';bgmStop();$('tUI').hidden=true;$('quit').hidden=true;$('hudTop').hidden=true;GUN.sh=W.shots.map(x=>Math.round(x*1000));GUN.mv=W.mv.slice(0,Math.ceil((Math.max(...W.shots,0)+.05)/.1)+1);GUN.log=W.log.slice();GUN.testShots=W.shots.slice();
+ setTimeout(()=>{if(mode!=='testEnd')return;big('');showReg(k);},k==='self'||k==='jam'?1600:700);
+ if(k==='self'){big(t('self'),'red');SND.lose();}else if(k==='jam'){big(t('jam'),'red');SND.lose();}}
+function showReg(k){show('regPanel');const H=$('gHead');H.className='big2 '+(k==='ok'?'ok':'red');H.textContent=t({ok:'okHead',self:'self',jam:'jam',noreach:'noReach',none:'none'}[k]);
+ $('gSub').textContent=t({ok:'okSub',self:'selfSub',jam:'jamSub',noreach:'noReachSub',none:'noneSub'}[k]);
+ $('gOk').hidden=k!=='ok';$('gDone').hidden=true;$('gMsg').textContent='';$('gMsg').className='note';$('gNick').textContent=nick(GUN.f);$('gName').value=ls.get('gj_gname','');$('gReg').disabled=false;
+ $('gVid').hidden=!(k==='self'||k==='jam');$('gXf').hidden=!(k==='self'||k==='jam');$('gRetest').hidden=k==='self'||k==='jam'||k==='noreach';$('gRedraw').hidden=false;resKind=k;}
+$('gRetest').onclick=()=>{ac();startTest();};$('gRedraw').onclick=()=>{dmode='draw';startDraw(true);};$('gTop').onclick=()=>showTitle();
+$('gXf').onclick=()=>openX(resKind==='jam'?t('postJam'):t('postSelf'),GAME_URL);
+
+// よける
+function startDodge(gun){GUN=gun;mode='dodge';mT=0;hideHud();show(null);clearFX();resetStage();buildGun(gun);
+ W=newWorld('dodge',gun,gun.sh.map(x=>x/1000),3.0);acc=0;ptrs.clear();jumpPulse=0;lastCount=99;
+ $('hudTop').hidden=false;$('hudA').textContent=t('gunBy',{n:gun.n||t('defName')});$('hudB').textContent=nick(gun.f);$('hudC').textContent=gun.code?t('resNote',{c:gun.code}):'';
+ $('ctl').hidden=false;$('ctl').textContent=t(FINE?'ctlK':'ctl');$('quit').hidden=false;$('dBtns').hidden=FINE;btnJump=btnCrouch=0;lastHud='';camFor('dodge',0);bgmStart('dodge');}
+let resKind='',lastHud='';
+const dodgedN=Wd=>{let n=0;for(const sh of Wd.fired)for(const b of sh.bullets)if(b.out&&b.done&&!b.hitPaper)n++;return n;};
+function dodgeEnd(){const k=W.over;mode='dodgeEnd';bgmStop();$('ctl').hidden=true;$('quit').hidden=true;$('dBtns').hidden=true;$('warn').style.opacity=0;GUN.log=W.log.slice();
+ if(k==='hit'){big(t('hit'),'red');SND.lose();}else{big(t('dodged'));SND.win();}
+ setTimeout(()=>{if(mode!=='dodgeEnd')return;big('');showRes(k);},1300);}
+function showRes(k){resKind=k;show('resPanel');$('hudTop').hidden=true;const H=$('rHead');H.className='big2 '+(k==='hit'?'red':'ok');H.textContent=t(k==='hit'?'hit':'dodged');
+ $('rGun').textContent=t('gunBy',{n:GUN.n||t('defName')});$('rNick').textContent=nick(GUN.f);$('rCode').textContent=GUN.code?t('resNote',{c:GUN.code}):'';$('rStat').textContent='';$('rStat').className='note';
+ $('rNext').hidden=!!GUN.own;$('rX').hidden=!GUN.code;GUN.lastD=W?dodgedN(W):0;GUN.lastG=W?(W.grazes||0):0;$('rCode').textContent=t('resLine',{d:GUN.lastD,g:GUN.lastG})+(GUN.code?'　'+t('resNote',{c:GUN.code}):'');if(W&&W.self)$('rStat').textContent=t('shooterSelf');
+ if(GUN.code&&!GUN.mine)submitRes(GUN,k==='hit'?1:0);else if(GUN.mine)$('rStat').textContent=t('ownGun');}
+$('rAgain').onclick=()=>{ac();startDodge(GUN);};
+$('rNext').onclick=async()=>{ac();await playRandom($('rStat'));};
+$('rTop').onclick=()=>showTitle();
+$('rX').onclick=()=>openX(t(resKind==='hit'?'postHit':'postDodge',{n:GUN.n,f:nick(GUN.f),c:GUN.code,d:GUN.lastD||0,g:GUN.lastG||0}),GAME_URL+'?c='+GUN.code);
+
+// ===== 説明書 =====
+const MAN={
+ja:[
+['遊び方',`<ul><li><b>撃つ役</b>：銃の口から先の銃身を自由に描いて、試し撃ちをする。自分に当たらず、暴発せず、1発以上が紙の的のいる所まで届けば登録できて、8文字の合言葉がもらえる</li>
+<li><b>撃たれる役</b>：射撃場の紙の的になって、だれかの銃の弾をよける。合言葉を入れるか、おまかせで選ぶ。1発でも当たったら終わり</li>
+<li>的までの距離は12m。撃つ人は手前、紙の的は奥に立っている</li>
+<li>描いた銃は、Xに投稿すると合言葉入りのリンクになる。押した人はすぐその銃でよけられる</li></ul>`],
+['描き方',`<ul><li><b>横から</b>描くと、銃身は上下に曲がる。<b>上から</b>描くと、左右に曲がる。上の「横から｜上から」か、右下の小さい図を押すと切りかわる</li>
+<li>最初にどちらから描くかを選ぶ。1つ描いて「次へ」を押すと、もう一方の向きでも描くか聞かれる。「描かない」ならそのまま試し撃ちへ</li>
+<li><b>✏️描く</b>：光っている銃の口から描くと銃身になる。銃身の先から描くと続きになり、銃身のとちゅうから描くと<b>枝分かれ</b>になる。描きはじめは、銃の口か銃身の上だけ</li>
+<li><b>✋曲げる</b>：線をつまんで動かすと、つまんだ所から前後50cmくらいが、なめらかに曲がる。銃の口のすぐ近くは動かない。枝はいっしょに動く。曲げるのにインクは使わない</li>
+<li>横から描いた線は上から見るとまっすぐなので、上から曲げると左右にも曲がる立体の銃身になる（逆も同じ）</li>
+<li><b>インク</b>は5.5m分。2丁拳銃なら2丁合わせて5.5m。太い線ほど多く使う</li>
+<li>床の下と、撃つ人の体・頭の中には描けない（線がそこで止まる）</li>
+<li>上の数字：<b>弾の速さ</b>は出口での速さ（いちばん速い弾）、<b>弾の数</b>は1回の引き金で出る弾の数、<b>出るまで</b>は引き金を引いてから最初の弾が出口を出るまでの時間</li>
+<li>「ひとつ戻す」で1つ前に、「全部消す」で今の手の銃身を全部消す</li></ul>`],
+['形と飛び方',`<ul><li><b>弾の速さ</b>：最初は時速58km。銃身1mごとに時速18km速くなる（太さで変わる）。いちばん速くて時速173km</li>
+<li><b>出口の向き</b>：銃身の最後の向きに出る</li>
+<li><b>出口のクセ</b>：最後の36cmが曲がっていると、出たあとも同じ向きに弱く曲がり続ける</li>
+<li><b>輪</b>：同じ向きに1周するごとに、時速32km速くなる。重さも25%ずつ軽くなり、まっすぐ飛ぶ（いちばん軽くて35%）</li>
+<li><b>とがった角</b>：25度より急な角を通ると遅くなる。90度で約3割、150度で約半分。時速18kmより遅くなると、弾がつまって<b>暴発</b>（試し撃ちで終わり）</li>
+<li><b>枝分かれ</b>：分かれるたびに、弾の速さが0.85倍、大きさが0.8倍になる。1回の引き金で弾は32発まで</li>
+<li><b>波</b>：曲がる向きが4回以上入れかわる線は、弾が波打って飛ぶ（ゆれ幅12〜60cm）。出る向きは線全体の向き</li>
+<li><b>渦巻き</b>：1周以上同じ向きに巻いて、中心からの距離が大きく変わる線は、弾がらせんを描いて飛ぶ（半径15〜70cm）</li>
+<li><b>出口のない輪</b>：線の終わりが自分の線から10cm以内につくと、中を3周して1周ごとに時速36km速くなり、いちばん曲がりのきつい所から突き破って出る</li>
+<li><b>合流</b>：線の終わりがほかの銃身から8cm以内だと、そちらに合流して進む</li>
+<li><b>長さ</b>：銃身が長いほど、出るまで時間がかかる。弾が透明な管の中を進むのが見える（時速72kmの弾なら1mで約0.3秒）</li>
+<li><b>真上</b>：55度より上に出た弾は空に消えて、約1.8秒後に上から落ちてくる。真上なら撃った人の上、55度なら的のあたりに落ちる</li>
+<li><b>下向き</b>：床ではねる。はねるたびに遅くなり、3回まで</li>
+<li><b>重さ</b>：弾は少しずつ落ちる。遅い弾ほど大きく落ちる</li>
+<li><b>自分に向ける</b>：撃った人の体や頭に当たるか、撃った人の後ろを通りぬけると、<b>自分を撃った</b>ことになる</li>
+<li><b>自動のねらい</b>：引き金を引いた瞬間に、紙が動いている向きの先（そのまま動き続けたら弾が届くころにいる所の85%ぶん）を通るように、銃が上下左右に約29度まで向きを直す（いちばん長く本体を通る弾で合わせる）。撃った人のほうへ出る銃身は直さない</li></ul>`],
+['太さ',`<ul><li>描く前に選ぶ。描いたあとの線の太さは変わらない。続きを別の太さで描くと、そこから太さが変わる</li>
+<li><b>細い</b>：弾が小さい（0.55倍）。1mごとに時速32km速くなる。インク0.6倍</li>
+<li><b>ふつう</b>：弾の大きさ1倍。1mごとに時速18km速くなる。インク1倍</li>
+<li><b>太い</b>：弾が大きい（1.6倍）。1mごとに時速4kmしか速くならない。インク1.6倍</li>
+<li><b>極太</b>：大玉（2.4倍）。1mごとに時速7km遅くなる。インク2.4倍。長く描きすぎるとつまる</li>
+<li>弾の大きさは、弾が出た銃身の太さで決まる。大きい弾ほど当たりやすい</li></ul>`],
+['パーツ',`<ul><li>「🔩パーツ」を選んで、置きたいパーツを選び、銃身の上を押す。同じ所をもう一度押すと外れる。1丁につき8個まで</li>
+<li>パーツは、そこを通る弾に1回だけ効く</li>
+<li>🌀<b>バネ</b>：時速43km速くなる</li>
+<li>🧊<b>氷</b>：速さが0.6倍になる</li>
+<li>💥<b>火薬</b>：速さが1.5倍になって、さらに時速22km速くなる</li>
+<li>👯<b>分身</b>：弾が2つに分かれて、左右に約6度ずつ開いて飛ぶ。同じ線に何個も置くと、どんどん増える</li>
+<li>🕳️<b>穴</b>：弾が1つこぼれて床を転がり、紙の足もと（台）をねらう。こぼれた弾は大きくて遅い。本体の弾は0.85倍の速さになる。撃たれる側はジャンプでよけられる</li></ul>`],
+['持ち方・2丁',`<ul><li>下の段の持ち方ボタンを押すたびに切りかわる。2丁拳銃のときは、2丁とも同じ持ち方になる</li>
+<li>🤚<b>片手</b>：胸の高さ（1.35m）で前に向ける</li>
+<li>🙌<b>頭の上</b>：頭の上（2.05m）で前に向ける。上から撃ち下ろす形になる</li>
+<li>🦵<b>股の下</b>：ひざの高さ（0.5m）で前に向ける。低い弾になる</li>
+<li>🔙<b>背中ごし</b>：肩ごしに<b>後ろ向き</b>に持つ。まっすぐ描くと後ろへ飛ぶので、U字に描いて前に戻さないと的に届かない</li>
+<li>🔫<b>右手／左手</b>：押すと描く銃が切りかわる。左手の銃を描くと<b>2丁拳銃</b>になり、引き金1回で2丁同時に撃つ。それぞれ自動でねらう。描いていない手の銃身は薄く見える（押すとその手に切りかわる）</li></ul>`],
+['試し撃ち',`<ul><li>「よーい」のあと12秒のあいだに、引き金を10回まで押せる。押したタイミングがそのまま記録され、撃たれる側でもその通りに撃つ</li>
+<li>画面の左右を押す（パソコンは ← →）と、撃つ人が左右に歩く（時速8km、左右1.6mまで）。歩き方も記録され、撃たれる側ではその通りに歩きながら撃ってくる</li>
+<li>1発以上撃ったら「これで決定」で早めに終われる</li>
+<li>試し撃ちでは、紙の的が左右に0.8mずつゆっくりゆれる（4.5秒で1往復）。動く的にどう当たるかを見て決められる</li>
+<li><b>登録できる条件</b>：自分に当たらない／暴発しない／1発以上が紙の的のいる所（左右2.1m・高さ3mの中）まで届く</li>
+<li>銃の名前は自分でつけられる。形から<b>二つ名</b>も自動でつく（枝の数・輪・波・渦巻き・パーツ・持ち方・2丁など）</li></ul>`],
+['よける',`<ul><li><b>動く</b>：画面のどこかに指を置いて左右になぞると、紙が指についてくる（指を動かした幅の約1.35倍、いちばん速くて時速32km、左右1.6mまで）。パソコンは ← →（時速18km）</li>
+<li><b>ジャンプ・しゃがむ</b>：右下の「ジャンプ」でジャンプ（約1m）。左下の「しゃがむ」を押している間しゃがむ（背が55%に縮む）。指を上にはらってもジャンプ、下にはらうと指を離すまでしゃがむ。パソコンは ↑かスペースでジャンプ、↓でしゃがむ</li>
+<li>始まる前の「3・2・1」のあいだから動ける。射撃場の幅はせまく、まん中から左右に1.6mまで</li>
+<li>動いている間は、紙が進む向きへ45度まで回って細くなる（当たりにくくなる）</li>
+<li><b>銃口</b>：撃つ前から、銃口がこっちを追ってくる。銃口の向きを見ると、どこへ撃ってくるかが分かる</li>
+<li><b>先読み</b>：銃は、引き金を引いた瞬間の紙の動きを見て、そのまま動き続けたら弾が届くころにいる所（の85%ぶん先）をねらう。同じ向きに動き続けると当たる。引き金のあとで止まる・向きを変える・ジャンプ・しゃがむでよける</li>
+<li><b>予測線</b>：弾が出口を出る0.2秒前に、赤い線で通り道が一瞬だけ出る（画面のふちも赤く光る）。枝分かれの弾は、それぞれの弾が出る0.2秒前に出る</li>
+<li><b>ギリギリ</b>：弾が紙のすぐそばを通ると「ギリギリ！」が出て、一瞬スローになる。よけた弾の数とギリギリの回数は、結果と投稿に出る</li>
+<li>紙の形（頭・首・体）と、足もとの台に当たったら終わり。近くをかすった弾は、紙に焦げあとを残す。アンドロイドのスマホは、当たると震える</li></ul>`],
+['ランキング',`<ul><li>銃のK/Dで並ぶ。K/D＝当てた回数÷よけられた回数（よけられた回数が0のときは1として計算）</li>
+<li>10回以上遊ばれた銃だけが載る。100位まで</li>
+<li>記録に入るのは、その銃で1人1回目だけ。自分で作った銃は入らない</li>
+<li>ランキングの銃を押すと、その銃でよけられる</li></ul>`]],
+en:[
+['How to play',`<ul><li><b>Shooter</b>: draw the barrel freely from the muzzle and test fire. If it doesn't hit you, doesn't misfire, and at least one bullet reaches the target area, you can register it and get an 8-letter code</li>
+<li><b>Target</b>: become the paper target and dodge someone's bullets. Enter a code or pick a random gun. One hit and it's over</li>
+<li>The target is 12 m away</li>
+<li>Posting a gun on X makes a link with its code. Anyone who opens it can dodge that gun right away</li></ul>`],
+['Drawing',`<ul><li>Drawing from the <b>side</b> bends the barrel up/down. From the <b>top</b>, left/right. Switch with "Side | Top" or tap the small view</li>
+<li>Pick which view first. After "Next" you're asked whether to draw from the other view too. "Skip" goes straight to the test fire</li>
+<li><b>✏️Draw</b>: start at the glowing muzzle. Drawing from a barrel's end continues it; from the middle makes a <b>branch</b>. You can only start at the muzzle or on a barrel</li>
+<li><b>✋Bend</b>: grab the line and drag; about 50 cm around the grabbed point bends smoothly. The part near the muzzle stays put. Branches move with it. Bending uses no ink</li>
+<li>A line drawn from the side looks straight from the top, so bending it from the top makes a 3D barrel (and vice versa)</li>
+<li><b>Ink</b>: 5.5 m (shared by both guns when dual-wielding). Thicker lines use more</li>
+<li>You can't draw below the floor or inside the shooter's body/head (the line stops there)</li>
+<li>Numbers on top: <b>Speed</b> at the exit (fastest bullet), <b>Bullets</b> per trigger pull, <b>Delay</b> from trigger to the first bullet leaving the barrel</li></ul>`],
+['Shapes & flight',`<ul><li><b>Speed</b>: starts at 58 km/h and gains 18 km/h per meter of barrel (depends on thickness). Max 173 km/h</li>
+<li><b>Exit direction</b>: the bullet leaves along the barrel's last direction</li>
+<li><b>Exit curl</b>: if the last 36 cm curve, the bullet keeps curving gently the same way</li>
+<li><b>Loops</b>: each full turn adds 32 km/h and makes the bullet 25% lighter so it flies straighter (down to 35%)</li>
+<li><b>Sharp corners</b>: corners sharper than 25° slow it down: about 30% at 90°, about half at 150°. Below 18 km/h the bullet jams and the gun <b>misfires</b></li>
+<li><b>Branches</b>: each split makes bullets 0.85× as fast and 0.8× as big. Up to 32 bullets per trigger</li>
+<li><b>Waves</b>: a line that flips its bend 4+ times makes the bullet wobble (12–60 cm). It flies along the line's overall direction</li>
+<li><b>Spirals</b>: a line winding 1+ turns while its distance from the center changes a lot makes the bullet corkscrew (radius 15–70 cm)</li>
+<li><b>Closed loop</b>: if the end touches its own line (within 10 cm), the bullet circles 3 times, +36 km/h each, then bursts out at the sharpest bend</li>
+<li><b>Merging</b>: if the end is within 8 cm of another barrel, the bullet joins it</li>
+<li><b>Length</b>: longer barrels take longer to fire; you see the bullet travel through the clear tube (about 0.3 s per meter at 72 km/h)</li>
+<li><b>Straight up</b>: bullets leaving more than 55° up vanish into the sky and fall ~1.8 s later. Straight up lands on the shooter, 55° near the target</li>
+<li><b>Downward</b>: bounces on the floor up to 3 times, slowing each time</li>
+<li><b>Gravity</b>: bullets drop slowly; slower ones drop more</li>
+<li><b>Self</b>: touching the shooter's body/head, or passing behind the shooter, means you <b>shot yourself</b></li>
+<li><b>Auto-aim</b>: at the trigger pull, the gun turns up to ~29° so the main bullet passes ahead of the moving paper (85% of where it would be if it kept moving). Barrels pointing back at the shooter are not corrected</li></ul>`],
+['Thickness',`<ul><li>Choose before drawing. Drawing a continuation with another thickness changes it from there</li>
+<li><b>Thin</b>: small bullets (0.55×), +32 km/h per m, ink 0.6×</li>
+<li><b>Normal</b>: bullets 1×, +18 km/h per m, ink 1×</li>
+<li><b>Thick</b>: big bullets (1.6×), only +4 km/h per m, ink 1.6×</li>
+<li><b>Huge</b>: giant balls (2.4×), −7 km/h per m, ink 2.4×. Too long and it jams</li>
+<li>Bullet size comes from the barrel it exits. Bigger bullets hit more easily</li></ul>`],
+['Parts',`<ul><li>Pick "🔩Parts", choose one, and tap the barrel. Tap the same spot again to remove. Up to 8 per gun</li>
+<li>Each part works once on each bullet passing it</li>
+<li>🌀<b>Spring</b>: +43 km/h</li><li>🧊<b>Ice</b>: speed ×0.6</li><li>💥<b>Powder</b>: speed ×1.5, then +22 km/h</li>
+<li>👯<b>Clone</b>: the bullet splits in two, spreading ~6° left and right. Stack them to multiply</li>
+<li>🕳️<b>Hole</b>: one bullet leaks out and rolls on the floor toward the paper's stand. It's big and slow. The main bullet slows to 0.85×. Targets can jump over it</li></ul>`],
+['Grips & dual',`<ul><li>Tap the grip button to cycle. Dual guns share the grip</li>
+<li>🤚<b>1 hand</b>: chest height (1.35 m), facing forward</li>
+<li>🙌<b>Overhead</b>: above the head (2.05 m), shooting downward</li>
+<li>🦵<b>Crotch</b>: knee height (0.5 m), low bullets</li>
+<li>🔙<b>Backward</b>: held over the shoulder facing <b>backward</b>. A straight barrel shoots behind you; draw a U-turn to reach the target</li>
+<li>🔫<b>Right/Left</b>: switches which gun you draw. Drawing a left gun makes <b>dual guns</b>: one trigger fires both, each aims on its own</li></ul>`],
+['Test fire',`<ul><li>After "Ready" you have 12 s to press the trigger up to 10 times. Your timing is recorded and replayed against targets</li>
+<li>Hold the left/right side (PC: ← →) to walk (8 km/h, up to 1.6 m). Your walk is recorded too</li>
+<li>After one shot, "Done" ends early. In the test, the paper sways 0.8 m left and right (one round trip every 4.5 s)</li>
+<li><b>To register</b>: no self-hit, no misfire, at least one bullet reaching the target area (2.1 m each side, 3 m high)</li>
+<li>Name your gun. A <b>nickname</b> is added from its shape (branches, loops, waves, spirals, parts, grip, dual…)</li></ul>`],
+['Dodging',`<ul><li><b>Move</b>: put a finger anywhere and slide left/right; the paper follows (about 1.35× your finger, up to 32 km/h, 1.6 m each side). PC: ← → (18 km/h)</li>
+<li><b>Jump / crouch</b>: JUMP (bottom right) jumps about 1 m. Hold CROUCH (bottom left) to crouch (height 55%). Swiping up also jumps; swiping down crouches until you lift your finger. PC: ↑ or Space to jump, ↓ to crouch</li>
+<li>You can move during the 3-2-1 countdown. The lane is narrow: 1.6 m to each side of the center</li>
+<li>While moving, the paper turns up to 45° and gets thinner</li>
+<li><b>Muzzle</b>: the gun follows you before it fires. Watch where it points</li>
+<li><b>Leading</b>: at the trigger pull the gun reads your movement and aims where you would be when the bullet arrives if you kept going (85% of the way). Keep running the same way and you get hit. Stop, turn back, jump or crouch after the trigger</li>
+<li><b>Prediction line</b>: a red line flashes 0.2 s before each bullet leaves the barrel (the screen edge glows red too)</li>
+<li><b>Close calls</b>: a bullet passing right by you shows "CLOSE CALL!" with a short slow-motion. Your dodges and close calls appear in the result and the post</li>
+<li>Getting hit on the paper (head, neck, body) or its stand ends it. Near misses leave scorch marks. Android phones vibrate on a hit</li></ul>`],
+['Ranking',`<ul><li>Guns ranked by K/D = hits ÷ dodges (0 dodges counts as 1)</li><li>Only guns played 10+ times, top 100</li>
+<li>Only each person's first try per gun counts. Your own guns don't count</li><li>Tap a gun in the ranking to dodge it</li></ul>`]],
+zh:[
+['玩法',`<ul><li><b>射擊方</b>：從槍口自由畫出槍管後試射。沒打到自己、沒走火、至少1發到達紙靶範圍，就能登錄並拿到8個字的暗號</li>
+<li><b>被射方</b>：變成紙靶閃躲別人的子彈。輸入暗號或隨機選槍。被打中1發就結束</li><li>靶子距離12公尺</li><li>把槍發到X會變成帶暗號的連結，點開就能馬上躲那把槍</li></ul>`],
+['畫法',`<ul><li>從<b>側面</b>畫，槍管上下彎；從<b>上面</b>畫，左右彎。用上方「側面｜上面」或點右下小圖切換</li>
+<li>先選從哪邊畫。畫好按「下一步」會問要不要從另一邊畫。選「不畫」直接試射</li>
+<li><b>✏️畫</b>：從發光的槍口開始。從槍管末端畫是延長，從中間畫是<b>分岔</b></li>
+<li><b>✋彎</b>：抓住線拖動，周圍約50公分會滑順地彎曲。槍口附近不動，分岔一起動。彎曲不用墨水</li>
+<li>側面畫的線從上面看是直的，從上面彎就成了立體槍管（反過來也一樣）</li>
+<li><b>墨水</b>5.5公尺，雙槍時兩把合計。越粗用越多</li><li>不能畫在地板下和射擊者身體裡</li>
+<li>上方數字：<b>彈速</b>（最快的子彈）、<b>子彈數</b>（扣一次扳機）、<b>射出前</b>（到第一發離開槍口的時間）</li></ul>`],
+['形狀與飛法',`<ul><li><b>彈速</b>：一開始時速58km，槍管每1公尺加快時速18km（依粗細不同），最快時速173km</li>
+<li><b>出口方向</b>：沿槍管最後的方向射出</li><li><b>出口習慣</b>：最後36公分彎曲的話，飛出後也會往同方向微彎</li>
+<li><b>圈</b>：同方向繞1圈加快時速32km，也變輕25%、飛得更直（最輕35%）</li>
+<li><b>尖角</b>：超過25度的角會變慢，90度約慢3成、150度約一半。低於時速18km就卡住<b>走火</b></li>
+<li><b>分岔</b>：每分一次速度0.85倍、大小0.8倍。扣一次最多32發</li>
+<li><b>波浪</b>：彎曲方向交替4次以上，子彈會扭動飛行（12〜60公分）</li>
+<li><b>漩渦</b>：同方向繞1圈以上且離中心距離變化大，子彈會螺旋飛行（半徑15〜70公分）</li>
+<li><b>沒出口的圈</b>：線尾接到自己的線（10公分內），會在裡面繞3圈、每圈加快時速36km，從最彎處衝破</li>
+<li><b>合流</b>：線尾離別的槍管8公分內就會合流</li><li><b>長度</b>：越長射出越慢，看得到子彈在透明管裡跑（時速72km約每公尺0.3秒）</li>
+<li><b>朝上</b>：超過55度往上的子彈消失在空中，約1.8秒後從上面掉下。正上方會掉在射擊者頭上，55度掉在靶附近</li>
+<li><b>朝下</b>：在地板反彈，每次變慢，最多3次</li><li><b>重量</b>：子彈會慢慢下墜，越慢掉越多</li>
+<li><b>對著自己</b>：碰到射擊者的身體或頭、或穿過射擊者後方，就是<b>打到自己</b></li>
+<li><b>自動瞄準</b>：扣扳機瞬間，槍會上下左右最多轉約29度，讓主子彈通過紙靶移動方向的前方（繼續移動時位置的85%）。朝射擊者方向的槍管不修正</li></ul>`],
+['粗細',`<ul><li>畫之前選。延長時換粗細，從那裡開始改變</li><li><b>細</b>：子彈小（0.55倍），每公尺加快時速32km，墨水0.6倍</li>
+<li><b>普通</b>：1倍，每公尺加快時速18km，墨水1倍</li><li><b>粗</b>：子彈大（1.6倍），每公尺只加快時速4km，墨水1.6倍</li>
+<li><b>超粗</b>：大球（2.4倍），每公尺變慢時速7km，墨水2.4倍，畫太長會卡住</li><li>子彈大小由射出的槍管粗細決定，越大越容易打中</li></ul>`],
+['零件',`<ul><li>選「🔩零件」再選種類，點槍管放上。再點一次拿掉。每把最多8個</li><li>每顆子彈通過時生效1次</li>
+<li>🌀<b>彈簧</b>：加快時速43km</li><li>🧊<b>冰</b>：速度0.6倍</li><li>💥<b>火藥</b>：速度1.5倍再加快時速22km</li>
+<li>👯<b>分身</b>：子彈分成2顆，左右各張開約6度</li><li>🕳️<b>洞</b>：漏出1顆子彈在地上滾，瞄準紙靶的腳（台座）。又大又慢。主子彈變0.85倍。可以跳過去</li></ul>`],
+['拿法・雙槍',`<ul><li>按拿法按鈕切換，雙槍時兩把相同</li><li>🤚<b>單手</b>：胸口高度（1.35公尺）朝前</li><li>🙌<b>頭上</b>：頭上（2.05公尺）朝前，往下射</li>
+<li>🦵<b>胯下</b>：膝蓋高度（0.5公尺），低彈道</li><li>🔙<b>背後</b>：從肩膀<b>朝後</b>拿。直直畫會往後飛，要畫U字才打得到靶</li>
+<li>🔫<b>右手／左手</b>：切換要畫的槍。畫了左手就是<b>雙槍</b>，扣一次扳機兩把同時射，各自瞄準</li></ul>`],
+['試射',`<ul><li>「預備」後12秒內最多按10次扳機。按下的時機會直接記錄，被射方也照這個時機</li>
+<li>按住畫面左右（電腦用←→）可以走動（時速8km，左右1.6公尺內），走法也會記錄</li><li>打過1發後可以按「就這樣」提早結束。試射時紙靶會左右各晃0.8公尺（4.5秒來回一次）</li>
+<li><b>登錄條件</b>：沒打到自己、沒走火、至少1發到達紙靶範圍（左右2.1公尺・高3公尺）</li><li>可以自己取槍名，也會依形狀自動加上<b>稱號</b></li></ul>`],
+['閃躲',`<ul><li><b>移動</b>：手指放在畫面上左右滑，紙靶會跟著手指（約手指移動的1.35倍，最快時速32km，左右1.6公尺內）。電腦用←→（時速18km）</li>
+<li><b>跳・蹲</b>：按右下「跳」跳起（約1公尺），按住左下「蹲」就蹲下（身高55%）。往上滑也能跳，往下滑會蹲到手指離開。電腦用↑或空白鍵跳、↓蹲</li>
+<li>開始前的「3・2・1」就能移動。靶道很窄，從中間左右各1.6公尺</li>
+<li>移動時紙靶最多轉45度變薄</li><li><b>槍口</b>：開槍前槍口就會追著你。看槍口方向就知道會往哪打</li>
+<li><b>預判</b>：扣扳機瞬間，槍會看你的移動，瞄準你繼續移動時子彈到達那刻的位置（85%的距離）。一直往同方向跑就會中。扣扳機後停下、轉向、跳或蹲來躲</li>
+<li><b>預測線</b>：子彈離開槍口前0.2秒，紅線閃一下（畫面邊緣也會發紅）</li>
+<li><b>好險</b>：子彈從身邊擦過會出現「好險！」並短暫慢動作。躲過的數量和好險次數會顯示在結果和貼文</li>
+<li>打中紙靶（頭・脖子・身體）或腳下台座就結束。擦過會留下焦痕。Android 手機被打中會震動</li></ul>`],
+['排行榜',`<ul><li>依槍的K/D排名。K/D＝命中次數÷被躲次數（0次算1）</li><li>只列被玩過10次以上的槍，前100名</li><li>每人每把槍只計第一次，自己的槍不計</li><li>點排行榜上的槍就能躲那把槍</li></ul>`]],
+ko:[
+['놀이 방법',`<ul><li><b>쏘는 쪽</b>: 총구에서부터 총신을 자유롭게 그리고 시험 사격. 자기가 맞지 않고, 폭발하지 않고, 1발 이상 과녁 범위까지 닿으면 등록하고 8글자 암호를 받는다</li>
+<li><b>맞는 쪽</b>: 종이 과녁이 되어 누군가의 총알을 피한다. 암호를 넣거나 랜덤으로 고른다. 1발이라도 맞으면 끝</li><li>과녁까지 12m</li><li>총을 X에 올리면 암호가 들어간 링크가 되어, 누른 사람은 바로 그 총으로 피할 수 있다</li></ul>`],
+['그리는 법',`<ul><li><b>옆에서</b> 그리면 위아래로, <b>위에서</b> 그리면 좌우로 휜다. 위의 「옆에서｜위에서」나 오른쪽 아래 작은 그림으로 전환</li>
+<li>먼저 어느 쪽부터 그릴지 고른다. 「다음」을 누르면 다른 방향에서도 그릴지 묻는다. 「안 그리고」면 바로 시험 사격</li>
+<li><b>✏️그리기</b>: 빛나는 총구에서 시작. 총신 끝에서 그리면 이어지고, 중간에서 그리면 <b>갈라진다</b></li>
+<li><b>✋구부리기</b>: 선을 잡고 끌면 주변 약 50cm가 부드럽게 휜다. 총구 근처는 안 움직이고, 갈래는 같이 움직인다. 잉크는 안 쓴다</li>
+<li>옆에서 그린 선은 위에서 보면 곧으므로, 위에서 구부리면 입체 총신이 된다 (반대도 같다)</li>
+<li><b>잉크</b> 5.5m, 쌍권총이면 두 자루 합쳐서. 굵을수록 많이 쓴다</li><li>바닥 아래와 쏘는 사람의 몸 안에는 그릴 수 없다</li>
+<li>위의 숫자: <b>탄속</b>(가장 빠른 총알), <b>총알 수</b>(방아쇠 1번), <b>발사까지</b>(첫 총알이 총구를 나갈 때까지)</li></ul>`],
+['모양과 날아가는 법',`<ul><li><b>탄속</b>: 처음 시속 58km, 총신 1m마다 시속 18km 빨라진다(굵기에 따라 다름). 최고 시속 173km</li>
+<li><b>출구 방향</b>: 총신 마지막 방향으로 나간다</li><li><b>출구 버릇</b>: 마지막 36cm가 휘어 있으면 나간 뒤에도 같은 쪽으로 약하게 휜다</li>
+<li><b>고리</b>: 같은 방향으로 1바퀴마다 시속 32km 빨라지고 25%씩 가벼워져 곧게 난다(최소 35%)</li>
+<li><b>뾰족한 모서리</b>: 25도보다 급하면 느려진다. 90도에 약 3할, 150도에 약 절반. 시속 18km보다 느려지면 막혀서 <b>폭발</b></li>
+<li><b>갈래</b>: 갈라질 때마다 속도 0.85배, 크기 0.8배. 방아쇠 1번에 최대 32발</li>
+<li><b>물결</b>: 휘는 방향이 4번 이상 바뀌면 총알이 꿀렁거리며 난다(12〜60cm)</li>
+<li><b>소용돌이</b>: 같은 방향으로 1바퀴 이상 감고 중심 거리가 크게 바뀌면 나선으로 난다(반경 15〜70cm)</li>
+<li><b>출구 없는 고리</b>: 선 끝이 자기 선 10cm 안에 붙으면 안에서 3바퀴 돌며 매번 시속 36km 빨라지고, 가장 많이 휜 곳을 뚫고 나간다</li>
+<li><b>합류</b>: 선 끝이 다른 총신 8cm 안이면 그쪽으로 합류</li><li><b>길이</b>: 길수록 발사가 늦다. 투명한 관 속을 가는 총알이 보인다(시속 72km면 1m에 약 0.3초)</li>
+<li><b>위쪽</b>: 55도보다 위로 나간 총알은 하늘로 사라졌다가 약 1.8초 뒤 위에서 떨어진다. 바로 위면 쏜 사람 위, 55도면 과녁 근처</li>
+<li><b>아래쪽</b>: 바닥에서 튕긴다. 튕길 때마다 느려지고 3번까지</li><li><b>무게</b>: 총알은 조금씩 떨어진다. 느릴수록 많이 떨어진다</li>
+<li><b>자기를 향하면</b>: 쏜 사람의 몸이나 머리에 닿거나 뒤를 지나가면 <b>자기를 쏜</b> 것</li>
+<li><b>자동 조준</b>: 방아쇠를 당긴 순간 종이가 움직이는 방향의 앞(그대로 움직였을 때 위치의 85%)을 지나도록 총이 상하좌우 약 29도까지 방향을 고친다. 쏜 사람 쪽으로 나가는 총신은 고치지 않는다</li></ul>`],
+['굵기',`<ul><li>그리기 전에 고른다. 이어 그릴 때 다른 굵기로 하면 거기서부터 바뀐다</li><li><b>가늘게</b>: 총알 작음(0.55배), 1m마다 시속 32km 빨라짐, 잉크 0.6배</li>
+<li><b>보통</b>: 1배, 1m마다 시속 18km, 잉크 1배</li><li><b>굵게</b>: 총알 큼(1.6배), 1m마다 시속 4km만, 잉크 1.6배</li>
+<li><b>초굵게</b>: 큰 공(2.4배), 1m마다 시속 7km 느려짐, 잉크 2.4배. 너무 길면 막힌다</li><li>총알 크기는 나간 총신의 굵기로 정해진다. 클수록 잘 맞는다</li></ul>`],
+['부품',`<ul><li>「🔩부품」을 고르고 종류를 골라 총신 위를 누른다. 다시 누르면 빠진다. 한 자루에 8개까지</li><li>지나가는 총알마다 1번씩 효과</li>
+<li>🌀<b>스프링</b>: 시속 43km 빨라진다</li><li>🧊<b>얼음</b>: 속도 0.6배</li><li>💥<b>화약</b>: 속도 1.5배에 시속 22km 더</li>
+<li>👯<b>분신</b>: 총알이 2개로 갈라져 좌우로 약 6도씩 벌어진다</li><li>🕳️<b>구멍</b>: 총알 1개가 새어 나와 바닥을 굴러 종이의 받침대를 노린다. 크고 느리다. 본체 총알은 0.85배. 점프로 피할 수 있다</li></ul>`],
+['잡는 법·쌍권총',`<ul><li>잡는 법 버튼을 누를 때마다 바뀐다. 쌍권총이면 두 자루 같다</li><li>🤚<b>한 손</b>: 가슴 높이(1.35m)에서 앞으로</li><li>🙌<b>머리 위</b>: 머리 위(2.05m)에서 앞으로, 내려 쏘는 모양</li>
+<li>🦵<b>가랑이</b>: 무릎 높이(0.5m), 낮은 총알</li><li>🔙<b>등 뒤로</b>: 어깨 너머 <b>뒤를 향해</b> 잡는다. 곧게 그리면 뒤로 날아가니 U자로 그려야 과녁에 닿는다</li>
+<li>🔫<b>오른손／왼손</b>: 그릴 총을 바꾼다. 왼손 총을 그리면 <b>쌍권총</b>, 방아쇠 1번에 두 자루가 동시에, 각자 조준</li></ul>`],
+['시험 사격',`<ul><li>「준비」 후 12초 동안 방아쇠를 10번까지. 누른 타이밍이 그대로 기록되고 맞는 쪽에서도 그대로 쏜다</li>
+<li>화면 좌우를 누르면(PC는 ← →) 걸을 수 있다(시속 8km, 좌우 1.6m까지). 걷는 것도 기록된다</li><li>1발 이상 쏘면 「이걸로 결정」으로 일찍 끝낼 수 있다. 시험 사격에서 종이는 좌우로 0.8m씩 흔들린다(4.5초에 한 번 왕복)</li>
+<li><b>등록 조건</b>: 자기가 맞지 않음, 폭발하지 않음, 1발 이상 과녁 범위(좌우 2.1m·높이 3m)까지 닿음</li><li>총 이름은 직접 짓고, 모양으로 <b>별명</b>도 자동으로 붙는다</li></ul>`],
+['피하기',`<ul><li><b>이동</b>: 화면에 손가락을 대고 좌우로 밀면 종이가 손가락을 따라온다(손가락 움직임의 약 1.35배, 최고 시속 32km, 좌우 1.6m까지). PC는 ← →(시속 18km)</li>
+<li><b>점프·앉기</b>: 오른쪽 아래 「점프」로 점프(약 1m), 왼쪽 아래 「앉기」를 누르는 동안 앉는다(키 55%). 위로 쓸어도 점프, 아래로 쓸면 손가락을 뗄 때까지 앉는다. PC는 ↑나 스페이스로 점프, ↓로 앉기</li>
+<li>시작 전 「3·2·1」부터 움직일 수 있다. 사격장은 좁아서 가운데에서 좌우 1.6m씩</li>
+<li>움직이는 동안 종이가 45도까지 돌아 얇아진다</li><li><b>총구</b>: 쏘기 전부터 총구가 나를 따라온다. 총구 방향을 보면 어디로 쏠지 알 수 있다</li>
+<li><b>예측 사격</b>: 방아쇠를 당긴 순간 총이 내 움직임을 보고, 그대로 움직였을 때 총알이 닿을 무렵 있을 곳(의 85%)을 노린다. 같은 방향으로 계속 움직이면 맞는다. 방아쇠 뒤에 멈추기·방향 바꾸기·점프·앉기로 피한다</li>
+<li><b>예측선</b>: 총알이 총구를 나가기 0.2초 전에 빨간 선이 한순간 보인다(화면 가장자리도 빨갛게 빛난다)</li>
+<li><b>아슬아슬</b>: 총알이 바로 옆을 지나가면 「아슬아슬!」과 함께 잠깐 슬로모션. 피한 총알 수와 아슬아슬 횟수는 결과와 게시글에 나온다</li>
+<li>종이(머리·목·몸)나 받침대에 맞으면 끝. 스친 총알은 그을린 자국을 남긴다. 안드로이드 폰은 맞으면 진동한다</li></ul>`],
+['랭킹',`<ul><li>총의 K/D로 줄 선다. K/D＝맞힌 횟수÷피한 횟수(0회는 1로 계산)</li><li>10번 이상 플레이된 총만, 100위까지</li><li>한 사람당 그 총의 첫 번째만 기록, 자기 총은 안 들어간다</li><li>랭킹의 총을 누르면 그 총으로 피할 수 있다</li></ul>`]]};
+let manI=0;
+function openMan(i){if(i!=null)manI=i;const L=MAN[lang]||MAN.ja;manI=clamp(manI,0,L.length-1);$('manPanel').hidden=false;$('manTitle').textContent=t('man');$('manClose').textContent=t('close');
+ const tb=$('manTabs');tb.innerHTML='';L.forEach(([h],k)=>{const b=document.createElement('button');b.textContent=h;if(k===manI)b.className='on';b.onclick=()=>openMan(k);tb.appendChild(b);});
+ $('manBody').innerHTML='<h3>'+esc(L[manI][0])+'</h3>'+L[manI][1];$('manBody').scrollTop=0;}
+$('manClose').onclick=()=>{$('manPanel').hidden=true;};
+$('bMan').onclick=()=>openMan();$('dMan').onclick=()=>openMan();
+
+// ===== X =====
+// Xの投稿で引用するツイート（なすびのお庭の管理ページ quote/ で日本語・英語を貼りかえられる）
+let QUOTE={};fetch('https://ft-red-default-rtdb.asia-southeast1.firebasedatabase.app/xquote/g/gojuuni.json').then(r=>r.json()).then(d=>{if(d&&typeof d==='object')QUOTE=d;}).catch(()=>{});
+function quoteURL(){const u=(lang==='ja'?QUOTE.ja:QUOTE.en)||'';return /^https:\/\/x\.com\/[A-Za-z0-9_]{1,15}\/status\/\d{5,25}$/.test(u)?u:'';}
+function xIntent(text,url){const q=quoteURL();return 'https://x.com/intent/post?text='+encodeURIComponent(q?text+'\n'+url:text)+'&url='+encodeURIComponent(q||url);}
+function openX(text,url){const u=xIntent(text,url);const w=window.open(u,'_blank');if(!w)location.href=u;}
+
+// ===== Firebase（ft-red の gojuu の下） =====
+const FB={apiKey:'AIzaSyBCzVyblBmfNQq4XdPHdQppE94gyiYxDkA',databaseURL:'https://ft-red-default-rtdb.asia-southeast1.firebasedatabase.app'};
+async function fetchR(url,opt){let err;for(let i=0;i<3;i++){try{return await fetch(url,opt);}catch(e){err=e;await new Promise(r=>setTimeout(r,500*(i+1)));}}throw err;}
+let AUTH=null,authP=null;
+function fbAuth(){if(PV)return Promise.reject(new Error('pv'));if(AUTH&&AUTH.exp>Date.now()+60000)return Promise.resolve(AUTH);if(!authP)authP=fbAuth0().then(a=>{AUTH=a;authP=null;return a;},e=>{authP=null;throw e;});return authP;}
+async function fbAuth0(){let a=AUTH||ls.get('gj_auth',null);if(a&&a.exp>Date.now()+60000)return a;
+ if(a&&a.refresh){try{const r=await fetchR('https://securetoken.googleapis.com/v1/token?key='+FB.apiKey,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(a.refresh)});if(r.ok){const j=await r.json();a={uid:j.user_id,token:j.id_token,refresh:j.refresh_token,exp:Date.now()+(+j.expires_in)*1000};ls.set('gj_auth',a);return a;}}catch(_){}}
+ const r=await fetchR('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+FB.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({returnSecureToken:true})});if(!r.ok)throw new Error('auth');const j=await r.json();a={uid:j.localId,token:j.idToken,refresh:j.refreshToken,exp:Date.now()+(+j.expiresIn)*1000};ls.set('gj_auth',a);return a;}
+if(!PV&&!OGP&&!ICON)fbAuth().catch(()=>{});
+const DB=p=>FB.databaseURL+'/gojuu/'+p;const QA=a=>'.json?auth='+encodeURIComponent(a.token);
+const getJ=async url=>{const r=await fetchR(url);if(!r.ok)throw new Error('get '+r.status);return r.json();};
+function gunFrom(code,g){if(!g||typeof g.p!=='string')return null;const sh=String(g.sh||'').split(',').map(x=>parseInt(x,10)).filter(x=>isFinite(x)&&x>=0).slice(0,S.MAXSHOT);if(!sh.length)return null;
+ const mv=g.mv?String(g.mv).split(',').map(x=>parseInt(x,10)).filter(x=>isFinite(x)).map(x=>clamp(x,-S.SXMAX*100,S.SXMAX*100)):[];
+ const gun=makeGun({hands:[{strokes:S.decode(g.p),parts:S.decParts(g.pt)},{strokes:g.p2?S.decode(g.p2):[],parts:S.decParts(g.pt2)}],grip:clamp(+g.g||0,0,3),sh,mv});
+ gun.code=code;gun.n=String(g.n||'');gun.f=String(g.f||gun.f);gun.u=g.u;gun.mine=!!(AUTH&&g.u===AUTH.uid)||(ls.get('gj_mine',[]).includes(code));return gun;}
+async function loadGun(code){if(PV&&PV.guns)return gunFrom(code,PV.guns[code]);const [g,h]=await Promise.all([getJ(DB('guns/'+code)+'.json'),getJ(DB('hidden/'+code)+'.json').catch(()=>null)]);if(h)return null;return gunFrom(code,g);}
+async function playCode(code,msgEl){code=cleanCode(code);if(code.length!==8){msgEl.textContent=t('needCode');msgEl.className='note err';return;}
+ msgEl.textContent=t('loading');msgEl.className='note';try{try{await fbAuth();}catch(_){}const g=await loadGun(code);if(!g){msgEl.textContent=t('notFound');msgEl.className='note err';return;}msgEl.textContent='';startDodge(g);}catch(e){console.warn(e);msgEl.textContent=t('netErr');msgEl.className='note err';}}
+async function playRandom(msgEl){msgEl.textContent=t('loading');msgEl.className='note';
+ try{try{await fbAuth();}catch(_){}let list;if(PV&&PV.guns)list=PV.guns;else{const [d,h]=await Promise.all([getJ(DB('guns')+'.json?orderBy=%22t%22&limitToLast=60'),getJ(DB('hidden')+'.json').catch(()=>null)]);list={};for(const k in d||{})if(!(h&&h[k]))list[k]=d[k];}
+  const keys0=Object.keys(list||{});const others=keys0.filter(k=>list[k].u!==(AUTH&&AUTH.uid)&&k!==(GUN&&GUN.code));const pool=others.length?others:keys0;if(!pool.length){msgEl.textContent=t('noGuns');msgEl.className='note err';return;}
+  const code=pool[Math.floor(Math.random()*pool.length)];const g=gunFrom(code,list[code]);if(!g){msgEl.textContent=t('netErr');msgEl.className='note err';return;}msgEl.textContent='';startDodge(g);}catch(e){console.warn(e);msgEl.textContent=t('netErr');msgEl.className='note err';}}
+$('bCode').onclick=()=>{ac();playCode($('codeIn').value,$('tMsg'));};
+$('codeIn').oninput=e=>{const v=cleanCode(e.target.value);if(v!==e.target.value)e.target.value=v;};
+$('bRandom').onclick=()=>{ac();playRandom($('tMsg'));};
+function newCode(){const a=new Uint32Array(8);crypto.getRandomValues(a);return Array.from(a,x=>CODE_CH[x%CODE_CH.length]).join('');}
+$('gReg').onclick=async()=>{const nm=($('gName').value.trim()||t('defName')).slice(0,16);ls.set('gj_gname',$('gName').value.trim());const mm=$('gMsg');$('gReg').disabled=true;mm.textContent=t('regging');mm.className='note';
+ const body={n:nm,f:GUN.f,p:S.encode(GUN.hands[0].strokes)||':0,0 1,0',th:0,sh:GUN.sh.join(','),v:1};if(GUN.hands[0].parts.length)body.pt=S.encParts(GUN.hands[0].parts);if(GUN.two){body.p2=S.encode(GUN.hands[1].strokes);if(GUN.hands[1].parts.length)body.pt2=S.encParts(GUN.hands[1].parts);}if(GUN.grip)body.g=GUN.grip;if(GUN.mv.some(x=>x!==0))body.mv=GUN.mv.join(',');
+ if(PV){GUN.code='PVTEST23';GUN.n=nm;regDone();return;}
+ try{const a=await fbAuth();let ok=false,code;for(let i=0;i<3&&!ok;i++){code=newCode();const r=await fetchR(FB.databaseURL+'/gojuu'+QA(a),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({['guns/'+code]:{...body,u:a.uid,t:{'.sv':'timestamp'}},['last/'+a.uid]:{t:{'.sv':'timestamp'}}})});ok=r.ok;if(!ok&&i===0){const g=await fetchR(DB('last/'+a.uid)+QA(a)).then(x=>x.ok?x.json():null).catch(()=>null);if(g&&g.t&&Date.now()-g.t<16000){mm.textContent=t('regWait');mm.className='note err';$('gReg').disabled=false;return;}}}
+  if(!ok)throw new Error('reg');GUN.code=code;GUN.n=nm;GUN.u=a.uid;GUN.mine=true;const mine=ls.get('gj_mine',[]);mine.push(code);ls.set('gj_mine',mine.slice(-50));regDone();}
+ catch(e){console.warn(e);mm.textContent=t('regErr');mm.className='note err';$('gReg').disabled=false;}};
+function regDone(){$('gOk').hidden=true;$('gDone').hidden=false;$('gHead').textContent=t('regDone');$('gHead').className='big2 ok';$('gSub').textContent=nick(GUN.f)+' 「'+GUN.n+'」';$('gCode').textContent=GUN.code;$('gMsg').textContent='';$('gRetest').hidden=true;$('gRedraw').hidden=false;}
+$('gX').onclick=()=>openX(t('postGun',{n:GUN.n,f:nick(GUN.f),c:GUN.code}),GAME_URL+'?c='+GUN.code);
+$('gCopy').onclick=async()=>{try{await navigator.clipboard.writeText(GUN.code);toast(t('copied'));}catch(e){toast(GUN.code);}};
+$('gSelf').onclick=()=>{ac();const g=makeGun({hands:GUN.hands,grip:GUN.grip,sh:GUN.sh,mv:GUN.mv});Object.assign(g,{code:GUN.code,n:GUN.n,f:GUN.f,u:GUN.u,mine:true});startDodge(g);};
+// 結果の記録（その銃で1回目だけ。自分の銃は入らない）
+async function submitRes(gun,h){const el=$('rStat');const setM=(m,c)=>{if(GUN===gun&&!$('resPanel').hidden){el.textContent=m;el.className='note '+(c||'');}};
+ if(PV){setM(t('kdLine',{kd:'1.50',h:3,d:2}),'ok');return;}
+ setM(t('sending'));try{const a=await fbAuth();const mine=await getJ(DB('res/'+gun.code+'/'+a.uid)+'.json');
+  if(mine){const c=await getJ(DB('cnt/'+gun.code)+'.json');setM(t('already')+(c?'　'+kdTxt(c):''));return;}
+  for(let i=0;i<3;i++){const c=await getJ(DB('cnt/'+gun.code)+'.json');const na=(c?c.a:0)+1,nh=(c?c.h:0)+h,D=Math.max(1,na-nh);const k=na>=10?Math.floor(nh*1000/D):-1;
+   const body={['res/'+gun.code+'/'+a.uid]:{h,t:{'.sv':'timestamp'}},['cnt/'+gun.code]:{a:na,h:nh,k,n:gun.n,f:gun.f}};
+   const r=await fetchR(FB.databaseURL+'/gojuu'+QA(a),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+   if(r.ok){setM(t('sent')+'　'+kdTxt({a:na,h:nh}),'ok');return;}await new Promise(r2=>setTimeout(r2,300+Math.random()*500));}
+  setM(t('sendErr'),'err');}catch(e){console.warn(e);setM(t('sendErr'),'err');}}
+const kdOf=c=>(c.h/Math.max(1,c.a-c.h));const kdTxt=c=>t('kdLine',{kd:kdOf(c).toFixed(2),h:c.h,d:c.a-c.h});
+// ランキング
+let rankFrom='title';
+async function openRank(from){rankFrom=from||'title';show('rankPanel');$('rkTitle').textContent=t('rkTitle');$('rkNote').textContent=t('rkNote');const box=$('rankBox');box.innerHTML='<p class="c">'+esc(t('loading'))+'</p>';
+ try{let rows;if(PV&&PV.rank)rows=PV.rank;else{const [d,h]=await Promise.all([getJ(DB('cnt')+'.json?orderBy=%22k%22&startAt=0&limitToLast=150'),getJ(DB('hidden')+'.json').catch(()=>null)]);rows=Object.entries(d||{}).map(([id,v])=>({...v,id})).filter(r=>!(h&&h[r.id])&&typeof r.k==='number'&&r.k>=0&&r.a>=10);}
+  rows.sort((a,b)=>b.k-a.k||b.a-a.a);rows=rows.slice(0,100);const mine=ls.get('gj_mine',[]);
+  if(!rows.length){box.innerHTML='<p class="c">'+esc(t('rkEmpty'))+'</p>';return;}
+  let rk=0,prev=null;box.innerHTML='<table class="rank">'+rows.map((r,i)=>{if(r.k!==prev){rk=i+1;prev=r.k;}return '<tr data-c="'+esc(r.id)+'"'+(mine.includes(r.id)?' class="me"':'')+'><td class="r">'+rk+'</td><td class="n">'+esc(r.n)+'<small>'+esc(nick(r.f))+' ・ '+esc(r.id)+'</small></td><td class="c">'+kdOf(r).toFixed(2)+'<small>'+esc(t('kdS',{h:r.h,d:r.a-r.h}))+'</small></td></tr>';}).join('')+'</table>';
+  box.querySelectorAll('tr').forEach(tr=>tr.onclick=()=>{ac();const c=tr.getAttribute('data-c');const m=document.createElement('p');playCode(c,$('rkNote'));});}
+ catch(e){console.warn(e);box.innerHTML='<p class="c">'+esc(t('rkErr'))+'</p>';}}
+$('bRank').onclick=()=>openRank('title');$('rRank').onclick=()=>openRank('res');
+$('rankBack').onclick=()=>{if(rankFrom==='res')show('resPanel');else showTitle();};
+
+// ===== 動画（記録した操作でもう一度動かして撮る） =====
+let vidBusy=false,vidExt='mp4';
+$('rVid').onclick=()=>{if(!vidBusy)makeVideo('dodge');};$('gVid').onclick=()=>{if(!vidBusy)makeVideo('test');};
+$('vBack').onclick=()=>show(vidFrom);let vidFrom='resPanel';
+async function makeVideo(kind){vidFrom=kind==='test'?'regPanel':'resPanel';vidBusy=true;const VW2=540,VH2=960;const vc=document.createElement('canvas');vc.width=VW2;vc.height=VH2;
+ if(!vc.captureStream||!window.MediaRecorder){vidDone(null);return;}
+ show(null);const keep=mode;mode='video';$('recBadge').hidden=false;$('recBadge').textContent='● '+t('making');
+ const g=vc.getContext('2d');let VR;try{VR=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});}catch(e){mode=keep;vidDone(null);return;}VR.setSize(VW2,VH2,false);VR.setPixelRatio(1);VR.outputColorSpace=THREE.SRGBColorSpace;
+ const VC=CAM.clone();VC.aspect=VW2/VH2;const keepVW=VW,keepVH=VH;VW=VW2;VH=VH2;camFor(kind,0);VC.copy(CAM);VC.aspect=VW2/VH2;VC.updateProjectionMatrix();VW=keepVW;VH=keepVH;
+ ac();let dest=null;try{dest=AC.createMediaStreamDestination();master.connect(dest);}catch(e){}
+ const stream=vc.captureStream(30);if(dest)dest.stream.getAudioTracks().forEach(tr=>stream.addTrack(tr));
+ const types=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+ const mime=types.find(x=>{try{return MediaRecorder.isTypeSupported(x)}catch(e){return false}})||'';vidExt=mime.includes('mp4')?'mp4':'webm';
+ let rec;try{rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:4e6}:{});}catch(e){fin();vidDone(null);return;}
+ const chunks=[];rec.ondataavailable=ev2=>{if(ev2.data&&ev2.data.size)chunks.push(ev2.data);};const stopped=new Promise(r=>{rec.onstop=r;});rec.start(200);
+ // もう一度動かす
+ const log=GUN.log||[];clearFX();resetStage();buildGun(GUN);
+ const shots=kind==='test'?GUN.testShots||[]:GUN.sh.map(x=>x/1000);const Wd=newWorld(kind,GUN,shots,0);
+ const first=shots.length?shots[0]:0;const start=Math.max(0,first-1.0);const cnt0=kind==='test'?2.0:3.0;let li=Math.round(cnt0/DT);
+ // 頭出し（音を出さずに start まで進める）
+ while(Wd.t<start-1e-9){wTick(Wd,log[li++]||0);handleEvents(Wd,false);}
+ const F='"Hiragino Maru Gothic ProN","Rounded Mplus 1c",system-ui,sans-serif';const txt=(s2,x,y)=>{g.strokeText(s2,x,y);g.fillText(s2,x,y);};
+ let T=0,last=performance.now(),endT=null;const head=kind==='test'?t('testA'):t('gunBy',{n:GUN.n||t('defName')});
+ await new Promise(res=>{function step(now){const dt=Math.min(.05,(now-last)/1000);last=now;T+=dt;
+   const slow=Wd.over==='hit'&&Wd.t-Wd.overT<.6?.35:1;let n=Math.round(dt*slow/DT);while(n-->0&&endT==null){wTick(Wd,log[li++]||0);handleEvents(Wd,true);if(Wd.over&&endT==null&&Wd.t-Wd.overT>1.3)endT=T;}
+   if(!Wd.over&&Wd.t>start+14)endT=T;
+   stepSparks(dt);renderWorld(Wd);if(Wd.over==='self'){SHOOT.rotation.x=Math.min(1.3,(Wd.t-Wd.overT)*3);}
+   if(kind==='dodge'){const kv=VW,kh=VH;VW=VW2;VH=VH2;camFor('dodge',0,Wd.P.x);VC.position.copy(CAM.position);VC.quaternion.copy(CAM.quaternion);VW=kv;VH=kh;camFor('dodge',0,0);}
+   VR.render(SC,VC);g.clearRect(0,0,VW2,VH2);g.drawImage(VR.domElement,0,0,VW2,VH2);
+   g.textAlign='center';g.lineJoin='round';g.lineWidth=7;g.strokeStyle='#fff';g.fillStyle='#1d1d1d';g.font='900 30px '+F;txt(head,VW2/2,58);g.font='900 22px '+F;g.fillStyle='#333';txt(nick(GUN.f),VW2/2,92);
+   if(Wd.over){const msg=Wd.over==='hit'?t('hit'):Wd.over==='dodged'?t('dodged'):Wd.over==='self'?t('self'):Wd.over==='jam'?t('jam'):'';if(msg){g.lineWidth=10;g.strokeStyle='#000';g.fillStyle=Wd.over==='dodged'?'#9be07a':'#ffd0cc';g.font='900 62px '+F;txt(msg,VW2/2,VH2*.3);}}
+   g.lineWidth=6;g.strokeStyle='#000a';g.fillStyle='#fff';g.font='900 26px '+F;txt('#ごジュウに #ブラウザゲーム',VW2/2,VH2-70);g.font='700 20px system-ui,sans-serif';txt(GAME_URL.replace('https://','')+(GUN.code?'?c='+GUN.code:''),VW2/2,VH2-36);
+   if(endT!=null&&T>endT+.2)res();else requestAnimationFrame(step);}requestAnimationFrame(step);});
+ rec.stop();await stopped;fin();vidDone(new Blob(chunks,{type:(mime||'video/webm').split(';')[0]}));
+ function fin(){try{if(dest)master.disconnect(dest);}catch(_){}try{VR.dispose();}catch(_){}$('recBadge').hidden=true;mode=keep;}}
+function vidDone(blob){vidBusy=false;show('vidPanel');
+ if(!blob||!blob.size){$('vMsg').textContent=t('vfail');$('vShare').hidden=$('vSave').hidden=true;$('vidPrev').hidden=true;return;}
+ $('vidPrev').hidden=false;const url=URL.createObjectURL(blob);$('vidPrev').src=url;$('vidPrev').play().catch(()=>{});
+ const nm='gojuuni_'+(GUN.code||resKind)+'.'+vidExt;const file=new File([blob],nm,{type:blob.type});const canShare=!!(navigator.canShare&&navigator.canShare({files:[file]}));
+ $('vShare').hidden=!canShare;$('vSave').hidden=false;$('vMsg').textContent=canShare?t('vmade'):t('shareHint');
+ const post=()=>vidFrom==='regPanel'?(resKind==='jam'?t('postJam'):t('postSelf')):t(resKind==='hit'?'postHit':'postDodge',{n:GUN.n,f:nick(GUN.f),c:GUN.code,d:GUN.lastD||0,g:GUN.lastG||0});const purl=()=>GUN.code&&vidFrom!=='regPanel'?GAME_URL+'?c='+GUN.code:GAME_URL;
+ $('vShare').onclick=async()=>{try{await navigator.share({files:[file],text:post()+'\n'+purl()+(quoteURL()?'\n'+quoteURL():'')});}catch(e){}};
+ $('vSave').onclick=()=>{const a=document.createElement('a');a.href=url;a.download=nm;document.body.appendChild(a);a.click();a.remove();};
+ $('vX').onclick=()=>openX(post(),purl());}
+
+// ===== まわす =====
+let last=performance.now();
+function loop(now){requestAnimationFrame(loop);const raw=Math.min(.25,Math.max(0,(now-last)/1000));last=now;mT+=raw;
+ if(toastT&&now>toastT){$('toast').hidden=true;toastT=0;}
+ if(mode==='video')return;
+ if(mode==='draw'){renderDraw();return;}
+ if(jumpPulse>0)jumpPulse-=raw;
+ if((mode==='test'||mode==='dodge'||mode==='testEnd'||mode==='dodgeEnd')&&W){acc+=raw;let n=0;const slow=W.over==='hit'&&W.t-W.overT<.6?.3:1;
+  const slow2=slow*(slowT>0?.35:1);
+  while(acc>=DT/slow2&&n<40){acc-=DT/slow2;n++;wTick(W,mode==='dodge'||mode==='test'?inputBits():0);}
+  if(mode==='test'||mode==='dodge')countUi(W);handleEvents(W,true);updTrig&&mode==='test'&&updTrig();
+  if(W.over&&mode==='test')testEnd();if(W.over&&mode==='dodge')dodgeEnd();
+  if(W.over==='self'&&W.kind==='test')SHOOT.rotation.x=Math.min(1.3,(W.t-W.overT)*3);
+  renderWorld(W);camFor(W.kind,mT,W.kind==='test'?W.sx:W.P.x);$('warn').style.opacity=lineOn&&W.kind==='dodge'&&!W.over?1:0;if(mode==='dodge'){const hc=t('hudCnt',{n:Math.max(0,W.shots.length-W.si),d:dodgedN(W)});if(hc!==lastHud){lastHud=hc;$('hudC').textContent=hc;}}}
+ else camFor('title',mT);
+ stepSparks(raw);stepFlash(raw);if(!window.__NR)R.render(SC,CAM);}
+
+// ===== はじめ =====
+resize();applyLang();
+if(OGP||ICON){runOgp();}
+else{showTitle();const c=cleanCode(QS.get('c'));if(c.length===8){$('codeIn').value=c;$('tTarget').scrollIntoView&&0;$('bCode').classList.add('or');}requestAnimationFrame(loop);}
+function runOgp(){const w=OGP?1200:512,h=OGP?630:512;document.body.style.width=w+'px';document.body.style.height=h+'px';R.setPixelRatio(1);R.setSize(w,h,false);CAM.aspect=w/h;
+ // 枝がいっぱいの変な銃と、飛んでくる弾と予測線
+ const main=S.tidy([[0,0],[.25,.06],[.45,-.04],[.65,.06],[.9,0],[1.1,.02]]);const st=[{at:null,p:main}];
+ [[5,.22,.18],[9,-.2,.22],[13,.16,.3],[17,-.18,.3],[21,.12,.26]].forEach(([i,dy,dx])=>{if(main[i]){const a=main[i];st.push({at:[0,i],p:S.tidy([a,[a[0]+dx*.5,a[1]+dy*.6],[a[0]+dx,a[1]+dy]])});}});
+ const gun=makeGun({hands:[{strokes:st.map(x=>({...x,p:x.p.map(q=>[q[0],q[1]*.7,q[1]*.5])})),parts:[{k:0,i:8,t:'sp'}]},{strokes:[]}],grip:0,sh:[0]});GUN=gun;buildGun(gun);
+ const Wd=newWorld('dodge',gun,[0],0);Wd.P.x=.3;W=Wd;const until=Math.min(...Wd.gun.A[0].exits.map(e=>e.t))+.38;for(let i=0;i<Math.round(until/DT);i++){wTick(Wd,0);handleEvents(Wd,false);}Wd.P.yaw=-.55;Wd.P.x=-.15;Wd.over=null;renderWorld(Wd);
+ for(const sh of Wd.fired)sh.vis.forEach(V=>{if(V.line){V.line.visible=true;V.line.material.opacity=.85;}});
+ if(OGP){CAM.fov=40;CAM.position.set(1.55,1.85,-L-3.3);CAM.lookAt(-.8,1.2,-L+5.5);}else{CAM.fov=40;CAM.position.set(.9,1.55,-L-2.3);CAM.lookAt(-.25,1.05,-L+2);}
+ CAM.updateProjectionMatrix();R.render(SC,CAM);
+ if(OGP){const T=$('ogpT');T.hidden=false;T.innerHTML='<b>'+(lang==='en'?'GO<em>JUU</em>NI':'ご<em>ジュウ</em>に')+'</b><i>'+esc(t('ogp2'))+'</i><s>'+esc(t('ogp3'))+'</s>';}
+ window.__ogpReady=1;}
+window.__GJpv={R,SC,CAM,SHOOT,PIVS,PAPER,S,DT,newWorld,wTick,handleEvents,renderWorld,camFor,buildGun,resetStage,clearFX,stepSparks,stepFlash,get lineOn(){return lineOn;},dodgedN,nick,t,makeGun,renderDraw,drawResize,updStats,big,toolsUi,
+ setMode:m=>{mode=m;},setDraw:(h,dr,o)=>{hands=h;drawing=dr;if(o){if(o.view)view=o.view;if(o.grip!=null)grip=o.grip;if(o.hand!=null)hand=o.hand;if(o.dmode)dmode=o.dmode;if(o.thick!=null)thick=o.thick;}},hideHud,show,applyLang};
+window.__GJ={px:(v,q)=>proj(v,q,AREA,DS),get view(){return view;},PAPER,CAM,THREE,SC,get W(){return W;},get mode(){return mode;},S,startTest,startDodge,makeGun,get hands(){return hands;},set hands(v){hands=v;},setGrip:v=>{grip=v;},setView,pressTrig,gunFrom,openRank,showTitle};
+</script>
+</body>
+</html>
