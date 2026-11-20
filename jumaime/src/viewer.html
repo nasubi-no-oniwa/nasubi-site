@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><script>/* nsb-mig: github.io から引き継いだ保存情報を受け取る */(function(){try{var h=location.hash,i=h.indexOf('nsbmig=');if(i<0)return;var r=h.slice(i+7),j=r.indexOf('&nsbh='),m=j<0?r:r.slice(0,j),oh=j<0?'':decodeURIComponent(r.slice(j+6)),d=JSON.parse(decodeURIComponent(m));for(var k in d){try{if(localStorage.getItem(k)===null)localStorage.setItem(k,d[k])}catch(e){}}history.replaceState(null,'',location.pathname+location.search+oh)}catch(e){}})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>十枚目｜お菊さんと捕まる場面の確認</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;600;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#000;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+body{font-family:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;color:#d9d4c6}
+#gl{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated;display:block}
+#subs{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.sub{position:absolute;writing-mode:vertical-rl;white-space:nowrap;color:#e4dfd0;transition:opacity .5s linear;font-feature-settings:"palt" 0}
+.sub span{display:inline-block;opacity:0;will-change:transform,opacity}
+.dots{position:relative;-webkit-text-fill-color:transparent}
+.dots::before{content:"";position:absolute;left:50%;top:.14em;width:.13em;height:.13em;margin-left:-.065em;border-radius:50%;background:currentColor;box-shadow:0 .3em 0 currentColor,0 .6em 0 currentColor}
+.l1{right:14%;top:15%;font-size:clamp(15px,calc(1.5vmin + 1.1vh),25px);font-weight:500;letter-spacing:.62em;filter:url(#ink1)}
+.l2{right:29%;top:24%;font-size:clamp(20px,calc(2.2vmin + 1.5vh),36px);font-weight:600;letter-spacing:.4em;filter:url(#ink1)}
+.l3{right:5%;top:2.5vh;font-size:min(10.6vh,27vw);font-weight:800;line-height:1;letter-spacing:0;color:#f1ebdb;filter:url(#ink3);transition:none}
+.l3 span{transform-origin:50% 0}
+.l3.split span{text-shadow:-.035em 0 0 rgba(168,22,34,.9),.03em 0 0 rgba(28,96,104,.75)}
+.l3 .bang{text-combine-upright:all;-webkit-text-combine:horizontal;font-size:.62em;margin-top:.9em;letter-spacing:-.05em}
+#ui{position:fixed;left:0;right:0;bottom:0;padding:14px 14px calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;align-items:center;background:linear-gradient(transparent,rgba(0,0,0,.82) 45%)}
+.row{display:flex;flex-wrap:wrap;justify-content:center;border:1px solid rgba(217,212,198,.28)}
+button{font:inherit;color:#d9d4c6;background:rgba(0,0,0,.5);border:0;border-right:1px solid rgba(217,212,198,.28);padding:11px 15px;font-size:14px;letter-spacing:.14em;cursor:pointer}
+.row button:last-child{border-right:0}
+button.on{background:#d9d4c6;color:#0a0a0a}
+#play{border:1px solid #d9d4c6;padding:14px 26px;font-size:16px;letter-spacing:.3em;background:#0a0a0a}
+#note{font-size:11px;letter-spacing:.12em;opacity:.55}
+#head{position:fixed;top:calc(12px + env(safe-area-inset-top));left:14px;font-size:12px;letter-spacing:.3em;opacity:.6;writing-mode:vertical-rl}
+#spec{position:fixed;top:calc(12px + env(safe-area-inset-top));right:14px;font-size:11px;letter-spacing:.14em;opacity:.5}
+body[data-mode="catch"] #spec,body[data-mode="after"] #spec{display:none}
+#after{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:34px}
+#after .t{writing-mode:vertical-rl;font-size:30px;letter-spacing:.5em;font-weight:500;color:#cfc9ba;filter:url(#ink1)}
+#after .row{border-color:rgba(217,212,198,.2)}
+body[data-mode="catch"] #ui,body[data-mode="catch"] #head,body[data-mode="after"] #ui,body[data-mode="after"] #head{display:none}
+body[data-mode="after"] #after{display:flex}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="subs"></div>
+<div id="head">お菊　確認用</div>
+<div id="spec"></div>
+<div id="ui">
+  <div class="row"><button data-pose="stand">うつむく</button><button data-pose="look">こちらを見る</button><button data-pose="chase">追う</button><button data-pose="scream">叫ぶ</button><button id="near">顔に寄る</button></div>
+  <button id="play">捕まる場面を再生</button>
+  <div id="note">音が出ます。画面をなぞるとお菊さんを回せます</div>
+</div>
+<div id="after"><div class="t">十枚目</div><div class="row"><button id="again">もう一度</button><button id="back">モデルを見る</button></div></div>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="ink1" x="-20%" y="-10%" width="140%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.04 0.09" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3.2"/></filter>
+  <filter id="ink3" x="-30%" y="-10%" width="160%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.05" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="13"/></filter>
+</svg>
+<script type="module">/*BUNDLE*/</script>
+</body>
+</html>

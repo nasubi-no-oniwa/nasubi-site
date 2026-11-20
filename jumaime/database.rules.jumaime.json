@@ -1,0 +1,85 @@
+{
+  "run": {
+    "$uid": {
+      ".read": "auth != null && auth.uid === $uid",
+      ".write": "auth != null && auth.uid === $uid && newData.exists()",
+      ".validate": "newData.hasChildren([\"st\"]) && newData.child(\"st\").val() === now",
+      "st": {
+        ".validate": "newData.isNumber()"
+      },
+      "$other": {
+        ".validate": false
+      }
+    }
+  },
+  "b": {
+    "all": {
+      ".read": true,
+      ".indexOn": [
+        "t"
+      ],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && newData.exists() && ((newData.child(\"st\").val() === root.child(\"jumaime/run/\" + $uid).child(\"st\").val() && now - newData.child(\"st\").val() >= newData.child(\"t\").val() - 1500 && now - newData.child(\"st\").val() <= newData.child(\"t\").val() + 3600000 && (!data.exists() || (newData.child(\"t\").val() < data.child(\"t\").val() && newData.child(\"st\").val() > data.child(\"st\").val()))) || (data.exists() && newData.child(\"t\").val() === data.child(\"t\").val() && newData.child(\"p\").val() === data.child(\"p\").val() && newData.child(\"st\").val() === data.child(\"st\").val() && newData.child(\"n\").val() !== data.child(\"n\").val()))",
+        ".validate": "newData.hasChildren([\"n\",\"t\",\"p\",\"st\",\"v\",\"at\"])",
+        "n": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 12"
+        },
+        "t": {
+          ".validate": "newData.isNumber() && newData.val() >= 15000 && newData.val() <= 3600000 && newData.val() % 1 === 0"
+        },
+        "p": {
+          ".validate": "newData.val() === 0 || newData.val() === 1"
+        },
+        "st": {
+          ".validate": "newData.isNumber()"
+        },
+        "v": {
+          ".validate": "newData.val() === 1"
+        },
+        "at": {
+          ".validate": "newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "d": {
+      ".read": true,
+      ".indexOn": [
+        "ds"
+      ],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && newData.exists() && ((newData.child(\"st\").val() === root.child(\"jumaime/run/\" + $uid).child(\"st\").val() && now - newData.child(\"st\").val() >= newData.child(\"t\").val() - 1500 && now - newData.child(\"st\").val() <= newData.child(\"t\").val() + 3600000 && (!data.exists() || newData.child(\"dk\").val() > data.child(\"dk\").val() || (newData.child(\"dk\").val() === data.child(\"dk\").val() && newData.child(\"t\").val() < data.child(\"t\").val() && newData.child(\"st\").val() > data.child(\"st\").val()))) || (data.exists() && newData.child(\"t\").val() === data.child(\"t\").val() && newData.child(\"p\").val() === data.child(\"p\").val() && newData.child(\"st\").val() === data.child(\"st\").val() && newData.child(\"dk\").val() === data.child(\"dk\").val() && newData.child(\"ds\").val() === data.child(\"ds\").val() && newData.child(\"n\").val() !== data.child(\"n\").val()))",
+        ".validate": "newData.hasChildren([\"n\",\"t\",\"p\",\"st\",\"v\",\"at\",\"dk\",\"ds\"])",
+        "n": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 12"
+        },
+        "t": {
+          ".validate": "newData.isNumber() && newData.val() >= 15000 && newData.val() <= 3600000 && newData.val() % 1 === 0"
+        },
+        "p": {
+          ".validate": "newData.val() === 0 || newData.val() === 1"
+        },
+        "st": {
+          ".validate": "newData.isNumber()"
+        },
+        "v": {
+          ".validate": "newData.val() === 1"
+        },
+        "at": {
+          ".validate": "newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        },
+        "dk": {
+          ".validate": "newData.isNumber() && newData.val() * 86400000 <= now + 32400000 && (newData.val() + 1) * 86400000 > now + 32400000"
+        },
+        "ds": {
+          ".validate": "newData.val() === newData.parent().child(\"dk\").val() * 10000000 + newData.parent().child(\"t\").val()"
+        }
+      }
+    }
+  }
+}

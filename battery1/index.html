@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><script>/* nsb-mig: github.io から引き継いだ保存情報を受け取る */(function(){try{var h=location.hash,i=h.indexOf('nsbmig=');if(i<0)return;var r=h.slice(i+7),j=r.indexOf('&nsbh='),m=j<0?r:r.slice(0,j),oh=j<0?'':decodeURIComponent(r.slice(j+6)),d=JSON.parse(decodeURIComponent(m));for(var k in d){try{if(localStorage.getItem(k)===null)localStorage.setItem(k,d[k])}catch(e){}}history.replaceState(null,'',location.pathname+location.search+oh)}catch(e){}})();</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RB6XMN0QR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-5RB6XMN0QR');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,interactive-widget=resizes-content">
+<title>残り1%</title>
+<meta name="description" content="夜中、スマホのバッテリーは1%。60秒で電源が落ちる前に、お題どおりにLINEを返せ。送る文は自分で打つ。打ちまちがえても取り消せない。">
+<meta property="og:title" content="残り1%">
+<meta property="og:description" content="夜中、スマホのバッテリーは1%。60秒で電源が落ちる前に、お題どおりにLINEを返せ。打ちまちがえても取り消せない。">
+<meta property="og:image" content="https://nasubi-no-oniwa.com/battery1/ogp.png">
+<meta property="og:url" content="https://nasubi-no-oniwa.com/battery1/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon.png">
+<style>
+:root{--bg:#000;--list:#121316;--row:#121316;--line:#24262b;--txt:#f2f3f5;--sub:#8b9098;--green:#06c755;--room:#1c2230;--me:#5bd170;--you:#2e3442;--red:#ff3b30;--yel:#ffd33d}
+[hidden]{display:none!important}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#000;color:var(--txt);font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;overflow:hidden;overscroll-behavior:none}
+#app{position:fixed;left:0;right:0;top:0;height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;background:var(--list);overflow:hidden}
+#dim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:40;transition:opacity .3s}
+/* ステータスバー */
+#sb{flex:none;height:calc(env(safe-area-inset-top,0px) + 30px);padding:calc(env(safe-area-inset-top,0px) + 6px) 18px 0;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;background:var(--list)}
+#bat{display:flex;align-items:center;gap:5px;color:var(--red)}
+.bi{width:25px;height:12px;border:1.5px solid #fff9;border-radius:3.5px;position:relative;padding:1.5px}
+.bi:after{content:"";position:absolute;right:-4px;top:3px;width:2px;height:4px;background:#fff9;border-radius:0 1px 1px 0}
+.bi i{display:block;height:100%;width:6%;background:var(--red);border-radius:1px}
+/* お題 */
+#odai{flex:none;margin:4px 8px 6px;border-radius:12px;background:var(--yel);color:#1a1a1a;padding:8px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 3px 0 #0006;min-height:54px}
+#odai .q{flex:1;font-weight:800;font-size:15px;line-height:1.35}
+#odai .q b{font-size:18px;background:#fff;border-radius:6px;padding:0 5px;margin:0 1px;white-space:pre-wrap}
+#odai .k{flex:none;text-align:right;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.1}
+#odai .k small{display:block;font-size:10px;opacity:.7}
+#odai .k span{font-size:22px}
+#odai.ok{animation:ok .35s}
+#odai.ng{animation:ng .35s}
+@keyframes ok{0%{background:#7dff9b;transform:scale(1.04)}100%{background:var(--yel)}}
+@keyframes ng{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#pct{position:absolute;right:12px;top:calc(env(safe-area-inset-top,0px) + 34px)}
+/* 画面 */
+#scr{flex:1;position:relative;overflow:hidden}
+.pane{position:absolute;inset:0;display:flex;flex-direction:column}
+#list{background:var(--list)}
+#room{background:var(--room);transform:translateX(100%);transition:transform .16s ease-out;z-index:2}
+#room.on{transform:none}
+.hd{flex:none;height:46px;display:flex;align-items:center;padding:0 14px;font-weight:800;font-size:19px;border-bottom:1px solid var(--line)}
+.hd .ic{margin-left:auto;display:flex;gap:16px;font-size:17px;opacity:.8}
+#rows{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.rw{display:flex;align-items:center;gap:11px;padding:9px 14px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.rw:active{background:#ffffff10}
+.av{flex:none;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:25px}
+.rw .mid{flex:1;min-width:0}
+.rw .nm{font-weight:700;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rw .nm small{color:var(--sub);font-weight:400;margin-left:3px}
+.rw .ls{color:var(--sub);font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rw .rt{flex:none;text-align:right;font-size:11px;color:var(--sub);display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.bd{background:var(--green);color:#fff;font-size:11.5px;font-weight:800;border-radius:10px;min-width:20px;height:20px;padding:0 6px;display:flex;align-items:center;justify-content:center}
+.rw.bump{animation:bump .3s}
+@keyframes bump{0%{background:#ffffff18}100%{background:transparent}}
+#tabs{flex:none;display:flex;justify-content:space-around;padding:7px 0 calc(env(safe-area-inset-bottom,0px) + 7px);border-top:1px solid var(--line);font-size:10px;color:var(--sub)}
+#tabs div{text-align:center}#tabs div b{display:block;font-size:18px;filter:grayscale(1);opacity:.7}#tabs .on{color:var(--txt)}#tabs .on b{filter:none;opacity:1}
+/* トーク */
+#room .hd{background:var(--room);border-color:#ffffff10;gap:10px;font-size:17px}
+#back{font-size:26px;line-height:1;padding:4px 8px 4px 0;cursor:pointer;font-weight:400}
+#msgs{flex:1;overflow-y:auto;padding:10px 10px 6px;display:flex;flex-direction:column;gap:7px}
+.m{display:flex;align-items:flex-end;gap:5px;max-width:100%}
+.m .bb{max-width:72%;padding:8px 11px;border-radius:17px;font-size:15px;line-height:1.4;word-break:break-all;white-space:pre-wrap}
+.m.y .bb{background:var(--you);color:#fff;border-top-left-radius:5px}
+.m.y .av{width:32px;height:32px;font-size:17px;align-self:flex-start}
+.m.y .wrap{display:flex;flex-direction:column;gap:2px;max-width:80%}
+.m.y .wrap .bb{max-width:100%}
+.m.y .sn{font-size:11px;color:var(--sub);margin-left:3px}
+.m.me{justify-content:flex-end}
+.m.me .bb{background:var(--me);color:#0b1a0e;border-top-right-radius:5px}
+.m .st{font-size:10px;color:var(--sub);text-align:right;line-height:1.25;white-space:nowrap}
+.m.ng .bb{box-shadow:0 0 0 2.5px var(--red)}
+.m.ng .st b{color:var(--red);display:block}
+.m.sending .bb{opacity:.55}
+.day{align-self:center;font-size:11px;background:#0005;color:#cfd3da;border-radius:10px;padding:3px 10px;margin:4px 0}
+#bar{flex:none;display:flex;align-items:center;gap:8px;padding:7px 8px calc(env(safe-area-inset-bottom,0px) + 7px);background:#141922}
+#bar .pl{font-size:22px;color:var(--sub);width:24px;text-align:center}
+#inp{flex:1;min-width:0;height:38px;border-radius:19px;border:none;background:#2a3140;color:#fff;font-size:16px;padding:0 14px;outline:none;font-family:inherit}
+#send{flex:none;width:38px;height:38px;border-radius:50%;border:none;background:var(--green);color:#fff;font-size:18px;font-weight:900;cursor:pointer}
+#send:disabled{background:#2a3140;color:var(--sub)}
+#langs{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}#langs button{border:1px solid #3a3d44;background:#1f2228;color:#c9ccd2;border-radius:16px;padding:5px 12px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer}#langs button.on{background:#fff;color:#000;border-color:#fff}
+#tip{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 96px);transform:translateX(-50%);z-index:35;background:#ff3b30;color:#fff;font-weight:900;font-size:14px;border-radius:12px;padding:7px 14px;white-space:nowrap;box-shadow:0 6px 18px #0008;opacity:0;pointer-events:none}
+#tip.on{animation:tip 1.8s ease-out}
+@keyframes tip{0%{opacity:0;transform:translate(-50%,-6px)}10%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+/* 通知 */
+#toast{position:absolute;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:30;background:#2b2d33f2;border-radius:16px;padding:11px 14px;font-size:13px;line-height:1.4;box-shadow:0 8px 24px #0008;transform:translateY(-130%);transition:transform .3s}
+#toast.on{transform:none}
+#toast b{display:block;font-size:14px}
+/* タイトル・結果 */
+.panel{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px;background:#000c;overflow:auto}
+.card{width:100%;max-width:380px;background:#16181d;border:1px solid #2c2f36;border-radius:22px;padding:22px 18px;text-align:center;max-height:100%;overflow:auto}
+@media (max-width:420px){.panel{padding:10px}.card{padding:20px 12px}}
+.card h1{margin:4px 0 0;font-size:56px;line-height:1;letter-spacing:-.02em;font-weight:900}
+.card h1 em{font-style:normal;color:var(--red)}
+.card .lead{color:#c9ccd2;font-size:14px;line-height:1.7;margin:12px 0 4px}
+.card .lead b{color:var(--yel)}
+.big{display:block;width:100%;margin-top:14px;padding:16px;border:none;border-radius:14px;font-size:20px;font-weight:900;background:var(--green);color:#fff;cursor:pointer;font-family:inherit}
+.sub{display:block;width:100%;margin-top:8px;padding:12px;border:none;border-radius:12px;font-size:15px;font-weight:800;background:#2a2d34;color:#fff;cursor:pointer;font-family:inherit;text-decoration:none}
+.sub.x{background:#fff;color:#000}
+.batbig{display:inline-flex;align-items:center;gap:8px;color:var(--red);font-weight:900;font-size:26px;margin-top:6px}
+.batbig .bi{width:44px;height:21px;border-width:2px;border-radius:5px}
+.batbig .bi:after{right:-6px;top:6px;width:3px;height:6px}
+.res-n{font-size:84px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;color:var(--yel);margin-top:6px}
+.res-n small{font-size:22px;color:#fff;margin-left:4px}
+.res-s{color:#c9ccd2;font-size:14px;margin-top:6px}
+.ngl{margin-top:12px;text-align:left;background:#0d0e11;border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.5;max-height:34vh;overflow:auto}
+.ngl div{padding:5px 0;border-bottom:1px solid #22252b}
+.ngl div:last-child{border:none}
+.ngl s{color:#8b9098;text-decoration:none}
+.ngl u{text-decoration:none;color:#ff8a80;font-weight:700}
+.dev{display:inline-block;margin-top:8px;font-size:12px;color:var(--sub);border:1px solid #333;border-radius:20px;padding:2px 10px}
+#recBox input{width:100%;margin-top:14px;font-size:16px;border-radius:12px;border:1px solid #3a3d44;background:#0d0e11;color:#fff;padding:11px;text-align:center;font-family:inherit;outline:none}
+.sub.rec{background:var(--yel);color:#1a1a1a}
+.note{font-size:13px;min-height:1.2em;margin-top:6px;color:#c9ccd2}.note.err{color:#ff8a80}.note.ok{color:#7dff9b}
+.tabs{display:flex;gap:6px;margin-top:10px}.tabs button{flex:1;padding:8px;border:none;border-radius:10px;background:#2a2d34;color:#c9ccd2;font-weight:800;font-family:inherit;font-size:14px}.tabs button.on{background:#fff;color:#000}
+#rankBox{margin-top:8px;max-height:48vh;overflow:auto;text-align:left}
+table.rk{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+table.rk td{padding:7px 4px;border-bottom:1px solid #22252b}
+table.rk td.r{color:var(--yel);font-weight:900;width:2.6em}
+table.rk td.n{max-width:10em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table.rk td.c{text-align:right;font-weight:800;white-space:nowrap}
+table.rk td.c small{color:var(--sub);font-weight:400;margin-left:4px}
+table.rk tr.me td{background:#3a3418}
+/* 電源オフ */
+#off{position:fixed;inset:0;z-index:50;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+#off.on{opacity:1;pointer-events:auto}
+#off .ln{width:100%;height:2px;background:#fff;transform:scaleX(0)}
+#off.on .ln{animation:crt .7s ease-out forwards}
+@keyframes crt{0%{transform:scaleX(1) scaleY(60);opacity:1}40%{transform:scaleX(1) scaleY(1)}100%{transform:scaleX(0) scaleY(1);opacity:0}}
+#off .zero{position:absolute;bottom:22%;left:0;right:0;text-align:center;color:#ff3b30;font-weight:900;font-size:15px;opacity:0;transition:opacity .4s .9s}
+#off.on .zero{opacity:1}
+/* ===== 演出（2026-11-17 追加。ルールやランキングは変えていない） ===== */
+.m.new .bb{animation:pop .22s cubic-bezier(.2,1.6,.4,1)}
+.m.me .bb{transform-origin:100% 100%}.m.y .bb{transform-origin:0 100%}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:none;opacity:1}}
+.m.ng.new .bb{animation:pop .22s cubic-bezier(.2,1.6,.4,1),shake .4s .22s}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.rw.bump .bd{animation:bd .32s cubic-bezier(.2,1.8,.4,1)}
+@keyframes bd{0%{transform:scale(0)}100%{transform:none}}
+#q.in{animation:qin .25s ease-out}
+@keyframes qin{0%{transform:translateY(10px);opacity:0}100%{transform:none;opacity:1}}
+#cnt{display:inline-block}
+#cnt.bump,#rN.bump{animation:cb .38s cubic-bezier(.2,1.8,.4,1)}
+#rN{display:inline-block}
+@keyframes cb{0%{transform:scale(1.9)}100%{transform:none}}
+.plus{position:absolute;right:18px;top:calc(env(safe-area-inset-top,0px) + 34px);z-index:35;font-weight:900;font-size:24px;color:#0a7d33;text-shadow:0 1px 0 #fff8;pointer-events:none;animation:plus .7s ease-out forwards}
+@keyframes plus{0%{transform:translateY(22px) scale(.6);opacity:0}25%{opacity:1;transform:translateY(6px) scale(1.25)}100%{transform:translateY(-22px);opacity:0}}
+/* 残り10秒：電池が点滅して、画面のふちが赤く脈うつ */
+#bat.hot{animation:blink .5s linear infinite}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.15}}
+#vg{position:absolute;inset:0;z-index:41;pointer-events:none;opacity:0;box-shadow:inset 0 0 70px 20px rgba(255,59,48,.8)}
+#vg.on{animation:vg 1s ease-in-out infinite}
+@keyframes vg{0%,100%{opacity:0}16%{opacity:1}34%{opacity:.25}50%{opacity:.8}75%{opacity:.1}}
+/* 電源が切れる：最後にちらついて、画面が1本の線になって消える */
+#app.flick{animation:flick .13s steps(1) infinite}
+@keyframes flick{0%{filter:brightness(1)}50%{filter:brightness(.5)}}
+#app.dead{animation:dead .55s cubic-bezier(.5,0,.9,.5) forwards}
+@keyframes dead{0%{transform:none;filter:brightness(1)}38%{transform:scaleY(.006);filter:brightness(5)}78%{transform:scaleY(.006) scaleX(.03);filter:brightness(8)}100%{transform:scale(0);filter:brightness(8)}}
+#off{flex-direction:column;gap:16px}
+#off .dbat{width:92px;height:42px;border:3px solid #7a7f88;border-radius:10px;position:relative;padding:4px;opacity:0}
+#off .dbat:after{content:"";position:absolute;right:-10px;top:11px;width:5px;height:14px;background:#7a7f88;border-radius:0 3px 3px 0}
+#off .dbat i{display:block;width:9%;height:100%;background:#ff3b30;border-radius:3px}
+#off.on .dbat{animation:dbat 1.6s .2s both}
+@keyframes dbat{0%{opacity:0}14%{opacity:1}42%{opacity:1}52%{opacity:.2}66%{opacity:1}100%{opacity:1}}
+#off .zero{position:static;transition:opacity .3s .5s}
+/* タイトル：電池が点滅／音の切りかえ */
+.batbig{animation:blink2 1.6s ease-in-out infinite}
+@keyframes blink2{0%,100%{opacity:1}50%{opacity:.35}}
+button.dev{background:none;font-family:inherit;cursor:pointer;margin-left:4px}
+/* 結果：いちばんの誤送信をトークの形で見せる */
+.wst{margin-top:10px;background:var(--room);border-radius:14px;padding:8px 10px 10px;display:flex;flex-direction:column;gap:5px;text-align:left}
+.wst .wl{font-size:11px;color:var(--sub);text-align:center}
+.wst .m.me .bb{animation:pop .25s .5s cubic-bezier(.2,1.6,.4,1) both,shake .4s .8s}
+.wst .m.y .bb{animation:pop .25s .2s cubic-bezier(.2,1.6,.4,1) both}
+.more{margin-top:6px;font-size:12px;color:var(--sub);cursor:pointer;padding:4px;text-decoration:underline}
+.wst+.more+.ngl{margin-top:4px}
+.row2{display:flex;gap:8px}.row2 .sub{flex:1}
+.sub.img{background:#2f6fd0;color:#fff}
+</style>
+<!-- nasubi-track: 結果画面とXへの投稿の回数を記録（ゲームの動きには影響しない） -->
+<script>(function(){try{var G="battery1",IDS=["result"];
+function ev(n){try{if(typeof gtag==='function')gtag('event',n,{game:G});}catch(e){}}
+var o=window.open;window.open=function(u){try{if(/intent\/(post|tweet)/.test(String(u)))ev('x_share');}catch(e){}return o.apply(window,arguments);};
+if(!IDS.length)return;
+function vis(e){if(!e||!e.isConnected||e.closest('[hidden]'))return false;var r=e.getBoundingClientRect();if(r.width<1||r.height<1)return false;for(var n=e;n&&n.nodeType===1;n=n.parentElement){var s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden'||parseFloat(s.opacity)<0.05)return false;}return true;}
+var was={};setInterval(function(){try{var any=false;for(var i=0;i<IDS.length;i++){if(vis(document.getElementById(IDS[i])))any=true;}if(any&&!was.v)ev('result_view');was.v=any;}catch(e){}},700);
+}catch(e){}})();</script>
+<!-- nasubi-ad: スマホのとき、結果画面とタイトル画面の決めた場所に広告の帯（と、決めた場所だけその下に大きい広告）を出す（遊んでいる最中は出さない・ボタンに重ねない・広告の幅320pxを切らない・画面が出たらすぐ見せるが、最初の1.2秒は押しても反応しない・画面が出るたびに新しい広告を読みこむ（場所ごとに30秒に1回まで）・画面が隠れて2秒たったら広告を外して止める・タイトル画面はタイトル用の広告枠を使う） -->
+<script>(function(){try{var C=[{"a": "#result .card", "v": "#result"}, {"a": "#title div.card", "v": "#title", "t": 1, "b": 1, "m": 20, "x": "", "x2": ""}],BIG=1,M=20,EX="",EX2="",AD='https://nasubi-no-oniwa.com/ad/',AD2='https://nasubi-no-oniwa.com/ad/big.html',TAD='https://nasubi-no-oniwa.com/ad/t.html',TAD2='https://nasubi-no-oniwa.com/ad/tbig.html',LOCK=1200,HOLD=2000,MIN=30000;
+if(/[?&]noad=1/.test(location.search))return;
+if(!/iPhone|iPod|Android|Mobile|Windows Phone|BlackBerry/i.test(navigator.userAgent||''))return;
+var S=[];
+function vis(e){if(!e||!e.isConnected||e.closest('[hidden]'))return false;var r=e.getBoundingClientRect();if(r.width<1||r.height<1)return false;for(var n=e;n&&n.nodeType===1;n=n.parentElement){var s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden'||parseFloat(s.opacity)<0.05)return false;}return true;}
+function opt(i,k,d){return C[i][k]===undefined?d:C[i][k];}
+function mk(i){var b=document.createElement('div');b.className='nsb-ad';b.style.cssText='display:block;position:static;float:none;box-sizing:content-box;width:320px;min-width:320px;max-width:none;height:50px;margin:'+opt(i,'m',M)+'px calc((100% - 320px) / 2) 0;padding:0;border:0;background:none;box-shadow:none;border-radius:0;transform:none;overflow:hidden;flex:0 0 auto;align-self:center;'+opt(i,'x',EX);return b;}
+function mk2(i){var g=document.createElement('div');g.className='nsb-ad nsb-big';g.style.cssText='display:block;position:static;float:none;box-sizing:content-box;width:300px;min-width:300px;max-width:none;height:250px;margin:20px calc((100% - 300px) / 2) 0;padding:0;border:0;background:none;box-shadow:none;border-radius:0;transform:none;overflow:hidden;flex:0 0 auto;align-self:center;'+opt(i,'x2',EX2);return g;}
+function mkf(u,w,h){var f=document.createElement('iframe');f.title='ad';f.setAttribute('scrolling','no');f.width=w;f.height=h;f.style.cssText='border:0;margin:0;padding:0;width:'+w+'px;height:'+h+'px;display:block;max-width:none;visibility:hidden;pointer-events:none';f.src=u;return f;}
+function place(){for(var i=0;i<C.length;i++){var a=document.querySelector(C[i].a);if(!a)continue;var s=S[i]||(S[i]={b:mk(i),g:opt(i,'b',BIG)?mk2(i):null,on:false,since:0,hid:0,last:0,f:null,f2:null});var b=s.b;
+if(C[i].p==='first'){if(a.firstElementChild!==b)a.insertBefore(b,a.firstChild);}else if(b.parentNode!==a)a.appendChild(b);
+if(s.g&&b.nextSibling!==s.g)a.insertBefore(s.g,b.nextSibling);}}
+function off(s,now){if(s.f){s.f.style.visibility='hidden';s.f.style.pointerEvents='none';}if(s.f2){s.f2.style.visibility='hidden';s.f2.style.pointerEvents='none';}s.on=false;s.since=0;s.hid=now;}
+function kill(s){if(s.f){if(s.f.parentNode)s.f.parentNode.removeChild(s.f);s.f=null;}if(s.f2){if(s.f2.parentNode)s.f2.parentNode.removeChild(s.f2);s.f2=null;}}
+function tick(){try{place();var k=-1,i,s,res=false,now=Date.now();
+for(i=0;i<C.length;i++){s=S[i];if(!C[i].t&&s&&vis(document.querySelector(C[i].v))&&vis(s.b)){k=i;res=true;break;}}
+if(k<0)for(i=0;i<C.length;i++){s=S[i];if(C[i].t&&s&&vis(document.querySelector(C[i].v))&&vis(s.b)){k=i;break;}}
+if(document.hidden)k=-1;
+for(i=0;i<C.length;i++){s=S[i];if(!s)continue;
+if(C[i].t){var d=(res&&vis(document.querySelector(C[i].v)))?'none':'block';if(s.b.style.display!==d){s.b.style.display=d;if(s.g)s.g.style.display=d;}}
+if(i!==k){if(s.on)off(s,now);if(s.f&&now-s.hid>=HOLD&&now-s.last>=MIN)kill(s);}}
+if(k<0)return;
+s=S[k];
+if(!s.on){s.on=true;s.since=now;}
+if(!s.f){var t=!!C[k].t;s.f=mkf(t?TAD:AD,320,50);s.b.appendChild(s.f);if(s.g){s.f2=mkf(t?TAD2:AD2,300,250);s.g.appendChild(s.f2);}s.last=now;}
+if(s.f.parentNode!==s.b)s.b.appendChild(s.f);if(s.f2&&s.f2.parentNode!==s.g)s.g.appendChild(s.f2);
+var pe=(now-s.since<LOCK)?'none':'auto';
+s.f.style.visibility='visible';s.f.style.pointerEvents=pe;if(s.f2){s.f2.style.visibility='visible';s.f2.style.pointerEvents=pe;}
+}catch(_){}}
+function go(){place();try{new MutationObserver(place).observe(document.body,{childList:true,subtree:true});}catch(_){}setInterval(tick,300);}
+if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
+}catch(e){}})();</script>
+<!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
+<script>window.NSB_NEXT={"g": "battery1", "r": [{"a": "#result .card", "v": "#result"}], "ad": 1};</script>
+<script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
+</head>
+<body>
+<div id="app">
+  <div id="sb"><span id="clk">1:07</span><span id="bat"><span id="batTxt">1%</span><span class="bi"><i id="batFill"></i></span></span></div>
+  <div id="odai"><div class="q" id="q">　</div><div class="k"><small id="clrL">クリア</small><span id="cnt">0</span></div></div>
+  <div id="scr">
+    <div class="pane" id="list">
+      <div class="hd"><span id="hdT">トーク</span><span class="ic"><span>⌕</span><span>✎</span></span></div>
+      <div id="rows"></div>
+      <div id="tabs"><div><b>🏠</b><span>ホーム</span></div><div class="on"><b>💬</b><span>トーク</span></div><div><b>▶</b><span>VOOM</span></div><div><b>🛍</b><span>ショッピング</span></div><div><b>⋯</b><span>ウォレット</span></div></div>
+    </div>
+    <div class="pane" id="room">
+      <div class="hd"><span id="back">‹</span><span id="rname"></span><span class="ic"><span>⌕</span><span>☏</span><span>≡</span></span></div>
+      <div id="msgs"></div>
+      <div id="bar"><span class="pl">＋</span><input id="inp" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="メッセージを入力"><button id="send" disabled>➤</button></div>
+    </div>
+  </div>
+  <div id="tip"></div>
+  <div id="toast"><b id="toastB">バッテリー残量が少なくなっています</b><span id="toastT">残り1%です。電源に接続してください。</span></div>
+  <div id="dim"></div>
+  <div id="vg"></div>
+</div>
+<div class="panel" id="rank" hidden>
+  <div class="card">
+    <div style="font-weight:900;font-size:20px" id="rkT">ランキング</div>
+    <div class="tabs" id="rkPf"><button data-p="m">スマホ</button><button data-p="p">PC</button></div>
+    <div class="tabs" id="rkWhen"><button data-w="d">今日</button><button data-w="all">全期間</button></div>
+    <div class="res-s" style="font-size:12px" id="rkNote">クリアしたお題が多い順（同じなら誤送信が少ない人が上）</div>
+    <div id="rankBox"></div>
+    <button class="sub" id="rkBack">もどる</button>
+  </div>
+</div>
+<div id="off"><div class="dbat"><i></i></div><div class="zero">0%</div></div>
+
+<div class="panel" id="title">
+  <div class="card">
+    <div class="batbig"><span>1%</span><span class="bi"><i style="width:6%;height:100%;display:block;background:#ff3b30;border-radius:2px"></i></span></div>
+    <h1 id="tH1">残り<em>1%</em></h1>
+    <p class="lead" id="tLead">夜中、スマホのバッテリーは <b>1%</b>。<br>あと<b>60秒</b>で電源が落ちる。<br>上に出るお題どおりに、急いでLINEを返せ。<br>送る文は<b>自分で打つ</b>。打ちまちがえても、もう送信は取り消せない。</p>
+    <button class="big" id="go">はじめる</button>
+    <button class="sub" id="rkBtn">ランキング</button>
+    <div class="dev" id="devT"></div><button class="dev" id="sndBtn"></button>
+    <div id="langs"></div>
+  </div>
+</div>
+
+<div class="panel" id="result" hidden>
+  <div class="card">
+    <div class="res-s" id="rHead">バッテリー1%で</div>
+    <div class="res-n"><span id="rN">0</span><small id="rUnit">個クリア</small></div>
+    <div class="res-s" id="rSub"></div>
+    <div class="wst" id="rWorst" hidden></div>
+    <div class="more" id="rMore" hidden></div>
+    <div class="ngl" id="rNg" hidden></div>
+    <div id="recBox"><input id="nm" maxlength="12" placeholder="名前（12文字まで）" autocomplete="off"><button class="sub rec" id="recBtn">ランキングに記録する</button><div class="note" id="recNote"></div></div>
+    <div class="row2"><button class="sub img" id="imgBtn">画像にする</button><button class="sub x" id="xBtn">𝕏 に投稿</button></div>
+    <button class="big" id="again">もう一度</button>
+    <button class="sub" id="rkBtn2">ランキング</button>
+    <div class="dev" id="devR"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const DUR = 60000;
+const IS_MOBILE = matchMedia('(pointer:coarse)').matches || /iPhone|iPad|Android|Mobile/i.test(navigator.userAgent);
+
+// ---------- 連絡先 ----------
+let C = {
+ boss:{n:'部長',a:'👔',c:'#3b4a6b'}, mom:{n:'母',a:'👩',c:'#6b3b5a'}, kano:{n:'みさき',a:'🌸',c:'#7a3d55',rel:'彼女'},
+ tomo:{n:'たける',a:'🍺',c:'#6b5a2a',rel:'友だち'}, kohai:{n:'佐藤（後輩）',a:'🐣',c:'#6b6a2a'}, ooya:{n:'大家さん',a:'🏠',c:'#3e5a3e'},
+ moto:{n:'元カノ',a:'🥀',c:'#4a2a3a'}, chonai:{n:'町内会',a:'📢',c:'#2a4a5a',g:1}, papa:{n:'父',a:'👨',c:'#3a3a5a'},
+ tencho:{n:'店長',a:'🍟',c:'#6b3a2a'}, ane:{n:'姉',a:'👱‍♀️',c:'#5a3a6b'}, doki:{n:'同期の田中',a:'💼',c:'#2a3a4a',rel:'同期'},
+ dentist:{n:'さくら歯科',a:'🦷',c:'#2a5a5a'}, groupm:{n:'高校のグループ',a:'🎒',c:'#4a3a2a',g:1},
+};
+// お題の呼び方（お題の文に出る名前）
+let CALL = {boss:'部長',mom:'母',kano:'彼女',tomo:'友だち（たける）',kohai:'後輩',ooya:'大家さん',moto:'元カノ',chonai:'町内会',papa:'父',tencho:'店長',ane:'姉',doki:'同期',dentist:'歯医者',groupm:'高校のグループ'};
+let GROUP_SENDER = {chonai:['会長','山田','鈴木（副会長）'], groupm:['ゆうき','あやか','こうへい']};
+
+// ---------- お題100種類 ----------
+// s: 送るお題 [相手, 相手からのメッセージ, 送る文（|で区切って別の書き方も正解）]
+// o: 開くお題 [相手, 相手からのメッセージ]
+const S = [
+['boss','今日はおつかれさま','ありがとうございました'],
+['boss','明日の資料、できてる？','できてます|できています'],
+['boss','起きてる？','起きてます|おきてます'],
+['boss','例の件どうなった？','確認します|かくにんします'],
+['boss','明日何時に来れる？','9時に行きます|9時にいきます|九時に行きます'],
+['boss','今日の会議、寝てたよね','すみません|すいません'],
+['boss','来週の出張、行ける？','行けます|いけます'],
+['boss','このあと飲み行くか','お供します|おともします'],
+['boss','進捗どう？','順調です|じゅんちょうです'],
+['boss','電話出られる？','いま出ます|今出ます|いまでます'],
+['mom','ご飯いる？','いらない'],
+['mom','何時に帰るの？','もうすぐ帰る|もうすぐかえる'],
+['mom','充電器持ってった？','持ってない|もってない'],
+['mom','生きてる？','生きてる|いきてる'],
+['mom','お米送ったよ','ありがとう'],
+['mom','おばあちゃんに電話しなさい','わかった|分かった'],
+['mom','カギ閉めた？','閉めた|しめた'],
+['mom','早く寝なさい','おやすみ'],
+['kano','誰といるの？','ひとりだよ|一人だよ|1人だよ'],
+['kano','なんで返信くれないの','ごめんね'],
+['kano','好き？','大好き|だいすき'],
+['kano','もう寝た？','起きてるよ|おきてるよ'],
+['kano','明日どこ行く？','水族館|すいぞくかん'],
+['kano','怒ってないよ','ほんとごめん|本当ごめん|ほんとうにごめん'],
+['kano','あの女だれ？','いとこだよ|従妹だよ|従姉だよ'],
+['kano','今日の服どうだった？','かわいかった|可愛かった'],
+['kano','記念日おぼえてる？','もちろん'],
+['tomo','今からカラオケ来れる？','行ける|いける'],
+['tomo','スマホの充電ある？','1%'],
+['tomo','終電なくなった','うち来る？|うちくる？|家来る？'],
+['tomo','金返して','来週返す|来週かえす|らいしゅうかえす'],
+['tomo','ラーメン行かね？','行く|いく'],
+['tomo','明日の試合何時？','10時|十時'],
+['tomo','誕生日おめでとう！','サンキュー|さんきゅー|ありがとう'],
+['kohai','先輩、寝坊しました','おつかれ|お疲れ'],
+['kohai','明日休んでいいですか','だめ|ダメ|駄目'],
+['kohai','資料なくしました','探して|さがして'],
+['kohai','先輩って彼女いるんですか','いる'],
+['kohai','合コン来ませんか','行く|いく'],
+['ooya','今月の家賃まだですか','明日払います|明日はらいます|あしたはらいます'],
+['ooya','騒音の苦情が来てます','気をつけます|気を付けます|きをつけます'],
+['ooya','水道の点検は何時がいいですか','午後でお願いします|ごごでお願いします|午後でおねがいします'],
+['moto','起きてる？','寝てる|ねてる'],
+['moto','元気？','元気|げんき'],
+['moto','やり直せないかな','むり|無理|ムリ'],
+['moto','私の服、まだある？','捨てた|すてた'],
+['chonai','明日はゴミ当番です','承知しました|しょうちしました'],
+['chonai','回覧板を回してください','回しました|まわしました'],
+['chonai','夏祭りの手伝いできる方','参加します|さんかします'],
+['papa','元気か','元気|げんき'],
+['papa','母さんに電話しろ','わかった|分かった'],
+['papa','正月は帰ってくるのか','帰る|かえる'],
+['papa','車のタイヤ交換したか','まだ'],
+['tencho','明日シフト入れる？','入れます|いれます'],
+['tencho','今日バイトだよ？','すぐ行きます|すぐいきます'],
+['tencho','レジのお金合わないんだけど','知りません|しりません'],
+['tencho','急に休まれると困るよ','すみません|すいません'],
+['ane','あんたの服借りた','返して|かえして'],
+['ane','結婚することになった','おめでとう'],
+['ane','お母さんの誕生日なに買う？','花|はな|お花|おはな'],
+['ane','プリン食べたでしょ','食べてない|たべてない'],
+['doki','部長キレてる','知ってる|しってる'],
+['doki','明日の朝礼代わって','いいよ'],
+['doki','転職するわ','まじか|マジか'],
+['doki','飲み会どうする？','行かない|いかない'],
+['dentist','明日10時のご予約です','伺います|うかがいます'],
+['dentist','予約の変更はありますか','ありません|ないです'],
+['groupm','同窓会来る人ー','行く|いく'],
+['groupm','先生結婚したらしい','まじで|マジで'],
+['groupm','卒アルの写真見つけた','見せて|みせて'],
+];
+const O = [
+['kano','ねえ'],['kano','寝た？'],['kano','💢'],['kano','既読つけて'],
+['boss','明日朝イチで話せる？'],['boss','遅くにすまん'],['boss','至急'],
+['mom','おやすみ'],['mom','写真送るね'],['mom','📷'],
+['tomo','見て笑'],['tomo','起きてる奴いる？'],
+['moto','夢に出てきた'],['moto','ひさしぶり'],
+['chonai','防災訓練のお知らせ'],['chonai','回覧板まわってますか'],
+['papa','👍'],['papa','今日は寒いな'],
+['tencho','シフト表送ります'],['tencho','明日来れる？'],
+['kohai','先輩〜'],['ooya','水道の点検のお知らせ'],
+['ane','ちょっと'],['doki','やばいことになった'],
+['dentist','定期検診のお知らせ'],['groupm','スタンプを送信しました'],
+['groupm','写真を送信しました'],['kohai','今日はありがとうございました'],
+['ane','電話して'],['doki','明日休む'],
+];
+// 正解の判定：お題の言葉と同じ言葉なら、漢字・ひらがな・カタカナのどれで打っても正解（[漢字/読み] の部分はどちらでもよく、まぜ書きもOK）。言い方を変えたもの（方言・くだけた言い方）は誤送信のまま
+const YOMI = ["[有難う/有り難う/ありがとう]ございました", "[出来/でき]てます|[出来/でき]ています", "[起/お]きてます", "[確認/かくにん]します", "[9時/九時/くじ]に[行/い]きます", "すみません|すいません|[済/す]みません", "[行/い]けます", "お[供/とも]します", "[順調/じゅんちょう]です", "[今/いま][出/で]ます", "[要/い]らない", "もうすぐ[帰/かえ]る", "[持/も]ってない", "[生/い]きてる", "[有難う/有り難う/ありがとう]", "[分/判/解/わ]かった", "[閉/締/し]めた", "おやすみ|お[休/やす]み", "[ひとり/一人/1人/独り]だよ", "ごめんね|[御免/ごめん]ね", "[大好/だいす]き", "[起/お]きてるよ", "[水族館/すいぞくかん]", "[ほんと/本当/ほんとう/本当に/ほんとうに]ごめん", "[いとこ/従妹/従姉/従兄/従弟/従兄弟/従姉妹]だよ", "[かわいかった/可愛かった]", "[もちろん/勿論]", "[行/い]ける", "[1/一/いち][%/ぱーせんと]", "[うち/家][来/く]る", "[来週/らいしゅう][返/かえ]す", "[行/い]く", "[10時/十時/じゅうじ]", "さんきゅー|ありがとう|[有難/有り難]う", "お[疲/つか]れ", "[駄目/だめ]", "[探/さが]して", "[いる/居る]", "[行/い]く", "[明日/あした/あす][払/はら]います", "[気/き]を[付/つ]けます", "[午後/ごご]で[お願/おねが]いします", "[寝/ね]てる", "[元気/げんき]", "[無理/むり]", "[捨/す]てた", "[承知/しょうち]しました", "[回/まわ]しました", "[参加/さんか]します", "[元気/げんき]", "[分/判/解/わ]かった", "[帰/かえ]る", "まだ", "[入/はい/い]れます", "すぐ[行/い]きます", "[知/し]りません", "すみません|すいません|[済/す]みません", "[返/かえ]して", "おめでとう|[御目出度/おめでと]う", "[花/はな]|お[花/はな]", "[食/た]べてない", "[知/し]ってる", "いいよ|[良/い]いよ", "まじか|[本気/まじ]か", "[行/い]かない", "[伺/うかが]います", "ありません|ないです|[無/な]いです|[有/あ]りません", "[行/い]く", "まじで|[本気/まじ]で", "[見/み]せて"];
+// ちょうど100種類
+const S2T = {"丢": "丟", "来": "來", "系": "係", "个": "個", "传": "傳", "妈": "媽", "对": "對", "带": "帶", "爱": "愛", "时": "時", "会": "會", "没": "沒", "准": "準", "当": "當", "确": "確", "礼": "禮", "给": "給", "经": "經", "缴": "繳", "记": "記", "认": "認", "谢": "謝", "还": "還", "错": "錯", "锁": "鎖", "关": "關", "顺": "順", "馆": "館", "马": "馬", "点": "點"};
+const norm = s => s.normalize('NFKC').toLowerCase().replace(/[\u30a1-\u30f6]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60)).replace(/[\u4e00-\u9fff]/g, c => S2T[c] || c).replace(/[\s。、.,!！?？…・~〜～"'「」『』’‘“”，：:;]/g, '');
+function yomiRe(spec) { // "[明日/あした]払います|…" → 正規表現
+ const ex = s => norm(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+ const vs = [], cur = []; let d = 0, b = '';
+ for (const c of spec) { if (c === '[') d++; if (c === ']') d--; if (c === '|' && !d) { vs.push(b); b = ''; } else b += c; } vs.push(b);
+ return new RegExp('^(?:' + vs.map(v => v.replace(/\[([^\]]*)\]|([^\[]+)/g, (m, g, lit) => g != null ? '(?:' + g.split('/').map(ex).join('|') + ')' : ex(lit))).join('|') + ')$');
+}
+let ODAI = S.map((x, i) => ({t:'s', w:x[0], r:x[1], ok:x[2].split('|'), re:yomiRe(YOMI[i])})).concat(O.map(x => ({t:'o', w:x[0], r:x[1]})));
+console.log('お題の数', ODAI.length);
+// 待ちのあいだに勝手に届くメッセージ
+let NOISE = {
+ boss:['了解','明日よろしく','資料見た？'], mom:['ちゃんと食べてる？','おやすみ','📷'], kano:['ねえ','💤','おーい'],
+ tomo:['笑','見てこれ','やばい'], kohai:['先輩〜','すみません'], ooya:['お知らせです'], moto:['ねえ','ひさしぶり'],
+ chonai:['お知らせです','ご協力お願いします'], papa:['👍','寒いな'], tencho:['シフト表です','よろしく'], ane:['ちょっと','見て'],
+ doki:['おつ','明日だるい'], dentist:['ご予約のお知らせ'], groupm:['笑笑','スタンプを送信しました','写真を送信しました'],
+};
+let NG_REPLY = ['？','え？','どういうこと？','なにそれ','大丈夫？','？？？','誰に送ってる？','怖いんだけど'];
+// ---------- 画面のことば（日本語・英語・繁体中文・韓国語） ----------
+const LANGS = [['ja', '日本語'], ['en', 'English'], ['zh', '繁中'], ['ko', '한국어']];
+const TX = {
+ ja: { h1: '残り<em>1%</em>', lead: '夜中、スマホのバッテリーは <b>1%</b>。<br>あと<b>60秒</b>で電源が落ちる。<br>上に出るお題どおりに、急いでLINEを返せ。<br>送る文は<b>自分で打つ</b>。打ちまちがえても、もう送信は取り消せない。',
+  go: 'はじめる', rank: 'ランキング', devM: 'スマホのランキング', devP: 'PCのランキング', sndOn: '🔊 音あり', sndOff: '🔇 音なし', clear: 'クリア', idle: 'ここにお題が出る',
+  chats: 'トーク', tabs: ['ホーム', 'トーク', 'VOOM', 'ショッピング', 'ウォレット'], ph: 'メッセージを入力', toastB: 'バッテリー残量が少なくなっています', toastT: '残り1%です。電源に接続してください。',
+  today: '今日', yday: '昨日', read: '既読', sending: '送信中…', ngL: '誤送信',
+  qS: (w, t) => `${w}にLINEしろ<br><b>${t}</b>`, qO: w => `<b>${w}</b>のLINEを開け`, tip: w => 'あて先ちがい！ お題は「' + w + '」あて', tip0: 'あて先ちがい！',
+  rHead: 'バッテリー1%で', unit: '個クリア', rSub: (n, l) => '誤送信 ' + n + '件' + (l ? '　／　最後の「' + l + '」は送信中のまま…' : ''),
+  more: n => 'ほかの誤送信 ' + n + '件 ', moreH: 'ほかの誤送信', row: (who, got, want) => `${who}に ${got}${want}`, want: w => '（正しくは「' + w + '」）', nobody: '（だれにも頼まれていない）', chatWith: n => n + ' とのトーク',
+  nm: '名前（12文字まで）', rec: 'ランキングに記録する', img: '画像にする', x: '𝕏 に投稿', again: 'もう一度', back: 'もどる', pfM: 'スマホ', pfP: 'PC', dToday: '今日', dAll: '全期間',
+  rkNote: 'クリアしたお題が多い順（同じなら誤送信が少ない人が上）', loading: '読み込み中…', empty: 'まだ誰もいません', rankErr: 'ランキングを読み込めませんでした', rowS: (k, e) => `${k}個<small>誤送信${e}</small>`,
+  needName: '記録するには名前を入れてね', badName: 'その名前は使えません', sendingRec: '送信中…', recPre: 'ランキング：', norun: '通信できなかったので、この回は記録できません', sendErr: '送れませんでした。もう一度押してください',
+  rankRes: (d, a, better) => '今日 ' + d + '・全期間 ' + a + (better ? '' : '（全期間は前の記録のほうが上）'), place: n => n + '位', out: '100位より下',
+  post: (n, w) => 'バッテリー1%で、LINEのお題を' + n + '個クリア。' + (w ? '\n' + w.n + 'に「' + w.got + '」を誤送信した' : ''),
+  imgT: ['残り', '1%', ''], imgHead: 'バッテリー1%で、LINEのお題を', imgUnit: '個クリア', imgNg: n => '誤送信 ' + n + '件', imgWant: w => '正しくは「' + w + '」', imgNobody: 'だれにも頼まれていないのに、送った', imgNone: 'だれにも返信できなかった…' },
+ en: { h1: '<em>1%</em> Left', lead: "It's the middle of the night. Your phone is at <b>1%</b>.<br>It dies in <b>60 seconds</b>.<br>Answer chats exactly as the prompt says.<br>You <b>type every message</b> yourself. Typos can't be unsent.",
+  go: 'Start', rank: 'Ranking', devM: 'Phone ranking', devP: 'PC ranking', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', clear: 'Cleared', idle: 'Prompts show up here',
+  chats: 'Chats', tabs: ['Home', 'Chats', 'Feed', 'Shop', 'Wallet'], ph: 'Message', toastB: 'Low Battery', toastT: '1% of battery remaining. Connect to power.',
+  today: 'Today', yday: 'Yesterday', read: 'Read', sending: 'Sending…', ngL: 'Mis-sent',
+  qS: (w, t) => `Text ${w}<br><b>${t}</b>`, qO: w => `Open the chat with <b>${w}</b>`, tip: w => 'Wrong chat! This one is for ' + w, tip0: 'Wrong chat!',
+  rHead: 'With 1% battery', unit: 'cleared', rSub: (n, l) => 'Mis-sent: ' + n + (l ? '  /  "' + l + '" never got sent…' : ''),
+  more: n => n + ' more mis-sent ', moreH: 'Other mis-sent', row: (who, got, want) => `to ${who}: ${got}${want}`, want: w => ' (should be "' + w + '")', nobody: ' (nobody asked for this)', chatWith: n => 'Chat with ' + n,
+  nm: 'Name (up to 12)', rec: 'Save to ranking', img: 'Save image', x: 'Post on 𝕏', again: 'Play again', back: 'Back', pfM: 'Phone', pfP: 'PC', dToday: 'Today', dAll: 'All time',
+  rkNote: 'Most prompts cleared (ties: fewer mis-sent first)', loading: 'Loading…', empty: 'No one yet', rankErr: "Couldn't load the ranking", rowS: (k, e) => `${k}<small>mis-sent ${e}</small>`,
+  needName: 'Enter a name to save', badName: "That name can't be used", sendingRec: 'Sending…', recPre: 'Ranking: ', norun: "Couldn't connect, so this run can't be saved", sendErr: "Couldn't send. Please tap again",
+  rankRes: (d, a, better) => 'Today ' + d + ' / All time ' + a + (better ? '' : ' (your earlier all-time best is higher)'), place: n => '#' + n, out: 'below #100',
+  post: (n, w) => 'My phone was at 1% and I cleared ' + n + (n === 1 ? ' chat prompt.' : ' chat prompts.') + (w ? '\nAccidentally sent "' + w.got + '" to ' + w.n : ''),
+  imgT: ['', '1%', ' Left'], imgHead: 'With 1% battery, I cleared', imgUnit: 'prompts', imgNg: n => 'Mis-sent: ' + n, imgWant: w => 'Should be "' + w + '"', imgNobody: 'Nobody asked, but I sent it', imgNone: "Couldn't reply to anyone…" },
+ zh: { h1: '剩下<em>1%</em>', lead: '半夜，手機電量只剩 <b>1%</b>。<br>再 <b>60秒</b> 就要關機。<br>照著上方的題目，趕快回LINE。<br>訊息要<b>自己打字</b>。打錯了也收不回來。',
+  go: '開始', rank: '排行榜', devM: '手機排行榜', devP: '電腦排行榜', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', clear: '完成', idle: '題目會出現在這裡',
+  chats: '聊天', tabs: ['主頁', '聊天', '貼文串', '購物', '錢包'], ph: '輸入訊息', toastB: '電量不足', toastT: '剩餘電量 1%。請連接電源。',
+  today: '今天', yday: '昨天', read: '已讀', sending: '傳送中…', ngL: '傳錯',
+  qS: (w, t) => `傳LINE給${w}<br><b>${t}</b>`, qO: w => `打開<b>${w}</b>的LINE`, tip: w => '傳錯人了！題目是給「' + w + '」', tip0: '傳錯人了！',
+  rHead: '電量1%之下', unit: '題完成', rSub: (n, l) => '傳錯 ' + n + ' 則' + (l ? '　／　最後的「' + l + '」還在傳送中…' : ''),
+  more: n => '其他傳錯 ' + n + ' 則 ', moreH: '其他傳錯', row: (who, got, want) => `給${who} ${got}${want}`, want: w => '（應該是「' + w + '」）', nobody: '（根本沒人要你傳）', chatWith: n => '與' + n + '的聊天',
+  nm: '名字（12字以內）', rec: '登上排行榜', img: '存成圖片', x: '發到 𝕏', again: '再玩一次', back: '返回', pfM: '手機', pfP: '電腦', dToday: '今天', dAll: '全部',
+  rkNote: '依完成題數排序（同分時傳錯較少者在前）', loading: '讀取中…', empty: '還沒有人', rankErr: '無法讀取排行榜', rowS: (k, e) => `${k}題<small>傳錯${e}</small>`,
+  needName: '請輸入名字', badName: '不能使用這個名字', sendingRec: '傳送中…', recPre: '排行榜：', norun: '連線失敗，這次無法記錄', sendErr: '傳送失敗，請再按一次',
+  rankRes: (d, a, better) => '今天 ' + d + '・全部 ' + a + (better ? '' : '（全部排行仍是之前的紀錄較高）'), place: n => '第' + n + '名', out: '100名以外',
+  post: (n, w) => '手機電量1%，完成了' + n + '個LINE題目。' + (w ? '\n不小心傳了「' + w.got + '」給' + w.n : ''),
+  imgT: ['剩下', '1%', ''], imgHead: '電量1%之下，完成了', imgUnit: '個題目', imgNg: n => '傳錯 ' + n + ' 則', imgWant: w => '應該是「' + w + '」', imgNobody: '根本沒人要我傳，卻傳了', imgNone: '一個人都沒回到…' },
+ ko: { h1: '남은 <em>1%</em>', lead: '한밤중, 폰 배터리는 <b>1%</b>.<br><b>60초</b> 뒤면 꺼진다.<br>위에 나오는 지시대로 빨리 카톡을 보내라.<br>메시지는 <b>직접 입력</b>. 오타가 나도 취소할 수 없다.',
+  go: '시작', rank: '랭킹', devM: '폰 랭킹', devP: 'PC 랭킹', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', clear: '클리어', idle: '여기에 지시가 나와요',
+  chats: '채팅', tabs: ['친구', '채팅', '오픈채팅', '쇼핑', '더보기'], ph: '메시지 입력', toastB: '배터리 부족', toastT: '배터리가 1% 남았습니다. 충전기를 연결하세요.',
+  today: '오늘', yday: '어제', read: '읽음', sending: '전송 중…', ngL: '잘못 보냄',
+  qS: (w, t) => `${w}한테 카톡 보내<br><b>${t}</b>`, qO: w => `<b>${w}</b> 카톡 열어`, tip: w => '잘못 보냄! ' + w + '한테 보내야 해', tip0: '잘못 보냄!',
+  rHead: '배터리 1%로', unit: '개 클리어', rSub: (n, l) => '잘못 보냄 ' + n + '건' + (l ? '  /  마지막 「' + l + '」는 전송 중인 채로…' : ''),
+  more: n => '그 밖의 잘못 보냄 ' + n + '건 ', moreH: '그 밖의 잘못 보냄', row: (who, got, want) => `${who}한테 ${got}${want}`, want: w => ' (정답은 「' + w + '」)', nobody: ' (아무도 안 시킴)', chatWith: n => n + ' 채팅방',
+  nm: '이름 (12자까지)', rec: '랭킹에 기록', img: '이미지로 저장', x: '𝕏에 올리기', again: '다시 하기', back: '돌아가기', pfM: '폰', pfP: 'PC', dToday: '오늘', dAll: '전체',
+  rkNote: '클리어 수 순 (같으면 잘못 보낸 게 적은 사람이 위)', loading: '불러오는 중…', empty: '아직 아무도 없어요', rankErr: '랭킹을 불러오지 못했어요', rowS: (k, e) => `${k}개<small>잘못 ${e}</small>`,
+  needName: '기록하려면 이름을 입력하세요', badName: '그 이름은 쓸 수 없어요', sendingRec: '전송 중…', recPre: '랭킹: ', norun: '연결이 안 돼서 이번 판은 기록할 수 없어요', sendErr: '보내지 못했어요. 다시 눌러 주세요',
+  rankRes: (d, a, better) => '오늘 ' + d + ' · 전체 ' + a + (better ? '' : ' (전체는 이전 기록이 더 높아요)'), place: n => n + '위', out: '100위 밖',
+  post: (n, w) => '배터리 1%로 카톡 지시 ' + n + '개 클리어.' + (w ? '\n' + w.n + '한테 「' + w.got + '」 잘못 보냄' : ''),
+  imgT: ['남은 ', '1%', ''], imgHead: '배터리 1%로 클리어한 지시', imgUnit: '개', imgNg: n => '잘못 보냄 ' + n + '건', imgWant: w => '정답은 「' + w + '」', imgNobody: '아무도 안 시켰는데 보냈다', imgNone: '아무한테도 답장 못 했다…' },
+};
+// 英語・繁体中文・韓国語の会話（日本語は上のまま）
+const LD = {"en": {"n": {"boss": "Boss", "mom": "Mom", "kano": "Emma", "tomo": "Jake", "kohai": "Tyler (intern)", "ooya": "Landlord", "moto": "Ex", "chonai": "Neighborhood Watch", "papa": "Dad", "tencho": "Shift Manager", "ane": "Sis", "doki": "Chris (work)", "dentist": "Bright Smile Dental", "groupm": "High School Crew"}, "call": {"boss": "your boss", "mom": "Mom", "kano": "your girlfriend", "tomo": "Jake", "kohai": "the intern", "ooya": "your landlord", "moto": "your ex", "chonai": "the neighborhood group", "papa": "Dad", "tencho": "your manager", "ane": "your sister", "doki": "Chris", "dentist": "the dentist", "groupm": "the high school group"}, "gs": {"chonai": ["Chair", "Mrs. Lee", "Bob"], "groupm": ["Mike", "Ashley", "Ryan"]}, "S": [["boss", "Great work today", "Thank you"], ["boss", "Is the report ready?", "It's ready|It is ready"], ["boss", "You up?", "I'm awake|I am awake"], ["boss", "Any update on that deal?", "I'll check|I will check"], ["boss", "What time can you come in tomorrow?", "9am|9 am|nine am"], ["boss", "You fell asleep in the meeting", "Sorry"], ["boss", "Can you make the trip next week?", "Yes I can"], ["boss", "Drinks after work?", "Count me in"], ["boss", "How is the project going?", "On track"], ["boss", "Can you take a call?", "Calling now"], ["mom", "Do you want dinner?", "No thanks"], ["mom", "When are you coming home?", "Almost home"], ["mom", "Did you bring your charger?", "I forgot it"], ["mom", "Are you alive?", "Still alive"], ["mom", "I sent you some rice", "Thanks Mom"], ["mom", "Call your grandma", "Okay|OK"], ["mom", "Did you lock the door?", "I locked it"], ["mom", "Go to bed", "Good night|Goodnight"], ["kano", "Who are you with?", "I'm alone|I am alone"], ["kano", "Why aren't you replying", "Sorry babe"], ["kano", "Do you love me?", "I love you"], ["kano", "Are you asleep?", "Still awake"], ["kano", "Where should we go tomorrow?", "The aquarium|Aquarium"], ["kano", "I'm not mad", "I'm so sorry|I am so sorry"], ["kano", "Who was that girl?", "My cousin"], ["kano", "Did you like my outfit?", "You looked cute"], ["kano", "Do you remember what day it is?", "Of course"], ["tomo", "Karaoke now?", "I'm in|I am in"], ["tomo", "How much battery do you have?", "1%|1 percent|one percent"], ["tomo", "Missed the last train", "Crash at mine"], ["tomo", "Pay me back", "Next week"], ["tomo", "Pizza?", "Let's go|Lets go"], ["tomo", "What time is the game tomorrow?", "10am|10 am|ten am"], ["tomo", "Happy birthday!", "Thanks man"], ["kohai", "I overslept", "It's fine|It is fine"], ["kohai", "Can I take tomorrow off?", "No"], ["kohai", "I lost the files", "Find them"], ["kohai", "Do you have a girlfriend?", "Yes"], ["kohai", "Want to come to a party?", "Sure"], ["ooya", "Your rent is late", "Paying tomorrow"], ["ooya", "We got a noise complaint", "I'll keep it down|I will keep it down"], ["ooya", "When can I check the plumbing?", "Afternoon please"], ["moto", "Still up?", "I'm asleep|I am asleep"], ["moto", "How are you?", "Fine"], ["moto", "Can we try again?", "No"], ["moto", "Do you still have my hoodie?", "I threw it out"], ["chonai", "You're on trash duty tomorrow", "Got it"], ["chonai", "Please pass the newsletter on", "Done"], ["chonai", "Who can help at the block party?", "I can help"], ["papa", "You doing ok?", "Doing fine"], ["papa", "Call your mother", "Will do"], ["papa", "Coming home for the holidays?", "Yes"], ["papa", "Did you change your tires?", "Not yet"], ["tencho", "Can you cover tomorrow?", "I can"], ["tencho", "You have a shift today", "On my way"], ["tencho", "The register is short", "Not me"], ["tencho", "You can't just skip shifts", "I'm sorry|I am sorry"], ["ane", "I borrowed your jacket", "Give it back"], ["ane", "I'm getting married", "Congrats|Congratulations"], ["ane", "What should we get Mom for her birthday?", "Flowers"], ["ane", "Did you eat my pudding?", "Not me"], ["doki", "The boss is furious", "I know"], ["doki", "Cover my morning meeting?", "Sure"], ["doki", "I'm quitting", "No way"], ["doki", "Coming to drinks?", "Pass"], ["dentist", "Reminder: your appointment is tomorrow at 10", "See you then"], ["dentist", "Any changes to your booking?", "No changes"], ["groupm", "Who's coming to the reunion?", "Me"], ["groupm", "Our teacher got married", "No way"], ["groupm", "Found our yearbook photos", "Show me"]], "O": [["kano", "hey"], ["kano", "Asleep?"], ["kano", "💢"], ["kano", "Read my text"], ["boss", "Got a minute tomorrow morning?"], ["boss", "Sorry for the late text"], ["boss", "URGENT"], ["mom", "Good night"], ["mom", "Sending photos"], ["mom", "📷"], ["tomo", "lol look at this"], ["tomo", "Anyone awake?"], ["moto", "I dreamed about you"], ["moto", "Long time no see"], ["chonai", "Fire drill notice"], ["chonai", "Did the newsletter reach you?"], ["papa", "👍"], ["papa", "Cold today"], ["tencho", "Here's the schedule"], ["tencho", "Free tomorrow?"], ["kohai", "Hey!"], ["ooya", "Plumbing check notice"], ["ane", "Hey"], ["doki", "We have a problem"], ["dentist", "Checkup reminder"], ["groupm", "Sent a sticker"], ["groupm", "Sent a photo"], ["kohai", "Thanks for today"], ["ane", "Call me"], ["doki", "I'm off tomorrow"]], "noise": {"boss": ["Noted", "See you tomorrow", "Did you see the slides?"], "mom": ["Eat something", "Love you", "📷"], "kano": ["hey", "💤", "hello?"], "tomo": ["lol", "check this", "bruh"], "kohai": ["Hey!", "Sorry"], "ooya": ["Notice"], "moto": ["hey", "long time"], "chonai": ["Notice", "Thanks everyone"], "papa": ["👍", "Cold out"], "tencho": ["Schedule", "Thanks"], "ane": ["hey", "look"], "doki": ["sup", "so tired"], "dentist": ["Appointment notice"], "groupm": ["lmao", "Sent a sticker", "Sent a photo"]}, "ng": ["?", "huh?", "what?", "what does that mean", "are you ok?", "???", "who is this for?", "creepy"], "init0": {"boss": "Thanks for today", "mom": "Be safe", "kano": "night 💤", "tomo": "later", "kohai": "Thank you!", "ooya": "Thank you", "moto": "Goodbye", "chonai": "Thanks for helping", "papa": "OK", "tencho": "Good work", "ane": "lol", "doki": "later", "dentist": "Thanks for visiting", "groupm": "lol"}, "ack": ["👍", "ok", "🙏", "got it", "k"]}, "zh": {"n": {"boss": "經理", "mom": "媽", "kano": "小雯", "tomo": "阿傑", "kohai": "學弟", "ooya": "房東", "moto": "前女友", "chonai": "大樓住戶群組", "papa": "爸", "tencho": "店長", "ane": "姊", "doki": "同事阿哲", "dentist": "微笑牙醫", "groupm": "高中同學群組"}, "call": {"boss": "經理", "mom": "媽", "kano": "女朋友", "tomo": "阿傑", "kohai": "學弟", "ooya": "房東", "moto": "前女友", "chonai": "住戶群組", "papa": "爸", "tencho": "店長", "ane": "姊姊", "doki": "阿哲", "dentist": "牙醫", "groupm": "高中群組"}, "gs": {"chonai": ["主委", "王太太", "陳先生"], "groupm": ["阿宏", "小美", "志明"]}, "S": [["boss", "今天辛苦了", "謝謝經理"], ["boss", "報告好了嗎？", "好了"], ["boss", "還醒著嗎？", "醒著"], ["boss", "那個案子怎樣了？", "我確認一下"], ["boss", "明天幾點能到？", "九點到|9點到"], ["boss", "你開會在睡覺吧", "對不起"], ["boss", "下週出差可以嗎？", "可以"], ["boss", "等等去喝一杯？", "我跟"], ["boss", "進度如何？", "很順利"], ["boss", "方便接電話嗎？", "馬上打"], ["mom", "要吃飯嗎？", "不用"], ["mom", "幾點回家？", "快到了"], ["mom", "有帶充電器嗎？", "沒帶"], ["mom", "還活著嗎？", "還活著"], ["mom", "寄米給你了", "謝謝媽"], ["mom", "打給阿嬤", "好啦"], ["mom", "門鎖了嗎？", "鎖了"], ["mom", "快去睡", "晚安"], ["kano", "跟誰在一起？", "一個人"], ["kano", "為什麼不回我", "對不起嘛"], ["kano", "愛我嗎？", "愛你"], ["kano", "睡了嗎？", "還沒睡"], ["kano", "明天去哪？", "水族館"], ["kano", "我沒生氣", "真的對不起"], ["kano", "那個女生是誰？", "我表妹"], ["kano", "今天的衣服怎樣？", "很可愛"], ["kano", "記得今天是什麼日子嗎？", "當然記得"], ["tomo", "現在去唱歌嗎？", "走啊"], ["tomo", "你手機還有電嗎？", "1%|百分之一"], ["tomo", "沒末班車了", "來我家"], ["tomo", "錢還我", "下禮拜還"], ["tomo", "吃宵夜？", "走"], ["tomo", "明天比賽幾點？", "十點|10點"], ["tomo", "生日快樂！", "謝啦"], ["kohai", "學長我睡過頭了", "沒關係"], ["kohai", "明天可以請假嗎", "不行"], ["kohai", "資料不見了", "快找"], ["kohai", "學長有女朋友嗎", "有"], ["kohai", "要不要來聯誼", "去"], ["ooya", "這個月房租還沒繳", "明天繳"], ["ooya", "有人投訴噪音", "我會注意"], ["ooya", "水管檢查什麼時候方便", "下午可以"], ["moto", "還沒睡嗎？", "睡了"], ["moto", "最近好嗎？", "很好"], ["moto", "可以復合嗎？", "不可能"], ["moto", "我的衣服還在嗎？", "丟了"], ["chonai", "明天輪到你倒垃圾", "收到"], ["chonai", "請把公告傳下去", "傳了"], ["chonai", "中秋烤肉誰能幫忙", "我可以"], ["papa", "過得好嗎", "還不錯"], ["papa", "打給你媽", "知道了"], ["papa", "過年回來嗎", "會回去"], ["papa", "機車保養了嗎", "還沒"], ["tencho", "明天能來上班嗎？", "可以"], ["tencho", "今天有班喔？", "馬上到"], ["tencho", "收銀機少錢了", "不是我"], ["tencho", "突然請假很困擾", "抱歉"], ["ane", "我借了你的外套", "還我"], ["ane", "我要結婚了", "恭喜"], ["ane", "媽生日送什麼？", "送花"], ["ane", "布丁是你吃的吧", "不是我"], ["doki", "經理在生氣", "我知道"], ["doki", "明天早會幫我代", "好啊"], ["doki", "我要離職了", "真的假的"], ["doki", "聚餐去嗎？", "不去"], ["dentist", "提醒您明天十點的預約", "會準時到"], ["dentist", "預約需要更改嗎？", "不用改"], ["groupm", "同學會誰要來", "我"], ["groupm", "老師結婚了", "真的假的"], ["groupm", "找到畢業照了", "給我看"]], "O": [["kano", "欸"], ["kano", "睡了？"], ["kano", "💢"], ["kano", "已讀我"], ["boss", "明早能聊一下嗎？"], ["boss", "抱歉這麼晚"], ["boss", "急"], ["mom", "晚安"], ["mom", "傳照片給你"], ["mom", "📷"], ["tomo", "笑死你看"], ["tomo", "有人醒著嗎"], ["moto", "我夢到你"], ["moto", "好久不見"], ["chonai", "消防演習通知"], ["chonai", "公告收到了嗎"], ["papa", "👍"], ["papa", "今天好冷"], ["tencho", "班表給你"], ["tencho", "明天有空嗎？"], ["kohai", "學長～"], ["ooya", "水管檢查通知"], ["ane", "欸"], ["doki", "出事了"], ["dentist", "定期檢查通知"], ["groupm", "傳送了貼圖"], ["groupm", "傳送了照片"], ["kohai", "今天謝謝學長"], ["ane", "打給我"], ["doki", "明天請假"]], "noise": {"boss": ["了解", "明天見", "簡報看了嗎？"], "mom": ["有吃飯嗎", "愛你", "📷"], "kano": ["欸", "💤", "人咧"], "tomo": ["笑死", "你看", "靠"], "kohai": ["學長～", "抱歉"], "ooya": ["通知"], "moto": ["欸", "好久"], "chonai": ["通知", "謝謝大家"], "papa": ["👍", "好冷"], "tencho": ["班表", "辛苦了"], "ane": ["欸", "你看"], "doki": ["安", "好累"], "dentist": ["預約通知"], "groupm": ["哈哈哈", "傳送了貼圖", "傳送了照片"]}, "ng": ["？", "蛤？", "什麼意思", "你還好嗎", "？？？", "傳錯人了吧", "好可怕", "啊？"], "init0": {"boss": "辛苦了", "mom": "路上小心", "kano": "晚安💤", "tomo": "掰", "kohai": "謝謝學長！", "ooya": "謝謝", "moto": "再見", "chonai": "謝謝配合", "papa": "好", "tencho": "辛苦了", "ane": "哈", "doki": "掰", "dentist": "感謝您的光臨", "groupm": "哈哈"}, "ack": ["👍", "好", "ok", "🙏", "收到"]}, "ko": {"n": {"boss": "김 부장님", "mom": "엄마", "kano": "지은", "tomo": "민수", "kohai": "후배 준호", "ooya": "집주인", "moto": "전여친", "chonai": "아파트 입주민방", "papa": "아빠", "tencho": "알바 사장님", "ane": "누나", "doki": "동기 현우", "dentist": "미소치과", "groupm": "고등학교 단톡방"}, "call": {"boss": "부장님", "mom": "엄마", "kano": "여자친구", "tomo": "민수", "kohai": "후배", "ooya": "집주인", "moto": "전여친", "chonai": "입주민방", "papa": "아빠", "tencho": "사장님", "ane": "누나", "doki": "현우", "dentist": "치과", "groupm": "고등학교 단톡방"}, "gs": {"chonai": ["관리소장", "302호", "1104호"], "groupm": ["동현", "수빈", "지호"]}, "S": [["boss", "오늘 수고했어", "감사합니다"], ["boss", "보고서 다 됐나?", "다 됐습니다"], ["boss", "안 자나?", "안 잡니다"], ["boss", "그 건 어떻게 됐어?", "확인하겠습니다"], ["boss", "내일 몇 시에 와?", "9시에 가겠습니다|아홉 시에 가겠습니다"], ["boss", "회의 때 졸았지?", "죄송합니다"], ["boss", "다음 주 출장 가능해?", "가능합니다"], ["boss", "이따 한잔할까?", "좋습니다"], ["boss", "진행 상황은?", "순조롭습니다"], ["boss", "통화 돼?", "전화드릴게요"], ["mom", "밥 먹을래?", "괜찮아"], ["mom", "언제 와?", "거의 다 왔어"], ["mom", "충전기 챙겼어?", "안 챙겼어"], ["mom", "살아는 있니?", "살아 있어"], ["mom", "쌀 보냈다", "고마워 엄마"], ["mom", "할머니께 전화드려", "알겠어"], ["mom", "문 잠갔어?", "잠갔어"], ["mom", "빨리 자", "잘 자"], ["kano", "누구랑 있어?", "혼자야"], ["kano", "왜 답장 안 해", "미안해"], ["kano", "나 사랑해?", "사랑해"], ["kano", "아직 안 자?", "안 자"], ["kano", "내일 어디 갈까?", "아쿠아리움"], ["kano", "나 화 안 났어", "진짜 미안해"], ["kano", "그 여자 누구야?", "사촌 동생이야"], ["kano", "오늘 옷 어땠어?", "귀여웠어"], ["kano", "오늘 무슨 날인지 알아?", "당연하지"], ["tomo", "지금 노래방 갈래?", "콜"], ["tomo", "폰 배터리 몇이야?", "1%|1퍼센트|일 퍼센트"], ["tomo", "막차 끊겼어", "우리 집 와"], ["tomo", "돈 갚아", "다음 주에 줄게"], ["tomo", "치킨 먹을래?", "가자"], ["tomo", "내일 경기 몇 시야?", "10시|열 시"], ["tomo", "생일 축하해!", "고마워"], ["kohai", "선배님 늦잠 잤어요", "괜찮아"], ["kohai", "내일 쉬어도 돼요?", "안 돼"], ["kohai", "자료 잃어버렸어요", "찾아봐"], ["kohai", "선배님 여친 있어요?", "있어"], ["kohai", "소개팅 나갈래요?", "갈게"], ["ooya", "이번 달 월세 아직이에요", "내일 드릴게요"], ["ooya", "소음 민원 들어왔어요", "조심하겠습니다"], ["ooya", "배관 점검 언제가 좋아요?", "오후에 부탁드려요"], ["moto", "안 자?", "잘 거야"], ["moto", "잘 지내?", "잘 지내"], ["moto", "다시 만날 수 없을까?", "안 돼"], ["moto", "내 옷 아직 있어?", "버렸어"], ["chonai", "내일 분리수거 당번입니다", "알겠습니다"], ["chonai", "공지 돌려주세요", "돌렸습니다"], ["chonai", "바자회 도와주실 분", "참여할게요"], ["papa", "잘 지내냐", "잘 지내요"], ["papa", "엄마한테 전화해라", "알겠어요"], ["papa", "설에 오냐", "갈게요"], ["papa", "타이어 갈았냐", "아직요"], ["tencho", "내일 근무 가능?", "가능해요"], ["tencho", "오늘 근무인데?", "바로 갈게요"], ["tencho", "포스기 돈이 안 맞아", "저 아니에요"], ["tencho", "갑자기 빠지면 곤란해", "죄송해요"], ["ane", "네 옷 빌려 입었다", "돌려줘"], ["ane", "나 결혼해", "축하해"], ["ane", "엄마 생신 선물 뭐 사?", "꽃"], ["ane", "푸딩 네가 먹었지", "안 먹었어"], ["doki", "부장님 화났어", "알아"], ["doki", "내일 조회 대신 해줘", "그래"], ["doki", "나 퇴사한다", "헐"], ["doki", "회식 갈 거야?", "안 가"], ["dentist", "내일 10시 예약 안내드립니다", "갈게요"], ["dentist", "예약 변경 있으신가요?", "없어요"], ["groupm", "동창회 올 사람", "나"], ["groupm", "선생님 결혼하셨대", "대박"], ["groupm", "졸업사진 찾았다", "보여줘"]], "O": [["kano", "야"], ["kano", "자?"], ["kano", "💢"], ["kano", "읽어"], ["boss", "내일 아침에 잠깐 얘기 가능?"], ["boss", "늦게 미안"], ["boss", "급함"], ["mom", "잘 자라"], ["mom", "사진 보낼게"], ["mom", "📷"], ["tomo", "ㅋㅋ 이거 봐"], ["tomo", "깨어 있는 사람?"], ["moto", "꿈에 나왔어"], ["moto", "오랜만이야"], ["chonai", "소방 훈련 안내"], ["chonai", "공지 받으셨나요"], ["papa", "👍"], ["papa", "오늘 춥다"], ["tencho", "근무표 보낼게"], ["tencho", "내일 시간 돼?"], ["kohai", "선배님~"], ["ooya", "배관 점검 안내"], ["ane", "야"], ["doki", "큰일 났다"], ["dentist", "정기 검진 안내"], ["groupm", "이모티콘을 보냈습니다"], ["groupm", "사진을 보냈습니다"], ["kohai", "오늘 감사했습니다"], ["ane", "전화해"], ["doki", "내일 연차"]], "noise": {"boss": ["알겠네", "내일 보세", "자료 봤나?"], "mom": ["밥은 먹었니", "사랑해", "📷"], "kano": ["야", "💤", "여보세요?"], "tomo": ["ㅋㅋㅋ", "이거 봐", "헐"], "kohai": ["선배님~", "죄송해요"], "ooya": ["안내"], "moto": ["야", "오랜만"], "chonai": ["안내", "감사합니다"], "papa": ["👍", "춥다"], "tencho": ["근무표", "수고"], "ane": ["야", "봐봐"], "doki": ["ㅎㅇ", "피곤하다"], "dentist": ["예약 안내"], "groupm": ["ㅋㅋㅋㅋ", "이모티콘을 보냈습니다", "사진을 보냈습니다"]}, "ng": ["?", "응?", "무슨 소리야", "뭐야", "괜찮아?", "???", "누구한테 보낸 거야?", "무섭다"], "init0": {"boss": "수고했네", "mom": "조심히 다녀", "kano": "잘 자💤", "tomo": "ㅂㅂ", "kohai": "감사합니다!", "ooya": "감사합니다", "moto": "잘 있어", "chonai": "협조 감사합니다", "papa": "그래", "tencho": "수고", "ane": "ㅋㅋ", "doki": "ㅂㅇ", "dentist": "내원해 주셔서 감사합니다", "groupm": "ㅋㅋ"}, "ack": ["👍", "ㅇㅋ", "ok", "🙏", "넵"]}};
+const JA = { n: Object.fromEntries(Object.keys(C).map(k => [k, C[k].n])), call: CALL, gs: GROUP_SENDER, odai: ODAI, noise: NOISE, ng: NG_REPLY, ack: ['👍','了解','ok','🙏','はーい'] };
+let L = 'ja', T = TX.ja, ACK = JA.ack;
+function pickLang() { const s = ls0('b1_lang'); if (TX[s]) return s; const n = (navigator.language || 'ja').toLowerCase(); return n.startsWith('ja') ? 'ja' : n.startsWith('zh') ? 'zh' : n.startsWith('ko') ? 'ko' : 'en'; }
+function ls0(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+function setLang(l) {
+ L = TX[l] ? l : 'ja'; T = TX[L]; try { localStorage.setItem('b1_lang', JSON.stringify(L)); } catch (e) { }
+ document.documentElement.lang = L === 'zh' ? 'zh-Hant' : L;
+ const D = L === 'ja' ? null : LD[L];
+ for (const k of Object.keys(C)) C[k].n = D ? D.n[k] : JA.n[k];
+ CALL = D ? D.call : JA.call; GROUP_SENDER = D ? D.gs : JA.gs; NOISE = D ? D.noise : JA.noise; NG_REPLY = D ? D.ng : JA.ng; ACK = D ? D.ack : JA.ack;
+ ODAI = D ? D.S.map(x => ({t:'s', w:x[0], r:x[1], ok:x[2].split('|'), re:yomiRe(x[2])})).concat(D.O.map(x => ({t:'o', w:x[0], r:x[1]}))) : JA.odai;
+ applyUI();
+}
+function applyUI() {
+ $('tH1').innerHTML = T.h1; $('tLead').innerHTML = T.lead; $('go').textContent = T.go; $('rkBtn').textContent = $('rkBtn2').textContent = $('rkT').textContent = T.rank;
+ $('devT').textContent = $('devR').textContent = IS_MOBILE ? T.devM : T.devP; $('clrL').textContent = T.clear; $('hdT').textContent = T.chats;
+ $('tabs').querySelectorAll('span').forEach((s, i) => { s.textContent = T.tabs[i]; }); $('inp').placeholder = T.ph; $('toastB').textContent = T.toastB; $('toastT').textContent = T.toastT;
+ $('rkNote').textContent = T.rkNote; $('rkBack').textContent = T.back; $('rHead').textContent = T.rHead; $('rUnit').textContent = T.unit; $('nm').placeholder = T.nm;
+ $('recBtn').textContent = T.rec; $('imgBtn').textContent = T.img; $('xBtn').textContent = T.x; $('again').textContent = T.again;
+ $('rkPf').querySelector('[data-p=m]').textContent = T.pfM; $('rkPf').querySelector('[data-p=p]').textContent = T.pfP; $('rkWhen').querySelector('[data-w=d]').textContent = T.dToday; $('rkWhen').querySelector('[data-w=all]').textContent = T.dAll;
+ if (typeof sndLabel === 'function') sndLabel();
+ if (!st || !st.live) $('q').innerHTML = esc(T.idle);
+ $('langs').innerHTML = LANGS.map(([k, v]) => '<button data-l="' + k + '"' + (k === L ? ' class="on"' : '') + '>' + v + '</button>').join('');
+ $('langs').querySelectorAll('button').forEach(b => b.onclick = () => { setLang(b.dataset.l); init(); renderList(); });
+}
+
+// ---------- 状態 ----------
+let st, chats, order, cur, odai, tStart, raf, noiseT, deck;
+const nowStr = () => { const d = new Date(); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
+function tick() { $('clk').textContent = nowStr(); }
+tick(); setInterval(tick, 10000);
+
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function init() {
+ chats = {}; order = [];
+ const init0 = L !== 'ja' ? LD[L].init0 : {
+  boss:'お疲れさまです', mom:'気をつけてね', kano:'おやすみ💤', tomo:'またな', kohai:'ありがとうございます！', ooya:'よろしくお願いします',
+  moto:'さようなら', chonai:'ご協力ありがとうございました', papa:'了解', tencho:'お疲れ', ane:'笑', doki:'おつ', dentist:'ご来院ありがとうございました', groupm:'笑笑',
+ };
+ const ids = shuffle(Object.keys(C));
+ ids.forEach((id, i) => { chats[id] = {msgs:[{y:1, t:init0[id], s:C[id].g ? GROUP_SENDER[id][0] : ''}], unread:0, time:T.yday}; order.push(id); });
+ st = {n:0, miss:0, ng:[], log:[], live:false, ended:false};
+ cur = null; deck = shuffle(ODAI.slice());
+}
+// ---------- 一覧 ----------
+function renderList(bumpId) {
+ const rows = $('rows'); rows.innerHTML = '';
+ for (const id of order) {
+  const c = C[id], ch = chats[id], last = ch.msgs[ch.msgs.length - 1];
+  const el = document.createElement('div'); el.className = 'rw' + (id === bumpId ? ' bump' : ''); el.dataset.id = id;
+  const lt = last ? (last.me ? last.t : (c.g && last.s ? last.s + ': ' : '') + last.t) : '';
+  el.innerHTML = `<div class="av" style="background:${c.c}">${c.a}</div><div class="mid"><div class="nm"></div><div class="ls"></div></div><div class="rt"><span>${ch.time}</span>${ch.unread ? `<span class="bd">${ch.unread}</span>` : ''}</div>`;
+  el.querySelector('.nm').textContent = c.n; if (c.g) el.querySelector('.nm').insertAdjacentHTML('beforeend', '<small>(' + (8 + id.length) + ')</small>');
+  el.querySelector('.ls').textContent = lt;
+  el.addEventListener('click', () => openRoom(id));
+  rows.appendChild(el);
+ }
+}
+function incoming(id, text, sender) {
+ const ch = chats[id];
+ ch.msgs.push({y:1, t:text, s:sender || (C[id].g ? GROUP_SENDER[id][Math.random() * 3 | 0] : '')});
+ ch.time = nowStr();
+ order = [id].concat(order.filter(x => x !== id));
+ if (cur === id) { renderRoom(true); } else { ch.unread++; }
+ renderList(id);
+ if (st.live) { if (odai && odai.w === id && odai.r === text) { SFX.target(); vib(12); } else SFX.inc(); }
+}
+// ---------- トーク ----------
+function openRoom(id) {
+ if (!st.live) return;
+ cur = id; chats[id].unread = 0;
+ $('rname').textContent = C[id].n + (C[id].g ? ' (' + (8 + id.length) + ')' : '');
+ renderRoom(false); $('room').classList.add('on'); renderList();
+ // 開いたら既読 → 開くお題のチェック
+ if (odai && odai.t === 'o' && odai.w === id) clear();
+ const inp = $('inp'); inp.value = ''; $('send').disabled = true;
+ if (IS_MOBILE) { inp.focus({preventScroll:true}); } else { inp.focus(); }
+}
+function closeRoom() { cur = null; $('room').classList.remove('on'); $('inp').blur(); renderList(); }
+$('back').addEventListener('click', closeRoom);
+function renderRoom(scroll) {
+ const box = $('msgs'), ch = chats[cur]; box.innerHTML = '<div class="day">' + T.today + '</div>';
+ for (const m of ch.msgs) {
+  const el = document.createElement('div');
+  if (m.me) {
+   el.className = 'm me' + (m.ng ? ' ng' : '') + (m.sending ? ' sending' : '');
+   el.innerHTML = `<div class="st">${m.sending ? T.sending : (m.ng ? '<b>' + T.ngL + '</b>' : '') + (m.read ? T.read + '<br>' : '') + (m.tm || '')}</div><div class="bb"></div>`;
+  } else {
+   el.className = 'm y';
+   el.innerHTML = `<div class="av" style="background:${C[cur].c}">${C[cur].a}</div><div class="wrap">${m.s ? '<span class="sn"></span>' : ''}<div class="bb"></div></div>`;
+   if (m.s) el.querySelector('.sn').textContent = m.s;
+  }
+  el.querySelector('.bb').textContent = m.t;
+  box.appendChild(el);
+ }
+ if (scroll && box.lastElementChild) box.lastElementChild.classList.add('new');
+ box.scrollTop = box.scrollHeight;
+}
+// ---------- 送信 ----------
+function sendMsg() {
+ const inp = $('inp'), text = inp.value.trim();
+ if (!text || !st.live || !cur) return;
+ inp.value = ''; $('send').disabled = true;
+ const id = cur, ch = chats[id];
+ const m = {me:1, t:text, tm:nowStr()}; ch.msgs.push(m); ch.time = nowStr();
+ order = [id].concat(order.filter(x => x !== id));
+ let good = false;
+ if (odai && odai.t === 's' && odai.w === id) {
+  good = odai.re.test(norm(text)) || odai.ok.some(a => norm(a) === norm(text));
+  if (good) { st.lastOk = {w:id, r:odai.r, got:text}; clear(); }
+  else { m.ng = 1; st.ng.push({w:id, want:odai.ok[0], got:text, r:odai.r}); fail(); }
+ } else {
+  // お題と関係ない相手に送った → これも誤送信
+  const li = ch.msgs.filter(x => x.y).pop();
+  m.ng = 1; st.ng.push({w:id, want:null, got:text, r:li ? li.t : ''}); SFX.ng(); vib([40, 30, 40]);
+  tip(odai ? T.tip(CALL[odai.w]) : T.tip0);
+ }
+ SFX.send();
+ renderRoom(true); renderList();
+ setTimeout(() => { if (!st.live) return; m.read = 1; if (cur === id) renderRoom(false); }, 260);
+ if (m.ng) setTimeout(() => { if (st.live) incoming(id, NG_REPLY[Math.random() * NG_REPLY.length | 0]); }, 700);
+}
+$('send').addEventListener('pointerdown', e => e.preventDefault());
+$('send').addEventListener('click', sendMsg);
+$('inp').addEventListener('input', () => { $('send').disabled = !$('inp').value.trim(); });
+// 送信は ➤ ボタン。スマホは改行キーでは送らない（iPhone の日本語入力の「確定」で、変換の途中のまま送られてしまうため）
+let composing = false, compEnd = 0;
+$('inp').addEventListener('compositionstart', () => { composing = true; });
+$('inp').addEventListener('compositionend', () => { composing = false; compEnd = performance.now(); });
+$('inp').addEventListener('keydown', e => {
+ if (e.key !== 'Enter') return;
+ e.preventDefault();
+ if (IS_MOBILE || composing || e.isComposing || e.keyCode === 229 || performance.now() - compEnd < 150) return;
+ sendMsg();
+});
+['paste', 'drop'].forEach(ev => $('inp').addEventListener(ev, e => e.preventDefault()));
+$('msgs').addEventListener('click', () => { if (st && st.live) $('inp').focus({preventScroll:true}); });
+
+// ---------- お題 ----------
+function tip(s) { const t = $('tip'); t.textContent = s; t.classList.remove('on'); void t.offsetWidth; t.classList.add('on'); }
+function nextOdai() {
+ if (!deck.length) deck = shuffle(ODAI.slice());
+ // 直前と同じ相手が続きすぎないように
+ let i = deck.findIndex(o => !odai || o.w !== odai.w); if (i < 0) i = 0;
+ odai = deck.splice(i, 1)[0];
+ const who = CALL[odai.w];
+ if (odai.t === 's') $('q').innerHTML = T.qS(esc(who), esc(odai.ok[0]));
+ else $('q').innerHTML = T.qO(esc(who));
+ { const q = $('q'); q.classList.remove('in'); void q.offsetWidth; q.classList.add('in'); }
+ // 相手からメッセージが届く
+ { const o = odai; setTimeout(() => { if (st.live) incoming(o.w, o.r); }, 120); }
+}
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function clear() { st.n++; (st.log || (st.log = [])).push(Math.round((performance.now() - tStart) / 100)); $('cnt').textContent = st.n; flash('ok'); plusOne(); SFX.ok(); const id = odai.w; odai = null; setTimeout(() => { if (st.live) nextOdai(); }, 280); if (Math.random() < .35) setTimeout(() => { if (st.live && id !== (odai && odai.w)) incoming(id, ACK[Math.random() * ACK.length | 0]); }, 900); }
+function fail() { st.miss++; flash('ng'); SFX.ng(); vib([40, 30, 40]); odai = null; setTimeout(() => { if (st.live) nextOdai(); }, 900); }
+function flash(k) { const o = $('odai'); o.classList.remove('ok', 'ng'); void o.offsetWidth; o.classList.add(k); }
+
+// ---------- 電池 ----------
+let toastShown, hot = 0, hbNext = 0;
+function loop() {
+ const t = performance.now() - tStart, left = Math.max(0, 1 - t / DUR);
+ $('batFill').style.width = Math.max(1, left * 7) + '%';
+ $('batTxt').textContent = left > 0.005 ? '1%' : '0%';
+ if (!toastShown && t > DUR * 0.45) { toastShown = 1; $('toast').classList.add('on'); SFX.warn(); setTimeout(() => $('toast').classList.remove('on'), 2200); }
+ // 残り10秒：電池が点滅、ふちが赤く脈うつ、心臓の音がだんだん速くなる
+ if (t > DUR - 10000) { if (!hot) { hot = 1; hbNext = t; $('bat').classList.add('hot'); $('vg').classList.add('on'); } if (t >= hbNext) { SFX.heart(); vib(15); hbNext = t + 900 - 480 * ((t - (DUR - 10000)) / 10000); } }
+ if (t > DUR - 1500 && hot !== 2) { hot = 2; $('app').classList.add('flick'); }
+ // 最後の8秒は画面が暗くなっていく
+ const d = t > DUR - 8000 ? (t - (DUR - 8000)) / 8000 : 0; $('dim').style.opacity = (d * 0.55).toFixed(3);
+ if (t >= DUR) return powerOff();
+ raf = requestAnimationFrame(loop);
+}
+function noise() {
+ if (!st.live) return;
+ const ids = Object.keys(C).filter(id => id !== cur && (!odai || id !== odai.w));
+ const id = ids[Math.random() * ids.length | 0];
+ incoming(id, NOISE[id][Math.random() * NOISE[id].length | 0]);
+ noiseT = setTimeout(noise, 1800 + Math.random() * 2600);
+}
+function powerOff() {
+ st.live = false; st.ended = true; clearTimeout(noiseT);
+ const inp = $('inp'), left = inp.value.trim();
+ if (cur && left) { chats[cur].msgs.push({me:1, t:left, sending:1}); inp.value = ''; renderRoom(true); st.last = left; }
+ inp.blur();
+ const d = cur && left ? 700 : 150;
+ $('vg').classList.remove('on'); $('bat').classList.remove('hot');
+ // 画面が1本の線になって消える → まっ暗な画面に電池切れのマーク → 結果
+ setTimeout(() => { $('app').classList.remove('flick'); $('app').classList.add('dead'); bgmStop(); SFX.off(); vib(120); }, d);
+ setTimeout(() => { $('off').classList.add('on'); }, d + 560);
+ setTimeout(showResult, d + 2350);
+}
+function showResult() {
+ $('rN').textContent = 0;
+ $('rSub').textContent = T.rSub(st.ng.length, st.last);
+ const ng = $('rNg');
+ if (st.ng.length) {
+  worstBox(st.ng[0]);
+  // ほかの誤送信は、押したら開く（結果の画面が長くなって「もう一度」が下に隠れないように）
+  { const more = st.ng.length - 1, tg = $('rMore'); ng.hidden = true; tg.hidden = more < 1; const lab = () => { tg.textContent = T.more(more) + (ng.hidden ? '▾' : '▴'); }; lab(); tg.onclick = () => { ng.hidden = !ng.hidden; lab(); }; }
+  ng.innerHTML = '<div style="color:#8b9098;font-size:12px">' + esc(T.moreH) + '</div>';
+  for (const x of st.ng.slice(1).slice(-11)) {
+   const d = document.createElement('div');
+   d.innerHTML = T.row('<span></span>', '<u></u>', ' <s>' + esc(x.want ? T.want(x.want) : T.nobody) + '</s>');
+   d.querySelector('span').textContent = C[x.w].n; d.querySelector('u').textContent = '「' + x.got + '」';
+   ng.appendChild(d);
+  }
+ } else { ng.hidden = true; $('rWorst').hidden = true; $('rMore').hidden = true; }
+ POST = T.post(st.n, st.ng.length ? { n: C[st.ng[0].w].n, got: st.ng[0].got } : null) + '\n#残り1パーセント #ブラウザゲーム';
+ try { if (typeof gtag === 'function') gtag('event', 'game_end', { game: 'battery1', lang: L, n: st.n, miss: st.ng.length, pf: IS_MOBILE ? 'm' : 'p' }); } catch (e) { }
+ $('result').hidden = false;
+ countUp($('rN'), st.n);
+}
+function start() {
+ audio(); init(); renderList(); closeRoom(); $('cnt').textContent = 0; $('off').classList.remove('on'); $('dim').style.opacity = 0;
+ $('app').classList.remove('dead', 'flick'); $('vg').classList.remove('on'); $('bat').classList.remove('hot'); hot = 0;
+ $('title').hidden = true; $('result').hidden = true; $('rank').hidden = true; toastShown = 0; odai = null;
+ st.live = true; tStart = performance.now(); raf = requestAnimationFrame(loop);
+ nextOdai(); noiseT = setTimeout(noise, 2500); bgmStart();
+ netStart().catch(() => { RUN = null; });
+ try { if (typeof gtag === 'function') gtag('event', 'game_start', { game: 'battery1' }); } catch (e) { }
+ $('recBtn').disabled = false; $('recNote').textContent = '';
+}
+// Xに投稿（自分の紹介ツイートを引用する。引用するツイートは一覧ページ quote/ で切りかえ）
+let POST = '', QUOTE = {};
+const SHARE_URL = 'https://nasubi-no-oniwa.com/battery1/';
+fetch('https://ft-red-default-rtdb.asia-southeast1.firebasedatabase.app/xquote/g/battery1.json').then(r => r.json()).then(d => { if (d && typeof d === 'object') QUOTE = d; }).catch(() => { });
+function quoteURL() { const u = (L === 'ja' ? QUOTE.ja : QUOTE.en) || ''; return /^https:\/\/x\.com\/[A-Za-z0-9_]{1,15}\/status\/\d{5,25}$/.test(u) ? u : ''; }
+$('xBtn').addEventListener('click', () => { const q = quoteURL(); window.open('https://x.com/intent/post?text=' + encodeURIComponent(q ? POST + '\n' + SHARE_URL : POST) + '&url=' + encodeURIComponent(q || SHARE_URL), '_blank'); });
+$('go').addEventListener('click', start);
+$('again').addEventListener('click', start);
+
+
+// ---------- ランキング（ft-blue の battery1） ----------
+const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v) } catch (e) { return d } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) { } } };
+const FB = { key: 'AIzaSyB2iLUuAyxSJ45RewGrbyLg0sYLsC7njIo', db: 'https://ft-blue-default-rtdb.asia-southeast1.firebasedatabase.app' };
+const PF = IS_MOBILE ? 'm' : 'p';
+const NG_WORDS = ['ちんこ','ちんぽ','まんこ','せっくす','セックス','きんたま','レイプ','死ね','しね','殺す','ころす','ガイジ','キチガイ','きちがい','ニガー','チョン','支那','fuck','shit','bitch','cunt','dick','pussy','nigger','nigga','faggot','retard','whore','slut','rape','porn','nazi','hitler'];
+const badName = s => { const n = s.normalize('NFKC').toLowerCase().replace(/[\s・._\-ー〜~!！?？*＊]/g, ''); return NG_WORDS.some(w => n.includes(w.normalize('NFKC').toLowerCase())); };
+async function fx(url, opt) { let err; for (let i = 0; i < 3; i++) { try { return await fetch(url, opt); } catch (e) { err = e; await new Promise(r => setTimeout(r, 500 * (i + 1))); } } throw err; }
+let AUTH = null;
+async function auth() {
+ let a = AUTH || ls.get('b1_auth', null); if (a && a.exp > Date.now() + 60000) return AUTH = a;
+ if (a && a.refresh) { try { const r = await fx('https://securetoken.googleapis.com/v1/token?key=' + FB.key, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(a.refresh) }); if (r.ok) { const j = await r.json(); a = { uid: j.user_id, token: j.id_token, refresh: j.refresh_token, exp: Date.now() + (+j.expires_in) * 1000 }; ls.set('b1_auth', a); return AUTH = a; } } catch (_) { } }
+ const r = await fx('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + FB.key, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ returnSecureToken: true }) });
+ if (!r.ok) throw new Error('auth'); const j = await r.json(); a = { uid: j.localId, token: j.idToken, refresh: j.refreshToken, exp: Date.now() + (+j.expiresIn) * 1000 }; ls.set('b1_auth', a); return AUTH = a;
+}
+const DB = p => FB.db + '/battery1/' + p + '.json';
+const QA = a => '?auth=' + encodeURIComponent(a.token);
+const PUT = (url, body) => fx(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+const TS = { '.sv': 'timestamp' };
+const dayKey = ms => Math.floor((ms + 32400000) / 86400000);
+let RUN = null;
+async function netStart() {
+ RUN = null; const a = await auth();
+ const r = await PUT(DB('run/' + a.uid) + QA(a), { st: TS, pf: PF }); if (!r.ok) throw new Error('run'); const j = await r.json(); RUN = { st: j.st };
+}
+async function submit(nm) {
+ if (!RUN) throw new Error('norun');
+ const a = await auth(), k = st.n, e = Math.min(999, st.ng.length), sk = k * 1000 + 999 - e;
+ const rec = { n: nm, k, e, sk, st: RUN.st, v: 1, at: TS, lg: (st.log || []).join('.') };
+ const dk = dayKey(Date.now()), recD = { ...rec, dk, ds: dk * 1000000 + sk };
+ const get = p => fx(DB(p)).then(x => x.ok ? x.json() : null).catch(() => null);
+ const [old, oldD] = await Promise.all([get('b/' + PF + '/all/' + a.uid), get('b/' + PF + '/d/' + a.uid)]);
+ const okA = !old || sk > old.sk, okD = !oldD || oldD.dk !== dk || sk > oldD.sk;
+ if (okD) { const r = await PUT(DB('b/' + PF + '/d/' + a.uid) + QA(a), recD); if (!r.ok) throw new Error('d'); }
+ if (okA) { const r = await PUT(DB('b/' + PF + '/all/' + a.uid) + QA(a), rec); if (!r.ok) throw new Error('all'); }
+ const [rd, ra] = await Promise.all([board(PF, 'd'), board(PF, 'all')]);
+ const f = rows => { const x = rows.find(r => r.id === a.uid); return x ? T.place(x.rk) : T.out; };
+ return T.rankRes(f(rd), f(ra), okA);
+}
+// 記録がありえるか：60秒で50個まで。クリアの時刻の記録があれば、数が合っているか・0〜61秒の中で順にならんでいるか・間が0.3秒より短くないかを見る
+function realRec(x) {
+ if (!(x.k <= 50)) return false;
+ if (typeof x.lg !== 'string') return true;
+ const t = x.lg ? x.lg.split('.').map(Number) : [];
+ if (t.length !== x.k) return false;
+ for (let i = 0; i < t.length; i++) { if (!(t[i] >= 0 && t[i] <= 610)) return false; if (i && t[i] - t[i - 1] < 3) return false; }
+ return true;
+}
+async function board(pf, when) {
+ const dk = dayKey(Date.now());
+ const q = when === 'd' ? '?orderBy="ds"&startAt=' + dk * 1000000 + '&endAt=' + (dk * 1000000 + 999999) + '&limitToLast=100' : '?orderBy="sk"&limitToLast=100';
+ const r = await fx(DB('b/' + pf + '/' + when) + q); if (!r.ok) throw new Error('board');
+ const o = await r.json() || {};
+ const rows = Object.keys(o).map(id => ({ id, ...o[id] })).filter(x => typeof x.sk === 'number' && x.sk === x.k * 1000 + 999 - x.e && realRec(x));
+ rows.sort((a, b) => b.sk - a.sk || a.at - b.at);
+ let rk = 0, prev = null; rows.forEach((x, i) => { if (x.sk !== prev) { rk = i + 1; prev = x.sk; } x.rk = rk; });
+ return rows;
+}
+let RKS = { pf: PF, when: 'd', from: 'title' };
+async function openRank(pf, when, from) {
+ const my = RKS = { pf, when, from: from || RKS.from };
+ $('title').hidden = true; $('result').hidden = true; $('rank').hidden = false;
+ $('rkPf').querySelectorAll('button').forEach(b => { b.className = b.dataset.p === pf ? 'on' : ''; b.onclick = () => openRank(b.dataset.p, RKS.when); });
+ $('rkWhen').querySelectorAll('button').forEach(b => { b.className = b.dataset.w === when ? 'on' : ''; b.onclick = () => openRank(RKS.pf, b.dataset.w); });
+ const box = $('rankBox'); box.innerHTML = '<p class="note">' + T.loading + '</p>';
+ try {
+  const rows = await board(pf, when); if (RKS !== my) return;
+  const me = (ls.get('b1_auth', null) || {}).uid;
+  box.innerHTML = rows.length ? '<table class="rk">' + rows.map(r => `<tr${r.id === me ? ' class="me"' : ''}><td class="r">${r.rk}</td><td class="n">${esc(String(r.n))}</td><td class="c">${T.rowS(r.k, r.e)}</td></tr>`).join('') + '</table>' : '<p class="note">' + T.empty + '</p>';
+ } catch (e) { if (RKS === my) box.innerHTML = '<p class="note err">' + T.rankErr + '</p>'; }
+}
+$('rkBtn').onclick = () => openRank(PF, 'd', 'title');
+$('rkBtn2').onclick = () => openRank(PF, 'd', 'result');
+$('rkBack').onclick = () => { $('rank').hidden = true; if (RKS.from === 'result') $('result').hidden = false; else $('title').hidden = false; };
+$('nm').value = ls.get('b1_name', '');
+$('recBtn').onclick = async () => {
+ const nm = $('nm').value.trim(), note = $('recNote'); note.className = 'note';
+ if (!nm) { note.textContent = T.needName; note.className = 'note err'; return; }
+ if (badName(nm)) { note.textContent = T.badName; note.className = 'note err'; return; }
+ ls.set('b1_name', nm); $('recBtn').disabled = true; note.textContent = T.sendingRec;
+ try { note.textContent = T.recPre + await submit(nm); note.className = 'note ok'; }
+ catch (e) { note.textContent = e.message === 'norun' ? T.norun : T.sendErr; note.className = 'note err'; if (e.message !== 'norun') $('recBtn').disabled = false; }
+};
+
+// ---------- 音（「はじめる」を押したときに用意する。端末がマナーモードなら鳴らない） ----------
+let AC = null, MG = null, MUTE = !!ls.get('b1_mute', 0);
+function audio() { if (MUTE) return null; try { if (!AC) { const ACx = window.AudioContext || window.webkitAudioContext; try { AC = new ACx({ latencyHint: 'playback' }); } catch (e) { AC = new ACx(); } MG = AC.createGain(); MG.gain.value = .5; const lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 7000; lp.Q.value = .5; MG.connect(lp); lp.connect(AC.destination); } if (AC.state === 'suspended') AC.resume().catch(() => { }); return AC; } catch (e) { return null; } }
+function tone(f, dur, type, vol, f2, delay) { if (!AC || MUTE) return; try { const t0 = AC.currentTime + (delay || 0), o = AC.createOscillator(), g = AC.createGain(); o.type = type || 'sine'; o.frequency.setValueAtTime(f, t0); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + dur); g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + .008); g.gain.exponentialRampToValueAtTime(.0005, t0 + dur); o.connect(g); g.connect(MG); o.start(t0); o.stop(t0 + dur + .03); } catch (e) { } }
+const SFX = {
+ inc: () => { tone(880, .08, 'sine', .07); tone(1175, .12, 'sine', .06, null, .07); },                                  // 関係ない人からの通知（小さめ）
+ target: () => { tone(988, .1, 'sine', .2); tone(1319, .1, 'sine', .18, null, .09); tone(1568, .18, 'sine', .16, null, .18); }, // お題の相手から届いた
+ send: () => { tone(520, .09, 'triangle', .1, 1040); },                                                                 // 送信
+ ok: () => { tone(1047, .08, 'triangle', .2, null, .06); tone(1568, .2, 'triangle', .18, null, .14); },                 // クリア
+ ng: () => { tone(196, .16, 'triangle', .22, 150, .05); tone(156, .25, 'triangle', .22, 110, .22); },                     // 誤送信
+ warn: () => { tone(740, .12, 'triangle', .1); tone(740, .12, 'triangle', .1, null, .2); },                               // 「バッテリー残量が少なくなっています」
+ heart: () => { tone(150, .1, 'sine', .34, 70); tone(125, .12, 'sine', .27, 60, .15); },                                  // 残り10秒の心臓の音
+ off: () => { tone(1500, .45, 'sine', .1, 60); tone(110, .3, 'sine', .4, 45, .02); },                                   // 電源が切れる
+};
+// ---------- BGM（自作。夜の静かな曲が、電池が減るほど速く・にぎやかになる。電源が切れた瞬間にぷつっと止まる） ----------
+const BGM = { on: false, tm: null, next: 0, step: 0, g: null, nz: null };
+const BG_CH = [ // Am → F → Dm → E（8分音符のならび）と、低い音
+ { b: 220.00, a: [440.00, 523.25, 659.25, 523.25, 880.00, 659.25, 523.25, 659.25] },
+ { b: 174.61, a: [349.23, 440.00, 523.25, 440.00, 698.46, 523.25, 440.00, 523.25] },
+ { b: 146.83, a: [293.66, 349.23, 440.00, 349.23, 587.33, 440.00, 349.23, 440.00] },
+ { b: 164.81, a: [329.63, 415.30, 493.88, 415.30, 659.25, 493.88, 415.30, 493.88] },
+];
+function bgTone(f, t0, dur, type, vol, f2) { try { const o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.setValueAtTime(f, t0); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + dur); g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + .012); g.gain.exponentialRampToValueAtTime(vol * .4, t0 + dur * .5); g.gain.exponentialRampToValueAtTime(.0005, t0 + dur); o.connect(g); g.connect(BGM.g); o.start(t0); o.stop(t0 + dur + .03); } catch (e) { } }
+function bgNoise(t0, dur, vol, type, freq) { try { const s = AC.createBufferSource(), f = AC.createBiquadFilter(), g = AC.createGain(); s.buffer = BGM.nz; f.type = type; f.frequency.value = freq; g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + .004); g.gain.exponentialRampToValueAtTime(.0005, t0 + dur); s.connect(f); f.connect(g); g.connect(BGM.g); s.start(t0, Math.random() * .5, dur + .02); } catch (e) { } }
+function bgStep(t0, sd, el) { // el：はじまってからの割合（0〜1）
+ const i = BGM.step % 8, ch = BG_CH[(BGM.step >> 3) % 4];
+ bgTone(ch.a[i], t0, sd * 2.6, 'triangle', .075);                                   // きらきらした音（ずっと鳴る）
+ if (i === 0 || i === 3 || i === 6) bgTone(ch.b, t0, sd * 2.8, 'triangle', .13);          // 低い音
+ if (el > .2) { if (i === 0 || i === 4) bgTone(130, t0, .13, 'sine', .22, 55); if (i % 2 === 1) bgNoise(t0, .04, .025, 'bandpass', 4200); } // 12秒から：どん・ち
+ if (el > .5) { if (i === 2 || i === 6) bgNoise(t0, .09, .09, 'bandpass', 1900); bgTone(ch.a[i] * 2, t0, sd * .8, 'sine', .028); }         // 30秒から：たん・高い音
+ if (el > .75 && i % 2 === 0) bgNoise(t0 + sd / 2, .03, .015, 'bandpass', 4800);                                                          // 45秒から：こまかい「ち」
+}
+function bgTick() {
+ if (!BGM.on || !AC) return;
+ if (MUTE) { BGM.next = 0; return; }
+ if (BGM.next < AC.currentTime) BGM.next = AC.currentTime + .06;
+ while (BGM.next < AC.currentTime + .25) {
+  const el = Math.min(1, Math.max(0, (performance.now() - tStart) / DUR)), bpm = 92 + 58 * Math.pow(el, 1.6), sd = 60 / bpm / 2;
+  bgStep(BGM.next, sd, el); BGM.next += sd; BGM.step++;
+ }
+}
+function bgmStart() {
+ bgmStop(); if (!audio()) return;
+ try {
+  if (!BGM.nz) { const n = AC.sampleRate, b = AC.createBuffer(1, n, n), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; BGM.nz = b; }
+  const lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5200;
+  BGM.g = AC.createGain(); BGM.g.gain.setValueAtTime(.0001, AC.currentTime); BGM.g.gain.exponentialRampToValueAtTime(1.2, AC.currentTime + .5);
+  BGM.g.connect(lp); lp.connect(MG);
+  BGM.on = true; BGM.step = 0; BGM.next = 0; BGM.tm = setInterval(bgTick, 50); bgTick();
+ } catch (e) { BGM.on = false; }
+}
+function bgmStop() { // 電源が切れた瞬間：いま鳴っている音ごと切る
+ BGM.on = false; if (BGM.tm) { clearInterval(BGM.tm); BGM.tm = null; }
+ try { if (BGM.g) { const g = BGM.g; BGM.g = null; g.gain.cancelScheduledValues(AC.currentTime); g.gain.setValueAtTime(g.gain.value, AC.currentTime); g.gain.linearRampToValueAtTime(0, AC.currentTime + .03); setTimeout(() => { try { g.disconnect(); } catch (e) { } }, 300); } } catch (e) { }
+}
+function vib(p) { try { if (!MUTE && navigator.vibrate) navigator.vibrate(p); } catch (e) { } }
+function sndLabel() { $('sndBtn').textContent = MUTE ? T.sndOff : T.sndOn; }
+$('sndBtn').onclick = () => { MUTE = !MUTE; ls.set('b1_mute', MUTE ? 1 : 0); sndLabel(); if (!MUTE) { audio(); SFX.inc(); } };
+sndLabel();
+// ---------- 小さな動き ----------
+function plusOne() { const c = $('cnt'); c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); const p = document.createElement('div'); p.className = 'plus'; p.textContent = '+1'; $('app').appendChild(p); setTimeout(() => p.remove(), 750); }
+function countUp(el, n) { const t0 = performance.now(), dur = Math.min(900, 250 + n * 60); el.classList.remove('bump'); (function f() { const k = Math.min(1, (performance.now() - t0) / dur); el.textContent = Math.round(n * (1 - Math.pow(1 - k, 3))); if (k < 1 && !$('result').hidden) requestAnimationFrame(f); else { el.textContent = n; void el.offsetWidth; el.classList.add('bump'); if (n > 0 && !$('result').hidden) SFX.ok(); } })(); }
+// いちばんの誤送信を、トークの形で見せる
+function worstBox(x) { const b = $('rWorst'), c = C[x.w]; b.hidden = false;
+ b.innerHTML = '<div class="wl"></div>' + (x.r ? '<div class="m y"><div class="av"></div><div class="wrap"><div class="bb"></div></div></div>' : '') + '<div class="m me ng"><div class="st"><b>' + T.ngL + '</b>' + T.read + '</div><div class="bb"></div></div>';
+ b.querySelector('.wl').textContent = T.chatWith(c.n) + (x.want ? T.want(x.want) : T.nobody);
+ if (x.r) { const av = b.querySelector('.av'); av.textContent = c.a; av.style.background = c.c; b.querySelector('.m.y .bb').textContent = x.r; }
+ b.querySelector('.m.me .bb').textContent = x.got; }
+// ---------- 結果を画像にする（共有できる端末は共有、できなければ保存） ----------
+async function makeImage() {
+ const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+ const FF = '-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Apple Color Emoji","Noto Color Emoji",system-ui,sans-serif', F = (px, w) => (w || 900) + ' ' + px + 'px ' + FF;
+ const rr = (x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.lineTo(x + w - r, y); g.quadraticCurveTo(x + w, y, x + w, y + r); g.lineTo(x + w, y + h - r); g.quadraticCurveTo(x + w, y + h, x + w - r, y + h); g.lineTo(x + r, y + h); g.quadraticCurveTo(x, y + h, x, y + h - r); g.lineTo(x, y + r); g.quadraticCurveTo(x, y, x + r, y); g.closePath(); };
+ const cut = (s, n) => { const a = Array.from(String(s)); return a.length > n ? a.slice(0, n).join('') + '…' : a.join(''); };
+ g.fillStyle = '#0b0d12'; g.fillRect(0, 0, W, H); g.textBaseline = 'middle';
+ // 上：題名と電池
+ g.textAlign = 'left'; g.font = F(92); g.fillStyle = '#f2f3f5'; const t1 = T.imgT[0], w1 = g.measureText(t1).width; g.fillText(t1, 70, 120); g.fillStyle = '#ff3b30'; g.fillText('1%', 70 + w1, 120); const w2 = g.measureText('1%').width; g.fillStyle = '#f2f3f5'; g.fillText(T.imgT[2], 70 + w1 + w2, 120);
+ g.strokeStyle = '#fff9'; g.lineWidth = 5; rr(840, 92, 130, 58, 14); g.stroke(); g.fillStyle = '#fff9'; rr(976, 110, 10, 22, 4); g.fill(); g.fillStyle = '#ff3b30'; rr(850, 102, 12, 38, 4); g.fill();
+ // まん中：トークの画面
+ const x = st.ng[0] || st.lastOk, ng = !!st.ng[0]; let y = 230;
+ g.fillStyle = '#1c2230'; rr(50, y, W - 100, 560, 36); g.fill();
+ if (x) { const p = C[x.w];
+  g.fillStyle = '#ffffff14'; rr(50, y, W - 100, 96, 36); g.fill(); g.fillStyle = '#f2f3f5'; g.font = F(44, 800); g.textAlign = 'left'; g.fillText('‹  ' + p.n, 90, y + 50);
+  // 相手
+  let by = y + 150;
+  if (x.r) { g.fillStyle = p.c; g.beginPath(); g.arc(130, by + 46, 44, 0, 6.3); g.fill(); g.font = F(46, 400); g.textAlign = 'center'; g.fillStyle = '#fff'; g.fillText(p.a, 130, by + 50);
+   const tx = cut(x.r, L === 'en' ? 26 : 15); g.font = F(46, 500); const tw = g.measureText(tx).width; g.fillStyle = '#2e3442'; rr(196, by, tw + 64, 96, 40); g.fill(); g.fillStyle = '#fff'; g.textAlign = 'left'; g.fillText(tx, 228, by + 50); by += 150; }
+  // 自分
+  { const tx = cut(x.got, L === 'en' ? 24 : 14); g.font = F(46, 500); const tw = g.measureText(tx).width, bx = W - 90 - (tw + 64); g.fillStyle = '#5bd170'; rr(bx, by, tw + 64, 96, 40); g.fill();
+   if (ng) { g.strokeStyle = '#ff3b30'; g.lineWidth = 7; rr(bx - 4, by - 4, tw + 72, 104, 44); g.stroke(); }
+   g.fillStyle = '#0b1a0e'; g.textAlign = 'left'; g.fillText(tx, bx + 32, by + 50);
+   g.textAlign = 'right'; g.font = F(30, 800); if (ng) { g.fillStyle = '#ff3b30'; g.fillText(T.ngL, bx - 18, by + 34); } g.fillStyle = '#8b9098'; g.font = F(26, 500); g.fillText(T.read, bx - 18, by + (ng ? 72 : 60)); by += 140; }
+  if (ng) { g.textAlign = 'center'; g.font = F(34, 700); g.fillStyle = '#8b9098'; g.fillText(x.want ? T.imgWant(cut(x.want, 22)) : T.imgNobody, W / 2, y + 500); }
+  else { g.textAlign = 'center'; g.font = F(36, 800); g.fillStyle = '#7dff9b'; g.fillText(T.imgNg(0), W / 2, y + 500); }
+ } else { g.textAlign = 'center'; g.font = F(48, 800); g.fillStyle = '#8b9098'; g.fillText(T.imgNone, W / 2, y + 280); }
+ // 下：結果
+ g.textAlign = 'center'; g.font = F(40, 700); g.fillStyle = '#c9ccd2'; g.fillText(T.imgHead, W / 2, 880);
+ { const n = String(st.n); g.font = F(210); const nw = g.measureText(n).width; g.font = F(64); const uw = g.measureText(T.imgUnit).width + 14; const x0 = (W - nw - uw) / 2; g.textAlign = 'left'; g.font = F(210); g.fillStyle = '#ffd33d'; g.fillText(n, x0, 1020); g.font = F(64); g.fillStyle = '#fff'; g.fillText(T.imgUnit, x0 + nw + 14, 1058); }
+ g.textAlign = 'center'; g.font = F(40, 700); g.fillStyle = st.ng.length ? '#ff8a80' : '#7dff9b'; g.fillText(T.imgNg(st.ng.length), W / 2, 1160);
+ g.font = F(46); g.fillStyle = '#fff'; g.fillText('#残り1パーセント', W / 2, 1250); g.font = F(30, 600); g.fillStyle = '#8b9098'; g.fillText('nasubi-no-oniwa.github.io/battery1', W / 2, 1306);
+ const blob = await new Promise(r => c.toBlob(r, 'image/png')); if (!blob) return; const nm = 'nokori1_' + Date.now() + '.png', file = new File([blob], nm, { type: 'image/png' });
+ try { if (navigator.canShare && navigator.canShare({ files: [file] })) { const q = quoteURL(); await navigator.share({ files: [file], text: POST + '\n' + SHARE_URL + (q ? '\n' + q : '') }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+ const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nm; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+}
+$('imgBtn').addEventListener('click', () => { makeImage().catch(() => { }); });
+
+// ---------- キーボードが出たときに画面を合わせる ----------
+function fit() {
+ const vv = window.visualViewport, app = $('app');
+ if (vv) { app.style.height = vv.height + 'px'; app.style.top = vv.offsetTop + 'px'; } else app.style.height = innerHeight + 'px';
+ if (cur) $('msgs').scrollTop = 1e6;
+}
+if (window.visualViewport) { visualViewport.addEventListener('resize', fit); visualViewport.addEventListener('scroll', fit); }
+addEventListener('resize', fit); fit();
+setLang(pickLang()); init(); renderList();
+</script>
+</body>
+</html>

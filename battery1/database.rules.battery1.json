@@ -1,0 +1,107 @@
+{
+  "run": {
+    "$uid": {
+      ".read": "auth != null && auth.uid === $uid",
+      ".write": "auth != null && auth.uid === $uid && newData.exists()",
+      ".validate": "newData.hasChildren([\"st\",\"pf\"]) && newData.child(\"st\").val() === now",
+      "st": {
+        ".validate": "newData.isNumber()"
+      },
+      "pf": {
+        ".validate": "newData.val() === \"m\" || newData.val() === \"p\""
+      },
+      "$other": {
+        ".validate": false
+      }
+    }
+  },
+  "b": {
+    "$pf": {
+      ".validate": "$pf === \"m\" || $pf === \"p\"",
+      "all": {
+        ".read": true,
+        ".indexOn": [
+          "sk"
+        ],
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid && newData.exists() && !root.child(\"battery1/ban/\" + $uid).exists() && ((newData.child(\"st\").val() === root.child(\"battery1/run/\" + $uid).child(\"st\").val() && root.child(\"battery1/run/\" + $uid).child(\"pf\").val() === $pf && now - newData.child(\"st\").val() >= 58000 && now - newData.child(\"st\").val() <= 3600000 && (!data.exists() || newData.child(\"sk\").val() > data.child(\"sk\").val())) || (data.exists() && newData.child(\"k\").val() === data.child(\"k\").val() && newData.child(\"e\").val() === data.child(\"e\").val() && newData.child(\"sk\").val() === data.child(\"sk\").val() && newData.child(\"st\").val() === data.child(\"st\").val() && newData.child(\"lg\").val() === data.child(\"lg\").val() && newData.child(\"n\").val() !== data.child(\"n\").val()))",
+          ".validate": "newData.hasChildren([\"n\",\"k\",\"e\",\"sk\",\"st\",\"v\",\"at\"])",
+          "n": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 12"
+          },
+          "k": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 50 && newData.val() % 1 === 0"
+          },
+          "e": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 999 && newData.val() % 1 === 0"
+          },
+          "sk": {
+            ".validate": "newData.val() === newData.parent().child(\"k\").val() * 1000 + 999 - newData.parent().child(\"e\").val()"
+          },
+          "st": {
+            ".validate": "newData.isNumber()"
+          },
+          "v": {
+            ".validate": "newData.val() === 1"
+          },
+          "at": {
+            ".validate": "newData.val() === now"
+          },
+          "$other": {
+            ".validate": false
+          },
+          "lg": {
+            ".validate": "newData.isString() && newData.val().length <= 400"
+          }
+        }
+      },
+      "d": {
+        ".read": true,
+        ".indexOn": [
+          "ds"
+        ],
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid && newData.exists() && !root.child(\"battery1/ban/\" + $uid).exists() && ((newData.child(\"st\").val() === root.child(\"battery1/run/\" + $uid).child(\"st\").val() && root.child(\"battery1/run/\" + $uid).child(\"pf\").val() === $pf && now - newData.child(\"st\").val() >= 58000 && now - newData.child(\"st\").val() <= 3600000 && (!data.exists() || newData.child(\"dk\").val() > data.child(\"dk\").val() || (newData.child(\"dk\").val() === data.child(\"dk\").val() && newData.child(\"sk\").val() > data.child(\"sk\").val()))) || (data.exists() && newData.child(\"k\").val() === data.child(\"k\").val() && newData.child(\"e\").val() === data.child(\"e\").val() && newData.child(\"sk\").val() === data.child(\"sk\").val() && newData.child(\"st\").val() === data.child(\"st\").val() && newData.child(\"dk\").val() === data.child(\"dk\").val() && newData.child(\"ds\").val() === data.child(\"ds\").val() && newData.child(\"lg\").val() === data.child(\"lg\").val() && newData.child(\"n\").val() !== data.child(\"n\").val()))",
+          ".validate": "newData.hasChildren([\"n\",\"k\",\"e\",\"sk\",\"st\",\"v\",\"at\",\"dk\",\"ds\"])",
+          "n": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 12"
+          },
+          "k": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 50 && newData.val() % 1 === 0"
+          },
+          "e": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 999 && newData.val() % 1 === 0"
+          },
+          "sk": {
+            ".validate": "newData.val() === newData.parent().child(\"k\").val() * 1000 + 999 - newData.parent().child(\"e\").val()"
+          },
+          "st": {
+            ".validate": "newData.isNumber()"
+          },
+          "v": {
+            ".validate": "newData.val() === 1"
+          },
+          "at": {
+            ".validate": "newData.val() === now"
+          },
+          "$other": {
+            ".validate": false
+          },
+          "dk": {
+            ".validate": "newData.isNumber() && newData.val() * 86400000 <= now + 32400000 && (newData.val() + 1) * 86400000 > now + 32400000"
+          },
+          "ds": {
+            ".validate": "newData.val() === newData.parent().child(\"dk\").val() * 1000000 + newData.parent().child(\"sk\").val()"
+          },
+          "lg": {
+            ".validate": "newData.isString() && newData.val().length <= 400"
+          }
+        }
+      }
+    }
+  },
+  "ban": {
+    ".read": false,
+    ".write": false
+  }
+}

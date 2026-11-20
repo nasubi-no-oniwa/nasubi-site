@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><script>/* nsb-mig: github.io から引き継いだ保存情報を受け取る */(function(){try{var h=location.hash,i=h.indexOf('nsbmig=');if(i<0)return;var r=h.slice(i+7),j=r.indexOf('&nsbh='),m=j<0?r:r.slice(0,j),oh=j<0?'':decodeURIComponent(r.slice(j+6)),d=JSON.parse(decodeURIComponent(m));for(var k in d){try{if(localStorage.getItem(k)===null)localStorage.setItem(k,d[k])}catch(e){}}history.replaceState(null,'',location.pathname+location.search+oh)}catch(e){}})();</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RB6XMN0QR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-5RB6XMN0QR');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
+<title>十枚目</title>
+<meta name="description" content="番町皿屋敷のホラーゲーム。お菊が数える皿は九枚。足りない十枚目は、お前の頭の上にある。毎回変わる屋敷で鍵をさがし、門から逃げろ。走りすぎると皿が割れる。">
+<meta property="og:title" content="十枚目">
+<meta property="og:description" content="一枚、足りない。十枚目の皿は、お前の頭の上にある。毎回変わる屋敷から、お菊に捕まる前に逃げろ。">
+<meta property="og:image" content="https://nasubi-no-oniwa.com/jumaime/ogp.png">
+<meta property="og:url" content="https://nasubi-no-oniwa.com/jumaime/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;600;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#000;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+body{font-family:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;color:#d9d4c6}
+body[data-lang="zh"]{font-family:"Noto Serif TC","Songti TC","PMingLiU","Shippori Mincho B1",serif}
+body[data-lang="ko"]{font-family:"Noto Serif KR","AppleMyungjo","Batang","Shippori Mincho B1",serif}
+[hidden]{display:none!important}
+#gl{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated;display:block}
+#subs,#opsubs{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.sub{position:absolute;writing-mode:vertical-rl;white-space:nowrap;color:#e4dfd0;transition:opacity .5s linear}
+.sub span{display:inline-block;opacity:0;will-change:transform,opacity}
+.dots{position:relative;-webkit-text-fill-color:transparent}
+.dots::before{content:"";position:absolute;left:50%;top:.14em;width:.13em;height:.13em;margin-left:-.065em;border-radius:50%;background:currentColor;box-shadow:0 .3em 0 currentColor,0 .6em 0 currentColor}
+.l1{right:14%;top:15%;font-size:clamp(15px,calc(1.5vmin + 1.1vh),25px);font-weight:500;letter-spacing:.62em;filter:url(#ink1)}
+.l2{right:29%;top:24%;font-size:clamp(20px,calc(2.2vmin + 1.5vh),36px);font-weight:600;letter-spacing:.4em;filter:url(#ink1)}
+.l3{right:5%;top:2.5vh;font-size:min(10.6vh,27vw);font-weight:800;line-height:1;letter-spacing:0;color:#f1ebdb;filter:url(#ink3);transition:none}
+.l3 span{transform-origin:50% 0}
+.l3.split span{text-shadow:-.035em 0 0 rgba(168,22,34,.9),.03em 0 0 rgba(28,96,104,.75)}
+.l3 .bang{text-combine-upright:all;-webkit-text-combine:horizontal;font-size:.62em;margin-top:.9em;letter-spacing:-.05em}
+#opsubs{writing-mode:vertical-rl;padding:9vh 9vw 0 0;font-size:clamp(14px,calc(1.3vmin + 1vh),22px);letter-spacing:.5em;font-weight:500;color:#e2dccd;filter:url(#ink1)}
+#opsubs div{margin-left:.85em;opacity:0}
+#opmiss{position:fixed;left:11%;top:24%;writing-mode:vertical-rl;pointer-events:none;opacity:0;font-size:clamp(24px,calc(2.6vmin + 1.7vh),40px);font-weight:600;letter-spacing:.34em;color:#ece6d6;filter:url(#ink1)}
+#opmiss>span{display:block;margin-left:.55em}
+#bigtitle{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0}
+#bigtitle b,.t{writing-mode:vertical-rl;font-size:min(13vh,22vw);letter-spacing:.3em;font-weight:800;color:#ece6d6;filter:url(#ink3);line-height:1.1;white-space:nowrap}
+#count,#hint{position:fixed;writing-mode:vertical-rl;pointer-events:none;opacity:0;white-space:nowrap;filter:url(#ink1)}
+#count{font-size:16px;letter-spacing:.42em;color:#d6dfdd;transform:translate(-50%,-50%);font-weight:600;text-shadow:0 0 6px #000}#count.chase{color:#ef8f7e}
+#fearfx{position:fixed;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,transparent 42%,rgba(110,0,0,.5) 78%,rgba(70,0,0,.85) 100%)}
+body:not([data-mode="play"]) #fearfx{display:none}
+#hint{right:11%;top:13%;font-size:clamp(15px,calc(1.4vmin + 1.05vh),23px);letter-spacing:.42em;font-weight:500;color:#e6e0d0}
+#slit{position:fixed;inset:0;pointer-events:none;display:none}
+#slit.on{display:block}
+#slit i{position:absolute;top:0;bottom:0;background:#000;box-shadow:0 0 4vw 2.2vw #000}
+#slit i:first-child{left:0;width:37%}#slit i:last-child{right:0;width:37%}
+#stam{position:fixed;left:13px;top:54%;width:3px;height:20vh;margin-top:-10vh;background:rgba(217,212,198,.14)}
+#stam b{position:absolute;left:0;right:0;bottom:0;background:#d9d4c6;opacity:.75}
+#stam.low b{background:#b03a34;animation:bl .32s steps(2) infinite}#stam.gone{opacity:.25}
+@keyframes bl{50%{opacity:.25}}
+#stam::after{content:attr(data-l);position:absolute;left:-5px;top:-22px;font-size:12px;opacity:.55;white-space:nowrap}
+#stam.gone::after{color:#b03a34;opacity:1}
+#keyIcon{position:fixed;left:8px;top:calc(50% + 12vh);font-size:13px;border:1px solid rgba(217,212,198,.5);padding:3px 2px;writing-mode:vertical-rl;opacity:0;color:#e3c46a;border-color:#8d7230}
+#keyIcon.on{opacity:.9}
+#joy{position:fixed;width:104px;height:104px;margin:-52px 0 0 -52px;border:1px solid rgba(217,212,198,.2);border-radius:50%;display:none;pointer-events:none}
+#joy.on{display:block}#joy i{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px;border-radius:50%;background:rgba(217,212,198,.22)}
+button{font:inherit;color:#d9d4c6;background:rgba(0,0,0,.45);border:1px solid rgba(217,212,198,.4);cursor:pointer}
+#run,#act{position:fixed;right:calc(18px + env(safe-area-inset-right));width:74px;height:74px;border-radius:50%;font-size:16px;letter-spacing:.08em}
+#run{bottom:calc(28px + env(safe-area-inset-bottom))}#run.held{background:#d9d4c6;color:#000}
+#act{bottom:calc(118px + env(safe-area-inset-bottom));display:none;border-color:#e3c46a;color:#f0dfa8;background:rgba(48,40,22,.8);font-size:14px}#act.on{display:block}
+#goal{position:fixed;top:calc(var(--top,10px) + env(safe-area-inset-top));left:132px;display:none;align-items:center;gap:10px;font-size:15px;letter-spacing:.16em;padding:7px 13px;background:rgba(0,0,0,.5);border:1px solid rgba(217,212,198,.3);white-space:nowrap}
+#goal span{font-size:10px;opacity:.6;letter-spacing:.3em}#goal b{font-weight:600}#goal.gate b{color:#ec8672}
+#map{position:fixed;left:10px;top:calc(var(--top,10px) + env(safe-area-inset-top));width:110px;height:110px;display:none;background:rgba(0,0,0,.42);border:1px solid rgba(217,212,198,.2)}
+body[data-mode="play"] #goal{display:flex}body[data-mode="play"] #map{display:block}
+#pulse{position:fixed;width:28px;height:28px;margin:-14px;border:1.5px solid #e3c46a;border-radius:50%;opacity:0;pointer-events:none}
+.panel{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;overflow-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#000;padding:calc(var(--top,10px) + env(safe-area-inset-top)) 10px calc(14px + env(safe-area-inset-bottom))}
+.card{flex:none;width:100%;max-width:400px;margin:auto 0;padding:12px 6px;text-align:center}
+#howto{display:none;opacity:0;padding-left:7vw;padding-right:7vw}
+.hw{flex:none;margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:min(3.2vh,26px);padding:10px 0}
+body[data-mode="howto"] #howto{display:flex}
+#howto h2{font-size:13px;font-weight:500;letter-spacing:.5em;opacity:.55}
+#howto .lead{font-size:clamp(16px,4.6vw,21px);letter-spacing:.14em;line-height:1.9;text-align:center;filter:url(#ink1)}
+#howto ul{list-style:none;display:flex;flex-direction:column;gap:1.5vh;max-width:430px;width:100%}
+#howto li{display:flex;gap:14px;align-items:flex-start;font-size:clamp(13.5px,3.7vw,16px);line-height:1.65;letter-spacing:.05em}
+#howto li i{flex:none;font-style:normal;width:32px;height:32px;border:1px solid rgba(217,212,198,.55);display:flex;align-items:center;justify-content:center;font-size:16px}
+#howto li:nth-child(1) i{color:#e3c46a;border-color:#8d7230}#howto li:nth-child(2) i{color:#ec8672;border-color:#8a3a2e}#howto li:nth-child(4) i{color:#cfe0e0;border-color:#6d8a8c}
+#howto .ctl{font-size:12px;letter-spacing:.1em;opacity:.6;text-align:center;line-height:1.8}
+#enter{padding:14px 34px;font-size:16px;letter-spacing:.4em;text-indent:.4em}
+#skip{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));padding:8px 14px;font-size:12px;letter-spacing:.2em;opacity:.6;display:none}
+.tt{display:flex;flex-direction:row-reverse;justify-content:center;align-items:stretch;gap:18px}
+.sm{writing-mode:vertical-rl;font-size:12px;letter-spacing:.5em;opacity:.5;padding-top:.5em;white-space:nowrap}
+.tb{display:flex;flex-direction:column;justify-content:flex-end;gap:11px;min-width:158px}
+.tb button,.btns button,#recBtn,#rkBack{padding:13px 10px;font-size:15px;letter-spacing:.3em;text-indent:.3em}
+button.b2{font-size:13px;padding:10px 8px;letter-spacing:.2em;text-indent:.2em;border-color:rgba(217,212,198,.24);color:#bdb8aa}
+button:disabled{opacity:.4}
+#langs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#langs button{font-size:11px;padding:7px 2px;letter-spacing:.04em;text-indent:0;border-color:rgba(217,212,198,.16);color:#9a968a;font-family:inherit}
+#langs button.on{border-color:rgba(217,212,198,.6);color:#e4dfd0}
+.card p{font-size:11px;letter-spacing:.12em;opacity:.5;line-height:1.7;margin-top:16px;text-wrap:balance}
+#result{display:none;background:transparent;opacity:0}
+.ri{display:flex;flex-direction:column;justify-content:center;gap:14px;text-align:left;min-width:0}
+#resLine{font-size:15px;letter-spacing:.14em;line-height:1.6}#resNote{font-size:12px;letter-spacing:.24em;opacity:.6;line-height:1.6}
+#recBox{margin-top:20px}
+.rrow{display:flex;gap:8px}
+input{font:inherit;font-size:16px;color:#e4dfd0;background:rgba(255,255,255,.05);border:1px solid rgba(217,212,198,.4);border-radius:0;padding:11px 10px;min-width:0;flex:1;outline:none;user-select:text;-webkit-user-select:text;touch-action:manipulation}
+input:focus{border-color:#e3c46a}input::placeholder{color:#7d796e;font-size:13px}
+#recBtn{flex:none;font-size:13px;letter-spacing:.12em;text-indent:0;padding:11px 12px;border-color:#8d7230;color:#f0dfa8}
+#recMsg{min-height:1.7em;font-size:12px;letter-spacing:.08em;line-height:1.7;margin-top:8px;color:#e3c46a}#recMsg.err{color:#ec8672}#recMsg.dim{color:#9a968a}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.btns #again{grid-column:1/3}
+#rank{display:none;z-index:5}#rank.on{display:flex}
+#rank h2{font-size:15px;font-weight:600;letter-spacing:.5em;text-indent:.5em;margin-bottom:14px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.tabs button{padding:10px;font-size:13px;letter-spacing:.3em;text-indent:.3em;border-color:rgba(217,212,198,.2);color:#9a968a}.tabs button.on{border-color:rgba(217,212,198,.6);color:#e4dfd0;background:rgba(217,212,198,.08)}
+#rkList{margin-top:10px;min-height:150px;text-align:left}
+.rk{display:flex;gap:9px;align-items:baseline;padding:8px 4px;border-bottom:1px solid rgba(217,212,198,.1);font-size:14px;letter-spacing:.04em}
+.rk .r{flex:none;width:2.4em;text-align:right;opacity:.55;font-size:12px}.rk:nth-child(-n+3) .r{opacity:1;color:#ece6d6;font-weight:800;font-size:14px}
+.rk .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk .p{flex:none;font-style:normal;font-size:10px;line-height:1;padding:3px 2px;border:1px solid #8d7230;color:#e3c46a}
+.rk .tm{flex:none;font-variant-numeric:tabular-nums;letter-spacing:.06em}
+.rk.me{color:#f0dfa8;background:rgba(227,196,106,.09)}
+.rkmsg{padding:40px 0;text-align:center;font-size:13px;opacity:.55;letter-spacing:.16em}
+#rkBack{margin-top:16px;width:100%}
+/* 横書きの言葉（英語） */
+body.hz .t,body.hz #bigtitle b{writing-mode:horizontal-tb;font-size:min(8vh,12.5vw,66px);letter-spacing:.1em;line-height:1.2;white-space:normal;text-align:center}
+body.hz .tt{flex-direction:column;align-items:center;gap:16px}
+body.hz .sm{writing-mode:horizontal-tb;letter-spacing:.1em;padding:0;white-space:normal;line-height:1.6;max-width:300px}
+body.hz .tb{min-width:230px}
+body.hz .ri{text-align:center;gap:8px}
+body.hz button{letter-spacing:.14em!important;text-indent:.14em!important}
+body.hz .sub,body.hz #count,body.hz #hint,body.hz #opsubs,body.hz #opmiss{writing-mode:horizontal-tb}
+body.hz #hint{right:auto;left:8vw;width:84vw;top:19%;text-align:center;white-space:normal;letter-spacing:.08em;line-height:1.5}
+body.hz #count{letter-spacing:.08em}
+body.hz #opsubs{padding:9vh 0 0 9vw;letter-spacing:.14em}body.hz #opsubs div{margin:0 0 .55em}
+body.hz #opmiss{left:9vw;top:auto;bottom:17%;letter-spacing:.1em}body.hz #opmiss>span{margin:0 0 .2em}
+body.hz .l1{right:auto;left:8%;top:13%;letter-spacing:.2em}
+body.hz .l2{right:auto;left:8%;top:21%;letter-spacing:.16em}
+body.hz .l3{right:auto;left:6%;top:auto;bottom:15vh;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:.26em;max-width:90vw;line-height:1.04;letter-spacing:.02em;white-space:normal}
+body.hz .l3 span{transform-origin:0 0}
+body.hz .l3 .bang{font-size:1em;margin:0 0 0 -.2em;letter-spacing:0;text-combine-upright:none;-webkit-text-combine:none}
+body.hz #goal{letter-spacing:.04em;font-size:13px;white-space:normal;max-width:calc(100vw - 142px);line-height:1.3}body.hz #goal span{letter-spacing:.1em}
+body.hz #howto li{letter-spacing:.01em;line-height:1.5}body.hz #howto .lead{letter-spacing:.06em;line-height:1.6}
+body.hz #run,body.hz #act{font-size:13px}
+body[data-mode="play"] #hud,body[data-mode="play"] #run{display:block}
+#hud,#run{display:none}
+body:not([data-mode="play"]) #act,body:not([data-mode="play"]) #joy,body:not([data-mode="play"]) #slit{display:none!important}
+body[data-mode="opening"] #skip{display:block}
+body[data-mode="result"] #result{display:flex}
+#title{z-index:3}#result{z-index:3}#howto{z-index:3}
+@media (hover:hover) and (pointer:fine){#run::after{content:"Shift";display:block;font-size:9px;letter-spacing:.1em;opacity:.6}#act::after{content:"E";display:block;font-size:9px;opacity:.6}}
+</style>
+<!-- nasubi-track: 結果画面とXへの投稿の回数を記録（ゲームの動きには影響しない） -->
+<script>(function(){try{var G="jumaime",IDS=["result"];
+function ev(n){try{if(typeof gtag==='function')gtag('event',n,{game:G});}catch(e){}}
+var o=window.open;window.open=function(u){try{if(/intent\/(post|tweet)/.test(String(u)))ev('x_share');}catch(e){}return o.apply(window,arguments);};
+if(!IDS.length)return;
+function vis(e){if(!e||!e.isConnected||e.closest('[hidden]'))return false;var r=e.getBoundingClientRect();if(r.width<1||r.height<1)return false;for(var n=e;n&&n.nodeType===1;n=n.parentElement){var s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden'||parseFloat(s.opacity)<0.05)return false;}return true;}
+var was={};setInterval(function(){try{var any=false;for(var i=0;i<IDS.length;i++){if(vis(document.getElementById(IDS[i])))any=true;}if(any&&!was.v)ev('result_view');was.v=any;}catch(e){}},700);
+}catch(e){}})();</script>
+<!--ADS-->
+<!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
+<script>window.NSB_NEXT={"g": "jumaime", "r": [{"a": "#result .card", "v": "#result"}], "ad": /*NEXTAD*/0};</script>
+<script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="subs"></div><div id="opsubs"></div><div id="opmiss"></div>
+<div id="bigtitle"><b></b></div>
+<div id="fearfx"></div><div id="count"></div><div id="hint"></div>
+<div id="slit"><i></i><i></i></div>
+<div id="hud"><div id="stam" data-l="皿"><b></b></div><div id="keyIcon">鍵</div></div>
+<div id="joy"><i></i></div>
+<button id="run"></button><button id="act"></button>
+<div id="goal"><span id="goalL"></span><b id="goalText"></b></div><canvas id="map"></canvas><div id="pulse"></div>
+<button id="skip"></button>
+<div class="panel" id="title"><div class="card">
+<div class="tt"><div class="t" id="tBig"></div><div class="sm" id="tSub"></div>
+<div class="tb"><button id="start"></button><button id="rankBtn" class="b2"></button><div id="langs"></div></div></div>
+<p id="tNote"></p>
+</div></div>
+<div class="panel" id="howto"><div class="hw"><h2 id="howH"></h2>
+<p class="lead" id="howLead"></p>
+<ul id="howList"></ul>
+<p class="ctl" id="ctl"></p><button id="enter"></button></div></div>
+<div class="panel" id="result"><div class="card">
+<div class="tt"><div class="t" id="resTitle"></div><div class="ri"><div id="resLine"></div><div id="resNote"></div></div></div>
+<div id="recBox"><div class="rrow"><input id="nm" maxlength="12" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"><button id="recBtn"></button></div><div id="recMsg"></div></div>
+<div class="btns"><button id="again"></button><button id="xBtn" class="b2"></button><button id="rankBtn2" class="b2"></button></div>
+<p id="mapNote"></p>
+</div></div>
+<div class="panel" id="rank"><div class="card">
+<h2 id="rkH"></h2>
+<div class="tabs"><button id="tabD" class="on"></button><button id="tabA"></button></div>
+<p id="rkNote"></p>
+<div id="rkList"></div>
+<button id="rkBack"></button>
+</div></div>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="ink1" x="-20%" y="-10%" width="140%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.04 0.09" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3.2"/></filter>
+  <filter id="ink3" x="-30%" y="-10%" width="160%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.05" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="13"/></filter>
+</svg>
+<script type="module">/*BUNDLE*/</script>
+</body>
+</html>

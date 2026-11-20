@@ -1,0 +1,10 @@
+{
+  "name": "jumaime",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs src/game.js src/game.html dist/game.html && cp dist/game.html index.html && node build.mjs src/viewer.js src/viewer.html dist/viewer.html && cp dist/viewer.html okiku/index.html"
+  },
+  "dependencies": { "gsap": "^3.15.1", "three": "^0.187.0" },
+  "devDependencies": { "esbuild": "^0.25.0" }
+}

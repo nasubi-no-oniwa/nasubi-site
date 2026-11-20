@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ja">
+<head><script>/* nsb-mig: github.io から引き継いだ保存情報を受け取る */(function(){try{var h=location.hash,i=h.indexOf('nsbmig=');if(i<0)return;var r=h.slice(i+7),j=r.indexOf('&nsbh='),m=j<0?r:r.slice(0,j),oh=j<0?'':decodeURIComponent(r.slice(j+6)),d=JSON.parse(decodeURIComponent(m));for(var k in d){try{if(localStorage.getItem(k)===null)localStorage.setItem(k,d[k])}catch(e){}}history.replaceState(null,'',location.pathname+location.search+oh)}catch(e){}})();</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RB6XMN0QR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-5RB6XMN0QR');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>字力</title>
+<meta name="description" content="字をえらんで、手本なしで自分の手で書く。書いた形がそのまま体になり、ぶつかり合って割り合う。">
+<meta name="theme-color" content="#16120f">
+<meta property="og:title" content="字力">
+<meta property="og:description" content="字をえらんで、手本なしで自分の手で書く。書いた字がそのまま体になって、ぶつかり合う。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nasubi-no-oniwa.com/jiryoku/">
+<meta property="og:site_name" content="なすびのお庭">
+<meta property="og:image" content="https://nasubi-no-oniwa.com/jiryoku/icons/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="字力">
+<meta name="twitter:description" content="字をえらんで、手本なしで自分の手で書く。書いた字がそのまま体になって、ぶつかり合う。">
+<meta name="twitter:image" content="https://nasubi-no-oniwa.com/jiryoku/icons/ogp.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Yuji+Syuku&family=M+PLUS+Rounded+1c:wght@500;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=4">
+<!-- nasubi-track: 結果画面とXへの投稿の回数を記録（ゲームの動きには影響しない） -->
+<script>(function(){try{var G="jiryoku",IDS=["result"];
+function ev(n){try{if(typeof gtag==='function')gtag('event',n,{game:G});}catch(e){}}
+var o=window.open;window.open=function(u){try{if(/intent\/(post|tweet)/.test(String(u)))ev('x_share');}catch(e){}return o.apply(window,arguments);};
+if(!IDS.length)return;
+function vis(e){if(!e||!e.isConnected||e.closest('[hidden]'))return false;var r=e.getBoundingClientRect();if(r.width<1||r.height<1)return false;for(var n=e;n&&n.nodeType===1;n=n.parentElement){var s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden'||parseFloat(s.opacity)<0.05)return false;}return true;}
+var was={};setInterval(function(){try{var any=false;for(var i=0;i<IDS.length;i++){if(vis(document.getElementById(IDS[i])))any=true;}if(any&&!was.v)ev('result_view');was.v=any;}catch(e){}},700);
+}catch(e){}})();</script>
+<!-- nasubi-ad: スマホのとき、結果画面とタイトル画面の決めた場所に広告の帯（と、決めた場所だけその下に大きい広告）を出す（遊んでいる最中は出さない・ボタンに重ねない・広告の幅320pxを切らない・画面が出たらすぐ見せるが、最初の1.2秒は押しても反応しない・画面が出るたびに新しい広告を読みこむ（場所ごとに30秒に1回まで）・画面が隠れて2秒たったら広告を外して止める・タイトル画面はタイトル用の広告枠を使う） -->
+<script>(function(){try{var C=[{"a": "#result .sheet-in", "v": "#result"}, {"a": "#s-title div.t-wrap", "v": "#s-title", "t": 1, "b": 1, "m": 20, "x": "", "x2": ""}],BIG=1,M=20,EX="",EX2="",AD='https://nasubi-no-oniwa.com/ad/',AD2='https://nasubi-no-oniwa.com/ad/big.html',TAD='https://nasubi-no-oniwa.com/ad/t.html',TAD2='https://nasubi-no-oniwa.com/ad/tbig.html',LOCK=1200,HOLD=2000,MIN=30000;
+if(/[?&]noad=1/.test(location.search))return;
+if(!/iPhone|iPod|Android|Mobile|Windows Phone|BlackBerry/i.test(navigator.userAgent||''))return;
+var S=[];
+function vis(e){if(!e||!e.isConnected||e.closest('[hidden]'))return false;var r=e.getBoundingClientRect();if(r.width<1||r.height<1)return false;for(var n=e;n&&n.nodeType===1;n=n.parentElement){var s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden'||parseFloat(s.opacity)<0.05)return false;}return true;}
+function opt(i,k,d){return C[i][k]===undefined?d:C[i][k];}
+function mk(i){var b=document.createElement('div');b.className='nsb-ad';b.style.cssText='display:block;position:static;float:none;box-sizing:content-box;width:320px;min-width:320px;max-width:none;height:50px;margin:'+opt(i,'m',M)+'px calc((100% - 320px) / 2) 0;padding:0;border:0;background:none;box-shadow:none;border-radius:0;transform:none;overflow:hidden;flex:0 0 auto;align-self:center;'+opt(i,'x',EX);return b;}
+function mk2(i){var g=document.createElement('div');g.className='nsb-ad nsb-big';g.style.cssText='display:block;position:static;float:none;box-sizing:content-box;width:300px;min-width:300px;max-width:none;height:250px;margin:20px calc((100% - 300px) / 2) 0;padding:0;border:0;background:none;box-shadow:none;border-radius:0;transform:none;overflow:hidden;flex:0 0 auto;align-self:center;'+opt(i,'x2',EX2);return g;}
+function mkf(u,w,h){var f=document.createElement('iframe');f.title='ad';f.setAttribute('scrolling','no');f.width=w;f.height=h;f.style.cssText='border:0;margin:0;padding:0;width:'+w+'px;height:'+h+'px;display:block;max-width:none;visibility:hidden;pointer-events:none';f.src=u;return f;}
+function place(){for(var i=0;i<C.length;i++){var a=document.querySelector(C[i].a);if(!a)continue;var s=S[i]||(S[i]={b:mk(i),g:opt(i,'b',BIG)?mk2(i):null,on:false,since:0,hid:0,last:0,f:null,f2:null});var b=s.b;
+if(C[i].p==='first'){if(a.firstElementChild!==b)a.insertBefore(b,a.firstChild);}else if(b.parentNode!==a)a.appendChild(b);
+if(s.g&&b.nextSibling!==s.g)a.insertBefore(s.g,b.nextSibling);}}
+function off(s,now){if(s.f){s.f.style.visibility='hidden';s.f.style.pointerEvents='none';}if(s.f2){s.f2.style.visibility='hidden';s.f2.style.pointerEvents='none';}s.on=false;s.since=0;s.hid=now;}
+function kill(s){if(s.f){if(s.f.parentNode)s.f.parentNode.removeChild(s.f);s.f=null;}if(s.f2){if(s.f2.parentNode)s.f2.parentNode.removeChild(s.f2);s.f2=null;}}
+function tick(){try{place();var k=-1,i,s,res=false,now=Date.now();
+for(i=0;i<C.length;i++){s=S[i];if(!C[i].t&&s&&vis(document.querySelector(C[i].v))&&vis(s.b)){k=i;res=true;break;}}
+if(k<0)for(i=0;i<C.length;i++){s=S[i];if(C[i].t&&s&&vis(document.querySelector(C[i].v))&&vis(s.b)){k=i;break;}}
+if(document.hidden)k=-1;
+for(i=0;i<C.length;i++){s=S[i];if(!s)continue;
+if(C[i].t){var d=(res&&vis(document.querySelector(C[i].v)))?'none':'block';if(s.b.style.display!==d){s.b.style.display=d;if(s.g)s.g.style.display=d;}}
+if(i!==k){if(s.on)off(s,now);if(s.f&&now-s.hid>=HOLD&&now-s.last>=MIN)kill(s);}}
+if(k<0)return;
+s=S[k];
+if(!s.on){s.on=true;s.since=now;}
+if(!s.f){var t=!!C[k].t;s.f=mkf(t?TAD:AD,320,50);s.b.appendChild(s.f);if(s.g){s.f2=mkf(t?TAD2:AD2,300,250);s.g.appendChild(s.f2);}s.last=now;}
+if(s.f.parentNode!==s.b)s.b.appendChild(s.f);if(s.f2&&s.f2.parentNode!==s.g)s.g.appendChild(s.f2);
+var pe=(now-s.since<LOCK)?'none':'auto';
+s.f.style.visibility='visible';s.f.style.pointerEvents=pe;if(s.f2){s.f2.style.visibility='visible';s.f2.style.pointerEvents=pe;}
+}catch(_){}}
+function go(){place();try{new MutationObserver(place).observe(document.body,{childList:true,subtree:true});}catch(_){}setInterval(tick,300);}
+if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
+}catch(e){}})();</script>
+<!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
+<script>window.NSB_NEXT={"g": "jiryoku", "r": [{"a": "#result .sheet-in", "v": "#result"}], "ad": 1};</script>
+<script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
+</head>
+<body>
+<canvas id="arena"></canvas>
+
+<!-- タイトル -->
+<section class="screen active" id="s-title">
+  <div class="t-wrap">
+    <div class="logo"><span class="lg-k">字</span><span class="lg-k">力</span></div>
+    <div class="logo-r">じりき</div>
+    <p class="sub">字をえらんで、<b>手本なしで自分の手で書け</b>。<br>きれいに書くほど字の力が出る。くせ字は、くせのまま戦う。</p>
+    <div class="t-btns">
+      <button class="btn big hot" id="btn-write">字を書いて作る</button>
+      <button class="btn big blue" id="btn-make">字をばらして組み替える</button>
+      <div class="row t-row2">
+        <button class="btn sm2" id="btn-practice">練習試合</button>
+        <button class="btn sm2" id="btn-chal">挑戦状と戦う</button>
+      </div>
+      <button class="btn big blue" id="btn-online">部屋番号で対戦</button>
+      <div class="row t-row2">
+        <button class="btn sm2" id="btn-rank">番付</button>
+        <button class="btn sm2" id="btn-works">あなたの作品</button>
+        <button class="btn sm2" id="btn-howto">あそびかた</button>
+        <button class="btn sm2" id="btn-snd">音：<span id="snd-name">あり</span></button>
+      </div>
+      <p class="chal-mine" id="chal-mine"></p>
+      <button class="news" id="chal-news" hidden></button>
+    </div>
+    <p class="loading" id="loading">読みこみ中…</p>
+  </div>
+</section>
+
+<!-- 作る -->
+<section class="screen" id="s-make">
+  <header class="bar mk-bar">
+    <button class="btn sm ghost" id="mk-back">←<span class="mk-bk"> もどる</span></button>
+    <button class="mk-ch" id="mk-ch" title="字をかえる"><span id="mk-ch-t">？</span><small>字をかえる</small></button>
+    <select class="cls" id="mk-form" aria-label="字形" hidden></select>
+    <span class="mk-st" id="mk-st"></span>
+    <button class="btn sm ghost mk-help" id="mk-help" title="作り方">？</button>
+  </header>
+  <div class="mk-body">
+    <div class="mk-board">
+      <canvas id="mk-cv"></canvas>
+      <div class="mk-empty" id="mk-empty">
+        <p>ばらす字を1つ入れてください</p>
+        <div class="mk-q"><input id="mk-q" maxlength="8" autocomplete="off" autocapitalize="off" placeholder="例：木"><button class="btn hot" id="mk-go">ばらす</button></div>
+        <button class="btn sm" id="mk-rand">おまかせ</button>
+        <p class="note">漢字・ひらがな・カタカナ・英数字・ハングルが使えます。</p>
+      </div>
+    </div>
+    <div class="mk-side">
+      <div class="mk-tools" id="mk-tools">
+        <button class="btn sm" id="mk-rl" hidden title="左に15度回す">⟲<small>15°</small></button>
+        <button class="btn sm" id="mk-rr" hidden title="右に15度回す">⟳<small>15°</small></button>
+        <button class="btn sm" id="mk-out" title="えらんだ画を箱にもどす">箱へ</button>
+        <button class="btn sm" id="mk-undo" title="ひとつ前にもどす">↶</button>
+        <button class="btn sm" id="mk-reset" title="元の字の形にもどす">元の字</button>
+        <button class="btn sm" id="mk-clear" title="ぜんぶ箱にもどす">全部箱へ</button>
+      </div>
+      <p class="mk-savehint" id="mk-savehint">↓ できたら、いちばん下の<b>「この形で保存」</b>ボタンで保存</p>
+      <div class="mk-box-h"><b>素材箱</b><span id="mk-box-n"></span><small>書き順に並んでいます。ドラッグで台へ</small></div>
+      <div class="mk-box" id="mk-box"></div>
+      <div class="mk-stats" id="mk-stats" title="押すとグラフ">
+        <canvas id="mk-radar" width="300" height="270" style="width:150px;height:135px"></canvas>
+        <div class="st-list" id="mk-stl"></div>
+      </div>
+      <p class="mk-msg" id="mk-msg"></p>
+      <div class="mk-foot"><button class="btn big hot" id="mk-save" disabled>この形で保存</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 書く -->
+<section class="screen" id="s-write">
+  <header class="bar mk-bar">
+    <button class="btn sm ghost" id="wr-back">←<span class="mk-bk"> もどる</span></button>
+    <button class="mk-ch" id="wr-ch" title="字をかえる"><span id="wr-ch-t">？</span><small>字をかえる</small></button>
+    <select class="cls" id="wr-form" aria-label="字形" hidden></select>
+    <span class="wr-st" id="wr-st"></span>
+  </header>
+  <div class="wr-body">
+    <p class="wr-q" id="wr-q">「？」を書いてください</p>
+    <div class="wr-board" id="wr-board">
+      <canvas id="wr-cv"></canvas>
+      <div class="mk-empty" id="wr-empty">
+        <p>書く字を1つえらんでください</p>
+        <div class="mk-q"><input id="wr-qin" maxlength="8" autocomplete="off" autocapitalize="off" placeholder="例：永"><button class="btn hot" id="wr-go">この字を書く</button></div>
+        <button class="btn sm" id="wr-rand">おまかせ</button>
+        <p class="note">漢字・ひらがな・カタカナ・英数字・記号・ハングルが使えます。</p>
+      </div>
+    </div>
+    <div class="wr-tools">
+      <button class="btn sm" id="wr-undo">↶ 1つ戻る</button>
+      <button class="btn sm" id="wr-clear">すべてやり直す</button>
+      <button class="btn hot" id="wr-done" disabled>書けた！</button>
+    </div>
+    <p class="note wr-hint" id="wr-hint">手本は出ません。十字線をたよりに、ます目のまん中に書いてください。</p>
+  </div>
+</section>
+<!-- 字力カード -->
+<div class="sheet" id="jcard">
+  <div class="sheet-in jc" id="jc-in">
+    <div class="jc-top">
+      <div class="jc-paper"><canvas id="jc-shape" width="360" height="360"></canvas>
+        <div class="jc-stamp" id="jc-stamp"><small>再現度</small><b id="jc-rep">0%</b><i id="jc-title"></i></div>
+      </div>
+      <div class="jc-tot"><small>総合パワー</small><b id="jc-total">0</b><span id="jc-pow"></span><em id="jc-grade"></em></div>
+    </div>
+    <div class="jc-mid">
+      <canvas id="jc-radar" width="300" height="270"></canvas>
+      <div class="st-list" id="jc-stl"></div>
+    </div>
+    <ul class="jc-why" id="jc-why"></ul>
+    <label class="jc-name">書いた人の名前<input id="jc-name" maxlength="12" autocomplete="off" placeholder="空ならおまかせ"></label>
+    <div class="row">
+      <button class="btn" id="jc-again">書き直す</button>
+      <button class="btn hot" id="jc-save">この字で戦う</button>
+    </div>
+  </div>
+</div>
+<!-- えらぶ（試合の前） -->
+<section class="screen" id="s-setup">
+  <header class="bar">
+    <button class="btn sm ghost" id="btn-setup-back">← もどる</button>
+    <b class="su-title" id="su-title">練習試合</b>
+    <div class="on-st" id="on-st"></div>
+  </header>
+  <div class="slots">
+    <div class="slot" id="slot0"></div>
+    <div class="vs-mid"><span>VS</span></div>
+    <div class="slot" id="slot1"></div>
+  </div>
+  <footer class="bar bottom">
+    <button class="btn big hot" id="btn-fight">はっけよい！</button>
+  </footer>
+</section>
+
+<!-- 作品をえらぶ -->
+<div class="sheet" id="wpick">
+  <div class="sheet-in">
+    <div class="pk-head"><b class="pk-t" id="wp-t">作品をえらぶ</b><button class="btn sm ghost2" id="wp-close">とじる</button></div>
+    <div class="wp-list" id="wp-list"></div>
+  </div>
+</div>
+
+<!-- 元の字をえらぶ（練習の相手） -->
+<div class="sheet" id="cpick">
+  <div class="sheet-in cp">
+    <div class="pk-head"><b class="pk-t">練習の相手</b><button class="btn sm ghost2" id="cp-close">とじる</button></div>
+    <p class="note">何もいじっていない「元の字」と戦います。好きな字を入れてください。</p>
+    <div class="mk-q"><input id="cp-q" maxlength="8" autocomplete="off" autocapitalize="off" placeholder="例：龍"><button class="btn hot" id="cp-go">この字と戦う</button></div>
+    <div class="row"><button class="btn sm" id="cp-rand">おまかせ</button><button class="btn sm" id="cp-mine">自分の作品から</button></div>
+    <p class="err" id="cp-err"></p>
+  </div>
+</div>
+
+<!-- 試合 -->
+<section class="screen" id="s-battle">
+  <div class="hud">
+    <div class="hp l"><b id="hn0"></b><div class="gauge"><i id="hg0"></i></div><span id="hv0">100%</span></div>
+    <div class="clock" id="clock">60</div>
+    <div class="hp r"><span id="hv1">100%</span><div class="gauge"><i id="hg1"></i></div><b id="hn1"></b></div>
+  </div>
+  <div class="call" id="call"></div>
+  <div class="b-btns"><button class="btn sm ghost" id="btn-speed">×1</button><button class="btn sm ghost" id="btn-skip">結果へ</button></div>
+</section>
+
+<!-- 結果 -->
+<div class="sheet" id="result">
+  <div class="sheet-in res">
+    <div class="res-t" id="res-t"></div>
+    <div class="res-line" id="res-line"></div>
+    <canvas id="res-img" width="1200" height="675" hidden></canvas>
+    <button class="btn big hot img-btn" id="btn-img">勝利画像を出す</button>
+    <div class="row">
+      <button class="btn" id="btn-replay">もう一度見る</button>
+      <button class="btn" id="btn-change">組み合わせを変える</button>
+    </div>
+    <div class="row" id="chal-row"><button class="btn" id="btn-remake">この作品を作り直す</button><button class="btn hot" id="btn-chal-next">べつの挑戦状と戦う</button></div>
+    <p class="note" id="res-note"></p>
+  </div>
+</div>
+
+<!-- 画像 -->
+<div class="sheet" id="imgview">
+  <div class="sheet-in iv">
+    <img id="iv-img" alt="結果画像">
+    <div class="row">
+      <button class="btn hot" id="btn-share">Xに投稿</button>
+      <button class="btn" id="btn-save">画像を保存</button>
+      <button class="btn" id="iv-close">とじる</button>
+    </div>
+    <p class="note" id="iv-note">画像を長押しでも保存できます</p>
+  </div>
+</div>
+
+<!-- あなたの作品 -->
+<section class="screen" id="s-works">
+  <div class="panel">
+    <header class="p-head"><button class="btn sm ghost" id="btn-works-back">← もどる</button><h2>あなたの作品</h2></header>
+    <div class="p-body"><div id="works-list"></div></div>
+  </div>
+</section>
+
+<!-- 番付 -->
+<section class="screen" id="s-rank">
+  <div class="panel">
+    <header class="p-head"><button class="btn sm ghost" id="btn-rank-back">← もどる</button><h2>番付</h2></header>
+    <div class="rk-tabs"><button class="btn sm hot" id="rk-all">全体</button><button class="btn sm" id="rk-ch">字ごとの最強</button>
+      <span class="rk-q" id="rk-qbox" hidden><input id="rk-q" maxlength="8" autocomplete="off" autocapitalize="off" placeholder="例：永"><button class="btn sm hot" id="rk-go">見る</button></span></div>
+    <p class="note rk-note" id="rk-note">挑戦状として戦って勝った数の順です（同じなら負けの少ない順）。</p>
+    <div class="p-body"><div id="rank-list"></div></div>
+  </div>
+</section>
+<!-- 挑戦状と戦う -->
+<section class="screen" id="s-chal">
+  <div class="card">
+    <h2>挑戦状と戦う</h2>
+    <p class="note">だれかが作って置いた作品と戦います。相手がその場にいなくても戦えます。</p>
+    <label class="fld">合言葉（8けた）<input id="ch-code" maxlength="11" autocomplete="off" autocapitalize="characters" placeholder="例：AB3K-7XQM"></label>
+    <button class="btn hot wide" id="ch-go">この挑戦状と戦う</button>
+    <p class="err" id="ch-err"></p>
+    <button class="btn blue wide" id="ch-rand">ランダムな挑戦状と戦う</button>
+    <button class="btn sm ghost2" id="ch-back">もどる</button>
+  </div>
+</section>
+
+<!-- 部屋番号で対戦 -->
+<section class="screen" id="s-online">
+  <div class="card on-card">
+    <h2>部屋番号で対戦</h2>
+    <div id="on-form">
+      <p class="note">同じ部屋番号を入れた人と1対1。お互いに作品をこっそり決めて、同時に公開します。3人目からは観戦です。</p>
+      <label class="fld">部屋番号<input id="in-code" maxlength="20" placeholder="例：1234" autocomplete="off"></label>
+      <button class="btn hot wide" id="btn-join">入る</button>
+    </div>
+    <div id="on-wait" class="hide"><p class="big-note" id="on-msg">あいてを待っています…</p><p class="note" id="on-people"></p></div>
+    <p class="err" id="on-err"></p>
+    <button class="btn sm ghost2" id="btn-on-back">もどる</button>
+  </div>
+</section>
+
+<!-- あそびかた -->
+<section class="screen" id="s-howto">
+  <div class="card how">
+    <h2>あそびかた</h2>
+    <ol>
+      <li><b>字をえらんで、書く。</b>字を1つえらぶと、方眼と十字線だけの半紙が出ます。<b>手本なし</b>で、自分の手で書いてください。「1つ戻る」「すべてやり直す」で何回でも書き直せます。</li>
+      <li><b>字力カードを見る。</b>手本にどれだけ近いかが<b>再現度</b>です。再現度が高いほど、その字の素質をたくさん出せます（90%以上でほぼ全力、70%で7割）。</li>
+      <li><b>くせは個性。</b>大きく書く・右上がり・すばやく書く、などのくせは、能力の配分を変えます（総合パワーは変わりません）。左右にかたよって書くと、押したときに体が回ります。ゆっくり引いた線は太く、すっと払った線は細くとがります。</li>
+      <li><b>戦う。</b>あとは全自動。書いた形がそのまま体になり、ぶつかるたびに割れて欠けていきます。先に65％を失った方の負け。60秒たったら残りが多い方の勝ちです。<b>同じ作品どうしなら、いつでも同じ結果</b>になります。</li>
+      <li><b>字をばらして組み替える</b>：字を画ごとにばらして、位置を動かして別の形にすることもできます。書いた字と同じように戦えます（強さは、70%の出来で書いた字くらい）。</li>
+      <li><b>合言葉と挑戦状</b>：作品を保存すると<b>8けたの合言葉</b>がつき、その作品がそのまま挑戦状になります。字力カードの画像と合言葉をXに投稿しよう。「挑戦状と戦う」に合言葉を入れると、だれでも戦えます。</li>
+      <li><b>番付</b>：挑戦状として勝った数の順です。「字ごとの最強」で、同じ字の中の1位も見られます。</li>
+      <li><b>だれかと対戦・部屋番号で対戦</b>：その場にいる人と、作品どうしで1対1。毎晩21時〜22時は対戦タイム！</li>
+    </ol>
+    <h3>強さの決まり方</h3>
+    <p class="note">能力は5つ、それぞれ最大150。合計が<b>総合パワー</b>です。<br>体力＝線の量、攻撃＝画数、防御＝すき間の少なさ、鋭さ＝出っぱり、速さ＝軽さ。字ごとの素質（約1万2千字の中の順位）に、再現度と書き方がかかります。<br>総合パワーが高くても、形や配分の相性で負けることがあります。</p>
+    <h3>使える字</h3>
+    <p class="note" id="how-chars">※漢字・ひらがな・カタカナ・英数字・ハングルが使えます。旧字や、とてもめずらしい字は、画のデータがないため使えません。<br>ハングルは、部品（字母）の画を組み合わせて作っているので、ふつうの字体と少し形がちがう字があります。</p>
+    <h3>データ</h3>
+    <p class="credit">日本の字形：KanjiVG（Ulrich Apel、CC BY-SA 3.0）を加工して作成<br>中国・台湾の字形：Make Me a Hanzi（Shaunak Kishore）／hanzi-writer-data（Arphic Public License）を加工して作成<br>英数字：Hershey フォント（hersheytext、MIT License）を加工して作成<br>加工した画のデータ（data/g）は、もとのデータと同じ条件（CC BY-SA 3.0・Arphic Public License）で公開しています<br>効果音：Kenney「Impact Sounds」（CC0）　音楽：自作（プログラムで作成）</p>
+    <button class="btn" id="btn-how-back">もどる</button>
+  </div>
+</section>
+
+<button class="mk-float" id="mk-float" hidden>↓ 保存ボタンは下にあります</button>
+<div class="toast" id="toast"></div>
+
+<script src="js/lib/gsap.min.js?v=1"></script>
+<script src="js/lib/pfx.js?v=1"></script>
+<script src="js/firebase-config.js?v=4"></script>
+<script src="js/glyph.js?v=3"></script>
+<script src="js/shape.js?v=3"></script>
+<script src="js/pct.js?v=3"></script>
+<script src="js/sim.js?v=3"></script>
+<script src="js/render.js?v=3"></script>
+<script src="js/resimg.js?v=3"></script>
+<script src="js/sound.js?v=3"></script>
+<script src="js/online.js?v=3"></script>
+<script src="js/qm.js?v=3"></script>
+<script src="js/chal.js?v=3"></script>
+<script src="js/judge.js?v=1"></script>
+<script src="js/edit.js?v=1"></script>
+<script src="js/fx.js?v=1"></script>
+<script src="js/write.js?v=1"></script>
+<script src="js/main.js?v=3"></script>
+</body>
+</html>
