@@ -1,0 +1,157 @@
+{
+  "run": {
+    "$uid": {
+      ".read": "auth != null && auth.uid === $uid",
+      ".write": "auth != null && auth.uid === $uid && newData.exists()",
+      ".validate": "newData.hasChildren(['st','h','t','ph','pt','p','la']) && ((newData.child('st').val() === now && newData.child('h').val() === 0 && newData.child('t').val() === 0 && newData.child('ph').val() === 0 && newData.child('pt').val() === 0 && newData.child('p').val() === 0 && newData.child('la').val() === now) || (data.exists() && data.child('p').val() === 0 && newData.child('p').val() === now && now - data.child('la').val() >= 700 && newData.child('st').val() === data.child('st').val() && newData.child('h').val() === data.child('h').val() && newData.child('t').val() === data.child('t').val() && newData.child('ph').val() === data.child('ph').val() && newData.child('pt').val() === data.child('pt').val() && newData.child('la').val() === data.child('la').val() && (data.child('h').val() * 0.4054651081081644 + data.child('t').val() * -0.5108256237659907) >= -9.210340371976184) || (data.exists() && data.child('p').val() > 0 && newData.child('p').val() === 0 && newData.child('la').val() === data.child('p').val() && newData.child('st').val() === data.child('st').val() && ((data.child('p').val() % 2 === 0 && newData.child('h').val() === data.child('h').val() + 1 && newData.child('t').val() === data.child('t').val()) || (data.child('p').val() % 2 === 1 && newData.child('t').val() === data.child('t').val() + 1 && newData.child('h').val() === data.child('h').val())) && ((newData.child('h').val() * 0.4054651081081644 + newData.child('t').val() * -0.5108256237659907) > (data.child('ph').val() * 0.4054651081081644 + data.child('pt').val() * -0.5108256237659907) ? (newData.child('ph').val() === newData.child('h').val() && newData.child('pt').val() === newData.child('t').val()) : (newData.child('ph').val() === data.child('ph').val() && newData.child('pt').val() === data.child('pt').val()))))",
+      "st": {
+        ".validate": "newData.isNumber()"
+      },
+      "h": {
+        ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+      },
+      "t": {
+        ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+      },
+      "ph": {
+        ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+      },
+      "pt": {
+        ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+      },
+      "p": {
+        ".validate": "newData.isNumber()"
+      },
+      "la": {
+        ".validate": "newData.isNumber()"
+      },
+      "$other": {
+        ".validate": false
+      }
+    }
+  },
+  "all": {
+    "scores": {
+      ".read": true,
+      ".indexOn": [
+        "k"
+      ],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && newData.exists() && (((newData.child('st').val() === root.child('kasegenai/run/' + $uid).child('st').val() && newData.child('h').val() === root.child('kasegenai/run/' + $uid).child('h').val() && newData.child('t').val() === root.child('kasegenai/run/' + $uid).child('t').val() && newData.child('ph').val() === root.child('kasegenai/run/' + $uid).child('ph').val() && newData.child('pt').val() === root.child('kasegenai/run/' + $uid).child('pt').val() && root.child('kasegenai/run/' + $uid).child('p').val() === 0 && newData.child('h').val() + newData.child('t').val() >= 1) && (!data.exists() || newData.child('k').val() > data.child('k').val())) || (data.exists() && newData.child('st').val() === data.child('st').val() && newData.child('h').val() === data.child('h').val() && newData.child('t').val() === data.child('t').val() && newData.child('ph').val() === data.child('ph').val() && newData.child('pt').val() === data.child('pt').val() && newData.child('k').val() === data.child('k').val() && newData.child('n').val() !== data.child('n').val()))",
+        ".validate": "newData.hasChildren(['n','h','t','ph','pt','st','k','pk','v','at'])",
+        "n": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 12"
+        },
+        "h": {
+          ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+        },
+        "t": {
+          ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+        },
+        "ph": {
+          ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+        },
+        "pt": {
+          ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+        },
+        "st": {
+          ".validate": "newData.isNumber()"
+        },
+        "k": {
+          ".validate": "newData.isNumber() && (newData.val() - (newData.parent().child('h').val() * 0.4054651081081644 + newData.parent().child('t').val() * -0.5108256237659907) < 0.000001 && (newData.parent().child('h').val() * 0.4054651081081644 + newData.parent().child('t').val() * -0.5108256237659907) - newData.val() < 0.000001)"
+        },
+        "pk": {
+          ".validate": "newData.isNumber() && (newData.val() - (newData.parent().child('ph').val() * 0.4054651081081644 + newData.parent().child('pt').val() * -0.5108256237659907) < 0.000001 && (newData.parent().child('ph').val() * 0.4054651081081644 + newData.parent().child('pt').val() * -0.5108256237659907) - newData.val() < 0.000001)"
+        },
+        "v": {
+          ".validate": "newData.val() === 1"
+        },
+        "at": {
+          ".validate": "newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  },
+  "d": {
+    "scores": {
+      ".read": true,
+      ".indexOn": [
+        "ds"
+      ],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && newData.exists() && (((newData.child('st').val() === root.child('kasegenai/run/' + $uid).child('st').val() && newData.child('h').val() === root.child('kasegenai/run/' + $uid).child('h').val() && newData.child('t').val() === root.child('kasegenai/run/' + $uid).child('t').val() && newData.child('ph').val() === root.child('kasegenai/run/' + $uid).child('ph').val() && newData.child('pt').val() === root.child('kasegenai/run/' + $uid).child('pt').val() && root.child('kasegenai/run/' + $uid).child('p').val() === 0 && newData.child('h').val() + newData.child('t').val() >= 1) && (!data.exists() || newData.child('dk').val() > data.child('dk').val() || (newData.child('dk').val() === data.child('dk').val() && newData.child('k').val() > data.child('k').val()))) || (data.exists() && newData.child('st').val() === data.child('st').val() && newData.child('h').val() === data.child('h').val() && newData.child('t').val() === data.child('t').val() && newData.child('ph').val() === data.child('ph').val() && newData.child('pt').val() === data.child('pt').val() && newData.child('k').val() === data.child('k').val() && newData.child('dk').val() === data.child('dk').val() && newData.child('ds').val() === data.child('ds').val() && newData.child('n').val() !== data.child('n').val()))",
+        ".validate": "newData.hasChildren(['n','h','t','ph','pt','st','k','pk','v','at','dk','ds'])",
+        "n": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 12"
+        },
+        "h": {
+          ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+        },
+        "t": {
+          ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+        },
+        "ph": {
+          ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+        },
+        "pt": {
+          ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 0 && newData.val() <= 1000000"
+        },
+        "st": {
+          ".validate": "newData.isNumber()"
+        },
+        "k": {
+          ".validate": "newData.isNumber() && (newData.val() - (newData.parent().child('h').val() * 0.4054651081081644 + newData.parent().child('t').val() * -0.5108256237659907) < 0.000001 && (newData.parent().child('h').val() * 0.4054651081081644 + newData.parent().child('t').val() * -0.5108256237659907) - newData.val() < 0.000001)"
+        },
+        "pk": {
+          ".validate": "newData.isNumber() && (newData.val() - (newData.parent().child('ph').val() * 0.4054651081081644 + newData.parent().child('pt').val() * -0.5108256237659907) < 0.000001 && (newData.parent().child('ph').val() * 0.4054651081081644 + newData.parent().child('pt').val() * -0.5108256237659907) - newData.val() < 0.000001)"
+        },
+        "v": {
+          ".validate": "newData.val() === 1"
+        },
+        "at": {
+          ".validate": "newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        },
+        "dk": {
+          ".validate": "newData.isNumber() && newData.val() * 86400000 <= now + 32400000 && now + 32400000 < (newData.val() + 1) * 86400000"
+        },
+        "ds": {
+          ".validate": "newData.isNumber() && (newData.val() - (newData.parent().child('dk').val() * 100000 + newData.parent().child('k').val() + 1000) < 0.001 && (newData.parent().child('dk').val() * 100000 + newData.parent().child('k').val() + 1000) - newData.val() < 0.001)"
+        }
+      }
+    }
+  },
+  "lg": {
+    ".read": true,
+    ".indexOn": [
+      "at"
+    ],
+    "$uid": {
+      ".write": "auth != null && auth.uid === $uid && newData.exists() && newData.child('st').val() === root.child('kasegenai/run/' + $uid).child('st').val() && root.child('kasegenai/run/' + $uid).child('p').val() === 0 && newData.child('c').val() === root.child('kasegenai/run/' + $uid).child('h').val() + root.child('kasegenai/run/' + $uid).child('t').val() && newData.child('c').val() >= 1 && (newData.child('k').val() - (root.child('kasegenai/run/' + $uid).child('h').val() * 0.4054651081081644 + root.child('kasegenai/run/' + $uid).child('t').val() * -0.5108256237659907) < 0.000001 && (root.child('kasegenai/run/' + $uid).child('h').val() * 0.4054651081081644 + root.child('kasegenai/run/' + $uid).child('t').val() * -0.5108256237659907) - newData.child('k').val() < 0.000001) && (!data.exists() || newData.child('st').val() > data.child('st').val())",
+      ".validate": "newData.hasChildren(['k','c','st','at'])",
+      "k": {
+        ".validate": "newData.isNumber()"
+      },
+      "c": {
+        ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= 1 && newData.val() <= 2000000"
+      },
+      "st": {
+        ".validate": "newData.isNumber()"
+      },
+      "at": {
+        ".validate": "newData.val() === now"
+      },
+      "$other": {
+        ".validate": false
+      }
+    }
+  },
+  "hidden": {
+    ".read": true
+  }
+}

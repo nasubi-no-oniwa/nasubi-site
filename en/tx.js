@@ -1,0 +1,72 @@
+// 円：画面のことば（日本語・英語・繁体中文・韓国語）
+export const LANGS = [['ja', '日本語'], ['en', 'English'], ['zh', '繁中'], ['ko', '한국어']];
+export const TX = {
+ ja: {
+ hud: '円', title: '円', sub: '30秒・60秒・120秒で、円をいくつこわせるか', pick: '時間をえらんでスタート', mBtn: '{s}秒',
+ how: 'ボールが当たるたびに、円の体力がへって、お金が1円たまる。<br><b>ボール・速さ</b>はお金がたまりやすくなり、<b>攻撃力</b>は円を早くこわせる。<br>いつ、何を強化するかで結果が変わる。',
+ start: 'スタート', rank: 'ランキング', go: 'スタート！', fin: 'そこまで！',
+ timeL: 'のこり', ringsL: 'こわした円', unit: '個', coin: '円',
+ upB: 'ボール', upS: '速さ', upA: '攻撃力', upBv: '{n}個', upSv: 'Lv{n}', upAv: '{n}', max: 'MAX',
+ resHead: '{s}秒でこわした円', resN: '{n}個', resNext: 'つぎの円は {p}% けずった', resLv: 'ボール {b}個・速さ Lv{s}・攻撃力 {a}',
+ recAsk: '名前を入れてランキングに記録する', name: '名前（12文字まで）', recGo: 'ランキングに記録する', recOff: '通信できなかったので、この回は記録できません',
+ sending: '送信中…', sent: 'ランキング：今日 {d}・全期間 {a}', rankN: '{r}位', rankOut: '100位より下', notbetter: '（全期間は前の記録のほうが上で残っています）', senderr: '送れませんでした。もう一度押してください', needname: '記録するには名前を入れてね', badname: 'その名前は使えません',
+ xpost: 'Xに投稿', img: '画像にする', video: '動画にする', again: 'もう一度', top: 'タイトルへ',
+ post: '{s}秒で、円を{n}個こわした。\nみんなは何個こわせる？', tags: '#円 #ブラウザゲーム',
+ today: '今日', alltime: '全期間', rkNote: 'こわした円が多い順（同じなら、つぎの円を多くけずった人が上）', loading: '読み込み中…', empty: 'まだ誰もいません', rankerr: 'ランキングを読み込めませんでした', back: 'もどる',
+ rowS: '{n}個 ＋{p}%',
+ making: '動画を作っています…', vmade: 'できました。「共有する」からXアプリを選ぶと、動画つきで投稿できます', shareHint: '「保存する」で動画を保存してから、Xに投稿してください', vfail: 'この端末では作れませんでした', vShare: '共有する（Xアプリへ）', vSave: '保存する',
+ imade: 'できました。「共有する」からXアプリを選ぶと、画像つきで投稿できます', ihint: '「保存する」で画像を保存してから、Xに投稿してください', vHow: '{s}秒を早送り', vSpeed: '{n}倍速',
+ ogp2: '120秒で、円をいくつこわせるか', ogp3: 'ボールの数・速さ・攻撃力を強化'
+ },
+ en: {
+ hud: 'EN', title: '円', sub: 'How many rings can you break in 30, 60 or 120 seconds?', pick: 'Pick a time to start', mBtn: '{s}s',
+ how: 'Every hit takes HP off the ring and earns 1 coin.<br><b>Balls and Speed</b> earn coins faster; <b>Power</b> breaks rings faster.<br>What you upgrade, and when, changes the result.',
+ start: 'Start', rank: 'Ranking', go: 'GO!', fin: 'TIME!',
+ timeL: 'Time', ringsL: 'Rings broken', unit: '', coin: '',
+ upB: 'Balls', upS: 'Speed', upA: 'Power', upBv: '×{n}', upSv: 'Lv{n}', upAv: '{n}', max: 'MAX',
+ resHead: 'Rings broken in {s} seconds', resN: '{n}', resNext: 'Next ring: {p}% chipped away', resLv: 'Balls ×{b} / Speed Lv{s} / Power {a}',
+ recAsk: 'Enter a name to join the ranking', name: 'Your name (up to 12)', recGo: 'Record to ranking', recOff: 'No connection, so this try can\'t be recorded',
+ sending: 'Sending…', sent: 'Ranking: Today {d} / All time {a}', rankN: '#{r}', rankOut: 'below #100', notbetter: '(your earlier record stays higher in All time)', senderr: 'Could not send. Tap again', needname: 'Enter a name to record', badname: 'That name can\'t be used',
+ xpost: 'Post to X', img: 'Make an image', video: 'Make a video', again: 'Again', top: 'Title',
+ post: 'I broke {n} rings in {s} seconds.\nHow many can you break?', tags: '#円 #ブラウザゲーム',
+ today: 'Today', alltime: 'All time', rkNote: 'Most rings first (ties: more of the next ring chipped away)', loading: 'Loading…', empty: 'No one yet', rankerr: 'Could not load the ranking', back: 'Back',
+ rowS: '{n} +{p}%',
+ making: 'Making the video…', vmade: 'Done. Tap "Share" and pick the X app to post it with the video', shareHint: 'Save the video, then post it on X', vfail: 'This device couldn\'t make it', vShare: 'Share (to the X app)', vSave: 'Save',
+ imade: 'Done. Tap "Share" and pick the X app to post it with the image', ihint: 'Save the image, then post it on X', vHow: '{s} seconds, fast-forwarded', vSpeed: '{n}x',
+ ogp2: 'How many rings can you break in 120 seconds?', ogp3: 'Upgrade ball count, speed and power'
+ },
+ zh: {
+ hud: '円', title: '円', sub: '30秒・60秒・120秒內，能打碎幾個圓？', pick: '選擇時間開始', mBtn: '{s}秒',
+ how: '球每撞一次，圓的體力就減少，並賺到1円。<br><b>球數・速度</b>讓錢賺得更快，<b>攻擊力</b>讓圓碎得更快。<br>什麼時候強化什麼，結果就會不同。',
+ start: '開始', rank: '排行榜', go: '開始！', fin: '時間到！',
+ timeL: '剩餘', ringsL: '打碎的圓', unit: '個', coin: '円',
+ upB: '球數', upS: '速度', upA: '攻擊力', upBv: '{n}顆', upSv: 'Lv{n}', upAv: '{n}', max: 'MAX',
+ resHead: '{s}秒內打碎的圓', resN: '{n}個', resNext: '下一個圓削掉了 {p}%', resLv: '球 {b}顆・速度 Lv{s}・攻擊力 {a}',
+ recAsk: '輸入名字登上排行榜', name: '名字（12字以內）', recGo: '記錄到排行榜', recOff: '無法連線，這次不能記錄',
+ sending: '傳送中…', sent: '排行榜：今天 {d}・全部 {a}', rankN: '第{r}名', rankOut: '100名以後', notbetter: '（全部榜保留的是之前更好的紀錄）', senderr: '無法傳送，請再按一次', needname: '要記錄請輸入名字', badname: '不能使用這個名字',
+ xpost: '發到 X', img: '做成圖片', video: '做成影片', again: '再一次', top: '回標題',
+ post: '{s}秒內打碎了{n}個圓。\n大家能打碎幾個？', tags: '#円 #ブラウザゲーム',
+ today: '今天', alltime: '全部', rkNote: '打碎的圓越多越前面（相同時，下一個圓削得多的人在前）', loading: '讀取中…', empty: '還沒有人', rankerr: '無法讀取排行榜', back: '返回',
+ rowS: '{n}個 ＋{p}%',
+ making: '影片製作中…', vmade: '完成了。點「分享」選 X 的 App，就能附影片發文', shareHint: '請先「儲存」影片，再發到 X', vfail: '這個裝置做不出來', vShare: '分享（到 X 的 App）', vSave: '儲存',
+ imade: '完成了。點「分享」選 X 的 App，就能附圖片發文', ihint: '請先「儲存」圖片，再發到 X', vHow: '{s}秒快轉', vSpeed: '{n}倍速',
+ ogp2: '120秒內，能打碎幾個圓？', ogp3: '強化球數・速度・攻擊力'
+ },
+ ko: {
+ hud: '円', title: '円', sub: '30초·60초·120초 동안 원을 몇 개 부술 수 있을까', pick: '시간을 골라 시작', mBtn: '{s}초',
+ how: '공이 부딪힐 때마다 원의 체력이 줄고 1円이 쌓인다.<br><b>공·속도</b>는 돈이 더 빨리 쌓이고, <b>공격력</b>은 원을 더 빨리 부순다.<br>언제 무엇을 강화하느냐에 따라 결과가 달라진다.',
+ start: '시작', rank: '랭킹', go: '시작!', fin: '거기까지!',
+ timeL: '남은 시간', ringsL: '부순 원', unit: '개', coin: '円',
+ upB: '공', upS: '속도', upA: '공격력', upBv: '{n}개', upSv: 'Lv{n}', upAv: '{n}', max: 'MAX',
+ resHead: '{s}초 동안 부순 원', resN: '{n}개', resNext: '다음 원은 {p}% 깎았다', resLv: '공 {b}개 · 속도 Lv{s} · 공격력 {a}',
+ recAsk: '이름을 넣고 랭킹에 기록하기', name: '이름 (12자까지)', recGo: '랭킹에 기록', recOff: '통신이 안 돼서 이번은 기록할 수 없어요',
+ sending: '전송 중…', sent: '랭킹: 오늘 {d} · 전체 {a}', rankN: '{r}위', rankOut: '100위 밖', notbetter: '(전체에는 이전의 더 좋은 기록이 남아 있어요)', senderr: '보내지 못했어요. 다시 눌러 주세요', needname: '기록하려면 이름을 입력하세요', badname: '그 이름은 쓸 수 없어요',
+ xpost: 'X에 올리기', img: '이미지로', video: '영상으로', again: '한 번 더', top: '타이틀로',
+ post: '{s}초 동안 원을 {n}개 부쉈다.\n다들 몇 개 부술 수 있어?', tags: '#円 #ブラウザゲーム',
+ today: '오늘', alltime: '전체', rkNote: '부순 원이 많은 순 (같으면 다음 원을 더 많이 깎은 사람이 위)', loading: '불러오는 중…', empty: '아직 아무도 없어요', rankerr: '랭킹을 불러오지 못했어요', back: '돌아가기',
+ rowS: '{n}개 +{p}%',
+ making: '영상을 만드는 중…', vmade: '완성! 「공유」에서 X 앱을 고르면 영상과 함께 올릴 수 있어요', shareHint: '「저장」으로 영상을 저장한 다음 X에 올려 주세요', vfail: '이 기기에서는 만들 수 없었어요', vShare: '공유 (X 앱으로)', vSave: '저장',
+ imade: '완성! 「공유」에서 X 앱을 고르면 이미지와 함께 올릴 수 있어요', ihint: '「저장」으로 이미지를 저장한 다음 X에 올려 주세요', vHow: '{s}초 빨리 감기', vSpeed: '{n}배속',
+ ogp2: '120초 동안 원을 몇 개 부술 수 있을까', ogp3: '공 개수·속도·공격력을 강화'
+ }
+};
