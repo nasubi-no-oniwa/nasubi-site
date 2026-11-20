@@ -1,0 +1,151 @@
+{
+  "runs": {
+    "$uid": {
+      ".read": "auth != null && auth.uid === $uid",
+      ".write": "auth != null && auth.uid === $uid && newData.exists() && (!data.exists() || now - data.child('t').val() >= 2000)",
+      ".validate": "newData.hasChildren(['t'])",
+      "t": {
+        ".validate": "newData.val() === now"
+      },
+      "$other": {
+        ".validate": false
+      }
+    }
+  },
+  "sp": {
+    "scores": {
+      ".read": true,
+      ".indexOn": [
+        "s"
+      ],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && newData.exists() && ((newData.child('st').val() === root.child('hk/runs/' + $uid + '/t').val() && (!data.exists() || (newData.child('st').val() > data.child('st').val() && newData.child('s').val() > data.child('s').val())) && now >= newData.child('st').val() + newData.child('s').val() && now <= newData.child('st').val() + newData.child('s').val() * 1.03 + 9000) || (data.exists() && newData.child('st').val() === data.child('st').val() && newData.child('s').val() === data.child('s').val() && newData.child('in').val() === data.child('in').val()))",
+        ".validate": "newData.hasChildren(['n','s','st','in','v','t'])",
+        "n": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 12"
+        },
+        "s": {
+          ".validate": "newData.isNumber() && newData.val() >= 100 && newData.val() <= 120000"
+        },
+        "st": {
+          ".validate": "newData.isNumber()"
+        },
+        "in": {
+          ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 30000"
+        },
+        "v": {
+          ".validate": "newData.val() === 1"
+        },
+        "t": {
+          ".validate": "newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  },
+  "pc": {
+    "scores": {
+      ".read": true,
+      ".indexOn": [
+        "s"
+      ],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && newData.exists() && ((newData.child('st').val() === root.child('hk/runs/' + $uid + '/t').val() && (!data.exists() || (newData.child('st').val() > data.child('st').val() && newData.child('s').val() > data.child('s').val())) && now >= newData.child('st').val() + newData.child('s').val() && now <= newData.child('st').val() + newData.child('s').val() * 1.03 + 9000) || (data.exists() && newData.child('st').val() === data.child('st').val() && newData.child('s').val() === data.child('s').val() && newData.child('in').val() === data.child('in').val()))",
+        ".validate": "newData.hasChildren(['n','s','st','in','v','t'])",
+        "n": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 12"
+        },
+        "s": {
+          ".validate": "newData.isNumber() && newData.val() >= 100 && newData.val() <= 120000"
+        },
+        "st": {
+          ".validate": "newData.isNumber()"
+        },
+        "in": {
+          ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 30000"
+        },
+        "v": {
+          ".validate": "newData.val() === 1"
+        },
+        "t": {
+          ".validate": "newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  },
+  "surv": {
+    ".read": true,
+    "$uid": {
+      ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.exists()",
+      ".validate": "newData.hasChildren(['t'])",
+      "t": {
+        ".validate": "newData.val() === now"
+      },
+      "$other": {
+        ".validate": false
+      }
+    }
+  },
+  "hidden": {
+    ".read": true
+  },
+  "all": {
+    "scores": {
+      ".read": true,
+      ".indexOn": [
+        "s"
+      ],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && newData.exists() && ((newData.child('st').val() === root.child('hk/runs/' + $uid + '/t').val() && (!data.exists() || (newData.child('st').val() > data.child('st').val() && newData.child('s').val() > data.child('s').val())) && now >= newData.child('st').val() + newData.child('s').val() && now <= newData.child('st').val() + newData.child('s').val() * 1.03 + 9000) || (data.exists() && newData.child('st').val() === data.child('st').val() && newData.child('s').val() === data.child('s').val() && newData.child('in').val() === data.child('in').val()))",
+        ".validate": "newData.hasChildren(['n','s','st','in','v','t'])",
+        "n": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 12"
+        },
+        "s": {
+          ".validate": "newData.isNumber() && newData.val() >= 100 && newData.val() <= 120000"
+        },
+        "st": {
+          ".validate": "newData.isNumber()"
+        },
+        "in": {
+          ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 30000"
+        },
+        "v": {
+          ".validate": "newData.val() === 1"
+        },
+        "t": {
+          ".validate": "newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  },
+  "survc": {
+    ".read": true,
+    ".write": "auth != null && newData.isNumber() && newData.val() === (data.exists() ? data.val() : 0) + 1 && !data.parent().child('surv/' + auth.uid).exists() && newData.parent().child('surv/' + auth.uid + '/t').val() === now"
+  },
+  "survt": {
+    ".read": true,
+    ".write": "auth != null && newData.child('dk').isNumber() && newData.child('dk').val() * 86400000 <= now + 32400000 && (newData.child('dk').val() + 1) * 86400000 > now + 32400000 && newData.child('n').val() === ((data.exists() && data.child('dk').val() === newData.child('dk').val()) ? data.child('n').val() + 1 : 1) && (!data.parent().child('surv/' + auth.uid).exists() || data.parent().child('surv/' + auth.uid + '/t').val() < newData.child('dk').val() * 86400000 - 32400000) && newData.parent().child('surv/' + auth.uid + '/t').val() === now",
+    ".validate": "newData.hasChildren(['dk', 'n'])",
+    "dk": {
+      ".validate": "newData.isNumber()"
+    },
+    "n": {
+      ".validate": "newData.isNumber()"
+    },
+    "$other": {
+      ".validate": false
+    }
+  },
+  "top": {
+    ".read": true
+  }
+}
