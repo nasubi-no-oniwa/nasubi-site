@@ -8,7 +8,7 @@ const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v == nu
 const API = '/api/hero/';
 const DUR = DEV && /[?&]short=1/.test(location.search) ? 5 : 30;
 const PANELS = ['title', 'brief', 'evres', 'wbrief', 'write', 'result', 'rank', 'recov'];
-let ST = 'load', SID = '', MODE = 'temp', PASS = { r: 150, t: 200, g: 25, w: 100 }, PH = {}, LAST = null, BACK = 'title';
+let ST = 'load', SID = '', MODE = 'temp', PASS = { r: 300, t: 150, g: 25, w: 300 }, PH = {}, LAST = null, BACK = 'title';
 
 function show(id) {
   PANELS.forEach(p => $(p).hidden = p !== id);
@@ -69,7 +69,7 @@ const EVENTS = [
   { k: 'r', n: '連打（パンチ力）', d: '30秒間、画面をひたすらたたいてサンドバッグを殴れ！<br>指は何本使ってもいい。', p: () => `合格ライン：30秒で${PASS.r}回` },
   { k: 't', n: '反応速度', d: '画面が「今だ！」に変わった瞬間にタップ！<br>30秒のあいだに何度も出る。<b>一番速かった1回</b>で判定。<br>合図の前に押すとフライング。', p: () => `合格ライン：${(PASS.t / 1000).toFixed(2)}秒` },
   { k: 'g', n: '持久走', d: '押している間ペースが上がり、離すと下がる。<br><b>黄色い帯</b>の中にペースを保ち続けろ。帯はゆっくり動く。', p: () => `合格ライン：30秒中${PASS.g}秒` },
-  { k: 'w', n: '重り持ち上げ', d: '左右に動く針が<b>まん中</b>に来た瞬間にタップ！<br>ど真ん中なら10kg、近ければ5kg。外すと少し休み。', p: () => `合格ライン：合計${PASS.w}kg` },
+  { k: 'w', n: '重り持ち上げ', d: '左右に動く針が<b>まん中</b>に来た瞬間にタップ！<br>ど真ん中なら20kg、近ければ10kg。外すと少し休み。', p: () => `合格ライン：合計${PASS.w}kg` },
 ];
 let EV = null, EVI = 0, raf = 0;
 
@@ -204,7 +204,7 @@ const MAKE = {
   g() {
     let L = .3, v = 0, inb = 0, t = 0, runP = 0, on = false;
     const band = tt => { const k = Math.min(1, tt / 3); return .5 + k * (.22 * Math.sin(tt * .5) + .08 * Math.sin(tt * 1.37 + 1)); };
-    const BW = .11;
+    const BW = .08;
     return {
       value: () => inb, label: v => `帯の中にいた時間：${v.toFixed(1)}秒`,
       hud() { $('hudS').innerHTML = `${inb.toFixed(1)}<small>秒</small>`; $('hint').textContent = on ? 'いい調子！' : '押す＝ペースアップ／離す＝ダウン'; },
@@ -243,14 +243,14 @@ const MAKE = {
       hud() { $('hudS').innerHTML = `${kg}<small>kg</small>`; $('hint').textContent = stun > 0 ? 'ひと休み…' : 'まん中でタップ！'; },
       down() {
         if (stun > 0) return; const d = Math.abs(pos() - .5);
-        if (d < .06) { kg += 10; lift = 1; msg = 'ど真ん中！ +10kg'; msgC = '#ffd21f'; sfx.fan(); fxAdd('burst', { palette: YEL, y: 70 }); }
-        else if (d < .16) { kg += 5; lift = .6; msg = 'おしい +5kg'; msgC = '#fff'; sfx.ok(); }
+        if (d < .06) { kg += 20; lift = 1; msg = 'ど真ん中！ +20kg'; msgC = '#ffd21f'; sfx.fan(); fxAdd('burst', { palette: YEL, y: 70 }); }
+        else if (d < .16) { kg += 10; lift = .6; msg = 'おしい +10kg'; msgC = '#fff'; sfx.ok(); }
         else { stun = .45; msg = 'はずれ…'; msgC = '#ff7a6a'; sfx.bad(); }
         msgT = .8;
       },
       step(dt) { t += dt; stun = Math.max(0, stun - dt); lift *= Math.exp(-3 * dt); msgT -= dt; },
       draw() {
-        C2(); const cx = W / 2, y0 = H * .5 - lift * 70, bw = Math.min(W * .8, 340), plates = Math.min(8, Math.floor(kg / 20) + 1);
+        C2(); const cx = W / 2, y0 = H * .5 - lift * 70, bw = Math.min(W * .8, 340), plates = Math.min(8, Math.floor(kg / 40) + 1);
         px.fillStyle = '#ddd'; px.strokeStyle = '#000'; px.lineWidth = 3; px.fillRect(cx - bw / 2, y0 - 5, bw, 10); px.strokeRect(cx - bw / 2, y0 - 5, bw, 10);
         for (let i = 0; i < plates; i++) for (const sd of [-1, 1]) { const x = cx + sd * (bw / 2 - 18 - i * 13); px.fillStyle = i % 2 ? '#e8322a' : '#2a3142'; px.fillRect(x - 6, y0 - 40, 12, 80); px.strokeRect(x - 6, y0 - 40, 12, 80); }
         txt(`${kg}kg`, cx, y0 - 70, 34, kg >= PASS.w ? '#ffd21f' : '#fff');

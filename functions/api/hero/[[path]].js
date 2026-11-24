@@ -6,7 +6,7 @@ import { QS } from './_qs.js';
 const DAY = 86400000;
 const PHYS_MIN_MS = 100000;     // 体力テスト4種目（30秒×4）より早く終わる記録ははじく
 const RENDA_MAX = 600;          // 30秒で600回（1秒に20回）を超える連打ははじく
-const PASS = { r: 150, t: 200, g: 25, w: 100 }; // 合格点：連打150回・反応0.2秒・持久走25秒・重り100kg
+const PASS = { r: 300, t: 150, g: 25, w: 300 }; // 合格点：連打300回・反応0.15秒・持久走25秒・重り300kg
 
 let ready = false;
 async function setup(db) {
