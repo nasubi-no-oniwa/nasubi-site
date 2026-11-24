@@ -132,10 +132,12 @@ const bladeMat = new THREE.MeshPhysicalMaterial({ color: '#d7dbe0', metalness: 1
 bladeMat.onBeforeCompile = sh => {
   Object.assign(sh.uniforms, U);
   sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aU; attribute float aE; varying float vU; varying float vE;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvU = aU; vE = aE;');
-  sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uProg; uniform vec3 uTint; uniform float uAmt; uniform float uGlow; uniform float uAura; uniform float uTime; varying float vU; varying float vE;\nfloat fillAt(){ return 1.0 - smoothstep(uProg - .035, uProg, vU); }\nfloat hamon(){ return smoothstep(.5, .72, vE + .06*sin(vU*95.0)*sin(vU*31.0+1.3)); }')
-    .replace('#include <color_fragment>', '#include <color_fragment>\nfloat fl = fillAt(); float hm = hamon(); vec3 tc = mix(diffuseColor.rgb, uTint, uAmt); diffuseColor.rgb = mix(mix(diffuseColor.rgb, tc, fl), vec3(.95,.96,.98), hm*.7);')
-    .replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\nmetalnessFactor = mix(metalnessFactor, mix(.35, .9, 1.0-uAmt), fl*(1.0-hm*.6));')
-    .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, .34, fl*uAmt);')
+  sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uProg; uniform vec3 uTint; uniform float uAmt; uniform float uGlow; uniform float uAura; uniform float uTime; varying float vU; varying float vE;\nfloat fillAt(){ return 1.0 - smoothstep(uProg - .035, uProg, vU); }\nfloat hamon(){ return smoothstep(.72, .86, vE + .05*sin(vU*95.0)*sin(vU*31.0+1.3)); }')
+    .replace('#include <color_fragment>', '#include <color_fragment>\nfloat fl = fillAt(); float hm = hamon(); vec3 tc = pow(mix(sqrt(max(diffuseColor.rgb, vec3(0.0))), sqrt(uTint), uAmt), vec3(2.0)); diffuseColor.rgb = mix(mix(diffuseColor.rgb, tc, fl), vec3(.95,.96,.98), hm*.55);')
+    .replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\nmetalnessFactor = mix(metalnessFactor, mix(.2, .9, 1.0-uAmt), fl*(1.0-hm*.6));')
+    .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, .4, fl*uAmt);')
+    .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\n#ifdef USE_CLEARCOAT\nmaterial.clearcoat *= 1.0 - fillAt()*uAmt*.85;\n#endif')
+    .replace('#include <lights_fragment_end>', '#include <lights_fragment_end>\nreflectedLight.indirectSpecular *= 1.0 - fillAt()*uAmt*(1.0-hamon())*.75;')
     .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\nfloat band = exp(-pow((vU - uProg)/.03, 2.0)); totalEmissiveRadiance += uTint*band*uGlow*2.2 + uTint*fl*uAmt*(1.0-hm)*uAura*(.32 + .08*sin(uTime*2.0 + vU*8.0));');
 };
 const katana = new THREE.Group(), inner = new THREE.Group(); katana.add(inner); scene.add(katana);
@@ -217,7 +219,7 @@ function grip() {
   ac(); sfx('draw'); $('title').hidden = true; ST = 'grip';
   U.uProg.value = 0; U.uGlow.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0;
   const tint = new THREE.Color(R.key === 'none' || R.key === 'nezuko' ? '#d7dbe0' : C.hex); U.uTint.value.copy(tint); bgMat.uniforms.uTint.value.copy(tint);
-  const amt = R.key === 'none' ? .0 : (.55 + .45 * R.den / 100);
+  const amt = R.key === 'none' ? .0 : R.key === 'black' ? 1 : (.55 + .45 * R.den / 100);
   const tl = gsap.timeline();
   tl.to(katana.rotation, { y: 0, x: 0, duration: .9, ease: 'power3.inOut' }, 0); tl.add(setPose('stand', .9), 0);
     tl.call(() => { U.uAmt.value = amt; HOLD = { R, p: 0, on: false }; ST = 'hold'; holdUI(true); });
@@ -386,4 +388,4 @@ resize(); setPose('top', 0);
 ST = 'title'; $('load').hidden = true; $('title').hidden = false;
 gsap.fromTo('#title .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: 'power3.out' });
 requestAnimationFrame(frame);
-if (DEV) window.__K = { judge, norm, grip, get LAST() { return LAST; }, get ST() { return ST; }, COLORS, press, setName(n) { $('nm').value = n; }, count, loadCounts, show(k, den, rz, sc, x, y) { ST = 'shot'; ['title', 'result', 'stats'].forEach(i => $(i).hidden = true); U.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uMix.value = 1; U.uAmt.value = .55 + .45 * den / 100; U.uProg.value = 1.06; U.uAura.value = .6; U.uGlow.value = 0; katana.rotation.set(0, 0, rz); katana.scale.setScalar(sc); katana.position.set(x, y, 0); } };
+if (DEV) window.__K = { judge, norm, grip, get LAST() { return LAST; }, get ST() { return ST; }, COLORS, U, bladeMat, scene, press, setName(n) { $('nm').value = n; }, count, loadCounts, show(k, den, rz, sc, x, y) { ST = 'shot'; ['title', 'result', 'stats'].forEach(i => $(i).hidden = true); U.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uMix.value = 1; U.uAmt.value = .55 + .45 * den / 100; U.uProg.value = 1.06; U.uAura.value = .6; U.uGlow.value = 0; katana.rotation.set(0, 0, rz); katana.scale.setScalar(sc); katana.position.set(x, y, 0); } };
