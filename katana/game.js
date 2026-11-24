@@ -1,5 +1,5 @@
-import { THREE, RoomEnvironment } from './lib.js';
-import { COLORS, ORDER, CHARS } from './data.js';
+import { THREE, RoomEnvironment } from './lib.js?v=11241513';
+import { COLORS, ORDER, CHARS } from './data.js?v=11241513';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
