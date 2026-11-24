@@ -1,0 +1,378 @@
+import { THREE, RoomEnvironment } from './lib.js';
+import { COLORS, ORDER, CHARS, FAMILY } from './data.js';
+const $ = id => document.getElementById(id);
+const gsap = window.gsap, PFX = window.PFX;
+const DEV = /[?&]dev=1/.test(location.search);
+const FAST = /[?&]fast=1/.test(location.search);
+const IS_PHONE = /iPhone|iPod|iPad|Android/i.test(navigator.userAgent || '');
+const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } } };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// ---------- ことば ----------
+const TX = {
+  ja: { lang: '日本語', ttl: '色変わりの刀', h1: '<small>いろがわりのかたな</small>色変わりの刀', lead: '名前を入れて、刀を握れ。<br>刀身の色で、あなたの才能がわかる。', ph: '名前を入れる', start: '刀を握る', needName: '名前を入れてください', sndOn: '🔊 音あり', sndOff: '🔇 音なし', stats: 'みんなの刀の色', again: 'ほかの名前で握る', img: '画像にする', x: '𝕏 に投稿', back: 'もどる',
+    who: n => `「<b>${esc(n)}</b>」の刀は`, den: '才能（色の濃さ）', ranks: ['ほぼ無色', '才能うすめ', '並', '一人前', '秀才', '天賦の才'], rNone: '才能なし', rNez: '鬼',
+    odds: p => `出やすさ：約${p}%`, share: (p, n) => `みんなの結果：この色は全体の <b>${p}%</b>（${n}人中）`, shareWait: 'みんなの結果：集計中…', shareErr: 'みんなの結果：いまは読みこめません',
+    stNote: n => `これまでに ${n} 人が刀を握った`, stEmpty: 'まだ誰も握っていません', loading: '読みこみ中…', mine: '← あなた',
+    capGrip: 'にぎる', capNone: '……変わらない', capNez: '握れない',
+    post: (n, c, s, r, d) => `「${n}」の刀は【${c}】に変わった。\n${s}・${r}（濃さ${d}%）\n#色変わりの刀 #ブラウザゲーム`,
+    postNone: n => `「${n}」の刀は……色が変わらなかった。\n才能、特になし。\n#色変わりの刀 #ブラウザゲーム`,
+    postNez: n => `「${n}」は刀を握れなかった。\n#色変わりの刀 #ブラウザゲーム`,
+    xCopied: '画像をコピーしました。Xの投稿欄に貼りつけ（Ctrl+V）すると画像がつきます', xSaved: '画像を保存しました。Xの投稿に、保存した画像を追加してください', nogl: 'この端末では3Dを表示できませんでした', cardTag: '刀身の色で、才能がわかる' },
+  en: { lang: 'English', ttl: 'The Color-Changing Blade', h1: '<small>IROGAWARI NO KATANA</small>Color Blade', lead: 'Enter a name. Grip the blade.<br>Its color reveals your talent.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', stats: "Everyone's blades", again: 'Try another name', img: 'Save image', x: 'Post on 𝕏', back: 'Back',
+    who: n => `<b>${esc(n)}</b>'s blade turned`, den: 'Talent (color depth)', ranks: ['Barely tinted', 'Faint talent', 'Average', 'Capable', 'Gifted', 'Born genius'], rNone: 'No talent', rNez: 'Demon',
+    odds: p => `Odds: about ${p}%`, share: (p, n) => `Everyone: <b>${p}%</b> got this color (of ${n})`, shareWait: 'Everyone: counting…', shareErr: "Everyone: can't load right now",
+    stNote: n => `${n} people have gripped the blade`, stEmpty: 'Nobody yet', loading: 'Loading…', mine: '← you',
+    capGrip: 'GRIP', capNone: '…no change', capNez: "Can't hold it",
+    post: (n, c, s, r, d) => `"${n}"'s blade turned ${c}.\n${s} / ${r} (depth ${d}%)\n#色変わりの刀 #ブラウザゲーム`,
+    postNone: n => `"${n}"'s blade… didn't change color.\nNo particular talent.\n#色変わりの刀 #ブラウザゲーム`,
+    postNez: n => `"${n}" couldn't hold the blade.\n#色変わりの刀 #ブラウザゲーム`,
+    xCopied: 'Image copied. Paste it (Ctrl+V) into your post to attach it', xSaved: 'Image saved. Add the saved image to your post', nogl: "This device can't show 3D", cardTag: 'The blade color reveals your talent' },
+  zh: { lang: '繁體中文', ttl: '變色之刀', h1: '<small>變色之刀</small>變色之刀', lead: '輸入名字，握住刀。<br>刀身的顏色會揭曉你的才能。', ph: '輸入名字', start: '握刀', needName: '請輸入名字', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', stats: '大家的刀色', again: '換個名字握', img: '存成圖片', x: '發到 𝕏', back: '返回',
+    who: n => `「<b>${esc(n)}</b>」的刀變成了`, den: '才能（顏色深淺）', ranks: ['幾乎無色', '才能稀薄', '普通', '獨當一面', '秀才', '天賦異稟'], rNone: '沒有才能', rNez: '鬼',
+    odds: p => `出現機率：約${p}%`, share: (p, n) => `大家的結果：這個顏色佔 <b>${p}%</b>（共${n}人）`, shareWait: '大家的結果：統計中…', shareErr: '大家的結果：目前無法讀取',
+    stNote: n => `已經有 ${n} 人握過刀`, stEmpty: '還沒有人握過', loading: '讀取中…', mine: '← 你',
+    capGrip: '握', capNone: '……沒有變色', capNez: '握不住',
+    post: (n, c, s, r, d) => `「${n}」的刀變成了【${c}】。\n${s}・${r}（深度${d}%）\n#色変わりの刀 #ブラウザゲーム`,
+    postNone: n => `「${n}」的刀……沒有變色。\n沒什麼才能。\n#色変わりの刀 #ブラウザゲーム`,
+    postNez: n => `「${n}」握不住刀。\n#色変わりの刀 #ブラウザゲーム`,
+    xCopied: '已複製圖片。在 X 的貼文欄貼上（Ctrl+V）即可附上圖片', xSaved: '已儲存圖片。請在 X 貼文中加入儲存的圖片', nogl: '這台裝置無法顯示 3D', cardTag: '刀身的顏色揭曉你的才能' },
+  ko: { lang: '한국어', ttl: '색이 변하는 칼', h1: '<small>이로가와리노 카타나</small>색이 변하는 칼', lead: '이름을 넣고 칼을 쥐어라.<br>칼날의 색으로 너의 재능을 알 수 있다.', ph: '이름 입력', start: '칼을 쥔다', needName: '이름을 입력해 주세요', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', stats: '모두의 칼 색', again: '다른 이름으로 쥐기', img: '이미지로 저장', x: '𝕏 에 올리기', back: '돌아가기',
+    who: n => `「<b>${esc(n)}</b>」의 칼은`, den: '재능（색의 농도）', ranks: ['거의 무색', '재능 옅음', '보통', '제 몫', '수재', '천부적 재능'], rNone: '재능 없음', rNez: '귀신',
+    odds: p => `나올 확률: 약 ${p}%`, share: (p, n) => `모두의 결과: 이 색은 전체의 <b>${p}%</b>（${n}명 중）`, shareWait: '모두의 결과: 집계 중…', shareErr: '모두의 결과: 지금은 불러올 수 없음',
+    stNote: n => `지금까지 ${n}명이 칼을 쥐었다`, stEmpty: '아직 아무도 없음', loading: '불러오는 중…', mine: '← 당신',
+    capGrip: '쥔다', capNone: '……변하지 않는다', capNez: '쥘 수 없다',
+    post: (n, c, s, r, d) => `「${n}」의 칼은【${c}】으로 변했다.\n${s}・${r}（농도 ${d}%）\n#色変わりの刀 #ブラウザゲーム`,
+    postNone: n => `「${n}」의 칼은……색이 변하지 않았다.\n재능, 딱히 없음.\n#色変わりの刀 #ブラウザゲーム`,
+    postNez: n => `「${n}」은 칼을 쥘 수 없었다.\n#色変わりの刀 #ブラウザゲーム`,
+    xCopied: '이미지를 복사했습니다. X 글쓰기 칸에 붙여넣기（Ctrl+V）하면 이미지가 붙습니다', xSaved: '이미지를 저장했습니다. X 글에 저장한 이미지를 추가해 주세요', nogl: '이 기기에서는 3D를 표시할 수 없습니다', cardTag: '칼날의 색으로 재능을 알 수 있다' },
+};
+let L = 'ja', T = TX.ja;
+function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || [])[1]; if (TX[q]) return q; const s = ls.get('katana_lang', null); if (TX[s]) return s; const n = (navigator.language || 'ja').toLowerCase(); return n.startsWith('ja') ? 'ja' : n.startsWith('zh') ? 'zh' : n.startsWith('ko') ? 'ko' : 'en'; }
+function setLang(l) {
+  L = l; T = TX[l]; ls.set('katana_lang', l); document.documentElement.lang = l === 'zh' ? 'zh-Hant' : l; document.title = T.ttl;
+  $('tH1').innerHTML = T.h1; $('tLead').innerHTML = T.lead; $('nm').placeholder = T.ph; $('startBtn').textContent = T.start; $('stBtn').textContent = T.stats; $('stBtn2').textContent = T.stats;
+  $('again').textContent = T.again; $('imgBtn').textContent = T.img; $('xBtn').textContent = T.x; $('stBack').textContent = T.back; $('stT').textContent = T.stats; $('nmNote').textContent = '';
+  $('langs').innerHTML = Object.keys(TX).map(k => `<button data-l="${k}" class="${k === L ? 'on' : ''}">${TX[k].lang}</button>`).join(''); $('langs').querySelectorAll('button').forEach(b => b.onclick = () => setLang(b.dataset.l));
+  sndLabel(); if (LAST && !$('result').hidden) fillResult(LAST);
+}
+
+// ---------- 名前から色を決める（同じ名前なら必ず同じ） ----------
+const toHira = s => s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+const norm = s => toHira(String(s).normalize('NFKC').replace(/[\s　・･]/g, '').toLowerCase());
+function hash(s, seed) { let h = (2166136261 ^ seed) >>> 0; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13; h = Math.imul(h, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
+const CHMAP = new Map(), FAM = [];
+CHARS.forEach(([a, b, c, d, k, den]) => [a, b, c, d].forEach(v => { const n = norm(v); if (!CHMAP.has(n)) CHMAP.set(n, { k, den }); }));
+FAMILY.forEach(([a, b, k]) => { FAM.push([norm(a), k]); FAM.push([norm(b), k]); });
+FAM.sort((x, y) => y[0].length - x[0].length);
+const POOL = ORDER.map(k => [k, COLORS[k].w]);
+function judge(name) {
+  const n = norm(name); const r1 = hash(n, 0x6b61), r2 = hash(n, 0x7461);
+  const c = CHMAP.get(n); if (c) return { key: c.k, den: c.den, n };
+  let key = null; for (const [f, k] of FAM) if (n.startsWith(f)) { key = k; break; }
+  if (!key) { let x = r1 * 100; for (const [k, w] of POOL) { if (x < w) { key = k; break; } x -= w; } key = key || 'none'; }
+  let den;
+  if (key === 'none') den = Math.floor(r2 * 6); // 変わらない：ほんの少しだけ
+  else if (key === 'nezuko') den = 0;
+  else if (COLORS[key].base) den = Math.round(18 + 82 * Math.pow(r2, 0.85));
+  else if (key === 'black') den = Math.round(62 + 38 * r2);
+  else den = Math.round(42 + 58 * r2);
+  return { key, den, n };
+}
+function rankOf(R) { if (R.key === 'none') return T.rNone; if (R.key === 'nezuko') return T.rNez; const d = R.den; return T.ranks[d < 20 ? 0 : d < 40 ? 1 : d < 60 ? 2 : d < 80 ? 3 : d < 95 ? 4 : 5]; }
+
+// ---------- 音 ----------
+let AC = null, SND = ls.get('katana_snd', true);
+function sndLabel() { $('sndBtn').textContent = SND ? T.sndOn : T.sndOff; }
+$('sndBtn').onclick = () => { SND = !SND; ls.set('katana_snd', SND); sndLabel(); };
+function ac() { if (!SND) return null; try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; } catch (e) { return null; } }
+function noise(a, dur) { const b = a.createBuffer(1, a.sampleRate * dur, a.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = a.createBufferSource(); s.buffer = b; return s; }
+function sfx(k) {
+  const a = ac(); if (!a) return; const t = a.currentTime, g = a.createGain(); g.connect(a.destination);
+  if (k === 'draw') { const s = noise(a, .7), f = a.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 6; f.frequency.setValueAtTime(1800, t); f.frequency.exponentialRampToValueAtTime(7000, t + .6); s.connect(f); f.connect(g); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.35, t + .05); g.gain.exponentialRampToValueAtTime(.0001, t + .7); s.start(t); s.stop(t + .7); }
+  else if (k === 'ring') { [1320, 1980, 2640].forEach((fq, i) => { const o = a.createOscillator(), gg = a.createGain(); o.type = 'sine'; o.frequency.value = fq * (1 + i * .003); o.connect(gg); gg.connect(g); gg.gain.setValueAtTime(.0001, t); gg.gain.exponentialRampToValueAtTime(.22 / (i + 1), t + .01); gg.gain.exponentialRampToValueAtTime(.0001, t + 2.2 - i * .4); o.start(t); o.stop(t + 2.3); }); g.gain.value = 1; }
+  else if (k === 'thud') { const o = a.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(40, t + .5); o.connect(g); g.gain.setValueAtTime(.5, t); g.gain.exponentialRampToValueAtTime(.0001, t + .6); o.start(t); o.stop(t + .6); }
+  else if (k === 'zap') { const s = noise(a, .5), f = a.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2500; s.connect(f); f.connect(g); g.gain.setValueAtTime(.3, t); g.gain.exponentialRampToValueAtTime(.0001, t + .5); s.start(t); s.stop(t + .5); }
+}
+let HUM = null;
+function humStart(dur) { const a = ac(); if (!a) return; const t = a.currentTime, o = a.createOscillator(), o2 = a.createOscillator(), f = a.createBiquadFilter(), g = a.createGain(); o.type = 'sawtooth'; o2.type = 'sine'; o.frequency.setValueAtTime(70, t); o.frequency.exponentialRampToValueAtTime(260, t + dur); o2.frequency.setValueAtTime(140, t); o2.frequency.exponentialRampToValueAtTime(620, t + dur); f.type = 'lowpass'; f.frequency.setValueAtTime(300, t); f.frequency.exponentialRampToValueAtTime(2400, t + dur); o.connect(f); o2.connect(f); f.connect(g); g.connect(a.destination); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.12, t + dur * .8); o.start(t); o2.start(t); HUM = { o, o2, g, a }; }
+function humStop() { if (!HUM) return; const { o, o2, g, a } = HUM, t = a.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.exponentialRampToValueAtTime(.0001, t + .15); o.stop(t + .2); o2.stop(t + .2); HUM = null; }
+
+// ---------- 3D ----------
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas: $('gl'), antialias: true, preserveDrawingBuffer: true }); } catch (e) { $('load').textContent = TX[pickLang()].nogl; throw e; }
+renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32, 1, .1, 100); camera.position.set(0, 0, 9);
+const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; scene.environmentIntensity = .9;
+// 背景（上が紫がかった夜、下が闇）
+const bgMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, uniforms: { uTint: { value: new THREE.Color('#c9a14a') }, uMix: { value: 0 } },
+  vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+  fragmentShader: 'uniform vec3 uTint; uniform float uMix; varying vec3 vP; void main(){ float h = vP.y*.5+.5; vec3 c = mix(vec3(.012,.012,.025), vec3(.085,.07,.13), smoothstep(.2,.95,h)); float r = 1.0-smoothstep(0.0,.55,length(vP.xy*vec2(.9,1.4))); c += uTint*r*r*.22*uMix; gl_FragColor = vec4(c,1.0); }' });
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(40, 32, 16), bgMat));
+const key = new THREE.DirectionalLight('#fff6e6', 2.2); key.position.set(3, 5, 6); scene.add(key);
+const rim = new THREE.DirectionalLight('#8aa0ff', 1.4); rim.position.set(-5, 2, -4); scene.add(rim);
+scene.add(new THREE.AmbientLight('#404060', .6));
+
+// 刀身（反りあり・鎬・切っ先）。aU = 根元0→切っ先1、aE = 刃先ほど1
+function bladeGeo() {
+  const Lb = 3.0, N = 120, pos = [], au = [], ae = [];
+  const ring = [];
+  for (let i = 0; i <= N; i++) {
+    const p = i / N, x = p * Lb, w = .15 * (1 - .3 * p), t = .034 * (1 - .4 * p), kp = Math.max(0, (p - .87) / .13);
+    const yT = w / 2 * (1 - .3 * kp * kp), yE = -w / 2 + w * .85 * Math.pow(kp, 1.35), yS = yT + (yE - yT) * .3, tt = t * (1 - .92 * kp), yo = .16 * p * p;
+    ring.push([[x, yT + yo, tt * .35, 0], [x, yS + yo, tt, .15], [x, yE + yo, 0, 1], [x, yS + yo, -tt, .15], [x, yT + yo, -tt * .35, 0]]);
+  }
+  const push = (v, u) => { pos.push(v[0], v[1], v[2]); au.push(u); ae.push(v[3]); };
+  for (let i = 0; i < N; i++) { const A = ring[i], B = ring[i + 1], ua = i / N, ub = (i + 1) / N; for (let j = 0; j < 5; j++) { const j2 = (j + 1) % 5; push(A[j], ua); push(B[j], ub); push(B[j2], ub); push(A[j], ua); push(B[j2], ub); push(A[j2], ua); } }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('aU', new THREE.Float32BufferAttribute(au, 1)); g.setAttribute('aE', new THREE.Float32BufferAttribute(ae, 1)); g.computeVertexNormals(); return g;
+}
+const U = { uProg: { value: 0 }, uTint: { value: new THREE.Color('#ffffff') }, uAmt: { value: 0 }, uGlow: { value: 0 }, uAura: { value: 0 }, uTime: { value: 0 } };
+const bladeMat = new THREE.MeshPhysicalMaterial({ color: '#d7dbe0', metalness: 1, roughness: .2, clearcoat: .6, clearcoatRoughness: .15, envMapIntensity: 1.25 });
+bladeMat.onBeforeCompile = sh => {
+  Object.assign(sh.uniforms, U);
+  sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aU; attribute float aE; varying float vU; varying float vE;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvU = aU; vE = aE;');
+  sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uProg; uniform vec3 uTint; uniform float uAmt; uniform float uGlow; uniform float uAura; uniform float uTime; varying float vU; varying float vE;\nfloat fillAt(){ return 1.0 - smoothstep(uProg - .035, uProg, vU); }\nfloat hamon(){ return smoothstep(.5, .72, vE + .06*sin(vU*95.0)*sin(vU*31.0+1.3)); }')
+    .replace('#include <color_fragment>', '#include <color_fragment>\nfloat fl = fillAt(); float hm = hamon(); vec3 tc = mix(diffuseColor.rgb, uTint, uAmt); diffuseColor.rgb = mix(mix(diffuseColor.rgb, tc, fl), vec3(.95,.96,.98), hm*.7);')
+    .replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\nmetalnessFactor = mix(metalnessFactor, mix(.35, .9, 1.0-uAmt), fl*(1.0-hm*.6));')
+    .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, .34, fl*uAmt);')
+    .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\nfloat band = exp(-pow((vU - uProg)/.03, 2.0)); totalEmissiveRadiance += uTint*band*uGlow*2.2 + uTint*fl*uAmt*(1.0-hm)*uAura*(.32 + .08*sin(uTime*2.0 + vU*8.0));');
+};
+const katana = new THREE.Group(), inner = new THREE.Group(); katana.add(inner); scene.add(katana);
+const blade = new THREE.Mesh(bladeGeo(), bladeMat); inner.add(blade);
+const gold = new THREE.MeshStandardMaterial({ color: '#c9a14a', metalness: 1, roughness: .32 });
+const iron = new THREE.MeshStandardMaterial({ color: '#2a2622', metalness: .85, roughness: .5 });
+const habaki = new THREE.Mesh(new THREE.BoxGeometry(.13, .17, .085), gold); habaki.position.set(.035, .0, 0); inner.add(habaki);
+const tsuba = new THREE.Mesh(new THREE.CylinderGeometry(.24, .24, .04, 48), iron); tsuba.rotation.z = Math.PI / 2; tsuba.position.x = -.05; inner.add(tsuba);
+const tring = new THREE.Mesh(new THREE.TorusGeometry(.24, .013, 8, 48), gold); tring.rotation.y = Math.PI / 2; tring.position.x = -.05; inner.add(tring);
+const seppa = new THREE.Mesh(new THREE.CylinderGeometry(.09, .09, .1, 24), gold); seppa.rotation.z = Math.PI / 2; seppa.position.x = -.05; inner.add(seppa);
+function tsukaTex() {
+  const c = document.createElement('canvas'); c.width = 128; c.height = 128; const x = c.getContext('2d');
+  x.fillStyle = '#16121a'; x.fillRect(0, 0, 128, 128);
+  x.fillStyle = '#ebe4d2'; x.beginPath(); x.moveTo(64, 14); x.lineTo(104, 64); x.lineTo(64, 114); x.lineTo(24, 64); x.closePath(); x.fill();
+  for (let i = 0; i < 160; i++) { x.fillStyle = `rgba(150,140,120,${Math.random() * .5})`; x.beginPath(); x.arc(40 + Math.random() * 48, 30 + Math.random() * 68, Math.random() * 1.6 + .4, 0, 7); x.fill(); }
+  x.strokeStyle = '#3a3040'; x.lineWidth = 2; x.beginPath(); x.moveTo(0, 0); x.lineTo(128, 128); x.moveTo(128, 0); x.lineTo(0, 128); x.stroke();
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(4, 7); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+}
+const tsuka = new THREE.Mesh(new THREE.CylinderGeometry(.062, .068, 1.0, 32, 1, true), new THREE.MeshStandardMaterial({ map: tsukaTex(), roughness: .8, metalness: 0 })); tsuka.rotation.z = Math.PI / 2; tsuka.rotation.x = Math.PI / 2; tsuka.position.x = -.6; inner.add(tsuka);
+const kashira = new THREE.Mesh(new THREE.SphereGeometry(.07, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), iron); kashira.rotation.z = Math.PI / 2; kashira.position.x = -1.1; inner.add(kashira);
+const fuchi = new THREE.Mesh(new THREE.CylinderGeometry(.075, .075, .05, 24), iron); fuchi.rotation.z = Math.PI / 2; fuchi.position.x = -.1; inner.add(fuchi);
+inner.position.x = -.95; // 刀の真ん中を回転の中心に
+
+// 光の粒（色が走るところから舞い上がる）
+const PN = 160, pGeo = new THREE.BufferGeometry(), pPos = new Float32Array(PN * 3), pLife = new Float32Array(PN), pVel = new Float32Array(PN * 3);
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); pGeo.setAttribute('aLife', new THREE.BufferAttribute(pLife, 1));
+const pMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: { uTint: U.uTint, uPx: { value: renderer.getPixelRatio() } },
+  vertexShader: 'attribute float aLife; varying float vL; uniform float uPx; void main(){ vL = aLife; vec4 mv = modelViewMatrix*vec4(position,1.0); gl_PointSize = uPx*(26.0*aLife+4.0)/(-mv.z)*3.0; gl_Position = projectionMatrix*mv; }',
+  fragmentShader: 'uniform vec3 uTint; varying float vL; void main(){ float d = length(gl_PointCoord-.5); float a = smoothstep(.5,.0,d)*vL; gl_FragColor = vec4(mix(uTint, vec3(1.0), .35)*a, a); }' });
+const sparks = new THREE.Points(pGeo, pMat); sparks.frustumCulled = false; inner.add(sparks);
+let emitAt = -1, pIdx = 0;
+function emit(n, u, spread) { for (let k = 0; k < n; k++) { const i = pIdx++ % PN; const x = u * 3.0, yo = .16 * u * u; pPos[i * 3] = x + (Math.random() - .5) * .1; pPos[i * 3 + 1] = yo + (Math.random() - .5) * .14; pPos[i * 3 + 2] = (Math.random() - .5) * .08; const a = Math.random() * 6.283, s = (spread || .6) * (.4 + Math.random()); pVel[i * 3] = Math.cos(a) * s * .5; pVel[i * 3 + 1] = Math.sin(a) * s; pVel[i * 3 + 2] = (Math.random() - .5) * s; pLife[i] = 1; } }
+function stepSparks(dt) { for (let i = 0; i < PN; i++) { if (pLife[i] <= 0) continue; pLife[i] -= dt * .9; pPos[i * 3] += pVel[i * 3] * dt; pPos[i * 3 + 1] += pVel[i * 3 + 1] * dt; pPos[i * 3 + 2] += pVel[i * 3 + 2] * dt; pVel[i * 3] *= .97; pVel[i * 3 + 1] *= .97; if (pLife[i] < 0) pLife[i] = 0; } pGeo.attributes.position.needsUpdate = true; pGeo.attributes.aLife.needsUpdate = true; }
+// 舞う塵
+const DN = 220, dGeo = new THREE.BufferGeometry(), dPos = new Float32Array(DN * 3);
+for (let i = 0; i < DN; i++) { dPos[i * 3] = (Math.random() - .5) * 14; dPos[i * 3 + 1] = (Math.random() - .5) * 10; dPos[i * 3 + 2] = -1 - Math.random() * 8; }
+dGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
+const dust = new THREE.Points(dGeo, new THREE.PointsMaterial({ color: '#c9a14a', size: .03, transparent: true, opacity: .55, depthWrite: false, blending: THREE.AdditiveBlending })); scene.add(dust);
+
+// ---------- 画面の大きさと刀の置き方 ----------
+let VW = 1, VH = 1;
+function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); VH = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)); VW = VH * camera.aspect; pMat.uniforms.uPx.value = renderer.getPixelRatio(); if (POSE === 'top') setPose('top', 0); else if (POSE === 'stand') setPose('stand', 0); }
+const LEN = 4.15;
+function poseOf(p) {
+  if (p === 'top') { const s = Math.min(1, VW * .9 / LEN, VH * .3 / .9); return { x: 0, y: VH / 2 - VH * .19, s, rz: .1, ry: 0 }; }
+  const s = Math.min(1.05, VH * .78 / LEN, VW * 1.6 / LEN); return { x: 0, y: .05, s, rz: Math.PI / 2 - .06, ry: 0 };
+}
+let POSE = 'top';
+function setPose(p, dur, ease) { POSE = p; const P = poseOf(p); if (!dur) { katana.position.set(P.x, P.y, 0); katana.scale.setScalar(P.s); katana.rotation.z = P.rz; return null; } return gsap.timeline().to(katana.position, { x: P.x, y: P.y, duration: dur, ease: ease || 'power3.inOut' }, 0).to(katana.scale, { x: P.s, y: P.s, z: P.s, duration: dur, ease: ease || 'power3.inOut' }, 0).to(katana.rotation, { z: P.rz, duration: dur, ease: ease || 'power3.inOut' }, 0); }
+addEventListener('resize', resize);
+
+// ---------- 描く ----------
+let ST = 'load', spin = 0, shake = 0, lastT = performance.now(), tAll = 0;
+function frame(now) {
+  const dt = Math.min(.05, (now - lastT) / 1000); lastT = now; tAll += dt; U.uTime.value = tAll;
+  if (ST === 'title' || ST === 'result') { spin += dt * .55; katana.rotation.y = Math.sin(spin) * .55; katana.rotation.x = Math.sin(spin * .7) * .12; }
+  if (emitAt >= 0) emit(2, Math.min(1, emitAt), .5);
+  stepSparks(dt);
+  const sx = (Math.random() - .5) * shake, sy = (Math.random() - .5) * shake; camera.position.x = sx; camera.position.y = sy;
+  for (let i = 0; i < DN; i++) { dPos[i * 3 + 1] += dt * .08; if (dPos[i * 3 + 1] > 5) dPos[i * 3 + 1] = -5; } dGeo.attributes.position.needsUpdate = true;
+  renderer.render(scene, camera); requestAnimationFrame(frame);
+}
+
+// ---------- 2Dの演出（pixelfx） ----------
+const fctx = $('fxc').getContext('2d'); let FXS = [], fxRaf = 0, fxLast = 0, fxFrame = null, fxImg = null;
+function ramp(hex) { const c = new THREE.Color(hex), o = []; for (let i = 0; i < 8; i++) { const t = i / 7, k = c.clone().multiplyScalar(.6 + .4 * Math.min(1, t * 1.4)).lerp(new THREE.Color('#ffffff'), Math.max(0, t - .55) * 1.6); o.push('#' + k.getHexString()); } return o; }
+function fxAdd(mod, o) { try { if (!PFX || !mod) return; if (!fxFrame) { fxFrame = PFX.createFrame(160, 160); fxImg = new ImageData(160, 160); } const f = PFX.createFx(mod, o); f._life = mod === PFX.fx.confetti ? 3 : 1.4; FXS.push(f); if (!fxRaf) { fxLast = performance.now(); fxRaf = requestAnimationFrame(fxLoop); } } catch (e) { } }
+function fxLoop(now) { const dt = Math.min(.05, (now - fxLast) / 1000); fxLast = now; try { PFX.clearFrame(fxFrame); FXS = FXS.filter(f => { f.update(dt); f.draw(fxFrame, 'back'); f.draw(fxFrame, 'front'); f._life -= dt; return !f.done() && f._life > 0; }); PFX.composite(fxFrame, fxImg.data, null); fctx.putImageData(fxImg, 0, 0); } catch (e) { FXS = []; } if (FXS.length) fxRaf = requestAnimationFrame(fxLoop); else { fxRaf = 0; fctx.clearRect(0, 0, 160, 160); } }
+
+// ---------- 握る ----------
+let LAST = null, busy = false;
+function cap(t, hold) { const c = $('cap'); c.textContent = t; gsap.killTweensOf(c); gsap.fromTo(c, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .35 }); if (hold) gsap.to(c, { opacity: 0, duration: .4, delay: hold }); }
+function grip() {
+  if (busy) return; const name = $('nm').value.trim();
+  if (!name) { $('nmNote').textContent = T.needName; $('nmNote').className = 'note g err'; gsap.fromTo('#nm', { x: -8 }, { x: 0, duration: .4, ease: 'elastic.out(1,.3)' }); return; }
+  busy = true; ls.set('katana_name', name); $('nmNote').textContent = '';
+  const R = judge(name); R.name = name; LAST = R; const C = COLORS[R.key];
+  ac(); sfx('draw'); $('title').hidden = true; ST = 'grip';
+  U.uProg.value = 0; U.uGlow.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0;
+  const tint = new THREE.Color(R.key === 'none' || R.key === 'nezuko' ? '#d7dbe0' : C.hex); U.uTint.value.copy(tint); bgMat.uniforms.uTint.value.copy(tint);
+  const amt = R.key === 'none' ? .0 : (.55 + .45 * R.den / 100);
+  const tl = gsap.timeline({ onComplete: () => { busy = false; } });
+  tl.to(katana.rotation, { y: 0, x: 0, duration: .9, ease: 'power3.inOut' }, 0); tl.add(setPose('stand', .9), 0);
+  tl.call(() => cap(T.capGrip, 1.6), null, .7);
+  if (R.key === 'nezuko') {
+    tl.to({}, { duration: .4 });
+    tl.call(() => { sfx('zap'); U.uTint.value.set('#ff3048'); emitAt = .05; });
+    tl.to({ v: 0 }, { v: 1, duration: 1.4, onUpdate() { shake = .03 + .12 * this.targets()[0].v; } });
+    tl.call(() => { emitAt = -1; shake = 0; sfx('thud'); flash('#ff3048'); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3048') }); cap(T.capNez); });
+    tl.to(katana.rotation, { z: '+=' + (Math.PI * 1.5), duration: .7, ease: 'power2.out' });
+    tl.to(katana.position, { y: -VH * .9, duration: .7, ease: 'power2.in' }, '<');
+    tl.to({}, { duration: .5 });
+    tl.call(() => { katana.position.y = VH; }); tl.add(setPose('top', .9, 'back.out(1.2)')); tl.call(showResult);
+    return;
+  }
+  const dur = 2.5;
+  tl.call(() => { U.uAmt.value = amt; emitAt = 0; humStart(dur); }, null, 1.0);
+  tl.to(U.uGlow, { value: R.key === 'none' ? .25 : 1, duration: .3 }, 1.0);
+  tl.to(U.uProg, { value: 1.06, duration: dur, ease: 'power1.in', onUpdate() { emitAt = R.key === 'none' ? -1 : Math.min(1, U.uProg.value); } }, 1.0);
+  tl.to({ v: 0 }, { v: 1, duration: dur, ease: 'power2.in', onUpdate() { shake = .035 * this.targets()[0].v; } }, 1.0);
+  tl.call(() => {
+    emitAt = -1; shake = 0; humStop();
+    if (R.key === 'none') { sfx('thud'); cap(T.capNone, 1.4); return; }
+    sfx('ring'); flash(C.hex); U.uGlow.value = 0; U.uAura.value = 1.2; gsap.to(U.uAura, { value: .55, duration: 1.6 }); gsap.to(bgMat.uniforms.uMix, { value: 1, duration: 1 });
+    emit(60, .5, 2.2); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 3, palette: ramp(C.hex) }); 
+    if (R.den >= 95 || R.key === 'black') fxAdd(PFX && PFX.fx.confetti, { x: 80, y: 60, seed: 11 });
+    cap(C.name[L], 1.4);
+  }, null, 1.0 + dur);
+  tl.to({}, { duration: 1.3 });
+  tl.add(setPose('top', .9));
+  tl.call(showResult);
+}
+function flash(hex) { const f = $('flash'); f.style.background = hex; gsap.fromTo(f, { opacity: .85 }, { opacity: 0, duration: .7, ease: 'power2.out' }); }
+
+// ---------- 結果 ----------
+function fillResult(R) {
+  const C = COLORS[R.key], col = $('rCol');
+  document.documentElement.style.setProperty('--tint', R.key === 'none' ? '#b9bec4' : C.hex);
+  $('rWho').innerHTML = T.who(R.name);
+  col.textContent = C.name[L]; col.style.background = C.hex; const lum = new THREE.Color(C.hex).getHSL({}).l; col.style.color = lum > .6 ? '#14131c' : '#fff';
+  $('rSch').textContent = C.school[L]; $('rRank').textContent = rankOf(R);
+  $('rDenL').textContent = T.den; $('rDenV').textContent = R.den + '%'; $('rDen').hidden = $('rBar').parentNode.hidden = R.key === 'nezuko';
+  $('rWord').textContent = C.word[L];
+  shareLine();
+}
+let COUNTS = null, countErr = false;
+function shareLine() {
+  const R = LAST; if (!R) return; const C = COLORS[R.key]; const parts = [];
+  if (C.w) parts.push(T.odds(C.w >= 2 ? C.w.toFixed(C.w % 1 ? 1 : 0) : C.w));
+  if (COUNTS) { const tot = Object.values(COUNTS).reduce((a, b) => a + (+b || 0), 0), n = +COUNTS[R.key] || 0; if (tot > 0) parts.push(T.share((n / tot * 100).toFixed(1), tot.toLocaleString())); }
+  else parts.push(countErr ? T.shareErr : T.shareWait);
+  $('rShare').innerHTML = parts.join('<br>');
+}
+function showResult() {
+  const R = LAST; ST = 'result'; fillResult(R);
+  $('result').hidden = false; $('result').scrollTop = 0;
+  gsap.fromTo('#result .card', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .5, ease: 'power3.out' });
+  gsap.fromTo('#rBar', { width: '0%' }, { width: R.den + '%', duration: 1.1, delay: .3, ease: 'power2.out' });
+  gsap.fromTo('#rCol', { scale: .6, opacity: 0 }, { scale: 1, opacity: 1, duration: .6, delay: .1, ease: 'back.out(2)' });
+  R.card = makeCard(R);
+  POST = R.key === 'none' ? T.postNone(R.name) : R.key === 'nezuko' ? T.postNez(R.name) : T.post(R.name, COLORS[R.key].name[L], COLORS[R.key].school[L], rankOf(R), R.den);
+  count(R).then(loadCounts).then(shareLine).catch(() => { });
+}
+$('startBtn').onclick = grip;
+$('nm').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('nm').blur(); grip(); } });
+$('again').onclick = () => { $('result').hidden = true; ST = 'title'; U.uProg.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0; $('title').hidden = false; $('title').scrollTop = 0; const n = $('nm'); n.value = ''; setTimeout(() => { try { n.focus(); } catch (e) { } }, 50); };
+
+// ---------- みんなの結果（otokonoji の katana/n/色 を数える） ----------
+const FB = { key: 'AIzaSyAcJgJLVbuvx85_qEGJe1WhwsOelidxeYk', db: 'https://otokonoji-default-rtdb.asia-southeast1.firebasedatabase.app' };
+async function fx(url, opt) { let err; for (let i = 0; i < 3; i++) { try { return await fetch(url, opt); } catch (e) { err = e; await new Promise(r => setTimeout(r, 400 * (i + 1))); } } throw err; }
+let AUTH = null;
+async function auth() {
+  let a = AUTH || ls.get('katana_auth', null); if (a && a.exp > Date.now() + 60000) return AUTH = a;
+  if (a && a.refresh) { try { const r = await fx('https://securetoken.googleapis.com/v1/token?key=' + FB.key, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(a.refresh) }); if (r.ok) { const j = await r.json(); a = { uid: j.user_id, token: j.id_token, refresh: j.refresh_token, exp: Date.now() + (+j.expires_in) * 1000 }; ls.set('katana_auth', a); return AUTH = a; } } catch (_) { } }
+  const r = await fx('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + FB.key, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ returnSecureToken: true }) });
+  if (!r.ok) throw new Error('auth'); const j = await r.json(); a = { uid: j.localId, token: j.idToken, refresh: j.refreshToken, exp: Date.now() + (+j.expiresIn) * 1000 }; ls.set('katana_auth', a); return AUTH = a;
+}
+const DBU = p => FB.db + '/katana/' + p + '.json';
+// 同じ名前はこの端末で1回だけ数える
+async function count(R) {
+  if (DEV) return; const sent = ls.get('katana_sent', []); const h = Math.floor(hash(R.n, 0x5e) * 1e9).toString(36); if (sent.includes(h)) return;
+  const a = await auth(), url = DBU('n/' + R.key) + '?auth=' + encodeURIComponent(a.token);
+  for (let i = 0; i < 6; i++) {
+    const g = await fx(url, { headers: { 'X-Firebase-ETag': 'true' } }); if (!g.ok) throw new Error('get'); const tag = g.headers.get('ETag'); const v = +(await g.json()) || 0;
+    const h2 = { 'Content-Type': 'application/json' }; if (tag) h2['if-match'] = tag;
+    const p = await fx(url, { method: 'PUT', headers: h2, body: JSON.stringify(v + 1) });
+    if (p.ok) { sent.push(h); ls.set('katana_sent', sent.slice(-300)); return; }
+    await new Promise(r => setTimeout(r, 150 + Math.random() * 300));
+  }
+  throw new Error('put');
+}
+async function loadCounts() { try { const r = await fx(DBU('n')); if (!r.ok) throw 0; COUNTS = (await r.json()) || {}; countErr = false; } catch (e) { countErr = true; } return COUNTS; }
+async function openStats(from) {
+  $('stats').dataset.from = from; $('title').hidden = true; $('result').hidden = true; $('stats').hidden = false; $('stats').scrollTop = 0;
+  const box = $('stBox'); box.innerHTML = '<p class="note">' + T.loading + '</p>'; $('stNote').textContent = '';
+  await loadCounts(); if ($('stats').hidden) return;
+  if (!COUNTS) { box.innerHTML = '<p class="note err">' + T.shareErr + '</p>'; return; }
+  const keys = [...ORDER, 'nezuko'], tot = keys.reduce((a, k) => a + (+COUNTS[k] || 0), 0);
+  $('stNote').textContent = tot ? T.stNote(tot.toLocaleString()) : T.stEmpty;
+  const rows = keys.map(k => ({ k, n: +COUNTS[k] || 0 })).filter(r => r.k !== 'nezuko' || r.n > 0).sort((a, b) => b.n - a.n || ORDER.indexOf(a.k) - ORDER.indexOf(b.k));
+  const mx = Math.max(1, ...rows.map(r => r.n)), me = from === 'result' && LAST ? LAST.key : null;
+  box.innerHTML = '<table class="st">' + rows.map(r => { const C = COLORS[r.k]; return `<tr${r.k === me ? ' class="me"' : ''}><td class="c"><i style="background:${C.hex}"></i></td><td>${esc(C.name[L])}${r.k === me ? ' <small style="color:var(--gold)">' + T.mine + '</small>' : ''}</td><td class="b"><span style="width:${(r.n / mx * 100).toFixed(1)}%;background:${C.hex}"></span></td><td class="p">${tot ? (r.n / tot * 100).toFixed(1) : '0.0'}%</td></tr>`; }).join('') + '</table>';
+}
+$('stBtn').onclick = () => openStats('title');
+$('stBtn2').onclick = () => openStats('result');
+$('stBack').onclick = () => { $('stats').hidden = true; if ($('stats').dataset.from === 'result' && LAST) $('result').hidden = false; else $('title').hidden = false; };
+
+// ---------- 画像（結果カード） ----------
+async function makeCard(R) {
+  await new Promise(r => setTimeout(r, 1200)); // 刀が上に戻ってから写す
+  const C = COLORS[R.key], W = 1080, c = document.createElement('canvas'); c.width = W; c.height = W; const x = c.getContext('2d');
+  x.fillStyle = '#0b0b12'; x.fillRect(0, 0, W, W);
+  const g = $('gl'), gh = g.height * .38, gw = Math.min(g.width, gh * 2.8), sx = (g.width - gw) / 2;
+  x.drawImage(g, sx, 0, gw, gh, 40, 40, W - 80, (W - 80) * gh / gw);
+  x.strokeStyle = '#c9a14a'; x.lineWidth = 3; x.strokeRect(22, 22, W - 44, W - 44); x.strokeStyle = '#c9a14a55'; x.strokeRect(34, 34, W - 68, W - 68);
+  const F = (s, w) => `${w || 800} ${s}px "Hiragino Mincho ProN","Yu Mincho","Noto Serif JP","Noto Serif CJK JP",serif`;
+  x.textAlign = 'center'; x.textBaseline = 'alphabetic'; let y = 40 + (W - 80) * gh / gw + 70;
+  x.fillStyle = '#cfc6b3'; x.font = F(38, 600); const who = (T.who(R.name)).replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'"); x.fillText(who, W / 2, y, W - 160);
+  y += 40; const cn = C.name[L]; x.font = F(96); const tw = Math.min(W - 200, x.measureText(cn).width + 120);
+  x.shadowColor = C.hex; x.shadowBlur = 40; x.fillStyle = C.hex; x.fillRect(W / 2 - tw / 2, y, tw, 140); x.shadowBlur = 0;
+  x.fillStyle = new THREE.Color(C.hex).getHSL({}).l > .6 ? '#14131c' : '#ffffff'; x.fillText(cn, W / 2, y + 106, W - 220);
+  y += 210; x.fillStyle = '#f2ead6'; x.font = F(48); x.fillText(C.school[L] + '　' + rankOf(R), W / 2, y, W - 160);
+  y += 40; const bw = 620; x.fillStyle = '#1b1a24'; x.fillRect(W / 2 - bw / 2, y, bw, 18); x.fillStyle = R.key === 'none' ? '#b9bec4' : C.hex; x.fillRect(W / 2 - bw / 2, y, bw * R.den / 100, 18);
+  x.fillStyle = '#cfc6b3'; x.font = F(28, 600); x.fillText(T.den + '  ' + R.den + '%', W / 2, y + 58);
+  y += 120; x.fillStyle = '#f2ead6'; x.font = F(38, 600); x.fillText(C.word[L], W / 2, y, W - 140);
+  x.fillStyle = '#c9a14a'; x.font = F(44); x.fillText(T.ttl, W / 2, W - 92); x.fillStyle = '#9a93a8'; x.font = '600 26px ui-monospace,Menlo,monospace'; x.fillText('nasubi-no-oniwa.com/katana', W / 2, W - 54);
+  return await new Promise(r => c.toBlob(b => r(b), 'image/png'));
+}
+
+// ---------- Xに投稿（自分の紹介ツイートを引用する。引用するツイートは一覧ページ quote/ で切りかえ） ----------
+let POST = '', QUOTE = {};
+fetch('https://ft-red-default-rtdb.asia-southeast1.firebasedatabase.app/xquote/g/katana.json').then(r => r.json()).then(d => { if (d && typeof d === 'object') QUOTE = d; }).catch(() => { });
+function quoteURL() { const u = (L === 'ja' ? QUOTE.ja : QUOTE.en) || ''; return /^https:\/\/x\.com\/[A-Za-z0-9_]{1,15}\/status\/\d{5,25}$/.test(u) ? u : ''; }
+const cardFile = b => new File([b], 'katana.png', { type: 'image/png' });
+function saveBlob(b, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name || 'katana.png'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000); }
+let toastT = 0; function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 7000); }
+$('xBtn').addEventListener('click', async () => {
+  const R = LAST; if (!R) return; const q = quoteURL(); let b = null; try { b = await R.card; } catch (e) { }
+  if (b && IS_PHONE && navigator.canShare) { const f = cardFile(b); try { if (navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], text: POST + (q ? '\n' + q : '') }); try { if (typeof gtag === 'function') gtag('event', 'x_share', { game: 'katana', via: 'sheet' }); } catch (e) { } return; } } catch (e) { if (e && e.name === 'AbortError') return; } }
+  let how = 0; if (b) { try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': b })]); how = 1; } catch (e) { if (!IS_PHONE) { try { saveBlob(b); how = 2; } catch (_) { } } } }
+  if (how) toast(how === 1 ? T.xCopied : T.xSaved);
+  const u = 'https://x.com/intent/post?text=' + encodeURIComponent(POST) + (q ? '&url=' + encodeURIComponent(q) : ''); const w = window.open(u, '_blank'); if (!w) location.href = u;
+});
+$('imgBtn').addEventListener('click', async () => {
+  const R = LAST; if (!R) return; let b = null; try { b = await R.card; } catch (e) { } if (!b) return; const f = cardFile(b);
+  try { if (IS_PHONE && navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f] }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+  saveBlob(b);
+});
+
+// ---------- 起動 ----------
+if (FAST) gsap.globalTimeline.timeScale(6);
+setLang(pickLang());
+$('nm').value = ls.get('katana_name', '');
+resize(); setPose('top', 0);
+ST = 'title'; $('load').hidden = true; $('title').hidden = false;
+gsap.fromTo('#title .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: 'power3.out' });
+requestAnimationFrame(frame);
+if (DEV) window.__K = { judge, norm, grip, get LAST() { return LAST; }, get ST() { return ST; }, COLORS, setName(n) { $('nm').value = n; }, count, loadCounts, show(k, den, rz, sc, x, y) { ST = 'shot'; ['title', 'result', 'stats'].forEach(i => $(i).hidden = true); U.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uMix.value = 1; U.uAmt.value = .55 + .45 * den / 100; U.uProg.value = 1.06; U.uAura.value = .6; U.uGlow.value = 0; katana.rotation.set(0, 0, rz); katana.scale.setScalar(sc); katana.position.set(x, y, 0); } };
