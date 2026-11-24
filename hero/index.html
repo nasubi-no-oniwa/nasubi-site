@@ -136,6 +136,26 @@ table.sc tr.t td{border-bottom:2px solid #1d1a14;font-size:16px}
 .rk .w.m{font-weight:900;font-size:15px}
 .rk li.me{background:#ffd21f1c}
 h2{font-size:22px;font-weight:900;margin:2px 0 4px}
+/* 封筒（結果の前） */
+#env{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;background:radial-gradient(circle at 50% 45%,#2a3150cc,#0b0d16f2)}
+#envHint{font-size:17px;font-weight:900;letter-spacing:.12em;margin-top:34px;text-shadow:2px 2px 0 #000;animation:eh 1.2s ease-in-out infinite}
+@keyframes eh{50%{opacity:.4}}
+#envBox{position:relative;width:min(88vw,360px);aspect-ratio:1.35;filter:drop-shadow(0 18px 30px #000c)}
+#envBack,#envFront,#envTop{position:absolute;left:0;right:0;background:linear-gradient(160deg,#f3e6c4,#e2cd98);border:2px solid #000}
+#envBack{top:22%;bottom:0;z-index:1;background:#cdb57a}
+#envLetter{position:absolute;left:6%;right:6%;top:26%;height:70%;z-index:2;background:#f6f1e3;border:2px solid #000;display:flex;flex-direction:column;align-items:center;padding-top:8px;color:#1d1a14}
+#envLetter b{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;font-size:20px;letter-spacing:.3em;text-indent:.3em}
+#envLetter small{font-size:11px;letter-spacing:.3em;color:#6b5a3a}
+#envFront{top:22%;bottom:0;z-index:3;border-top:0;border-radius:0 0 6px 6px;color:#1d1a14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+#envFront .o{position:absolute;left:10px;top:8px;font-size:11px;font-weight:900;letter-spacing:.2em}
+#envFront .t{border:3px solid #c8221a;color:#c8221a;font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;font-weight:900;font-size:22px;padding:2px 12px;letter-spacing:.15em}
+#envFront .w{font-size:15px;font-weight:900;max-width:90%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#envFront .s{position:absolute;right:10px;bottom:8px;width:44px;height:44px;border-radius:50%;background:#c8221a;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:900;box-shadow:inset 0 0 0 3px #ff8a7a66}
+#envTop{top:0;height:22%;z-index:4;border-bottom:0;border-radius:6px 6px 0 0;transform-origin:50% 100%}
+#envCut{position:absolute;left:0;right:0;top:22%;height:0;z-index:5;border-top:3px dashed #1d1a1488}
+#envCut .sc{position:absolute;top:-14px;font-size:18px;left:-4px}
+#envTrail{position:absolute;top:-5px;height:7px;width:0;border-radius:4px;background:linear-gradient(90deg,#fff,#ffd21f,#fff);box-shadow:0 0 10px #ffd21f,0 0 22px #fff}
+#envTip{position:absolute;top:-13px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:radial-gradient(#fff,#ffd21f88 45%,#0000 70%);opacity:0}
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);z-index:60;width:min(92vw,420px);background:#fff;color:#111;border:2px solid #000;font-size:14px;line-height:1.6;padding:12px 16px;border-radius:8px;box-shadow:4px 4px 0 #000;text-align:center;font-weight:700}
 </style>
 <!-- nasubi-track: 結果画面とXへの投稿の回数を記録（ゲームの動きには影響しない） -->
@@ -182,8 +202,8 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
 <script>window.NSB_NEXT={"g": "hero", "r": [{"a": "#result .card", "v": "#result"}], "ad": 1};</script>
 <script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
-<script src="gsap.min.js?v=11241900"></script>
-<script src="pfx.js?v=11241900"></script>
+<script src="gsap.min.js?v=11241828"></script>
+<script src="pfx.js?v=11241828"></script>
 </head>
 <body oncontextmenu="return false">
 <canvas id="bg"></canvas>
@@ -265,6 +285,17 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
   </div>
 </div>
 
+<div id="env" hidden>
+  <div id="envBox">
+    <div id="envBack"></div>
+    <div id="envLetter"><small>ヒーロー協会</small><b>合格通知書</b></div>
+    <div id="envFront"><span class="o">ヒーロー協会</span><span class="t">合否通知在中</span><span class="w" id="envWho"></span><span class="s">協会</span></div>
+    <div id="envTop"></div>
+    <div id="envCut"><span class="sc">✂</span><i id="envTrail"></i><i id="envTip"></i></div>
+  </div>
+  <div id="envHint">横にスライドして、封を切れ</div>
+</div>
+
 <div class="panel" id="result" hidden>
   <div class="card">
     <div class="doc">
@@ -309,6 +340,6 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
   </div>
 </div>
 
-<script type="module" src="game.js?v=11241900"></script>
+<script type="module" src="game.js?v=11241828"></script>
 </body>
 </html>

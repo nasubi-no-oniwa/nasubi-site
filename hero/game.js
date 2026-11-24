@@ -345,11 +345,49 @@ function result(res) {
   else $('rRec').hidden = true;
   if (!res.temp) { ls.set('hero_last', { n: name, h: hero }); }
   POST = postText(res); LAST.card = makeCard(res);
+  envelope(res, () => reveal(res));
+}
+function reveal(res) {
   show('result');
   const st = document.querySelector('#result .stamp'); gsap.fromTo(st, { scale: 2.6, opacity: 0, rotate: -40 }, { scale: 1, opacity: .85, rotate: -14, duration: .35, delay: .35, ease: 'power4.in', onComplete: () => { sfx.stamp(); flash('#fff', .25); fxAdd(res.rank.c === 'S' ? 'confetti' : 'burst', { palette: res.rank.c === 'S' ? YEL : RED }); } });
   gsap.fromTo('#rRank', { scale: .5, opacity: 0 }, { scale: 1, opacity: 1, duration: .5, delay: .15, ease: 'back.out(2.5)' });
   loadRank().then(() => { if (!RANK) return; const t = RANK.tot || 0, c = RANK.cls; if (!t) { $('rAll').textContent = 'みんなの割合：まだ合格者がいません'; return; } $('rAll').innerHTML = 'みんなの割合：' + ['S', 'A', 'B', 'C'].map(k => { const p = (c[k] / t * 100).toFixed(1); return k === res.rank.c ? `<b>${k}級 ${p}%</b>` : `${k}級 ${p}%`; }).join('・') + `（合格者${t.toLocaleString()}人）`; }).catch(() => { $('rAll').textContent = 'みんなの割合：いまは読みこめません'; });
 }
+// ---------- 封筒（横にスライドして封を切り、合格通知書を取り出す） ----------
+function envelope(res, done) {
+  show(null); ST = 'env';
+  const E = $('env'), box = $('envBox'), tr = $('envTrail'), tip = $('envTip'), top = $('envTop'), let_ = $('envLetter');
+  $('envWho').textContent = (res.temp ? '名無しの受験者' : res.name) + ' 殿';
+  gsap.set([top, let_, box, tr, tip], { clearProps: 'all' }); tr.style.width = '0'; $('envHint').style.visibility = 'visible'; $('envHint').textContent = '横にスライドして、封を切れ';
+  E.hidden = false;
+  gsap.fromTo(box, { y: innerHeight * .7, rotate: -18, scale: .6 }, { y: 0, rotate: 0, scale: 1, duration: .7, ease: 'back.out(1.4)', onComplete: () => { sfx.hit(); if (!cut) gsap.to(box, { y: -8, duration: 1.1, ease: 'sine.inOut', yoyo: true, repeat: -1 }); } });
+  let id = null, x0 = 0, dir = 0, prog = 0, lastTick = 0, cut = false;
+  const bw = () => box.getBoundingClientRect().width;
+  const paint = () => { const w = prog * 100; tr.style.width = w + '%'; if (dir < 0) { tr.style.left = 'auto'; tr.style.right = '0'; tip.style.left = (100 - w) + '%'; } else { tr.style.right = 'auto'; tr.style.left = '0'; tip.style.left = w + '%'; } tip.style.opacity = prog > 0 && prog < 1 ? 1 : 0; };
+  const down = e => { if (cut || id !== null) return; id = e.pointerId; x0 = e.clientX; dir = 0; prog = 0; paint(); ac(); };
+  const move = e => {
+    if (cut || e.pointerId !== id) return; const dx = e.clientX - x0;
+    if (!dir && Math.abs(dx) > 8) dir = dx > 0 ? 1 : -1;
+    if (!dir) return; const p = Math.max(0, Math.min(1, dx * dir / (bw() * .8)));
+    if (p > prog) { prog = p; paint(); if (prog - lastTick > .08) { lastTick = prog; tone(900 + prog * 900, .03, 'square', .03); } }
+    if (prog >= 1) finish();
+  };
+  const up = e => { if (cut || e.pointerId !== id) return; id = null; if (prog < 1) { const o = { p: prog }; gsap.to(o, { p: 0, duration: .25, onUpdate: () => { prog = o.p; paint(); } }); lastTick = 0; } };
+  E.addEventListener('pointerdown', down); addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  function finish() {
+    cut = true; removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); E.removeEventListener('pointerdown', down);
+    $('envHint').style.visibility = 'hidden'; tip.style.opacity = 0; gsap.killTweensOf(box, 'y'); sfx.stamp(); flash('#fff', .5); fxAdd('burst', { palette: YEL, y: 62 });
+    const tl = gsap.timeline();
+    tl.to(top, { y: -160, x: dir * 90, rotate: dir * 28, opacity: 0, duration: .55, ease: 'power2.in' }, 0)
+      .to(tr, { opacity: 0, duration: .3 }, 0)
+      .to(let_, { y: -box.getBoundingClientRect().height * .78, duration: .7, ease: 'power3.out' }, .45)
+      .add(() => sfx.ok(), .5)
+      .to(box, { scale: 1.25, duration: .35, ease: 'power2.in' }, 1.45)
+      .to(E, { opacity: 0, duration: .3 }, 1.6)
+      .add(() => { E.hidden = true; E.style.opacity = ''; ST = 'result'; done(); }, 1.9);
+  }
+}
+
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 $('again').onclick = () => toTitle();
 $('rankBtn2').onclick = () => openRank('result');
