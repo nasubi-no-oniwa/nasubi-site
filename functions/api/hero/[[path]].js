@@ -5,7 +5,7 @@ import { QS } from './_qs.js';
 
 const DAY = 86400000;
 const PHYS_MIN_MS = 100000;     // 体力テスト4種目（30秒×4）より早く終わる記録ははじく
-const RENDA_MAX = 600;          // 30秒で600回（1秒に20回）を超える連打ははじく
+// 連打は合格ライン以上なら満点なので、回数が多すぎても無効にはしない（何本もの指でたたく人がいるため）
 const PASS = { r: 250, t: 150, g: 25, w: 280 }; // 合格点：連打250回・反応0.15秒・持久走25秒・重り280kg
 
 let ready = false;
@@ -183,8 +183,8 @@ export async function onRequest(ctx) {
     if (path === 'phys' && M === 'POST') {
       const b = await body(req); const ss = await getSession(db, b.sid);
       if (!ss || ss.done || ss.step !== -1) return ERR('sid');
-      const p = { r: +b.r || 0, t: +b.t || 0, g: +b.g || 0, w: +b.w || 0 };
-      if (Date.now() - ss.created < (env.HERO_TEST ? 0 : PHYS_MIN_MS) || p.r > RENDA_MAX || !isFinite(p.t) || !isFinite(p.g) || !isFinite(p.w)) {
+      const p = { r: Math.min(9999, Math.max(0, +b.r || 0)), t: +b.t || 0, g: +b.g || 0, w: +b.w || 0 };
+      if (Date.now() - ss.created < (env.HERO_TEST ? 0 : PHYS_MIN_MS) || !isFinite(p.r) || !isFinite(p.t) || !isFinite(p.g) || !isFinite(p.w)) {
         await db.prepare('UPDATE sessions SET done=1 WHERE sid=?').bind(ss.sid).run();
         return ERR('cheat', 422);
       }
