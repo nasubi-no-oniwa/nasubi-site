@@ -1,5 +1,5 @@
 import { THREE, RoomEnvironment } from './lib.js';
-import { COLORS, ORDER, CHARS, FAMILY } from './data.js';
+import { COLORS, ORDER, CHARS } from './data.js';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -61,16 +61,13 @@ function setLang(l) {
 const toHira = s => s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
 const norm = s => toHira(String(s).normalize('NFKC').replace(/[\s　・･]/g, '').toLowerCase());
 function hash(s, seed) { let h = (2166136261 ^ seed) >>> 0; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13; h = Math.imul(h, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
-const CHMAP = new Map(), FAM = [];
+const CHMAP = new Map();
 CHARS.forEach(([a, b, c, d, k, den]) => [a, b, c, d].forEach(v => { const n = norm(v); if (!CHMAP.has(n)) CHMAP.set(n, { k, den }); }));
-FAMILY.forEach(([a, b, k]) => { FAM.push([norm(a), k]); FAM.push([norm(b), k]); });
-FAM.sort((x, y) => y[0].length - x[0].length);
 const POOL = ORDER.map(k => [k, COLORS[k].w]);
 function judge(name) {
   const n = norm(name); const r1 = hash(n, 0x6b61), r2 = hash(n, 0x7461);
   const c = CHMAP.get(n); if (c) return { key: c.k, den: c.den, n };
-  let key = null; for (const [f, k] of FAM) if (n.startsWith(f)) { key = k; break; }
-  if (!key) { let x = r1 * 100; for (const [k, w] of POOL) { if (x < w) { key = k; break; } x -= w; } key = key || 'none'; }
+  let key = null, x = r1 * 100; for (const [k, w] of POOL) { if (x < w) { key = k; break; } x -= w; } key = key || 'none';
   let den;
   if (key === 'none') den = Math.floor(r2 * 6); // 変わらない：ほんの少しだけ
   else if (key === 'nezuko') den = 0;
