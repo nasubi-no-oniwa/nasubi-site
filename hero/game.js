@@ -1,8 +1,5 @@
 // 趣味でヒーローになる（なすびのお庭）
 // 採点と記録はサーバー（/api/hero/）でやる。答えはこのページには一切ない
-// まだ公開前：確認用の合言葉つきURL（?k=nasu0824）で一度開いた端末だけ遊べる
-(() => { let ok = false; try { if (/[?&]k=nasu0824\b/.test(location.search)) localStorage.setItem('hero_open', '1'); ok = localStorage.getItem('hero_open') === '1'; } catch (e) { }
-  if (!ok) { document.body.innerHTML = '<div style="position:fixed;inset:0;display:grid;place-items:center;background:#10131c;color:#fff;font:900 22px/1.8 sans-serif;text-align:center">趣味でヒーローになる<br><span style="font-size:15px;color:#a9b0c2">ただいま準備中です</span></div>'; throw new Error('closed'); } })();
 const gsap = window.gsap, PFX = window.PFX;
 const $ = id => document.getElementById(id);
 const DEV = /[?&]dev=1/.test(location.search);
