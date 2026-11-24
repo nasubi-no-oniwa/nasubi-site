@@ -53,7 +53,7 @@ export const CHARS = [
   { n: ['煉獄千寿郎', 'れんごくせんじゅろう', '千寿郎', 'せんじゅろう'], k: 'none', den: 0, rank: 'notmember' },
   { n: ['悲鳴嶼行冥', 'ひめじまぎょうめい', '行冥', 'ぎょうめい'], k: 'gray', den: 100, rank: 'hashira', aka: 1 },
   { n: ['時透無一郎', 'ときとうむいちろう', '無一郎', 'むいちろう'], k: 'white', den: 99, rank: 'hashira', aka: 1 },
-  { n: ['胡蝶しのぶ', 'こちょうしのぶ', 'しのぶ', 'しのぶ'], k: 'fuji', den: 98, rank: 'hashira' },
+  { n: ['胡蝶しのぶ', 'こちょうしのぶ', 'しのぶ', 'しのぶ'], k: 'fuji', den: 98, rank: 'hashira', stab: 1 },
   { n: ['胡蝶カナエ', 'こちょうかなえ', 'カナエ', 'かなえ'], k: 'sakura', den: 98, rank: 'exhashira' },
   { n: ['宇髄天元', 'うずいてんげん', '天元', 'てんげん'], k: 'orange', den: 99, rank: 'exhashira' },
   { n: ['甘露寺蜜璃', 'かんろじみつり', '蜜璃', 'みつり'], k: 'pink', den: 99, rank: 'hashira' },
