@@ -1,5 +1,5 @@
-import { THREE, RoomEnvironment } from './lib.js?v=11241708';
-import { COLORS, ORDER, CHARS } from './data.js?v=11241708';
+import { THREE, RoomEnvironment } from './lib.js?v=11241806';
+import { COLORS, ORDER, CHARS } from './data.js?v=11241806';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -499,22 +499,34 @@ $('stBack').onclick = () => { $('stats').hidden = true; if ($('stats').dataset.f
 // ---------- 画像（結果カード） ----------
 async function makeCard(R) {
   await new Promise(r => setTimeout(r, 1200)); // 刀が上に戻ってから写す
-  const C = COLORS[R.key], W = 1080, c = document.createElement('canvas'); c.width = W; c.height = W; const x = c.getContext('2d');
-  x.fillStyle = '#0b0b12'; x.fillRect(0, 0, W, W);
-  const g = $('gl'), gh = g.height * .38, gw = Math.min(g.width, gh * 2.8), sx = (g.width - gw) / 2;
-  x.drawImage(g, sx, 0, gw, gh, 40, 40, W - 80, (W - 80) * gh / gw);
-  x.strokeStyle = '#c9a14a'; x.lineWidth = 3; x.strokeRect(22, 22, W - 44, W - 44); x.strokeStyle = '#c9a14a55'; x.strokeRect(34, 34, W - 68, W - 68);
+  const C = COLORS[R.key], W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
   const F = (s, w) => `${w || 800} ${s}px "Hiragino Mincho ProN","Yu Mincho","Noto Serif JP","Noto Serif CJK JP",serif`;
-  x.textAlign = 'center'; x.textBaseline = 'alphabetic'; let y = 40 + (W - 80) * gh / gw + 70;
-  x.fillStyle = '#cfc6b3'; x.font = F(38, 600); const who = (T.who(R.name)).replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'"); x.fillText(who, W / 2, y, W - 160);
-  y += 40; const cn = C.name[L]; x.font = F(96); const tw = Math.min(W - 200, x.measureText(cn).width + 120);
-  x.shadowColor = C.hex; x.shadowBlur = 40; x.fillStyle = C.hex; x.fillRect(W / 2 - tw / 2, y, tw, 140); x.shadowBlur = 0;
-  x.fillStyle = new THREE.Color(C.hex).getHSL({}).l > .6 ? '#14131c' : '#ffffff'; x.fillText(cn, W / 2, y + 106, W - 220);
-  y += 210; x.fillStyle = '#f2ead6'; x.font = F(48); x.fillText(kokyu(R.key) + '　' + T.kyu + '：' + rankOf(R), W / 2, y, W - 160); if (R.akaDone) { x.fillStyle = '#ff5a3a'; x.font = F(30, 700); x.fillText('◆ ' + T.aka + ' ◆', W / 2, y - 66, W - 160); }
-  y += 40; const bw = 620; x.fillStyle = '#1b1a24'; x.fillRect(W / 2 - bw / 2, y, bw, 18); x.fillStyle = R.key === 'none' ? '#b9bec4' : C.hex; x.fillRect(W / 2 - bw / 2, y, bw * R.den / 100, 18);
-  x.fillStyle = '#cfc6b3'; x.font = F(28, 600); x.fillText(T.den + '  ' + R.den + '%', W / 2, y + 58);
-  y += 120; x.fillStyle = '#f2ead6'; x.font = F(38, 600); x.fillText(wordOf(R), W / 2, y, W - 140); x.fillStyle = '#6d6680'; x.font = F(22, 600); x.fillText(T.fan, W / 2, W - 132);
-  x.fillStyle = '#c9a14a'; x.font = F(44); x.fillText(T.ttl, W / 2, W - 92); x.fillStyle = '#9a93a8'; x.font = '600 26px ui-monospace,Menlo,monospace'; x.fillText('nasubi-no-oniwa.com/katana', W / 2, W - 54);
+  const fit = (t, size, w, maxW) => { let z = size; x.font = F(z, w); while (z > 18 && x.measureText(t).width > maxW) { z -= 2; x.font = F(z, w); } };
+  const wrap = (t, maxW) => { const out = []; let line = ''; for (const ch of t) { if (x.measureText(line + ch).width > maxW && line) { out.push(line); line = ch; } else line += ch; } if (line) out.push(line); return out; };
+  x.fillStyle = '#0b0b12'; x.fillRect(0, 0, W, H);
+  // 刀：画面の上のほう（刀がいる帯）を横長に切りとって、決まった枠に収める
+  const g = $('gl'), gw0 = g.width, gh0 = g.height, BW = 1000, BH = 400;
+  let sh = Math.min(gh0 * .36, gw0 / (BW / BH)), sw = sh * (BW / BH), sx = (gw0 - sw) / 2, sy = Math.max(0, gh0 * .19 - sh / 2);
+  x.drawImage(g, sx, sy, sw, sh, (W - BW) / 2, 50, BW, BH);
+  const fade = x.createLinearGradient(0, 330, 0, 470); fade.addColorStop(0, '#0b0b1200'); fade.addColorStop(1, '#0b0b12'); x.fillStyle = fade; x.fillRect(0, 330, W, 140);
+  x.strokeStyle = '#c9a14a'; x.lineWidth = 3; x.strokeRect(22, 22, W - 44, H - 44); x.strokeStyle = '#c9a14a55'; x.strokeRect(34, 34, W - 68, H - 68);
+  x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+  const who = T.who(R.name).replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  x.fillStyle = '#cfc6b3'; fit(who, 40, 600, W - 160); x.fillText(who, W / 2, 520);
+  const cn = C.name[L]; fit(cn, 96, 800, W - 260); const tw = Math.min(W - 180, x.measureText(cn).width + 140);
+  x.shadowColor = R.key === 'none' ? '#b9bec4' : C.hex; x.shadowBlur = 40; x.fillStyle = R.key === 'none' ? '#b9bec4' : C.hex; x.fillRect(W / 2 - tw / 2, 560, tw, 150); x.shadowBlur = 0; x.strokeStyle = '#ffffff55'; x.lineWidth = 2; x.strokeRect(W / 2 - tw / 2, 560, tw, 150);
+  x.fillStyle = new THREE.Color(R.key === 'none' ? '#b9bec4' : C.hex).getHSL({}).l > .6 ? '#14131c' : '#ffffff'; x.fillText(cn, W / 2, 668);
+  x.fillStyle = '#f2ead6'; fit(kokyu(R.key), 52, 800, W - 160); x.fillText(kokyu(R.key), W / 2, 790);
+  x.fillStyle = '#c9a14a'; const rk = T.kyu + '：' + rankOf(R); fit(rk, 38, 700, W - 160); x.fillText(rk, W / 2, 850);
+  let y = 900;
+  if (R.akaDone) { x.fillStyle = '#ff5a3a'; fit('◆ ' + T.aka + ' ◆', 32, 700, W - 160); x.fillText('◆ ' + T.aka + ' ◆', W / 2, y); y += 40; }
+  if (R.key !== 'nezuko') {
+    const bw = 640; x.fillStyle = '#1b1a24'; x.fillRect(W / 2 - bw / 2, y, bw, 18); x.fillStyle = R.key === 'none' ? '#b9bec4' : C.hex; x.fillRect(W / 2 - bw / 2, y, bw * R.den / 100, 18);
+    x.fillStyle = '#cfc6b3'; x.font = F(30, 600); x.fillText(T.den + '  ' + R.den + '%', W / 2, y + 62); y += 130;
+  } else y += 40;
+  x.fillStyle = '#f2ead6'; x.font = F(40, 600); wrap(wordOf(R), W - 180).slice(0, 3).forEach((l, i) => x.fillText(l, W / 2, y + i * 58));
+  x.fillStyle = '#6d6680'; x.font = F(24, 600); x.fillText(T.fan, W / 2, H - 150);
+  x.fillStyle = '#c9a14a'; x.font = F(48); x.fillText(T.ttl, W / 2, H - 92); x.fillStyle = '#9a93a8'; x.font = '600 28px ui-monospace,Menlo,monospace'; x.fillText('nasubi-no-oniwa.com/katana', W / 2, H - 52);
   return await new Promise(r => c.toBlob(b => r(b), 'image/png'));
 }
 
@@ -546,4 +558,4 @@ resize(); setPose('top', 0);
 ST = 'title'; $('load').hidden = true; $('title').hidden = false;
 gsap.fromTo('#title .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: 'power3.out' });
 requestAnimationFrame(frame);
-if (DEV) window.__K = { judge, norm, grip, get LAST() { return LAST; }, get ST() { return ST; }, COLORS, U, bladeMat, scene, press, setName(n) { $('nm').value = n; }, count, loadCounts, show(k, den, rz, sc, x, y) { ST = 'shot'; ['title', 'result', 'stats'].forEach(i => $(i).hidden = true); U.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uMix.value = 1; U.uAmt.value = .55 + .45 * den / 100; U.uProg.value = 1.06; U.uAura.value = .6; U.uGlow.value = 0; katana.rotation.set(0, 0, rz); katana.scale.setScalar(sc); katana.position.set(x, y, 0); } };
+if (DEV) window.__K = { judge, norm, grip, get LAST() { return LAST; }, get ST() { return ST; }, COLORS, U, bladeMat, scene, press, card: async () => { const b = await LAST.card; return await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); }); }, setName(n) { $('nm').value = n; }, count, loadCounts, show(k, den, rz, sc, x, y) { ST = 'shot'; ['title', 'result', 'stats'].forEach(i => $(i).hidden = true); U.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uMix.value = 1; U.uAmt.value = .55 + .45 * den / 100; U.uProg.value = 1.06; U.uAura.value = .6; U.uGlow.value = 0; katana.rotation.set(0, 0, rz); katana.scale.setScalar(sc); katana.position.set(x, y, 0); } };
