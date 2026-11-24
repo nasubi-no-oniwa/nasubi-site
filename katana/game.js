@@ -1,5 +1,5 @@
-import { THREE, RoomEnvironment } from './lib.js?v=11241611';
-import { COLORS, ORDER, CHARS } from './data.js?v=11241611';
+import { THREE, RoomEnvironment } from './lib.js?v=11241708';
+import { COLORS, ORDER, CHARS } from './data.js?v=11241708';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -326,6 +326,7 @@ function ignite(R) {
 function proceed() {
   if (!REV) return; const R = REV.R; REV = null; ST = 'grip'; gsap.killTweensOf('#cap'); gsap.to('#cap', { opacity: 0, duration: .25 }); shake = 0; humStop(); holding = false; $('hold').classList.remove('on');
   const C = COLORS[R.key];
+  document.documentElement.style.setProperty('--tint', R.key === 'none' ? '#8a8f96' : (R.key === 'white' ? '#9aa3ad' : C.hex));
   const say = R.key === 'none' ? T.crowNone(R.name) : T.crow(R.name, C.name[L], kokyu(R.key));
   crow(say).then(() => { setPose('top', .9).call(() => { busy = false; showResult(); }); });
 }
