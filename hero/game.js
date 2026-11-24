@@ -86,7 +86,7 @@ $('bGo').onclick = () => { ac(); runEvent(EVENTS[EVI].k); };
 
 function runEvent(k) {
   show(null); ST = 'play'; pc.hidden = false; $('hud').hidden = false; $('hint').hidden = false;
-  EV = MAKE[k](); EV.k = k; EV.t = 0; EV.on = false;
+  HOLD = 0; EV = MAKE[k](); EV.k = k; EV.t = 0; EV.on = false;
   $('hudN').textContent = EVENTS[EVI].n; gsap.set('#tbarI', { scaleX: 1 }); $('hudSec').textContent = DUR.toFixed(1) + '秒'; EV.hud(); EV.draw();
   // 3・2・1
   const cd = $('cd'); cd.hidden = false; let n = 3;
