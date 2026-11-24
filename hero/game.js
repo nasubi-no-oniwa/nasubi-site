@@ -89,10 +89,10 @@ function runEvent(k) {
   HOLD = 0; EV = MAKE[k](); EV.k = k; EV.t = 0; EV.on = false;
   $('hudN').textContent = EVENTS[EVI].n; gsap.set('#tbarI', { scaleX: 1 }); $('hudSec').textContent = DUR.toFixed(1) + '秒'; EV.hud(); EV.draw();
   // 3・2・1
-  const cd = $('cd'); cd.hidden = false; let n = 3;
+  const cd = $('cd'); cd.hidden = false; cd.classList.remove('go'); let n = 3;
   const step = () => {
     if (n > 0) { cd.textContent = n; sfx.beep(); gsap.fromTo(cd, { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: .3 }); n--; setTimeout(step, 750); }
-    else { cd.textContent = 'はじめ！'; sfx.go(); gsap.fromTo(cd, { scale: 1.4 }, { scale: 1, duration: .25 }); gsap.to(cd, { opacity: 0, delay: .45, duration: .25, onComplete: () => cd.hidden = true }); EV.on = true; EV.t0 = performance.now(); EV.begin && EV.begin(); loop(); }
+    else { cd.textContent = 'はじめ！'; cd.classList.add('go'); sfx.go(); gsap.fromTo(cd, { scale: 1.4 }, { scale: 1, duration: .25 }); gsap.to(cd, { opacity: 0, delay: .45, duration: .25, onComplete: () => cd.hidden = true }); EV.on = true; EV.t0 = performance.now(); EV.begin && EV.begin(); loop(); }
   };
   step();
 }
