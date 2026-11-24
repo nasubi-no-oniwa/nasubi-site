@@ -74,6 +74,14 @@ table.st td.b{width:38%}
 table.st td.b span{display:block;height:8px;border-radius:4px}
 table.st tr.me td{background:#c9a14a22}
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);z-index:60;width:min(92vw,420px);background:#e9e2cf;color:#14131c;font-size:14px;line-height:1.6;padding:12px 16px;border-radius:6px;box-shadow:0 8px 24px #0008;text-align:center}
+#hold{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 5vh);transform:translateX(-50%);z-index:8;display:flex;flex-direction:column;align-items:center;gap:10px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:pointer}
+#holdRing{--p:0;width:104px;height:104px;border-radius:50%;background:conic-gradient(var(--gold) calc(var(--p) * 1%),#ffffff1f 0);display:grid;place-items:center;box-shadow:0 0 26px #000c;transition:transform .12s}
+#holdRing b{width:86px;height:86px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#2a2633,#110f17);display:grid;place-items:center;font-size:34px;font-weight:800;color:#f2ead6;letter-spacing:0}
+#hold.on #holdRing{transform:scale(.92);box-shadow:0 0 34px #c9a14a88}
+#holdT{font-size:15px;font-weight:700;letter-spacing:.2em;text-indent:.2em;color:#fff;text-shadow:0 0 10px #000,0 2px 0 #000;animation:hb 1.2s ease-in-out infinite}
+#hold.on #holdT{animation:none;opacity:.5}
+@keyframes hb{50%{opacity:.45}}
+#gl{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 </style>
 <!-- nasubi-track: 結果画面とXへの投稿の回数を記録（ゲームの動きには影響しない） -->
 <script>(function(){try{var G="katana",IDS=["result"];
@@ -126,6 +134,7 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <canvas id="gl"></canvas>
 <canvas id="fxc" width="160" height="160"></canvas>
 <div id="cap"></div>
+<div id="hold" hidden><div id="holdRing"><b>握</b></div><div id="holdT"></div></div>
 <div id="flash"></div>
 <div id="load">…</div>
 <div id="toast" class="g" hidden></div>

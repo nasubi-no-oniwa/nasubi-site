@@ -14,7 +14,7 @@ const TX = {
     who: n => `「<b>${esc(n)}</b>」の刀は`, den: '才能（色の濃さ）', ranks: ['ほぼ無色', '才能うすめ', '並', '一人前', '秀才', '天賦の才'], rNone: '才能なし', rNez: '鬼',
     odds: p => `出やすさ：約${p}%`, share: (p, n) => `みんなの結果：この色は全体の <b>${p}%</b>（${n}人中）`, shareWait: 'みんなの結果：集計中…', shareErr: 'みんなの結果：いまは読みこめません',
     stNote: n => `これまでに ${n} 人が刀を握った`, stEmpty: 'まだ誰も握っていません', loading: '読みこみ中…', mine: '← あなた',
-    capGrip: 'にぎる', capNone: '……変わらない', capNez: '握れない',
+    capGrip: 'にぎる', capHold: '長押しで握る', capNone: '……変わらない', capNez: '握れない',
     post: (n, c, s, r, d) => `「${n}」の刀は【${c}】に変わった。\n${s}・${r}（濃さ${d}%）\n#色変わりの刀 #ブラウザゲーム`,
     postNone: n => `「${n}」の刀は……色が変わらなかった。\n才能、特になし。\n#色変わりの刀 #ブラウザゲーム`,
     postNez: n => `「${n}」は刀を握れなかった。\n#色変わりの刀 #ブラウザゲーム`,
@@ -23,7 +23,7 @@ const TX = {
     who: n => `<b>${esc(n)}</b>'s blade turned`, den: 'Talent (color depth)', ranks: ['Barely tinted', 'Faint talent', 'Average', 'Capable', 'Gifted', 'Born genius'], rNone: 'No talent', rNez: 'Demon',
     odds: p => `Odds: about ${p}%`, share: (p, n) => `Everyone: <b>${p}%</b> got this color (of ${n})`, shareWait: 'Everyone: counting…', shareErr: "Everyone: can't load right now",
     stNote: n => `${n} people have gripped the blade`, stEmpty: 'Nobody yet', loading: 'Loading…', mine: '← you',
-    capGrip: 'GRIP', capNone: '…no change', capNez: "Can't hold it",
+    capGrip: 'GRIP', capHold: 'Press and hold', capNone: '…no change', capNez: "Can't hold it",
     post: (n, c, s, r, d) => `"${n}"'s blade turned ${c}.\n${s} / ${r} (depth ${d}%)\n#色変わりの刀 #ブラウザゲーム`,
     postNone: n => `"${n}"'s blade… didn't change color.\nNo particular talent.\n#色変わりの刀 #ブラウザゲーム`,
     postNez: n => `"${n}" couldn't hold the blade.\n#色変わりの刀 #ブラウザゲーム`,
@@ -32,7 +32,7 @@ const TX = {
     who: n => `「<b>${esc(n)}</b>」的刀變成了`, den: '才能（顏色深淺）', ranks: ['幾乎無色', '才能稀薄', '普通', '獨當一面', '秀才', '天賦異稟'], rNone: '沒有才能', rNez: '鬼',
     odds: p => `出現機率：約${p}%`, share: (p, n) => `大家的結果：這個顏色佔 <b>${p}%</b>（共${n}人）`, shareWait: '大家的結果：統計中…', shareErr: '大家的結果：目前無法讀取',
     stNote: n => `已經有 ${n} 人握過刀`, stEmpty: '還沒有人握過', loading: '讀取中…', mine: '← 你',
-    capGrip: '握', capNone: '……沒有變色', capNez: '握不住',
+    capGrip: '握', capHold: '長按來握', capNone: '……沒有變色', capNez: '握不住',
     post: (n, c, s, r, d) => `「${n}」的刀變成了【${c}】。\n${s}・${r}（深度${d}%）\n#色変わりの刀 #ブラウザゲーム`,
     postNone: n => `「${n}」的刀……沒有變色。\n沒什麼才能。\n#色変わりの刀 #ブラウザゲーム`,
     postNez: n => `「${n}」握不住刀。\n#色変わりの刀 #ブラウザゲーム`,
@@ -41,7 +41,7 @@ const TX = {
     who: n => `「<b>${esc(n)}</b>」의 칼은`, den: '재능（색의 농도）', ranks: ['거의 무색', '재능 옅음', '보통', '제 몫', '수재', '천부적 재능'], rNone: '재능 없음', rNez: '귀신',
     odds: p => `나올 확률: 약 ${p}%`, share: (p, n) => `모두의 결과: 이 색은 전체의 <b>${p}%</b>（${n}명 중）`, shareWait: '모두의 결과: 집계 중…', shareErr: '모두의 결과: 지금은 불러올 수 없음',
     stNote: n => `지금까지 ${n}명이 칼을 쥐었다`, stEmpty: '아직 아무도 없음', loading: '불러오는 중…', mine: '← 당신',
-    capGrip: '쥔다', capNone: '……변하지 않는다', capNez: '쥘 수 없다',
+    capGrip: '쥔다', capHold: '길게 눌러 쥐기', capNone: '……변하지 않는다', capNez: '쥘 수 없다',
     post: (n, c, s, r, d) => `「${n}」의 칼은【${c}】으로 변했다.\n${s}・${r}（농도 ${d}%）\n#色変わりの刀 #ブラウザゲーム`,
     postNone: n => `「${n}」의 칼은……색이 변하지 않았다.\n재능, 딱히 없음.\n#色変わりの刀 #ブラウザゲーム`,
     postNez: n => `「${n}」은 칼을 쥘 수 없었다.\n#色変わりの刀 #ブラウザゲーム`,
@@ -92,8 +92,9 @@ function sfx(k) {
   else if (k === 'zap') { const s = noise(a, .5), f = a.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2500; s.connect(f); f.connect(g); g.gain.setValueAtTime(.3, t); g.gain.exponentialRampToValueAtTime(.0001, t + .5); s.start(t); s.stop(t + .5); }
 }
 let HUM = null;
-function humStart(dur) { const a = ac(); if (!a) return; const t = a.currentTime, o = a.createOscillator(), o2 = a.createOscillator(), f = a.createBiquadFilter(), g = a.createGain(); o.type = 'sawtooth'; o2.type = 'sine'; o.frequency.setValueAtTime(70, t); o.frequency.exponentialRampToValueAtTime(260, t + dur); o2.frequency.setValueAtTime(140, t); o2.frequency.exponentialRampToValueAtTime(620, t + dur); f.type = 'lowpass'; f.frequency.setValueAtTime(300, t); f.frequency.exponentialRampToValueAtTime(2400, t + dur); o.connect(f); o2.connect(f); f.connect(g); g.connect(a.destination); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.12, t + dur * .8); o.start(t); o2.start(t); HUM = { o, o2, g, a }; }
-function humStop() { if (!HUM) return; const { o, o2, g, a } = HUM, t = a.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.exponentialRampToValueAtTime(.0001, t + .15); o.stop(t + .2); o2.stop(t + .2); HUM = null; }
+function humOn() { if (HUM) return; const a = ac(); if (!a) return; const t = a.currentTime, o = a.createOscillator(), o2 = a.createOscillator(), f = a.createBiquadFilter(), g = a.createGain(); o.type = 'sawtooth'; o2.type = 'sine'; o.frequency.value = 70; o2.frequency.value = 140; f.type = 'lowpass'; f.frequency.value = 300; o.connect(f); o2.connect(f); f.connect(g); g.connect(a.destination); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.1, t + .15); o.start(t); o2.start(t); HUM = { o, o2, f, g, a }; }
+function humSet(p) { if (!HUM) return; const t = HUM.a.currentTime; HUM.o.frequency.setTargetAtTime(70 + 190 * p, t, .05); HUM.o2.frequency.setTargetAtTime(140 + 480 * p, t, .05); HUM.f.frequency.setTargetAtTime(300 + 2100 * p, t, .05); }
+function humStop() { if (!HUM) return; const { o, o2, g, a } = HUM, t = a.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(Math.max(.0001, g.gain.value), t); g.gain.exponentialRampToValueAtTime(.0001, t + .15); o.stop(t + .2); o2.stop(t + .2); HUM = null; }
 
 // ---------- 3D ----------
 let renderer;
@@ -180,7 +181,7 @@ function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h
 const LEN = 4.15;
 function poseOf(p) {
   if (p === 'top') { const s = Math.min(1, VW * .9 / LEN, VH * .3 / .9); return { x: 0, y: VH / 2 - VH * .19, s, rz: .1, ry: 0 }; }
-  const s = Math.min(1.05, VH * .78 / LEN, VW * 1.6 / LEN); return { x: 0, y: .05, s, rz: Math.PI / 2 - .06, ry: 0 };
+  const s = Math.min(1.05, VH * .72 / LEN, VW * 1.6 / LEN); return { x: 0, y: VH * .06, s, rz: Math.PI / 2 - .06, ry: 0 };
 }
 let POSE = 'top';
 function setPose(p, dur, ease) { POSE = p; const P = poseOf(p); if (!dur) { katana.position.set(P.x, P.y, 0); katana.scale.setScalar(P.s); katana.rotation.z = P.rz; return null; } return gsap.timeline().to(katana.position, { x: P.x, y: P.y, duration: dur, ease: ease || 'power3.inOut' }, 0).to(katana.scale, { x: P.s, y: P.s, z: P.s, duration: dur, ease: ease || 'power3.inOut' }, 0).to(katana.rotation, { z: P.rz, duration: dur, ease: ease || 'power3.inOut' }, 0); }
@@ -191,6 +192,7 @@ let ST = 'load', spin = 0, shake = 0, lastT = performance.now(), tAll = 0;
 function frame(now) {
   const dt = Math.min(.05, (now - lastT) / 1000); lastT = now; tAll += dt; U.uTime.value = tAll;
   if (ST === 'title' || ST === 'result') { spin += dt * .55; katana.rotation.y = Math.sin(spin) * .55; katana.rotation.x = Math.sin(spin * .7) * .12; }
+  if (ST === 'hold' && HOLD) holdStep(dt);
   if (emitAt >= 0) emit(2, Math.min(1, emitAt), .5);
   stepSparks(dt);
   const sx = (Math.random() - .5) * shake, sy = (Math.random() - .5) * shake; camera.position.x = sx; camera.position.y = sy;
@@ -216,37 +218,50 @@ function grip() {
   U.uProg.value = 0; U.uGlow.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0;
   const tint = new THREE.Color(R.key === 'none' || R.key === 'nezuko' ? '#d7dbe0' : C.hex); U.uTint.value.copy(tint); bgMat.uniforms.uTint.value.copy(tint);
   const amt = R.key === 'none' ? .0 : (.55 + .45 * R.den / 100);
-  const tl = gsap.timeline({ onComplete: () => { busy = false; } });
+  const tl = gsap.timeline();
   tl.to(katana.rotation, { y: 0, x: 0, duration: .9, ease: 'power3.inOut' }, 0); tl.add(setPose('stand', .9), 0);
-  tl.call(() => cap(T.capGrip, 1.6), null, .7);
+    tl.call(() => { U.uAmt.value = amt; HOLD = { R, p: 0, on: false }; ST = 'hold'; holdUI(true); });
+}
+// 長押し：押しているあいだ刀身が根元から色づく（これがゲージ）。離すと根元へ戻る。最後まで押しきると決まる
+let HOLD = null, holding = false;
+const HOLD_T = 2.4;
+function holdUI(on) { const h = $('hold'); h.hidden = !on; if (on) { $('holdT').textContent = T.capHold; gsap.fromTo(h, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .35 }); } }
+function press(v) { if (ST !== 'hold' || !HOLD) return; holding = v; if (v) { ac(); humOn(); } else humStop(); $('hold').classList.toggle('on', v); }
+function holdStep(dt) {
+  const H = HOLD, R = H.R, nez = R.key === 'nezuko';
+  if (holding) H.p = Math.min(1, H.p + dt / (nez ? 1.6 : HOLD_T)); else H.p = Math.max(0, H.p - dt / 1.1);
+  const p = H.p; $('holdRing').style.setProperty('--p', (p * 100).toFixed(1));
+  humSet(p); shake = holding ? (nez ? .03 + .14 * p : .04 * p * p) : 0;
+  if (nez) { U.uTint.value.set('#ff3048'); emitAt = holding ? .05 + .3 * p : -1; }
+  else { U.uProg.value = p * 1.06; U.uGlow.value = R.key === 'none' ? .25 * (holding ? 1 : .4) : (holding ? 1 : .45); emitAt = holding && R.key !== 'none' ? Math.min(1, p) : -1; }
+  if (p >= 1) { HOLD = null; holding = false; ST = 'grip'; holdUI(false); humStop(); emitAt = -1; shake = 0; finish(R); }
+}
+function finish(R) {
+  const C = COLORS[R.key], tl = gsap.timeline({ onComplete: () => { busy = false; } });
   if (R.key === 'nezuko') {
-    tl.to({}, { duration: .4 });
-    tl.call(() => { sfx('zap'); U.uTint.value.set('#ff3048'); emitAt = .05; });
-    tl.to({ v: 0 }, { v: 1, duration: 1.4, onUpdate() { shake = .03 + .12 * this.targets()[0].v; } });
-    tl.call(() => { emitAt = -1; shake = 0; sfx('thud'); flash('#ff3048'); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3048') }); cap(T.capNez); });
+    sfx('thud'); sfx('zap'); flash('#ff3048'); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3048') }); cap(T.capNez);
     tl.to(katana.rotation, { z: '+=' + (Math.PI * 1.5), duration: .7, ease: 'power2.out' });
     tl.to(katana.position, { y: -VH * .9, duration: .7, ease: 'power2.in' }, '<');
     tl.to({}, { duration: .5 });
     tl.call(() => { katana.position.y = VH; }); tl.add(setPose('top', .9, 'back.out(1.2)')); tl.call(showResult);
     return;
   }
-  const dur = 2.5;
-  tl.call(() => { U.uAmt.value = amt; emitAt = 0; humStart(dur); }, null, 1.0);
-  tl.to(U.uGlow, { value: R.key === 'none' ? .25 : 1, duration: .3 }, 1.0);
-  tl.to(U.uProg, { value: 1.06, duration: dur, ease: 'power1.in', onUpdate() { emitAt = R.key === 'none' ? -1 : Math.min(1, U.uProg.value); } }, 1.0);
-  tl.to({ v: 0 }, { v: 1, duration: dur, ease: 'power2.in', onUpdate() { shake = .035 * this.targets()[0].v; } }, 1.0);
-  tl.call(() => {
-    emitAt = -1; shake = 0; humStop();
-    if (R.key === 'none') { sfx('thud'); cap(T.capNone, 1.4); return; }
+  U.uProg.value = 1.06;
+  if (R.key === 'none') { sfx('thud'); cap(T.capNone, 1.4); U.uGlow.value = 0; }
+  else {
     sfx('ring'); flash(C.hex); U.uGlow.value = 0; U.uAura.value = 1.2; gsap.to(U.uAura, { value: .55, duration: 1.6 }); gsap.to(bgMat.uniforms.uMix, { value: 1, duration: 1 });
-    emit(60, .5, 2.2); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 3, palette: ramp(C.hex) }); 
+    emit(60, .5, 2.2); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 3, palette: ramp(C.hex) });
     if (R.den >= 95 || R.key === 'black') fxAdd(PFX && PFX.fx.confetti, { x: 80, y: 60, seed: 11 });
     cap(C.name[L], 1.4);
-  }, null, 1.0 + dur);
-  tl.to({}, { duration: 1.3 });
-  tl.add(setPose('top', .9));
-  tl.call(showResult);
+  }
+  tl.to({}, { duration: 1.3 }); tl.add(setPose('top', .9)); tl.call(showResult);
 }
+$('gl').addEventListener('pointerdown', e => { if (ST === 'hold') { e.preventDefault(); press(true); } });
+$('hold').addEventListener('pointerdown', e => { e.preventDefault(); press(true); });
+['pointerup', 'pointercancel', 'blur'].forEach(k => addEventListener(k, () => press(false)));
+addEventListener('keydown', e => { if (ST === 'hold' && (e.code === 'Space' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); press(true); } });
+addEventListener('keyup', e => { if (e.code === 'Space' || e.key === 'Enter') press(false); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) press(false); });
 function flash(hex) { const f = $('flash'); f.style.background = hex; gsap.fromTo(f, { opacity: .85 }, { opacity: 0, duration: .7, ease: 'power2.out' }); }
 
 // ---------- 結果 ----------
@@ -276,7 +291,7 @@ function showResult() {
   gsap.fromTo('#rCol', { scale: .6, opacity: 0 }, { scale: 1, opacity: 1, duration: .6, delay: .1, ease: 'back.out(2)' });
   R.card = makeCard(R);
   POST = R.key === 'none' ? T.postNone(R.name) : R.key === 'nezuko' ? T.postNez(R.name) : T.post(R.name, COLORS[R.key].name[L], COLORS[R.key].school[L], rankOf(R), R.den);
-  count(R).then(loadCounts).then(shareLine).catch(() => { });
+  count(R).catch(() => { }).then(loadCounts).then(shareLine).catch(() => { });
 }
 $('startBtn').onclick = grip;
 $('nm').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('nm').blur(); grip(); } });
@@ -297,10 +312,9 @@ const DBU = p => FB.db + '/katana/' + p + '.json';
 async function count(R) {
   if (DEV) return; const sent = ls.get('katana_sent', []); const h = Math.floor(hash(R.n, 0x5e) * 1e9).toString(36); if (sent.includes(h)) return;
   const a = await auth(), url = DBU('n/' + R.key) + '?auth=' + encodeURIComponent(a.token);
-  for (let i = 0; i < 6; i++) {
-    const g = await fx(url, { headers: { 'X-Firebase-ETag': 'true' } }); if (!g.ok) throw new Error('get'); const tag = g.headers.get('ETag'); const v = +(await g.json()) || 0;
-    const h2 = { 'Content-Type': 'application/json' }; if (tag) h2['if-match'] = tag;
-    const p = await fx(url, { method: 'PUT', headers: h2, body: JSON.stringify(v + 1) });
+  for (let i = 0; i < 4; i++) {
+    const g = await fx(url); if (!g.ok) throw new Error('get'); const v = +(await g.json()) || 0;
+    const p = await fx(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(v + 1) });
     if (p.ok) { sent.push(h); ls.set('katana_sent', sent.slice(-300)); return; }
     await new Promise(r => setTimeout(r, 150 + Math.random() * 300));
   }
@@ -372,4 +386,4 @@ resize(); setPose('top', 0);
 ST = 'title'; $('load').hidden = true; $('title').hidden = false;
 gsap.fromTo('#title .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: 'power3.out' });
 requestAnimationFrame(frame);
-if (DEV) window.__K = { judge, norm, grip, get LAST() { return LAST; }, get ST() { return ST; }, COLORS, setName(n) { $('nm').value = n; }, count, loadCounts, show(k, den, rz, sc, x, y) { ST = 'shot'; ['title', 'result', 'stats'].forEach(i => $(i).hidden = true); U.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uMix.value = 1; U.uAmt.value = .55 + .45 * den / 100; U.uProg.value = 1.06; U.uAura.value = .6; U.uGlow.value = 0; katana.rotation.set(0, 0, rz); katana.scale.setScalar(sc); katana.position.set(x, y, 0); } };
+if (DEV) window.__K = { judge, norm, grip, get LAST() { return LAST; }, get ST() { return ST; }, COLORS, press, setName(n) { $('nm').value = n; }, count, loadCounts, show(k, den, rz, sc, x, y) { ST = 'shot'; ['title', 'result', 'stats'].forEach(i => $(i).hidden = true); U.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uTint.value.set(COLORS[k].hex); bgMat.uniforms.uMix.value = 1; U.uAmt.value = .55 + .45 * den / 100; U.uProg.value = 1.06; U.uAura.value = .6; U.uGlow.value = 0; katana.rotation.set(0, 0, rz); katana.scale.setScalar(sc); katana.position.set(x, y, 0); } };
