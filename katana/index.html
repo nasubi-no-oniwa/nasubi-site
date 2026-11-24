@@ -82,6 +82,15 @@ table.st tr.me td{background:#c9a14a22}
 #hold.on #holdT{animation:none;opacity:.5}
 @keyframes hb{50%{opacity:.45}}
 #gl{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+#crow{position:fixed;left:0;top:0;z-index:9;width:120px;pointer-events:none}
+#crow svg{width:120px;height:auto;filter:drop-shadow(0 4px 10px #000c)}
+#crow .w{transform-origin:62px 46px;animation:flap .22s ease-in-out infinite alternate}
+@keyframes flap{to{transform:scaleY(-.5)}}
+#crowSay{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 24vh);transform:translateX(-50%);z-index:9;width:min(88vw,400px);background:#f4ecd8;color:#1a1206;border:3px solid #1a1206;border-radius:14px;padding:12px 14px;font-size:17px;font-weight:800;line-height:1.6;text-align:center;box-shadow:0 8px 24px #000a;pointer-events:none}
+#crowSay b{color:var(--tint);text-shadow:0 0 1px #000,0 0 6px #0006}
+#slash{position:fixed;z-index:7;width:min(70vw,320px);height:6px;margin-left:calc(min(70vw,320px) / -2);margin-top:-3px;background:linear-gradient(90deg,#0000,#fff,#fff,#0000);box-shadow:0 0 18px #fff,0 0 40px #fff8;transform:rotate(-14deg);transform-origin:50% 50%;pointer-events:none}
+.aka{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:3px;background:#b31a0a;color:#fff;font-size:12px;letter-spacing:.06em;box-shadow:0 0 12px #ff3a14}
+#rFan,#tFan{font-size:11px;color:#6d6680;margin-top:8px}
 </style>
 <!-- nasubi-track: 結果画面とXへの投稿の回数を記録（ゲームの動きには影響しない） -->
 <script>(function(){try{var G="katana",IDS=["result"];
@@ -127,13 +136,16 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
 <script>window.NSB_NEXT={"g": "katana", "r": [{"a": "#result .card", "v": "#result"}], "ad": 1};</script>
 <script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
-<script src="gsap.min.js?v=11241513"></script>
-<script src="pfx.js?v=11241513"></script>
+<script src="gsap.min.js?v=11241557"></script>
+<script src="pfx.js?v=11241557"></script>
 </head>
 <body>
 <canvas id="gl"></canvas>
 <canvas id="fxc" width="160" height="160"></canvas>
 <div id="cap"></div>
+<div id="crow" hidden><svg viewBox="0 0 120 80"><path class="w" d="M58 44 C40 18 18 12 4 20 C22 24 34 34 44 46 Z" fill="#0b0a10"/><ellipse cx="62" cy="50" rx="30" ry="15" fill="#0b0a10"/><path d="M34 52 L8 64 L36 58 Z" fill="#0b0a10"/><circle cx="88" cy="40" r="12" fill="#0b0a10"/><path d="M98 37 L116 42 L98 45 Z" fill="#2a2630"/><circle cx="91" cy="37" r="2.2" fill="#f2c94c"/><path class="w" d="M66 44 C78 20 96 14 110 22 C94 26 84 34 74 46 Z" fill="#14121c"/><path d="M60 64 L56 76 M68 64 L70 76" stroke="#0b0a10" stroke-width="3"/></svg></div>
+<div id="crowSay" hidden></div>
+<div id="slash" hidden></div>
 <div id="hold" hidden><div id="holdRing"><b>握</b></div><div id="holdT"></div></div>
 <div id="flash"></div>
 <div id="load">…</div>
@@ -148,6 +160,7 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
     <button class="big" id="startBtn"></button>
     <div class="mini g"><button id="sndBtn"></button><button id="stBtn"></button></div>
     <div class="mini g" id="langs"></div>
+    <div id="tFan" class="g"></div>
   </div>
 </div>
 
@@ -164,6 +177,7 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
     <div class="row2 g"><button class="sub" id="imgBtn"></button><button class="sub" id="xBtn"></button></div>
     <button class="big" id="again"></button>
     <button class="sub g" id="stBtn2"></button>
+    <div id="rFan" class="g"></div>
   </div>
 </div>
 
@@ -176,6 +190,6 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
   </div>
 </div>
 
-<script type="module" src="game.js?v=11241513"></script>
+<script type="module" src="game.js?v=11241557"></script>
 </body>
 </html>
