@@ -1,5 +1,6 @@
 // 趣味でヒーローになる：採点と記録（Cloudflare Pages Functions）
-// 必要な設定（Cloudflare の管理画面）：D1 データベースを HERO_DB という名前でつなぐ／秘密の文字 HERO_KEY を入れる
+// 必要な設定（Cloudflare の管理画面）：D1 データベースを HERO_DB という名前でつなぐ
+// 答えはこのファイルにもページにも置かず、非公開のデータベースの answers 表だけにある
 import { QS } from './_qs.js';
 
 const DAY = 86400000;
@@ -14,6 +15,7 @@ async function setup(db) {
     db.prepare(`CREATE TABLE IF NOT EXISTS players(id INTEGER PRIMARY KEY AUTOINCREMENT, nkey TEXT NOT NULL, hkey TEXT NOT NULL, name TEXT NOT NULL, hero TEXT NOT NULL, tok TEXT NOT NULL, rec TEXT NOT NULL, best INTEGER, best_at INTEGER, tries INTEGER DEFAULT 0, created INTEGER, UNIQUE(nkey,hkey))`),
     db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS players_rec ON players(rec)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS players_best ON players(best)`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS answers(qid TEXT PRIMARY KEY, a TEXT NOT NULL)`),
     db.prepare(`CREATE TABLE IF NOT EXISTS sessions(sid TEXT PRIMARY KEY, pid INTEGER, created INTEGER, qs TEXT, step INTEGER DEFAULT -1, phys INTEGER, pdata TEXT, ok INTEGER DEFAULT 0, done INTEGER DEFAULT 0, fresh INTEGER DEFAULT 0)`),
   ]);
   ready = true;
@@ -32,6 +34,13 @@ const nameKey = s => String(s ?? '').normalize('NFKC').toLowerCase().replace(/\s
 const cleanName = s => String(s ?? '').normalize('NFC').replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim();
 const len = s => [...s].length;
 
+let ANS = null, ANS_AT = 0;
+async function answers(db) {
+  if (ANS && Date.now() - ANS_AT < 600000) return ANS;
+  const rs = (await db.prepare('SELECT qid, a FROM answers').all()).results || [];
+  const m = {}; for (const r of rs) { try { m[r.qid] = JSON.parse(r.a).map(norm); } catch (e) { } }
+  ANS = m; ANS_AT = Date.now(); return m;
+}
 async function hmac(key, msg) {
   const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const sig = new Uint8Array(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(msg)));
@@ -117,7 +126,7 @@ export async function onRequest(ctx) {
   const { request: req, env, params } = ctx;
   const path = (params.path || []).join('/');
   const db = env.HERO_DB;
-  if (!db || !env.HERO_KEY) return ERR('setup', 503);
+  if (!db) return ERR('setup', 503);
   try { await setup(db); } catch (e) { return ERR('db', 503); }
   const M = req.method;
 
@@ -141,6 +150,7 @@ export async function onRequest(ctx) {
 
     // 試験を始める
     if (path === 'start' && M === 'POST') {
+      const A = await answers(db); if (Object.keys(A).length < 40) { ANS = null; return ERR('setup', 503); }
       const b = await body(req); const now = Date.now();
       if (Math.random() < .05) ctx.waitUntil(db.prepare('DELETE FROM sessions WHERE created<?').bind(now - DAY).run());
       let pid = null, fresh = 0, hdr = {};
@@ -197,8 +207,8 @@ export async function onRequest(ctx) {
       const i = b.i | 0; if (i !== ss.step) return J({ again: true, q: ss.step < QS.length ? questionOut(ss, ss.step) : null });
       const qs = JSON.parse(ss.qs); let good = false;
       if (b.v != null && String(b.v).length <= 200) {
-        const h = await hmac(env.HERO_KEY, `${i}-${qs[i]}|${norm(b.v)}`);
-        good = QS[i].v[qs[i]].h.includes(h);
+        const A = await answers(db), list = A[`${i}-${qs[i]}`] || [];
+        good = list.includes(norm(b.v));
       }
       const step = i + 1, ok = (ss.ok | 0) + (good ? 1 : 0);
       const upd = await db.prepare('UPDATE sessions SET step=?, ok=?, done=? WHERE sid=? AND step=?').bind(step, ok, step >= QS.length ? 1 : 0, ss.sid, i).run();
