@@ -87,6 +87,7 @@ table.st tr.me td{background:#c9a14a22}
 #crow .w{transform-origin:62px 46px;animation:flap .22s ease-in-out infinite alternate}
 @keyframes flap{to{transform:scaleY(-.5)}}
 #crowSay{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 24vh);transform:translateX(-50%);z-index:9;width:min(88vw,400px);background:#f4ecd8;color:#1a1206;border:3px solid #1a1206;border-radius:14px;padding:12px 14px;font-size:17px;font-weight:800;line-height:1.6;text-align:center;box-shadow:0 8px 24px #000a;pointer-events:none}
+#crowSay small{display:block;margin-top:6px;font-size:12px;color:#6d5a3a;letter-spacing:.1em;animation:hb 1.2s ease-in-out infinite}
 #crowSay b{color:var(--tint);text-shadow:0 0 1px #000,0 0 6px #0006}
 #slash{position:fixed;z-index:7;width:min(70vw,320px);height:6px;margin-left:calc(min(70vw,320px) / -2);margin-top:-3px;background:linear-gradient(90deg,#0000,#fff,#fff,#0000);box-shadow:0 0 18px #fff,0 0 40px #fff8;transform:rotate(-14deg);transform-origin:50% 50%;pointer-events:none}
 .aka{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:3px;background:#b31a0a;color:#fff;font-size:12px;letter-spacing:.06em;box-shadow:0 0 12px #ff3a14}
@@ -136,8 +137,8 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
 <script>window.NSB_NEXT={"g": "katana", "r": [{"a": "#result .card", "v": "#result"}], "ad": 1};</script>
 <script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
-<script src="gsap.min.js?v=11241610"></script>
-<script src="pfx.js?v=11241610"></script>
+<script src="gsap.min.js?v=11241611"></script>
+<script src="pfx.js?v=11241611"></script>
 </head>
 <body>
 <canvas id="gl"></canvas>
@@ -190,6 +191,6 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
   </div>
 </div>
 
-<script type="module" src="game.js?v=11241610"></script>
+<script type="module" src="game.js?v=11241611"></script>
 </body>
 </html>

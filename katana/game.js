@@ -1,5 +1,5 @@
-import { THREE, RoomEnvironment } from './lib.js?v=11241610';
-import { COLORS, ORDER, CHARS } from './data.js?v=11241610';
+import { THREE, RoomEnvironment } from './lib.js?v=11241611';
+import { COLORS, ORDER, CHARS } from './data.js?v=11241611';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -21,7 +21,7 @@ const TX = {
     kyu: '階級', kan: ['甲（きのえ）', '乙（きのと）', '丙（ひのえ）', '丁（ひのと）', '戊（つちのえ）', '己（つちのと）', '庚（かのえ）', '辛（かのと）', '壬（みずのえ）', '癸（みずのと）'], sp: { hashira: '柱', exhashira: '元・柱', notmember: '隊士ではない', sengoku: '戦国の剣士', selection: '最終選別で散った', member: '隊士（階級は不明）', oni: '鬼' }, from: k => `（${k}の派生）`,
     words: { human: '人間に戻った。もう、日輪刀を握る必要はない。', genya: '呼吸は使えない。それでも最後まで戦い抜いた。' },
     crow: (n, c, k) => `カァー！「${n}」ノ日輪刀ハ<b>${c}</b>！${k}ノ適性アリ！`, crowNone: n => `カァー！「${n}」ノ日輪刀、色ガ変ワラナイ！`, crowOni: n => `カァー！鬼ダ！「${n}」ハ鬼ダ！`,
-    akaCap: '赫く灼けた', aka: '握りしめた日輪刀が、赫く灼けた', akaPost: '日輪刀が赫く灼けた。', cut: '頸を斬った', stab: '突き刺した。藤の花の毒が回る', cutNo: '頸が硬い…斬れない', fan: '※非公式のファン診断です', keepHold: 'そのまま握りしめると…？',
+    akaCap: '赫く灼けた', tapNext: 'タップで結果へ', aka: '握りしめた日輪刀が、赫く灼けた', akaPost: '日輪刀が赫く灼けた。', cut: '頸を斬った', stab: '突き刺した。藤の花の毒が回る', cutNo: '頸が硬い…斬れない', fan: '※非公式のファン診断です', keepHold: 'そのまま握りしめると…？',
     xCopied: '画像をコピーしました。Xの投稿欄に貼りつけ（Ctrl+V）すると画像がつきます', xSaved: '画像を保存しました。Xの投稿に、保存した画像を追加してください', nogl: 'この端末では3Dを表示できませんでした', cardTag: '刀身の色で、才能がわかる' },
   en: { lang: 'English', ttl: 'The Color-Changing Blade', h1: '<small>IROGAWARI NO KATANA</small>Color Blade', lead: 'Enter a name. Grip the Nichirin Blade.<br>Its color reveals your Breathing and talent.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', stats: "Everyone's blades", again: 'Try another name', img: 'Save image', x: 'Post on 𝕏', back: 'Back',
     who: n => `<b>${esc(n)}</b>'s Nichirin Blade turned`, den: 'Talent (color depth)', ranks: ['Barely tinted', 'Faint talent', 'Average', 'Capable', 'Gifted', 'Born genius'], rNone: 'No talent', rNez: 'Demon',
@@ -34,7 +34,7 @@ const TX = {
     kyu: 'Rank', kan: ['甲 Kinoe', '乙 Kinoto', '丙 Hinoe', '丁 Hinoto', '戊 Tsuchinoe', '己 Tsuchinoto', '庚 Kanoe', '辛 Kanoto', '壬 Mizunoe', '癸 Mizunoto'], sp: { hashira: 'Hashira', exhashira: 'Former Hashira', notmember: 'Not a Corps member', sengoku: 'Sengoku-era swordsman', selection: 'Fell in the Final Selection', member: 'Corps member (rank unknown)', oni: 'Demon' }, from: k => ` (derived from ${k})`,
     words: { human: 'Human again. No need to hold a Nichirin Blade anymore.', genya: "Couldn't use Breathing. Fought to the very end anyway." },
     crow: (n, c, k) => `CAW! ${n}'s blade is <b>${c}</b>! ${k}!`, crowNone: n => `CAW! ${n}'s blade didn't change color!`, crowOni: n => `CAW! A demon! ${n} is a demon!`,
-    akaCap: 'Burning red', aka: 'Gripped hard, the blade burned crimson', akaPost: 'The blade burned crimson.', cut: 'Head severed', stab: 'Stabbed. The wisteria poison spreads', cutNo: "Too hard… can't cut it", fan: '* Unofficial fan quiz', keepHold: 'Keep holding…?',
+    akaCap: 'Burning red', tapNext: 'Tap to see the result', aka: 'Gripped hard, the blade burned crimson', akaPost: 'The blade burned crimson.', cut: 'Head severed', stab: 'Stabbed. The wisteria poison spreads', cutNo: "Too hard… can't cut it", fan: '* Unofficial fan quiz', keepHold: 'Keep holding…?',
     xCopied: 'Image copied. Paste it (Ctrl+V) into your post to attach it', xSaved: 'Image saved. Add the saved image to your post', nogl: "This device can't show 3D", cardTag: 'The blade color reveals your talent' },
   zh: { lang: '繁體中文', ttl: '變色之刀', h1: '<small>變色之刀</small>變色之刀', lead: '輸入名字，握住日輪刀。<br>刀身的顏色揭曉呼吸的適性與才能。', ph: '輸入名字', start: '握刀', needName: '請輸入名字', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', stats: '大家的刀色', again: '換個名字握', img: '存成圖片', x: '發到 𝕏', back: '返回',
     who: n => `「<b>${esc(n)}</b>」的日輪刀變成了`, den: '才能（顏色深淺）', ranks: ['幾乎無色', '才能稀薄', '普通', '獨當一面', '秀才', '天賦異稟'], rNone: '沒有才能', rNez: '鬼',
@@ -47,7 +47,7 @@ const TX = {
     kyu: '階級', kan: ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], sp: { hashira: '柱', exhashira: '前・柱', notmember: '不是隊士', sengoku: '戰國的劍士', selection: '殞命於最終選拔', member: '隊士（階級不明）', oni: '鬼' }, from: k => `（${k}的衍生）`,
     words: { human: '變回人類了。已經不需要再握日輪刀。', genya: '無法使用呼吸。即使如此仍戰到最後。' },
     crow: (n, c, k) => `嘎——！「${n}」的日輪刀是<b>${c}</b>！有${k}的適性！`, crowNone: n => `嘎——！「${n}」的日輪刀沒有變色！`, crowOni: n => `嘎——！是鬼！「${n}」是鬼！`,
-    akaCap: '赫紅灼燒', aka: '緊握的日輪刀，燒得赫紅', akaPost: '日輪刀燒得赫紅。', cut: '斬下了頸', stab: '刺穿了。紫藤花之毒蔓延開來', cutNo: '頸太硬了…斬不斷', fan: '※非官方的粉絲診斷', keepHold: '就這樣繼續握緊…？',
+    akaCap: '赫紅灼燒', tapNext: '點一下看結果', aka: '緊握的日輪刀，燒得赫紅', akaPost: '日輪刀燒得赫紅。', cut: '斬下了頸', stab: '刺穿了。紫藤花之毒蔓延開來', cutNo: '頸太硬了…斬不斷', fan: '※非官方的粉絲診斷', keepHold: '就這樣繼續握緊…？',
     xCopied: '已複製圖片。在 X 的貼文欄貼上（Ctrl+V）即可附上圖片', xSaved: '已儲存圖片。請在 X 貼文中加入儲存的圖片', nogl: '這台裝置無法顯示 3D', cardTag: '刀身的顏色揭曉你的才能' },
   ko: { lang: '한국어', ttl: '색이 변하는 칼', h1: '<small>이로가와리노 카타나</small>색이 변하는 칼', lead: '이름을 넣고 일륜도를 쥐어라.<br>칼날의 색으로 호흡의 적성과 재능을 알 수 있다.', ph: '이름 입력', start: '칼을 쥔다', needName: '이름을 입력해 주세요', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', stats: '모두의 칼 색', again: '다른 이름으로 쥐기', img: '이미지로 저장', x: '𝕏 에 올리기', back: '돌아가기',
     who: n => `「<b>${esc(n)}</b>」의 일륜도는`, den: '재능（색의 농도）', ranks: ['거의 무색', '재능 옅음', '보통', '제 몫', '수재', '천부적 재능'], rNone: '재능 없음', rNez: '귀신',
@@ -60,7 +60,7 @@ const TX = {
     kyu: '계급', kan: ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계'], sp: { hashira: '주', exhashira: '전・주', notmember: '대원이 아님', sengoku: '전국시대의 검사', selection: '최종 선별에서 쓰러짐', member: '대원（계급 불명）', oni: '귀신' }, from: k => `（${k}의 파생）`,
     words: { human: '인간으로 돌아왔다. 이제 일륜도를 쥘 필요는 없다.', genya: '호흡은 쓸 수 없다. 그래도 끝까지 싸웠다.' },
     crow: (n, c, k) => `까악! 「${n}」의 일륜도는 <b>${c}</b>! ${k}의 적성 있음!`, crowNone: n => `까악! 「${n}」의 일륜도, 색이 변하지 않는다!`, crowOni: n => `까악! 귀신이다! 「${n}」은 귀신이다!`,
-    akaCap: '붉게 달아올랐다', aka: '움켜쥔 일륜도가 붉게 달아올랐다', akaPost: '일륜도가 붉게 달아올랐다.', cut: '목을 베었다', stab: '찔렀다. 등꽃의 독이 퍼진다', cutNo: '목이 너무 단단하다…베지 못했다', fan: '※비공식 팬 진단입니다', keepHold: '그대로 계속 쥐면…?',
+    akaCap: '붉게 달아올랐다', tapNext: '탭해서 결과 보기', aka: '움켜쥔 일륜도가 붉게 달아올랐다', akaPost: '일륜도가 붉게 달아올랐다.', cut: '목을 베었다', stab: '찔렀다. 등꽃의 독이 퍼진다', cutNo: '목이 너무 단단하다…베지 못했다', fan: '※비공식 팬 진단입니다', keepHold: '그대로 계속 쥐면…?',
     xCopied: '이미지를 복사했습니다. X 글쓰기 칸에 붙여넣기（Ctrl+V）하면 이미지가 붙습니다', xSaved: '이미지를 저장했습니다. X 글에 저장한 이미지를 추가해 주세요', nogl: '이 기기에서는 3D를 표시할 수 없습니다', cardTag: '칼날의 색으로 재능을 알 수 있다' },
 };
 let L = 'ja', T = TX.ja;
@@ -324,7 +324,7 @@ function ignite(R) {
   emit(80, .55, 2.6); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 5, palette: ramp('#ff3a14') });
 }
 function proceed() {
-  if (!REV) return; const R = REV.R; REV = null; ST = 'grip'; shake = 0; humStop(); holding = false; $('hold').classList.remove('on');
+  if (!REV) return; const R = REV.R; REV = null; ST = 'grip'; gsap.killTweensOf('#cap'); gsap.to('#cap', { opacity: 0, duration: .25 }); shake = 0; humStop(); holding = false; $('hold').classList.remove('on');
   const C = COLORS[R.key];
   const say = R.key === 'none' ? T.crowNone(R.name) : T.crow(R.name, C.name[L], kokyu(R.key));
   crow(say).then(() => { setPose('top', .9).call(() => { busy = false; showResult(); }); });
@@ -332,14 +332,15 @@ function proceed() {
 
 // ---------- 伝令の烏 ----------
 function crow(text) {
+  // 烏は結果を告げたらとどまる。タップ（またはキー）で結果へ
   return new Promise(res => {
-    const c = $('crow'), b = $('crowSay'); b.innerHTML = text; b.style.opacity = 0; c.hidden = false; b.hidden = false; sfx('caw');
-    const tl = gsap.timeline({ onComplete: () => { c.hidden = true; b.hidden = true; res(); } });
+    const c = $('crow'), b = $('crowSay'); b.innerHTML = text + '<small>' + esc(T.tapNext) + '</small>'; b.style.opacity = 0; c.hidden = false; b.hidden = false; sfx('caw');
+    let bob = null, done = false;
+    const go = () => { if (done) return; done = true; removeEventListener('pointerdown', go); removeEventListener('keydown', go); if (bob) bob.kill(); gsap.to(b, { opacity: 0, duration: .15 }); gsap.to(c, { x: -innerWidth * .9, y: -innerHeight * .15, rotate: -15, duration: .45, ease: 'power2.in', onComplete: () => { c.hidden = true; b.hidden = true; res(); } }); };
+    const tl = gsap.timeline();
     tl.fromTo(c, { x: innerWidth * .62, y: -innerHeight * .08, scale: .7, rotate: 18 }, { x: innerWidth * .22, y: innerHeight * .1, scale: 1, rotate: 0, duration: .7, ease: 'power2.out' });
     tl.fromTo(b, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .25 });
-    tl.to({}, { duration: Math.min(5.5, 3.2 + text.length * .05) });
-    tl.to(b, { opacity: 0, duration: .2 });
-    tl.to(c, { x: -innerWidth * .9, y: -innerHeight * .15, rotate: -15, duration: .6, ease: 'power2.in' }, '<');
+    tl.call(() => { bob = gsap.to(c, { y: '+=6', duration: .9, yoyo: true, repeat: -1, ease: 'sine.inOut' }); setTimeout(() => { if (!done) { addEventListener('pointerdown', go); addEventListener('keydown', go); } }, 400); });
   });
 }
 
