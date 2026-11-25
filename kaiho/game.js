@@ -1,5 +1,5 @@
-import { THREE, GLTFLoader } from './lib.js?v=11251619';
-import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251619';
+import { THREE, GLTFLoader } from './lib.js?v=11251628';
+import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251628';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -162,8 +162,8 @@ const PT = { suit: { eye: [0, 2.551, .136], chest: [0, 2.125, .2] }, kaiju: { ey
   const part = (geo, x, y, z, sx, sy, sz) => { const m = new THREE.Mesh(geo, suitMat); m.position.set(x, y, z); m.scale.set(sx || 1, sy || 1, sz || 1); tmp.add(m); };
   part(capG(.33, .9), 0, 1.6, 0, 1.1, 1, .7); part(sphG(.24), 0, 2.5, 0, .92, 1.08, 1);[-1, 1].forEach(s => { part(capG(.11, 1.1), s * .6, 1.5, 0); part(capG(.15, 1.0), s * .2, .6, 0); });
   const ld = new GLTFLoader(), use = (g, par, done) => { g.scene.traverse(o => { if (o.isMesh) { o.material = suitMat; o.frustumCulled = false; } }); par.add(g.scene); done && done(); };
-  ld.load('suit.glb?v=11251619', g => use(g, figH, () => figH.remove(tmp)), undefined, () => { });
-  ld.load('kaiju.glb?v=11251619', g => use(g, figK), undefined, () => { const c = tmp.clone(); c.scale.setScalar(1.15); figK.add(c); });
+  ld.load('suit.glb?v=11251628', g => use(g, figH, () => figH.remove(tmp)), undefined, () => { });
+  ld.load('kaiju.glb?v=11251628', g => use(g, figK), undefined, () => { const c = tmp.clone(); c.scale.setScalar(1.15); figK.add(c); });
 }
 // 目（怪獣側）
 const eyeMat = new THREE.SpriteMaterial({ map: null, color: '#ff5a2a', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
@@ -548,8 +548,8 @@ const FAKE = { n: { b0: { c: 12 }, b1: { c: 96 }, b2: { c: 330 }, b3: { c: 318 }
 const getv = async p => { if (DEV && p in FAKE) return FAKE[p]; const r = await fx(DBU(p)); if (!r.ok) throw new Error('get'); return await r.json(); };
 // 区切りごとの人数に1人足す（その名前がまだ数えられていないときだけ）
 async function count(R) {
-  if (DEV || R.type === 'unknown') return; const b = 'b' + bucketOf(R.pct), sent = ls.get('kaiho_sent', []); if (sent.includes(R.h)) return;
-  const done = () => { sent.push(R.h); ls.set('kaiho_sent', sent.slice(-400)); };
+  if (DEV || R.type === 'unknown') return; const b = 'b' + bucketOf(R.pct), sent = ls.get('kaiho_sent2', []); if (sent.includes(R.h)) return;
+  const done = () => { sent.push(R.h); ls.set('kaiho_sent2', sent.slice(-400)); };
   if ((await getv('u/' + R.h)) != null) { done(); return; }
   for (let i = 0; i < 5; i++) {
     const c = +(await getv('n/' + b + '/c')) || 0, body = {}; body['u/' + R.h] = b; body['n/' + b] = { c: c + 1, h: R.h };
@@ -563,7 +563,7 @@ async function count(R) {
 async function regKaiju(R) {
   if (R.kai.canon) return R.kai.no;
   if (DEV) { await sleep(300); return 101 + Math.floor(hash(R.name, 3) * 60); }
-  const mem = ls.get('kaiho_kno', {}), save = n => { mem[R.h] = n; ls.set('kaiho_kno', mem); return n; }; if (mem[R.h]) return mem[R.h];
+  const save = n => n; // 番号は毎回データベースで確かめる（端末の中の控えは使わない）
   let v = await getv('k/' + R.h + '/i'); if (v) return save(+v);
   for (let i = 0; i < 6; i++) {
     const c = +(await getv('kc/c')) || 100, N = c + 1, body = { kc: { c: N, h: R.h } }; body['k/' + R.h] = { i: N, n: R.name, f: R.kai.f };
