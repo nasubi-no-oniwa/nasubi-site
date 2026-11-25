@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RB6XMN0QR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-5RB6XMN0QR');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>解放戦力</title>
+<meta name="description" content="名前を入れて、連打しろ。防衛隊スーツの力を何％引き出せるか、あなたの解放戦力を測定する。">
+<meta property="og:title" content="解放戦力">
+<meta property="og:description" content="名前を入れて、連打しろ。防衛隊スーツの力を何％引き出せるか、あなたの解放戦力を測定する。">
+<meta property="og:image" content="https://nasubi-no-oniwa.com/kaiho/ogp.png">
+<meta property="og:url" content="https://nasubi-no-oniwa.com/kaiho/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon.png">
+<style>
+:root{--ink:#e6f4f8;--bg:#05080c;--line:#1f3340;--sub:#7f98a6;--c:#3fe0ff;--c2:#0b7f9c;--warn:#ffb020;--red:#ff2a2a}
+body.kai{--c:#ff3030;--c2:#8a0d0d;--sub:#b08a8a;--line:#40201f}
+[hidden]{display:none!important}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP","Noto Sans CJK JP","Yu Gothic UI",system-ui,sans-serif;overscroll-behavior:none;touch-action:manipulation;overflow:hidden}
+.num{font-family:"DIN Alternate","Bahnschrift","Roboto Condensed","Arial Narrow","Hiragino Sans",sans-serif;font-variant-numeric:tabular-nums;font-weight:800}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+#crack{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:7}
+#fxc{position:fixed;left:50%;top:40%;width:min(120vw,620px);aspect-ratio:1;transform:translate(-50%,-50%);image-rendering:pixelated;pointer-events:none;z-index:6}
+#fx2{position:fixed;left:50%;top:44%;width:max(100vw,min(150vw,80vh));aspect-ratio:320/300;transform:translate(-50%,-50%);image-rendering:pixelated;pointer-events:none;z-index:6}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:30}
+#vig{position:fixed;inset:0;pointer-events:none;z-index:3;background:radial-gradient(ellipse at 50% 42%,#0000 45%,#000c 100%)}
+#scan{position:fixed;inset:0;pointer-events:none;z-index:4;opacity:.18;background:repeating-linear-gradient(0deg,#0000 0 2px,#000 2px 3px);mix-blend-mode:multiply}
+#load{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--sub);font-size:15px;letter-spacing:.2em}
+/* 測定中の表示 */
+#hud{position:fixed;inset:0;z-index:8;pointer-events:none}
+#hTop{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 14px);text-align:center}
+#hLabel{display:inline-block;font-size:15px;font-weight:800;letter-spacing:.5em;text-indent:.5em;color:var(--c);padding:3px 14px;border:1px solid var(--c);border-left-width:6px;border-right-width:6px;background:#000a;text-shadow:0 0 10px var(--c)}
+#hNum{margin-top:4px;line-height:1;color:#fff;text-shadow:0 0 18px var(--c),0 0 46px var(--c),0 3px 0 #000}
+#hVal{font-size:112px;letter-spacing:-.02em;display:inline-block}
+#hUnit{font-size:44px;margin-left:4px;color:var(--c)}
+#hSub{margin-top:2px;font-size:13px;font-weight:700;letter-spacing:.3em;text-indent:.3em;color:var(--sub);min-height:20px;text-shadow:0 0 8px #000}
+#hSub.hbig{font-size:26px;color:#fff;letter-spacing:.24em;text-indent:.24em;text-shadow:0 0 14px var(--c),0 2px 0 #000}
+#hStamp{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-8deg);font-size:64px;font-weight:900;letter-spacing:.1em;text-indent:.1em;white-space:nowrap;color:#fff;padding:6px 26px 8px;border:6px solid #fff;border-radius:8px;text-shadow:0 0 22px var(--c);box-shadow:0 0 30px var(--c),inset 0 0 22px var(--c);background:#0006;opacity:0}
+#hNo{position:absolute;left:0;right:0;top:57%;text-align:center;font-size:22px;font-weight:800;letter-spacing:.2em;text-indent:.2em;color:#fff;text-shadow:0 0 14px var(--c),0 2px 0 #000;opacity:0}
+#hNo b{display:block;font-size:54px;letter-spacing:.06em;text-indent:.06em;margin-top:2px}
+#gauge{position:absolute;right:10px;top:22%;bottom:30%;width:22px;display:flex;flex-direction:column-reverse;gap:3px}
+#gauge i{flex:1;background:#ffffff14;border-radius:1px;transform:skewY(-18deg)}
+#gauge i.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+#gaugeL{position:absolute;left:10px;top:22%;bottom:30%;width:22px;display:flex;flex-direction:column-reverse;gap:3px}
+#gaugeL i{flex:1;background:#ffffff14;border-radius:1px;transform:skewY(18deg)}
+#gaugeL i.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+#hTime{position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);height:4px;background:#ffffff1c;border-radius:2px;overflow:hidden}
+#hTime i{display:block;height:100%;width:100%;background:var(--c);transform-origin:0 50%}
+#seis{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 196px);height:54px;width:100%;opacity:0}
+#warn{position:fixed;left:0;right:0;z-index:9;height:34px;pointer-events:none;overflow:hidden;background:repeating-linear-gradient(-45deg,#ff2a2a 0 16px,#16090a 16px 32px);color:#fff;font-size:15px;font-weight:900;letter-spacing:.3em;line-height:34px;white-space:nowrap;text-shadow:0 0 6px #000,0 1px 0 #000;opacity:0}
+#warn1{top:calc(env(safe-area-inset-top,0px) + 0px)}#warn2{bottom:0}
+#warn span{display:inline-block}
+.wn{position:fixed;left:0;right:0;z-index:9;height:34px;pointer-events:none;overflow:hidden;background:repeating-linear-gradient(-45deg,#ff2a2a 0 16px,#16090a 16px 32px);color:#fff;font-size:15px;font-weight:900;letter-spacing:.3em;line-height:34px;white-space:nowrap;text-shadow:0 0 6px #000,0 1px 0 #000;opacity:0}
+.wn span{display:inline-block;padding-left:100%;animation:mq 5s linear infinite}
+@keyframes mq{to{transform:translateX(-100%)}}
+#cap{position:fixed;left:0;right:0;top:46%;text-align:center;z-index:9;pointer-events:none;font-size:30px;font-weight:900;letter-spacing:.3em;text-indent:.3em;color:#fff;text-shadow:0 0 16px var(--c),0 0 4px #000,0 2px 0 #000;opacity:0}
+/* 連打ボタン */
+#tap{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 5.5vh);z-index:12;width:136px;height:136px;margin-left:-68px;border-radius:50%;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;background:radial-gradient(circle at 38% 30%,#1c3a48,#06141b 70%);box-shadow:0 0 0 3px var(--c),0 0 0 9px #0009,0 0 34px var(--c),inset 0 0 22px #000;color:#fff;font-size:34px;font-weight:900;letter-spacing:.12em;text-indent:.12em;text-shadow:0 0 12px var(--c)}
+#tap:before{content:"";position:absolute;inset:-16px;border-radius:50%;border:2px dashed var(--c);opacity:.45;animation:rot 9s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+#tap small{display:block;font-size:11px;letter-spacing:.3em;text-indent:.3em;color:var(--c);margin-top:2px;font-weight:700}
+#tap.dead{box-shadow:0 0 0 3px #56666e,0 0 0 9px #0009,inset 0 0 22px #000;color:#8b979d;text-shadow:none;background:radial-gradient(circle at 38% 30%,#222a2e,#0a0d0f 70%)}
+#tap.dead:before{border-color:#56666e;animation:none;opacity:.3}
+#tap.dead small{color:#56666e}
+#tap.kai{background:radial-gradient(circle at 50% 50%,#5a0505,#0a0000 72%);box-shadow:0 0 0 3px #ff3030,0 0 0 9px #0009,0 0 44px #ff1a1a,0 0 90px #ff1a1a88,inset 0 0 26px #ff2a2a;color:#fff;text-shadow:0 0 14px #ff3030,0 0 30px #ff3030;animation:kp .7s ease-in-out infinite alternate}
+@keyframes kp{to{box-shadow:0 0 0 3px #ff6a4a,0 0 0 9px #0009,0 0 70px #ff3a1a,0 0 130px #ff1a1aaa,inset 0 0 40px #ff5a3a}}
+#tap svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0}
+#tap.kai svg{opacity:1}
+.rip{position:fixed;z-index:11;width:136px;height:136px;margin:-68px 0 0 -68px;border-radius:50%;border:3px solid var(--c);pointer-events:none}
+/* 通信の吹き出し */
+#op{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 53vh);transform:translateX(-50%);z-index:14;width:min(90vw,410px);background:#04141bf2;color:#eafaff;border:2px solid var(--c);border-radius:4px;padding:12px 14px 10px;font-size:17px;font-weight:800;line-height:1.65;text-align:left;box-shadow:0 0 26px var(--c2),0 8px 24px #000a;pointer-events:none}
+#op:before{content:"オペレーター";display:block;font-size:11px;letter-spacing:.3em;color:var(--c);margin-bottom:4px}
+#op b{color:var(--c);font-size:1.25em;text-shadow:0 0 10px var(--c)}
+#op small{display:block;margin-top:6px;font-size:12px;color:var(--sub);letter-spacing:.1em;text-align:right;animation:hb 1.2s ease-in-out infinite}
+@keyframes hb{50%{opacity:.4}}
+body.kai #op{background:#1a0404f2}
+/* 画面 */
+.panel{position:fixed;inset:0;z-index:20;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;justify-content:center;align-items:flex-start;padding:calc(env(safe-area-inset-top,0px) + 36vh) 10px calc(env(safe-area-inset-bottom,0px) + 18px)}
+#stats{padding-top:calc(env(safe-area-inset-top,0px) + 14px);background:#05080ce8;touch-action:pan-y;--c:#3fe0ff;--c2:#0b7f9c;--sub:#7f98a6;--line:#1f3340}
+.card{width:100%;max-width:430px;background:linear-gradient(#0c161cf2,#070c10f7);border:1px solid #27414f;border-radius:4px;box-shadow:0 18px 50px #000c,inset 0 0 0 1px #000;padding:20px 16px 18px;text-align:center;position:relative}
+.card:before{content:"";position:absolute;left:-1px;top:-1px;width:26px;height:26px;border-left:3px solid var(--c);border-top:3px solid var(--c)}
+.card:after{content:"";position:absolute;right:-1px;bottom:-1px;width:26px;height:26px;border-right:3px solid var(--c);border-bottom:3px solid var(--c)}
+h1{margin:2px 0 0;font-size:52px;font-weight:900;letter-spacing:.14em;text-indent:.14em;line-height:1.15;color:#fff;text-shadow:0 0 18px var(--c),0 3px 0 #000}
+h1 small{display:block;font-size:12px;letter-spacing:.5em;text-indent:.5em;color:var(--c);margin-bottom:6px;font-weight:700;text-shadow:none}
+.lead{font-size:15.5px;line-height:1.85;margin:10px 0 14px;color:#bfd3dc}
+#nm{width:100%;font-size:20px;font-weight:800;padding:12px 10px;border:1px solid #2f4b5a;border-radius:3px;background:#03070a;color:#fff;text-align:center;letter-spacing:.06em;outline:none}
+#nm:focus{border-color:var(--c);box-shadow:0 0 0 3px #3fe0ff33}
+.big{display:block;width:100%;background:linear-gradient(#6aeaff,#18a8c8);color:#02161d;font-weight:900;font-size:20px;padding:14px 10px;border-radius:3px;box-shadow:0 5px 0 #0a5a6e,0 10px 22px #0008;margin:12px 0 10px;letter-spacing:.3em;text-indent:.3em}
+.big:active{transform:translateY(3px);box-shadow:0 2px 0 #0a5a6e}
+body.kai .big{background:linear-gradient(#ff7a6a,#c81e1e);color:#1a0202;box-shadow:0 5px 0 #6e0a0a,0 10px 22px #0008}
+.sub{display:block;width:100%;border:1px solid #2f4b5a;font-size:15px;padding:11px 8px;border-radius:3px;margin:8px 0;background:#ffffff08;font-weight:700}
+.sub:active{background:#ffffff18}
+.row2{display:flex;gap:8px}.row2 .sub{margin:6px 0}
+.note{font-size:12.5px;color:var(--sub);min-height:18px;margin:4px 0}
+.note.err{color:#ff7a6a}
+.mini{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px}
+.mini button{font-size:12.5px;color:var(--sub);padding:6px 10px;border-radius:999px}
+#rWho{font-size:15px;color:#bfd3dc;margin:2px 0 4px;word-break:break-all}
+#rWho b{color:#fff;font-size:18px}
+#rBig{line-height:1.05;color:#fff;text-shadow:0 0 18px var(--c),0 0 44px var(--c),0 3px 0 #000;margin:2px 0 6px}
+#rBig .v{font-size:92px}
+#rBig .u{font-size:38px;color:var(--c);margin-left:3px}
+#rBig.txt .v{font-size:52px;letter-spacing:.1em}
+#rBig.kj .v{font-size:58px;letter-spacing:.04em}
+#rRank{display:inline-block;font-size:21px;font-weight:900;letter-spacing:.2em;text-indent:.2em;color:#02161d;background:var(--c);padding:4px 18px 5px;border-radius:2px;box-shadow:0 0 22px var(--c)}
+body.kai #rRank{color:#fff}
+#rFort{font-size:17px;font-weight:800;color:#fff;margin-top:10px;letter-spacing:.08em}
+#rFort b{font-size:34px;color:var(--c);text-shadow:0 0 14px var(--c);margin-left:8px}
+.bar{height:12px;border-radius:2px;background:#03070a;border:1px solid #27414f;overflow:hidden;margin:12px 0 2px}
+.bar i{display:block;height:100%;width:0;background:var(--c);box-shadow:0 0 10px var(--c)}
+#rWord{font-size:16.5px;line-height:1.8;margin:12px 2px 10px;color:#eafaff}
+#rShare{font-size:13px;color:#bfd3dc;line-height:1.7;margin:4px 0 10px;padding:8px;border-top:1px solid #1f3340;border-bottom:1px solid #1f3340}
+#rShare b{color:#fff}
+#rFan,#tFan{font-size:11px;color:#5f7480;margin-top:8px}
+#deadWrap{height:118px;position:relative;margin:2px 0 6px}
+#dead{position:absolute;left:50%;top:6px;width:104px;height:104px;margin-left:-52px;border-radius:50%;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;box-shadow:0 0 0 3px #56666e,0 0 0 8px #0009,inset 0 0 22px #000;color:#8b979d;background:radial-gradient(circle at 38% 30%,#222a2e,#0a0d0f 70%);font-size:26px;font-weight:900;letter-spacing:.12em;text-indent:.12em}
+#dead small{display:block;font-size:10px;letter-spacing:.2em;text-indent:.2em;color:#56666e;margin-top:2px;font-weight:700}
+/* 一覧 */
+#stHead{display:flex;align-items:center;gap:8px;min-height:40px}
+#stats.k #stT{font-size:16px;letter-spacing:.02em}
+#stT{flex:1;text-align:left;font-size:20px;font-weight:900;letter-spacing:.08em;color:#fff}
+#kTools{display:flex;gap:6px;align-items:center}
+#kQ{width:104px;font-size:13px;padding:7px 8px;border:1px solid #40201f;border-radius:3px;background:#0a0303;color:#fff;outline:none}
+#kF{font-size:13px;padding:7px 4px;border:1px solid #40201f;border-radius:3px;background:#0a0303;color:#fff;outline:none;max-width:98px}
+table.st{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+table.st td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+table.st td.b{width:34%}
+table.st td.b span{display:block;height:8px;border-radius:1px;background:var(--c);box-shadow:0 0 8px var(--c);min-width:2px}
+table.st td.p{text-align:right}
+table.st tr.me td{background:#3fe0ff1c}
+table.st td.kn{width:92px;font-weight:900;color:#fff}
+table.st td.nm{white-space:normal;word-break:break-all}
+table.st td.kf{text-align:right;font-size:17px;color:var(--c);width:74px}
+table.st tr.cn td{color:#a99;background:#ffffff05}
+table.st tr.cn td.kn{color:#d8c8c8}
+table.st tr.sep td{padding:4px;font-size:11px;letter-spacing:.3em;color:var(--sub);text-align:center;background:#ffffff08}
+#stMore{font-size:12.5px;color:var(--sub);padding:10px 0}
+#stBox{min-height:120px}
+#stats.k{--c:#ff3030;--c2:#8a0d0d;--sub:#b08a8a;--line:#40201f}
+table.st td.nm small{display:block;font-size:11.5px;color:var(--sub);margin-top:2px}
+table.st td.kf small{font-size:11px;color:var(--sub);margin-right:3px}
+#rAb{font-size:15px;font-weight:700;color:#ffd9d0;margin-top:6px;letter-spacing:.06em}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);z-index:60;width:min(92vw,420px);background:#eafaff;color:#02161d;font-size:14px;line-height:1.6;padding:12px 16px;border-radius:4px;box-shadow:0 8px 24px #0008;text-align:center}
+.glitch{animation:gl .12s steps(2) infinite}
+@keyframes gl{0%{transform:translate(2px,-1px);filter:hue-rotate(40deg)}50%{transform:translate(-3px,2px)}100%{transform:translate(1px,1px);filter:hue-rotate(-40deg)}}
+</style>
+<!-- nasubi-track: 結果画面とXへの投稿の回数を記録（ゲームの動きには影響しない） -->
+<script>(function(){try{var G="kaiho",IDS=["result"];
+function ev(n){try{if(typeof gtag==='function')gtag('event',n,{game:G});}catch(e){}}
+var o=window.open;window.open=function(u){try{if(/intent\/(post|tweet)/.test(String(u)))ev('x_share');}catch(e){}return o.apply(window,arguments);};
+if(!IDS.length)return;
+function vis(e){if(!e||!e.isConnected||e.closest('[hidden]'))return false;var r=e.getBoundingClientRect();if(r.width<1||r.height<1)return false;for(var n=e;n&&n.nodeType===1;n=n.parentElement){var s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden'||parseFloat(s.opacity)<0.05)return false;}return true;}
+var was={};setInterval(function(){try{var any=false;for(var i=0;i<IDS.length;i++){if(vis(document.getElementById(IDS[i])))any=true;}if(any&&!was.v)ev('result_view');was.v=any;}catch(e){}},700);
+}catch(e){}})();</script>
+<!-- nasubi-ad: スマホのとき、結果画面とタイトル画面の決めた場所に広告の帯（と、決めた場所だけその下に大きい広告）を出す（遊んでいる最中は出さない・ボタンに重ねない・広告の幅320pxを切らない・画面が出たらすぐ見せるが、最初の1.2秒は押しても反応しない・画面が出るたびに新しい広告を読みこむ（場所ごとに30秒に1回まで）・画面が隠れて2秒たったら広告を外して止める・タイトル画面はタイトル用の広告枠を使う） -->
+<script>(function(){try{var C=[{"a": "#result .card", "v": "#result"}, {"a": "#title div.card", "v": "#title", "t": 1, "b": 1, "m": 20, "x": "", "x2": ""}],BIG=1,M=20,EX="",EX2="",AD='https://nasubi-no-oniwa.com/ad/',AD2='https://nasubi-no-oniwa.com/ad/big.html',TAD='https://nasubi-no-oniwa.com/ad/t.html',TAD2='https://nasubi-no-oniwa.com/ad/tbig.html',LOCK=1200,HOLD=2000,MIN=30000;
+if(/[?&]noad=1/.test(location.search))return;
+if(!/iPhone|iPod|Android|Mobile|Windows Phone|BlackBerry/i.test(navigator.userAgent||''))return;
+var S=[];
+function vis(e){if(!e||!e.isConnected||e.closest('[hidden]'))return false;var r=e.getBoundingClientRect();if(r.width<1||r.height<1)return false;for(var n=e;n&&n.nodeType===1;n=n.parentElement){var s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden'||parseFloat(s.opacity)<0.05)return false;}return true;}
+function opt(i,k,d){return C[i][k]===undefined?d:C[i][k];}
+function mk(i){var b=document.createElement('div');b.className='nsb-ad';b.style.cssText='display:block;position:static;float:none;box-sizing:content-box;width:320px;min-width:320px;max-width:none;height:50px;margin:'+opt(i,'m',M)+'px calc((100% - 320px) / 2) 0;padding:0;border:0;background:none;box-shadow:none;border-radius:0;transform:none;overflow:hidden;flex:0 0 auto;align-self:center;'+opt(i,'x',EX);return b;}
+function mk2(i){var g=document.createElement('div');g.className='nsb-ad nsb-big';g.style.cssText='display:block;position:static;float:none;box-sizing:content-box;width:300px;min-width:300px;max-width:none;height:250px;margin:20px calc((100% - 300px) / 2) 0;padding:0;border:0;background:none;box-shadow:none;border-radius:0;transform:none;overflow:hidden;flex:0 0 auto;align-self:center;'+opt(i,'x2',EX2);return g;}
+function mkf(u,w,h){var f=document.createElement('iframe');f.title='ad';f.setAttribute('scrolling','no');f.width=w;f.height=h;f.style.cssText='border:0;margin:0;padding:0;width:'+w+'px;height:'+h+'px;display:block;max-width:none;visibility:hidden;pointer-events:none';f.src=u;return f;}
+function place(){for(var i=0;i<C.length;i++){var a=document.querySelector(C[i].a);if(!a)continue;var s=S[i]||(S[i]={b:mk(i),g:opt(i,'b',BIG)?mk2(i):null,on:false,since:0,hid:0,last:0,f:null,f2:null});var b=s.b;
+if(C[i].p==='first'){if(a.firstElementChild!==b)a.insertBefore(b,a.firstChild);}else if(b.parentNode!==a)a.appendChild(b);
+if(s.g&&b.nextSibling!==s.g)a.insertBefore(s.g,b.nextSibling);}}
+function off(s,now){if(s.f){s.f.style.visibility='hidden';s.f.style.pointerEvents='none';}if(s.f2){s.f2.style.visibility='hidden';s.f2.style.pointerEvents='none';}s.on=false;s.since=0;s.hid=now;}
+function kill(s){if(s.f){if(s.f.parentNode)s.f.parentNode.removeChild(s.f);s.f=null;}if(s.f2){if(s.f2.parentNode)s.f2.parentNode.removeChild(s.f2);s.f2=null;}}
+function tick(){try{place();var k=-1,i,s,res=false,now=Date.now();
+for(i=0;i<C.length;i++){s=S[i];if(!C[i].t&&s&&vis(document.querySelector(C[i].v))&&vis(s.b)){k=i;res=true;break;}}
+if(k<0)for(i=0;i<C.length;i++){s=S[i];if(C[i].t&&s&&vis(document.querySelector(C[i].v))&&vis(s.b)){k=i;break;}}
+if(document.hidden)k=-1;
+for(i=0;i<C.length;i++){s=S[i];if(!s)continue;
+if(C[i].t){var d=(res&&vis(document.querySelector(C[i].v)))?'none':'block';if(s.b.style.display!==d){s.b.style.display=d;if(s.g)s.g.style.display=d;}}
+if(i!==k){if(s.on)off(s,now);if(s.f&&now-s.hid>=HOLD&&now-s.last>=MIN)kill(s);}}
+if(k<0)return;
+s=S[k];
+if(!s.on){s.on=true;s.since=now;}
+if(!s.f){var t=!!C[k].t;s.f=mkf(t?TAD:AD,320,50);s.b.appendChild(s.f);if(s.g){s.f2=mkf(t?TAD2:AD2,300,250);s.g.appendChild(s.f2);}s.last=now;}
+if(s.f.parentNode!==s.b)s.b.appendChild(s.f);if(s.f2&&s.f2.parentNode!==s.g)s.g.appendChild(s.f2);
+var pe=(now-s.since<LOCK)?'none':'auto';
+s.f.style.visibility='visible';s.f.style.pointerEvents=pe;if(s.f2){s.f2.style.visibility='visible';s.f2.style.pointerEvents=pe;}
+}catch(_){}}
+function go(){place();try{new MutationObserver(place).observe(document.body,{childList:true,subtree:true});}catch(_){}setInterval(tick,300);}
+if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
+}catch(e){}})();</script>
+<!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
+<script>window.NSB_NEXT={"g": "kaiho", "r": [{"a": "#result .card", "v": "#result"}], "ad": 1};</script>
+<script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
+<script src="gsap.min.js?v=11251643"></script>
+<script src="pfx.js?v=11251643"></script>
+<script src="pfx2.js?v=11251643"></script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="vig"></div>
+<div id="scan"></div>
+<canvas id="fxc" width="160" height="160"></canvas>
+<canvas id="fx2" width="320" height="300"></canvas>
+<canvas id="crack"></canvas>
+<div id="hud" hidden>
+  <div id="hTop">
+    <div id="hLabel">解放戦力</div>
+    <div id="hNum" class="num"><span id="hVal">0</span><span id="hUnit">%</span></div>
+    <div id="hSub"></div>
+  </div>
+  <canvas id="seis"></canvas>
+  <div id="gaugeL"></div>
+  <div id="gauge"></div>
+  <div id="hStamp"></div>
+  <div id="hNo"></div>
+  <div id="hTime"><i></i></div>
+</div>
+<div class="wn" id="warn1"><span>⚠ 怪獣反応を検知　⚠ 怪獣反応を検知　⚠ 怪獣反応を検知　⚠ 怪獣反応を検知　⚠ 怪獣反応を検知　</span></div>
+<div class="wn" id="warn2"><span>⚠ 総員、退避せよ　⚠ 総員、退避せよ　⚠ 総員、退避せよ　⚠ 総員、退避せよ　⚠ 総員、退避せよ　</span></div>
+<div id="cap"></div>
+<button id="tap" hidden><svg viewBox="0 0 136 136"><g fill="none" stroke="#ff5a3a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M70 66 L58 44 L64 30 L52 12"/><path d="M58 44 L40 38 L30 22"/><path d="M70 66 L92 56 L104 62 L124 50"/><path d="M92 56 L98 38 L112 30"/><path d="M70 66 L78 88 L72 104 L84 126"/><path d="M78 88 L98 96 L108 114"/><path d="M70 66 L46 76 L36 70 L12 82"/><path d="M46 76 L40 98 L24 108"/></g><g fill="none" stroke="#fff" stroke-width=".9" stroke-linecap="round" opacity=".9"><path d="M70 66 L58 44 L64 30"/><path d="M70 66 L92 56 L104 62"/><path d="M70 66 L78 88 L72 104"/><path d="M70 66 L46 76 L36 70"/></g></svg><span id="tapT">連打</span><small id="tapS"></small></button>
+<div id="op" hidden></div>
+<div id="flash"></div>
+<div id="load">…</div>
+<div id="toast" hidden></div>
+
+<div class="panel" id="title" hidden>
+  <div class="card">
+    <h1><small>かいほうせんりょく</small>解放戦力</h1>
+    <p class="lead">名前を入れて、連打しろ。<br>防衛隊スーツの力を何％引き出せるか、<br>あなたの解放戦力を測定する。</p>
+    <input id="nm" maxlength="15" autocomplete="off" enterkeyhint="go" placeholder="名前を入れる">
+    <div class="note" id="nmNote"></div>
+    <button class="big" id="startBtn">測定開始</button>
+    <div class="mini"><button id="sndBtn"></button><button id="stBtn">みんなの解放戦力</button></div>
+    <div id="tFan">※非公式のファン診断です</div>
+  </div>
+</div>
+
+<div class="panel" id="result" hidden>
+  <div class="card">
+    <div id="deadWrap" hidden><button id="dead">連打<small>反応なし</small></button></div>
+    <div id="rWho"></div>
+    <div id="rBig" class="num"></div>
+    <div><span id="rRank"></span></div>
+    <div id="rFort" class="num" hidden></div>
+    <div class="bar" id="rBarW"><i id="rBar"></i></div>
+    <div id="rWord"></div>
+    <div id="rShare"></div>
+    <div class="row2"><button class="sub" id="imgBtn">画像にする</button><button class="sub" id="xBtn">𝕏 に投稿</button></div>
+    <button class="big" id="again">ほかの名前で測る</button>
+    <button class="sub" id="stBtn2">みんなの解放戦力</button>
+    <div id="rFan">※非公式のファン診断です</div>
+  </div>
+</div>
+
+<div class="panel" id="stats" hidden>
+  <div class="card">
+    <div id="stHead"><div id="stT"></div><div id="kTools" hidden><input id="kQ" placeholder="名前・番号" autocomplete="off" enterkeyhint="search"><select id="kF"><option value="0">すべて</option><option value="98">9.8以上</option><option value="95">9.5以上</option><option value="90">9.0以上</option><option value="85">8.5以上</option></select></div></div>
+    <div class="note" id="stNote"></div>
+    <div id="stBox"></div>
+    <div id="stMore" hidden></div>
+    <button class="sub" id="stBack">もどる</button>
+  </div>
+</div>
+
+<script type="module" src="game.js?v=11251643"></script>
+</body>
+</html>
