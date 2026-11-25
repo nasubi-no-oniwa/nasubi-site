@@ -1,5 +1,5 @@
-import { THREE, GLTFLoader } from './lib.js?v=11251614';
-import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251614';
+import { THREE, GLTFLoader } from './lib.js?v=11251619';
+import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251619';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -17,7 +17,8 @@ const canonKey = s => kata2hira(clean(s)).toLowerCase();   // 原作キャラは
 function hash(s, seed) { let h = (2166136261 ^ seed) >>> 0; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13; h = Math.imul(h, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
 function hkey(s) { const a = Math.floor(hash(s, 0x51ed) * 4294967296), b = Math.floor(hash(s, 0x9e37) * 4294967296); return (a.toString(36) + b.toString(36)).padStart(10, '0').slice(0, 14); }
 const CMAP = new Map();
-CHARS.forEach(c => [c.s + c.m, c.sy + c.my, c.s + c.my, c.sy + c.m, c.m, c.my].forEach(v => { const k = canonKey(v); if (!CMAP.has(k)) CMAP.set(k, c); })); // 名字だけは対象外
+const YAKU = { '隊長': 'たいちょう', '副隊長': 'ふくたいちょう', '小隊長': 'しょうたいちょう', '長官': 'ちょうかん', '副長官': 'ふくちょうかん' }; // 役職の読み
+CHARS.forEach(c => [c.s + c.m, c.sy + c.my, c.s + c.my, c.sy + c.m].concat(c.p == null ? [] : [c.m, c.my], (c.t || []).flatMap(t => [c.s + t, c.sy + t, c.s + YAKU[t], c.sy + YAKU[t]])).forEach(v => { const k = canonKey(v); if (!CMAP.has(k)) CMAP.set(k, c); })); // 名字だけは対象外。測定不能のキャラは、名字つきのときだけ（下の名前だけではふつうの名前として扱う）
 // 出やすさ（原作寄り：ふつうの隊員は20%前後、90%以上は約1%）
 const DIST = [[.08, 1, 9], [.55, 10, 29], [.20, 30, 49], [.10, 50, 69], [.045, 70, 84], [.015, 85, 89], [.01, 90, 100]];
 function pctOf(u, v) { let x = u; for (const [w, a, b] of DIST) { if (x < w) { const t = a >= 90 ? v * v : v; return Math.min(b, a + Math.floor(t * (b - a + 1))); } x -= w; } return 20; }
@@ -161,8 +162,8 @@ const PT = { suit: { eye: [0, 2.551, .136], chest: [0, 2.125, .2] }, kaiju: { ey
   const part = (geo, x, y, z, sx, sy, sz) => { const m = new THREE.Mesh(geo, suitMat); m.position.set(x, y, z); m.scale.set(sx || 1, sy || 1, sz || 1); tmp.add(m); };
   part(capG(.33, .9), 0, 1.6, 0, 1.1, 1, .7); part(sphG(.24), 0, 2.5, 0, .92, 1.08, 1);[-1, 1].forEach(s => { part(capG(.11, 1.1), s * .6, 1.5, 0); part(capG(.15, 1.0), s * .2, .6, 0); });
   const ld = new GLTFLoader(), use = (g, par, done) => { g.scene.traverse(o => { if (o.isMesh) { o.material = suitMat; o.frustumCulled = false; } }); par.add(g.scene); done && done(); };
-  ld.load('suit.glb?v=11251614', g => use(g, figH, () => figH.remove(tmp)), undefined, () => { });
-  ld.load('kaiju.glb?v=11251614', g => use(g, figK), undefined, () => { const c = tmp.clone(); c.scale.setScalar(1.15); figK.add(c); });
+  ld.load('suit.glb?v=11251619', g => use(g, figH, () => figH.remove(tmp)), undefined, () => { });
+  ld.load('kaiju.glb?v=11251619', g => use(g, figK), undefined, () => { const c = tmp.clone(); c.scale.setScalar(1.15); figK.add(c); });
 }
 // 目（怪獣側）
 const eyeMat = new THREE.SpriteMaterial({ map: null, color: '#ff5a2a', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
