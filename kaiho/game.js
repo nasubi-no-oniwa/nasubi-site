@@ -1,5 +1,5 @@
-import { THREE, GLTFLoader } from './lib.js?v=11251628';
-import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251628';
+import { THREE, GLTFLoader } from './lib.js?v=11251643';
+import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251643';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -156,14 +156,14 @@ const suitMat = new THREE.ShaderMaterial({
 const fig = new THREE.Group(); scene.add(fig);
 const figH = new THREE.Group(), figK = new THREE.Group(); fig.add(figH, figK); figK.visible = false; // 人の側（スーツ）と、怪獣の側
 // Blender で作ったモデルの目・胸の位置（build_models.py が書きだした値）
-const PT = { suit: { eye: [0, 2.551, .136], chest: [0, 2.125, .2] }, kaiju: { eyeL: [.054, 2.877, .275], eyeR: [-.052, 2.878, .275], chest: [0, 2.267, .33] } };
+const PT = { suit: { eye: [0, 2.551, .136], chest: [0, 2.125, .2] }, kaiju: { eyeL: [.034, 2.566, .62], eyeR: [-.073, 2.566, .62], chest: [0, 2.05, .46] } };
 { // 読みこめるまでの仮の人型（丸と筒）
   const tmp = new THREE.Group(); figH.add(tmp); const capG = (r, l) => new THREE.CapsuleGeometry(r, l, 6, 14), sphG = r => new THREE.SphereGeometry(r, 18, 12);
   const part = (geo, x, y, z, sx, sy, sz) => { const m = new THREE.Mesh(geo, suitMat); m.position.set(x, y, z); m.scale.set(sx || 1, sy || 1, sz || 1); tmp.add(m); };
   part(capG(.33, .9), 0, 1.6, 0, 1.1, 1, .7); part(sphG(.24), 0, 2.5, 0, .92, 1.08, 1);[-1, 1].forEach(s => { part(capG(.11, 1.1), s * .6, 1.5, 0); part(capG(.15, 1.0), s * .2, .6, 0); });
   const ld = new GLTFLoader(), use = (g, par, done) => { g.scene.traverse(o => { if (o.isMesh) { o.material = suitMat; o.frustumCulled = false; } }); par.add(g.scene); done && done(); };
-  ld.load('suit.glb?v=11251628', g => use(g, figH, () => figH.remove(tmp)), undefined, () => { });
-  ld.load('kaiju.glb?v=11251628', g => use(g, figK), undefined, () => { const c = tmp.clone(); c.scale.setScalar(1.15); figK.add(c); });
+  ld.load('suit.glb?v=11251643', g => use(g, figH, () => figH.remove(tmp)), undefined, () => { });
+  ld.load('kaiju.glb?v=11251643', g => use(g, figK), undefined, () => { const c = tmp.clone(); c.scale.setScalar(1.15); figK.add(c); });
 }
 // 目（怪獣側）
 const eyeMat = new THREE.SpriteMaterial({ map: null, color: '#ff5a2a', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
@@ -414,7 +414,7 @@ function lockHuman(R) {
   setVal(String(R.pct), '%'); setGauge(R.pct / 100); G.uProg.value = .04 + .96 * R.pct / 100;
   sfx('lock'); flash('#c8f7ff', top ? .95 : .7, top ? 1.1 : .7); wave(); beamUp(.5 + R.pct / 100); shake = .25 + R.pct / 100 * .6; emit(40 + R.pct, true);
   G.uPulse.value = 1; gsap.fromTo(G.uPow, { value: .4 + R.pct / 100 }, { value: R.pct / 100 * .35, duration: 1.2 });
-  fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 5, palette: ramp('#3fe0ff') }); fx2Add('plasma', { x: 160, y: 150, seed: R.pct, palette: ramp('#3fe0ff') }, 2); if (R.pct >= 60) fx2Add('strike', { x: 160, y: 276, seed: R.pct + 3, palette: ramp('#8ff0ff') }, 3.2);
+  fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 5, palette: ramp('#3fe0ff') }); fx2Add('plasma', { x: 160, y: 150, seed: R.pct, palette: ['#04141c', '#0a3a52', '#0f7fa6', '#22b8e0', '#5fe6ff', '#c4f6ff', '#ffffff'], accent: ['#0a3a52', '#18a0c8', '#3fe0ff', '#b8f6ff', '#ffffff'] }, 2); if (R.pct >= 60) fx2Add('strike', { x: 160, y: 276, seed: R.pct + 3, palette: ramp('#8ff0ff'), sparks: ramp('#3fe0ff') }, 3.2);
   gsap.fromTo(big, { scale: 1.9 }, { scale: 1, duration: .6, ease: 'elastic.out(1,.45)' });
   gsap.fromTo(CAM, { d: 6.6 }, { d: 7.7, duration: 1.1, ease: 'power3.out' });
   $('hSub').textContent = '測定完了'; try { if (navigator.vibrate) navigator.vibrate([30, 40, 60]); } catch (e) { }
@@ -454,7 +454,7 @@ function goKaiju(el) {
     gsap.to(CRK, { alpha: .22, duration: 1.2, delay: .4, onUpdate: crackDraw });
     figH.visible = false; figK.visible = true; core.position.set(PT.kaiju.chest[0], PT.kaiju.chest[1], PT.kaiju.chest[2] + .05); // 赤い光のなかで、怪獣の体に入れかわる
     gsap.fromTo(figK.scale, { x: .82, y: .82, z: .82 }, { x: 1, y: 1, z: 1, duration: 1.5, ease: 'elastic.out(1,.55)' });
-    camTo({ d: 7.3, off: .03, y: .95, ty: 1.55 }, 1.4, 'power3.out'); wave(); wave(1); emit(120, true);
+    camTo({ d: 8.8, off: .05, y: 1.05, ty: 1.4 }, 1.4, 'power3.out'); wave(); wave(1); emit(120, true);
     fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3020') }); fx2Add('wipe', { x: 160, y: 150, seed: 6 }, 2); fx2Add('slam', { x: 160, y: 272, seed: 6, palette: ramp('#ff3020') }, 3.4);
     gsap.to(['#warn1', '#warn2'], { opacity: 1, duration: .3 }); gsap.to(['#warn1', '#warn2'], { opacity: 0, duration: .5, delay: 2.6 });
     $('seis').style.opacity = 1; SEIS.on = true; SEIS.amp = .06; SEIS.buf.fill(0);
@@ -467,9 +467,9 @@ function lockKaiju(R) {
   setVal(fstr(f), '', f == null ? 76 : 0); setGauge(f == null ? 0 : f / 100); G.uKp.value = 1; SEIS.amp = 1;
   sfx('roar'); sfx('lock'); flash(top ? '#ffffff' : '#ff3a1a', 1, top ? 1.6 : .9); wave(); gsap.delayedCall(.18, () => wave(1)); beamUp(1.2); shake = top ? 1.6 : 1.1; emit(220, true); G.uPulse.value = 1;
   gsap.fromTo(G.uPow, { value: 1.4 }, { value: .35, duration: 1.6 });
-  fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 9, palette: ramp('#ff3020') }); fx2Add('slam', { x: 160, y: 272, seed: 9, palette: ramp('#ff3020') }, 3.4); fx2Add('strike', { x: 160, y: 276, seed: 12, palette: ramp('#ff6a3a') }, 3.2);
+  fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 9, palette: ramp('#ff3020') }); fx2Add('slam', { x: 160, y: 272, seed: 9, palette: ramp('#ff3020') }, 3.4); fx2Add('strike', { x: 160, y: 276, seed: 12, palette: ramp('#ff6a3a'), sparks: ramp('#ff3020') }, 3.2);
   gsap.fromTo('#hVal', { scale: 2.1 }, { scale: 1, duration: .7, ease: 'elastic.out(1,.4)' });
-  gsap.fromTo(CAM, { d: 6.0 }, { d: 7.3, duration: 1.3, ease: 'power3.out' });
+  gsap.fromTo(CAM, { d: 7.4 }, { d: 8.8, duration: 1.3, ease: 'power3.out' });
   $('hSub').textContent = '計測完了'; try { if (navigator.vibrate) navigator.vibrate([60, 40, 60, 40, 200]); } catch (e) { }
   gsap.delayedCall(.7, () => { const st = $('hStamp'); st.textContent = ft.name; st.style.fontSize = ft.name.length > 4 ? '40px' : '64px'; gsap.fromTo(st, { opacity: 0, scale: 3.4 }, { opacity: 1, scale: 1, duration: .3, ease: 'power4.in', onComplete() { sfx('stamp'); shake = Math.max(shake, .7); wave(1); if (top) { sfx('roar'); flash('#ffffff', .8, 1.2); emit(200, true); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 3, palette: ramp('#ffd0a0') }); } } }); });
   const showNo = no => { R.kai.no = no || R.kai.no || null; const el = $('hNo'); el.innerHTML = '識別番号<b>' + (R.kai.no ? '怪獣' + R.kai.no + '号' : '照会中…') + '</b>'; gsap.fromTo(el, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .35 }); sfx('num'); gsap.delayedCall(.12, () => sfx('num')); gsap.delayedCall(.24, () => sfx('num')); };
@@ -486,11 +486,11 @@ function fillResult(R) {
   $('deadWrap').hidden = !(R.kai && !R.kaiDone && R.pct === 0); gsap.set('#dead', { x: 0, y: 0 });
   $('rFort').hidden = !k; $('rBarW').hidden = R.type === 'unknown';
   if (k) {
-    const ft = fortX(R.kai.f), who = R.kai.owner || R.name;
-    $('rWho').innerHTML = `「<b>${esc(who)}</b>」の正体は`; big.classList.add('kj'); big.innerHTML = `<span class="v">${R.kai.no ? '怪獣' + R.kai.no + '号' : '大怪獣'}</span>`;
+    const ft = fortX(R.kai.f), who = R.kai.owner || R.name, rec = R.kai.canon && !R.kai.owner && !!kaijuNo(canonKey(R.name)); // rec：原作の識別怪獣を番号で入れたとき
+    $('rWho').innerHTML = rec ? '識別怪獣の記録' : `「<b>${esc(who)}</b>」の正体は`; big.classList.add('kj'); big.innerHTML = `<span class="v">${R.kai.no ? '怪獣' + R.kai.no + '号' : '大怪獣'}</span>`;
     $('rRank').textContent = ft.name; $('rFort').innerHTML = 'フォルティチュード<b>' + (R.kai.est ? '<small style="font-size:.5em">推定</small>' : '') + fstr(R.kai.f) + '</b><div id="rAb">能力：' + esc(R.kai.ab || '不明') + '</div>'; $('rWord').textContent = ft.word + (R.kai.no ? '' : '（識別番号は、通信できたときに決まります）');
     $('stBtn2').textContent = '識別怪獣の一覧'; $('again').textContent = 'ほかの名前で測る';
-    POST = `「${who}」は怪獣だった。\n${R.kai.no ? '識別番号【怪獣' + R.kai.no + '号】' : '【大怪獣】'}フォルティチュード${fstr(R.kai.f)}\n能力：${R.kai.ab || '不明'}\n${TAG}`;
+    POST = (rec ? '識別怪獣の記録を照会した。' : `「${who}」は怪獣だった。`) + `\n${R.kai.no ? '識別番号【怪獣' + R.kai.no + '号】' : '【大怪獣】'}フォルティチュード${fstr(R.kai.f)}\n能力：${R.kai.ab || '不明'}\n${TAG}`;
   } else if (R.type === 'unknown') {
     $('rWho').innerHTML = `「<b>${esc(R.name)}</b>」の解放戦力は`; big.classList.add('txt'); big.innerHTML = '<span class="v">測定不能</span>';
     $('rRank').textContent = UNKNOWN.name; $('rWord').textContent = UNKNOWN.word; $('stBtn2').textContent = 'みんなの解放戦力';
@@ -515,7 +515,7 @@ function shareLine() {
 function showResult() {
   const R = LAST, k = R.stage === 'k'; ST = 'result'; fillResult(R);
   $('hud').hidden = true; $('tap').hidden = true; gsap.to(['#warn1', '#warn2'], { opacity: 0, duration: .2 }); if (k) gsap.to(CRK, { alpha: .12, duration: .6, onUpdate: crackDraw });
-  camTo({ d: 9.4, off: .27, y: 1.5, ty: 1.35 }, 1.0);
+  camTo({ d: k ? 11.4 : 9.4, off: .27, y: 1.5, ty: 1.35 }, 1.0);
   $('result').hidden = false; $('result').scrollTop = 0;
   gsap.fromTo('#result .card', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .5, ease: 'power3.out' });
   gsap.fromTo('#rBar', { width: '0%' }, { width: (k ? Math.min(100, R.kai.f || 0) : R.pct || 0) + '%', duration: 1.1, delay: .3, ease: 'power2.out' });
@@ -636,7 +636,7 @@ async function makeCard(R) {
   const fade = x.createLinearGradient(0, 430, 0, 610); fade.addColorStop(0, '#05080c00'); fade.addColorStop(1, '#05080c'); x.fillStyle = fade; x.fillRect(0, 430, W, 180);
   x.strokeStyle = col; x.lineWidth = 4; x.strokeRect(22, 22, W - 44, H - 44); x.fillStyle = col; x.fillRect(22, 22, 90, 8); x.fillRect(22, 22, 8, 90); x.fillRect(W - 112, H - 30, 90, 8); x.fillRect(W - 30, H - 112, 8, 90);
   x.textAlign = 'center'; x.textBaseline = 'alphabetic';
-  const who = k ? `「${R.kai.owner || R.name}」の正体は` : `「${R.name}」の解放戦力は`; x.fillStyle = '#bfd3dc'; fit(who, 44, 700, W - 160); x.fillText(who, W / 2, 640);
+  const who = k ? (R.kai.canon && !R.kai.owner && kaijuNo(canonKey(R.name)) ? '識別怪獣の記録' : `「${R.kai.owner || R.name}」の正体は`) : `「${R.name}」の解放戦力は`; x.fillStyle = '#bfd3dc'; fit(who, 44, 700, W - 160); x.fillText(who, W / 2, 640);
   x.shadowColor = col; x.shadowBlur = 50; x.fillStyle = '#ffffff';
   let y = 0;
   if (k) { const t = R.kai.no ? '怪獣' + R.kai.no + '号' : '大怪獣'; fit(t, 190, 900, W - 160); x.fillText(t, W / 2, 830); x.shadowBlur = 0; const ft = fortX(R.kai.f); x.fillStyle = col; x.font = F(56); x.fillText('フォルティチュード  ' + (R.kai.est ? '推定' : '') + fstr(R.kai.f), W / 2, 930); x.fillStyle = '#ffffff'; x.font = F(48); const tw = x.measureText(ft.name).width + 90; x.fillStyle = col; x.fillRect(W / 2 - tw / 2, 962, tw, 76); x.fillStyle = '#fff'; x.fillText(ft.name, W / 2, 1018); x.fillStyle = '#ffd9d0'; fit('能力：' + (R.kai.ab || '不明'), 44, 800, W - 180); x.fillText('能力：' + (R.kai.ab || '不明'), W / 2, 1100); y = 1164; x.font = F(34, 600); x.fillStyle = '#eafaff'; wrap(ft.word, W - 200).slice(0, 1).forEach((l, i) => x.fillText(l, W / 2, y + i * 50)); }
