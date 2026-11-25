@@ -1,8 +1,9 @@
 // 剣士（全員同じモデル。関節つき・アニメ風の塗りと輪郭線）と、型ごとの動き
-import { THREE } from './lib.js?v=11260120';
+import { THREE } from './lib.js?v=11260200';
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function toonMap() { const d = new Uint8Array([70, 70, 70, 255, 150, 150, 150, 255, 215, 215, 215, 255, 255, 255, 255, 255]); const t = new THREE.DataTexture(d, 4, 1, THREE.RGBAFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; }
-const GM = toonMap(), OUT = new THREE.MeshBasicMaterial({ color: 0x05050a, side: THREE.BackSide });
+const GM = toonMap();
+export const OUT = new THREE.MeshBasicMaterial({ color: 0x05050a, side: THREE.BackSide });
 export const toon = (c, o) => new THREE.MeshToonMaterial(Object.assign({ color: c, gradientMap: GM }, o || {}));
 // 輪郭線つきの部品
 export function part(geo, mat, ol) { const m = new THREE.Mesh(geo, mat); if (ol !== 0) { const o = new THREE.Mesh(geo, OUT); o.scale.setScalar(ol || 1.09); m.add(o); } return m; }

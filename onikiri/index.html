@@ -114,6 +114,8 @@ table.st tr.me td{background:#c9a14a22}
 #wzB{left:0;top:0;width:60px;height:60px;z-index:1;opacity:.75}#wzB b{width:50px;height:50px;font-size:9.5px}
 .wzc.full{box-shadow:0 0 22px var(--tint),0 0 0 2px #fff}.wzc.full b{color:#fff}
 #wzKey{position:absolute;right:0;bottom:-16px;width:88px;text-align:center;font-size:10px;color:#fff9}
+#hint{position:absolute;left:0;right:0;top:36%;display:flex;flex-wrap:wrap;pointer-events:none}#hintS{flex:0 0 100%;margin:14px 0 0;text-align:center;color:#fff;font-weight:800;font-size:14px;letter-spacing:.06em;text-shadow:0 2px 8px #000,0 0 3px #000}#hint div{flex:1;text-align:center;color:#fff;text-shadow:0 2px 8px #000,0 0 3px #000;font-weight:800;font-size:15px;letter-spacing:.08em}#hint b{display:block;font-size:54px;line-height:1.1;opacity:.9;animation:hb .7s ease-in-out infinite}
+#wzTip{position:absolute;right:calc(env(safe-area-inset-right,0px) + 14px);bottom:calc(env(safe-area-inset-bottom,0px) + 112px);width:88px;text-align:center;color:#fff;font-weight:800;font-size:14px;text-shadow:0 0 8px var(--tint),0 2px 4px #000;animation:hb .5s ease-in-out infinite}
 .wl{display:block;width:100%;text-align:left;border:1px solid #4a4458;border-radius:4px;padding:9px 10px;margin:6px 0;background:#ffffff08;font-size:13px;line-height:1.5;color:#cfc6b3}
 .wl b{font-size:16px;color:#f2ead6;margin-right:6px;font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
 .wl small{display:block;color:#9a93a8;font-size:12px}
@@ -183,8 +185,8 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
 <script>window.NSB_NEXT={"g": "onikiri", "r": [{"a": "#result .card", "v": "#result"}], "ad": 1};</script>
 <script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
-<script src="gsap.min.js?v=11260120"></script>
-<script src="pfx.js?v=11260120"></script>
+<script src="gsap.min.js?v=11260200"></script>
+<script src="pfx.js?v=11260200"></script>
 </head>
 <body>
 <canvas id="gl"></canvas>
@@ -199,6 +201,8 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
   <div id="shBox"><div id="shL"></div><div id="sh"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div></div>
   <div id="dist"><span id="dM">0</span><small id="dK"></small></div>
   <div id="wz"></div>
+  <div id="hint" hidden><div><b>◀</b><span id="hintL"></span></div><div><b>▶</b><span id="hintR"></span></div><p id="hintS"></p></div>
+  <div id="wzTip" hidden></div>
   <div id="wzBtns" hidden><div class="wzc" id="wzB" hidden><b></b></div><div class="wzc" id="wzA"><b></b></div></div>
 </div>
 <div id="flash"></div>
@@ -237,9 +241,10 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
     <div id="rDist"></div>
     <div id="rBest" class="g"></div>
     <div id="rInfo" class="g"></div>
-    <div class="row2 g"><button class="sub" id="xBtn"></button><button class="sub" id="rkBtn2"></button></div>
+    <div class="row2 g"><button class="sub" id="imgBtn"></button><button class="sub" id="xBtn"></button></div>
     <button class="big" id="again"></button>
     <div class="row2 g"><button class="sub" id="repick"></button><button class="sub" id="rename"></button></div>
+    <button class="sub g" id="rkBtn2"></button>
     <div id="rFan" class="g"></div>
   </div>
 </div>
@@ -255,6 +260,6 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
   </div>
 </div>
 
-<script type="module" src="game.js?v=11260120"></script>
+<script type="module" src="game.js?v=11260200"></script>
 </body>
 </html>

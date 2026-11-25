@@ -1,5 +1,5 @@
 // エフェクト：呼吸ごとに絵を作り分ける（水＝浮世絵の波、炎、雷、風、岩、月、霞、恋、花、蛇、蟲、音、獣、日）
-import { THREE } from './lib.js?v=11260120';
+import { THREE } from './lib.js?v=11260200';
 export const STY = {
   blue: { kind: 'wave', c: '#2a78e6', c2: '#cdeaff', shape: 'drop' }, red: { kind: 'flame', c: '#ff5a1e', c2: '#ffd24a', shape: 'ember' }, yellow: { kind: 'bolt', c: '#ffcf1e', c2: '#fff7c0', shape: 'spark' },
   green: { kind: 'wind', c: '#3fd07a', c2: '#e6fff0', shape: 'streak' }, gray: { kind: 'rock', c: '#a39686', c2: '#e6dccc', shape: 'rock' }, purple: { kind: 'moon', c: '#8a4be0', c2: '#ffe9a0', shape: 'crescent' },
@@ -98,7 +98,7 @@ export function makeFx(scene, W) {
     ring(col, x, z, r, life, o) { const m = mesh(ringTex); m.rotation.x = -Math.PI / 2; m.position.set(x, .12, z); m.scale.set(r * 2, r * 2, 1); return push(m, col, life, o); },
     glow(col, x, y, z, s, life, o) { const m = mesh(glowTex); m.position.set(x, y, z); m.scale.set(s, s, 1); return push(m, col, life, o); },
     // 粒をまき散らす
-    burst(key, x, y, z, n, o) { o = o || {}; const t = tex(key, 'shape'), S = STY[key] || STY.none, add = !/petal|butterfly|rock|heart|crescent/.test(S.shape); for (let i = 0; i < n && LIVE.length < 230; i++) { const m = mesh(t, add), s = rnd(.18, .5) * (o.s || 1); m.position.set(x + rnd(-.3, .3) * (o.w || 1), y + rnd(-.2, .4), z + rnd(-.4, .4)); m.scale.set(s, s, 1); m.rotation.z = rnd(0, 6); const sp = o.sp || 5; push(m, null, rnd(.4, .9) * (o.life || 1), { vx: rnd(-1, 1) * sp * (o.wide || 1), vy: rnd(.2, 1) * sp * .9, vz: rnd(-1, .4) * sp * (o.fwd || 1), g: o.g == null ? 9 : o.g, spin: rnd(-9, 9), world: o.world == null ? 1 : o.world }); } },
+    burst(key, x, y, z, n, o) { o = o || {}; n = Math.ceil(n * (F.q || 1)); const t = tex(key, 'shape'), S = STY[key] || STY.none, add = !/petal|butterfly|rock|heart|crescent/.test(S.shape); for (let i = 0; i < n && LIVE.length < 230; i++) { const m = mesh(t, add), s = rnd(.18, .5) * (o.s || 1); m.position.set(x + rnd(-.3, .3) * (o.w || 1), y + rnd(-.2, .4), z + rnd(-.4, .4)); m.scale.set(s, s, 1); m.rotation.z = rnd(0, 6); const sp = o.sp || 5; push(m, null, rnd(.4, .9) * (o.life || 1), { vx: rnd(-1, 1) * sp * (o.wide || 1), vy: rnd(.2, 1) * sp * .9, vz: rnd(-1, .4) * sp * (o.fwd || 1), g: o.g == null ? 9 : o.g, spin: rnd(-9, 9), world: o.world == null ? 1 : o.world }); } },
     step(dt, mv) {
       for (let i = LIVE.length - 1; i >= 0; i--) { const f = LIVE[i], m = f.m; f.life -= dt; if (f.life <= 0) { m.visible = false; POOL.push(m); LIVE.splice(i, 1); continue; }
         const p = f.life / f.max; m.material.opacity = (f.hold ? Math.min(1, p * 5, (1 - p) * 8 + .2) : p) * f.a; if (f.vx) m.position.x += f.vx * dt; if (f.vy) m.position.y += f.vy * dt; if (f.vz) m.position.z += f.vz * dt; if (f.g) { f.vy -= f.g * dt; if (m.position.y < .05) { m.position.y = .05; f.vy = 0; } }
