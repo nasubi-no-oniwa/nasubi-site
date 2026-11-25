@@ -10,7 +10,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 
 // ---------- ことば ----------
 const TX = {
-  ja: { lang: '日本語', ttl: '色変わりの刀', h1: '<small>いろがわりのかたな</small>色変わりの刀', lead: '名前を入れて、日輪刀を握れ。<br>刀身の色で、呼吸の適性と才能がわかる。', ph: '名前を入れる', start: '日輪刀を握る', needName: '名前を入れてください', sndOn: '🔊 音あり', sndOff: '🔇 音なし', stats: 'みんなの刀の色', again: 'ほかの名前で握る', img: '画像にする', x: '𝕏 に投稿', back: 'もどる',
+  ja: { oni: 'この刀で鬼を斬りに行く', lang: '日本語', ttl: '色変わりの刀', h1: '<small>いろがわりのかたな</small>色変わりの刀', lead: '名前を入れて、日輪刀を握れ。<br>刀身の色で、呼吸の適性と才能がわかる。', ph: '名前を入れる', start: '日輪刀を握る', needName: '名前を入れてください', sndOn: '🔊 音あり', sndOff: '🔇 音なし', stats: 'みんなの刀の色', again: 'ほかの名前で握る', img: '画像にする', x: '𝕏 に投稿', back: 'もどる',
     who: n => `「<b>${esc(n)}</b>」の日輪刀は`, den: '才能（色の濃さ）', ranks: ['ほぼ無色', '才能うすめ', '並', '一人前', '秀才', '天賦の才'], rNone: '才能なし', rNez: '鬼',
     odds: p => `出やすさ：約${p}%`, share: (p, n) => `みんなの結果：この色は全体の <b>${p}%</b>（${n}人中）`, shareWait: 'みんなの結果：集計中…', shareErr: 'みんなの結果：いまは読みこめません',
     stNote: n => `これまでに ${n} 人が刀を握った`, stEmpty: 'まだ誰も握っていません', loading: '読みこみ中…', mine: '← あなた',
@@ -23,7 +23,7 @@ const TX = {
     crow: (n, c, k) => `カァー！「${n}」ノ日輪刀ハ<b>${c}</b>！${k}ノ適性アリ！`, crowNone: n => `カァー！「${n}」ノ日輪刀、色ガ変ワラナイ！`, crowOni: n => `カァー！鬼ダ！「${n}」ハ鬼ダ！`,
     akaCap: '赫く灼けた', tapNext: 'タップで結果へ', aka: '握りしめた日輪刀が、赫く灼けた', akaPost: '日輪刀が赫く灼けた。', cut: '頸を斬った', stab: '突き刺した。藤の花の毒が回る', cutNo: '頸が硬い…斬れない', fan: '※非公式のファン診断です', keepHold: 'そのまま握りしめると…？',
     xCopied: '画像をコピーしました。Xの投稿欄に貼りつけ（Ctrl+V）すると画像がつきます', xSaved: '画像を保存しました。Xの投稿に、保存した画像を追加してください', nogl: 'この端末では3Dを表示できませんでした', cardTag: '刀身の色で、才能がわかる' },
-  en: { lang: 'English', ttl: 'The Color-Changing Blade', h1: '<small>IROGAWARI NO KATANA</small>Color Blade', lead: 'Enter a name. Grip the Nichirin Blade.<br>Its color reveals your Breathing and talent.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', stats: "Everyone's blades", again: 'Try another name', img: 'Save image', x: 'Post on 𝕏', back: 'Back',
+  en: { oni: 'Slay demons with this blade', lang: 'English', ttl: 'The Color-Changing Blade', h1: '<small>IROGAWARI NO KATANA</small>Color Blade', lead: 'Enter a name. Grip the Nichirin Blade.<br>Its color reveals your Breathing and talent.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', stats: "Everyone's blades", again: 'Try another name', img: 'Save image', x: 'Post on 𝕏', back: 'Back',
     who: n => `<b>${esc(n)}</b>'s Nichirin Blade turned`, den: 'Talent (color depth)', ranks: ['Barely tinted', 'Faint talent', 'Average', 'Capable', 'Gifted', 'Born genius'], rNone: 'No talent', rNez: 'Demon',
     odds: p => `Odds: about ${p}%`, share: (p, n) => `Everyone: <b>${p}%</b> got this color (of ${n})`, shareWait: 'Everyone: counting…', shareErr: "Everyone: can't load right now",
     stNote: n => `${n} people have gripped the blade`, stEmpty: 'Nobody yet', loading: 'Loading…', mine: '← you',
@@ -36,7 +36,7 @@ const TX = {
     crow: (n, c, k) => `CAW! ${n}'s blade is <b>${c}</b>! ${k}!`, crowNone: n => `CAW! ${n}'s blade didn't change color!`, crowOni: n => `CAW! A demon! ${n} is a demon!`,
     akaCap: 'Burning red', tapNext: 'Tap to see the result', aka: 'Gripped hard, the blade burned crimson', akaPost: 'The blade burned crimson.', cut: 'Head severed', stab: 'Stabbed. The wisteria poison spreads', cutNo: "Too hard… can't cut it", fan: '* Unofficial fan quiz', keepHold: 'Keep holding…?',
     xCopied: 'Image copied. Paste it (Ctrl+V) into your post to attach it', xSaved: 'Image saved. Add the saved image to your post', nogl: "This device can't show 3D", cardTag: 'The blade color reveals your talent' },
-  zh: { lang: '繁體中文', ttl: '變色之刀', h1: '<small>變色之刀</small>變色之刀', lead: '輸入名字，握住日輪刀。<br>刀身的顏色揭曉呼吸的適性與才能。', ph: '輸入名字', start: '握刀', needName: '請輸入名字', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', stats: '大家的刀色', again: '換個名字握', img: '存成圖片', x: '發到 𝕏', back: '返回',
+  zh: { oni: '用這把刀去斬鬼', lang: '繁體中文', ttl: '變色之刀', h1: '<small>變色之刀</small>變色之刀', lead: '輸入名字，握住日輪刀。<br>刀身的顏色揭曉呼吸的適性與才能。', ph: '輸入名字', start: '握刀', needName: '請輸入名字', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', stats: '大家的刀色', again: '換個名字握', img: '存成圖片', x: '發到 𝕏', back: '返回',
     who: n => `「<b>${esc(n)}</b>」的日輪刀變成了`, den: '才能（顏色深淺）', ranks: ['幾乎無色', '才能稀薄', '普通', '獨當一面', '秀才', '天賦異稟'], rNone: '沒有才能', rNez: '鬼',
     odds: p => `出現機率：約${p}%`, share: (p, n) => `大家的結果：這個顏色佔 <b>${p}%</b>（共${n}人）`, shareWait: '大家的結果：統計中…', shareErr: '大家的結果：目前無法讀取',
     stNote: n => `已經有 ${n} 人握過刀`, stEmpty: '還沒有人握過', loading: '讀取中…', mine: '← 你',
@@ -49,7 +49,7 @@ const TX = {
     crow: (n, c, k) => `嘎——！「${n}」的日輪刀是<b>${c}</b>！有${k}的適性！`, crowNone: n => `嘎——！「${n}」的日輪刀沒有變色！`, crowOni: n => `嘎——！是鬼！「${n}」是鬼！`,
     akaCap: '赫紅灼燒', tapNext: '點一下看結果', aka: '緊握的日輪刀，燒得赫紅', akaPost: '日輪刀燒得赫紅。', cut: '斬下了頸', stab: '刺穿了。紫藤花之毒蔓延開來', cutNo: '頸太硬了…斬不斷', fan: '※非官方的粉絲診斷', keepHold: '就這樣繼續握緊…？',
     xCopied: '已複製圖片。在 X 的貼文欄貼上（Ctrl+V）即可附上圖片', xSaved: '已儲存圖片。請在 X 貼文中加入儲存的圖片', nogl: '這台裝置無法顯示 3D', cardTag: '刀身的顏色揭曉你的才能' },
-  ko: { lang: '한국어', ttl: '색이 변하는 칼', h1: '<small>이로가와리노 카타나</small>색이 변하는 칼', lead: '이름을 넣고 일륜도를 쥐어라.<br>칼날의 색으로 호흡의 적성과 재능을 알 수 있다.', ph: '이름 입력', start: '칼을 쥔다', needName: '이름을 입력해 주세요', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', stats: '모두의 칼 색', again: '다른 이름으로 쥐기', img: '이미지로 저장', x: '𝕏 에 올리기', back: '돌아가기',
+  ko: { oni: '이 칼로 귀신을 베러 간다', lang: '한국어', ttl: '색이 변하는 칼', h1: '<small>이로가와리노 카타나</small>색이 변하는 칼', lead: '이름을 넣고 일륜도를 쥐어라.<br>칼날의 색으로 호흡의 적성과 재능을 알 수 있다.', ph: '이름 입력', start: '칼을 쥔다', needName: '이름을 입력해 주세요', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', stats: '모두의 칼 색', again: '다른 이름으로 쥐기', img: '이미지로 저장', x: '𝕏 에 올리기', back: '돌아가기',
     who: n => `「<b>${esc(n)}</b>」의 일륜도는`, den: '재능（색의 농도）', ranks: ['거의 무색', '재능 옅음', '보통', '제 몫', '수재', '천부적 재능'], rNone: '재능 없음', rNez: '귀신',
     odds: p => `나올 확률: 약 ${p}%`, share: (p, n) => `모두의 결과: 이 색은 전체의 <b>${p}%</b>（${n}명 중）`, shareWait: '모두의 결과: 집계 중…', shareErr: '모두의 결과: 지금은 불러올 수 없음',
     stNote: n => `지금까지 ${n}명이 칼을 쥐었다`, stEmpty: '아직 아무도 없음', loading: '불러오는 중…', mine: '← 당신',
@@ -68,7 +68,7 @@ function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || []
 function setLang(l) {
   L = l; T = TX[l]; ls.set('katana_lang', l); document.documentElement.lang = l === 'zh' ? 'zh-Hant' : l; document.title = T.ttl;
   $('tH1').innerHTML = T.h1; $('tLead').innerHTML = T.lead; $('nm').placeholder = T.ph; $('startBtn').textContent = T.start; $('stBtn').textContent = T.stats; $('stBtn2').textContent = T.stats;
-  $('again').textContent = T.again; $('imgBtn').textContent = T.img; $('xBtn').textContent = T.x; $('stBack').textContent = T.back; $('tFan').textContent = T.fan; $('stT').textContent = T.stats; $('nmNote').textContent = '';
+  $('again').textContent = T.again; $('oniBtn').textContent = T.oni; $('imgBtn').textContent = T.img; $('xBtn').textContent = T.x; $('stBack').textContent = T.back; $('tFan').textContent = T.fan; $('stT').textContent = T.stats; $('nmNote').textContent = '';
   $('langs').innerHTML = Object.keys(TX).map(k => `<button data-l="${k}" class="${k === L ? 'on' : ''}">${TX[k].lang}</button>`).join(''); $('langs').querySelectorAll('button').forEach(b => b.onclick = () => setLang(b.dataset.l));
   sndLabel(); if (LAST && !$('result').hidden) fillResult(LAST);
 }
@@ -77,12 +77,14 @@ function setLang(l) {
 const toHira = s => s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
 const norm = s => toHira(String(s).normalize('NFKC').replace(/[\s　・･]/g, '').toLowerCase());
 function hash(s, seed) { let h = (2166136261 ^ seed) >>> 0; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13; h = Math.imul(h, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
+// 原作キャラは、漢字・ひらがな・カタカナ、名字のあるなし、名字と名前の漢字／よみの組みあわせを同じに扱う（解放戦力と同じ決まり）。名字だけは対象外。色を決める計算に使う名前（norm）は変えない
+const charKey = s => norm(s).replace(/[\uFE00-\uFE0F]/g, '').replace(/竃/g, '竈').replace(/祢/g, '禰').replace(/髓/g, '髄').replace(/を/g, 'お');
 const CHMAP = new Map();
-CHARS.forEach(c => c.n.forEach(v => { const n = norm(v); if (!CHMAP.has(n)) CHMAP.set(n, c); }));
+CHARS.forEach(c => { const n = c.n, v = n.slice(); if (n.length >= 4 && n[0].endsWith(n[2]) && n[1].endsWith(n[3])) { const s = n[0].slice(0, -n[2].length), sy = n[1].slice(0, -n[3].length); if (s && sy) v.push(s + n[3], sy + n[2]); } v.forEach(x => { const k = charKey(x); if (!CHMAP.has(k)) CHMAP.set(k, c); }); });
 const POOL = ORDER.map(k => [k, COLORS[k].w]);
 function judge(name) {
   const n = norm(name); const r1 = hash(n, 0x6b61), r2 = hash(n, 0x7461);
-  const c = CHMAP.get(n); if (c) return { key: c.k, den: c.den, n, rank: c.rank, aka: !!c.aka, word: c.word, stab: !!c.stab, ch: true };
+  const c = CHMAP.get(charKey(name)); if (c) return { key: c.k, den: c.den, n, rank: c.rank, aka: !!c.aka, word: c.word, stab: !!c.stab, ch: true };
   let key = null, x = r1 * 100; for (const [k, w] of POOL) { if (x < w) { key = k; break; } x -= w; } key = key || 'none';
   let den;
   if (key === 'none') den = Math.floor(r2 * 6); // 変わらない：ほんの少しだけ
@@ -432,7 +434,7 @@ function fillResult(R) {
   col.textContent = C.name[L]; col.style.background = C.hex; const lum = new THREE.Color(C.hex).getHSL({}).l; col.style.color = lum > .6 ? '#14131c' : '#fff';
   $('rSch').textContent = kokyu(R.key); $('rRank').innerHTML = esc(T.kyu + '：' + rankOf(R)) + (R.akaDone ? ' <span class="aka">' + esc(T.aka) + '</span>' : '');
   $('rDenL').textContent = T.den; $('rDenV').textContent = R.den + '%'; $('rDen').hidden = $('rBar').parentNode.hidden = R.key === 'nezuko';
-  $('rWord').textContent = wordOf(R); $('rFan').textContent = T.fan;
+  $('rWord').textContent = wordOf(R); $('rFan').textContent = T.fan; $('oniBtn').hidden = R.key === 'nezuko';
   shareLine();
 }
 let COUNTS = null, countErr = false;
@@ -454,6 +456,8 @@ function showResult() {
   count(R).catch(() => { }).then(loadCounts).then(shareLine).catch(() => { });
 }
 $('startBtn').onclick = grip;
+// 続編「無限鬼斬」へ：握る場面をとばして、技を選ぶところへ直行する（名前は同じサイトの中で受けわたす）
+$('oniBtn').onclick = () => { const R = LAST; if (!R) return; ls.set('onikiri_go', { n: R.name, a: R.akaDone ? 1 : 0, t: Date.now() }); try { if (typeof gtag === 'function') gtag('event', 'to_onikiri', { game: 'katana' }); } catch (e) { } location.href = '../onikiri/?go=1'; };
 $('nm').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('nm').blur(); grip(); } });
 $('again').onclick = () => { $('result').hidden = true; ST = 'title'; U.uProg.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0; $('title').hidden = false; $('title').scrollTop = 0; const n = $('nm'); n.value = ''; setTimeout(() => { try { n.focus(); } catch (e) { } }, 50); };
 
