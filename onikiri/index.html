@@ -131,6 +131,7 @@ table.st tr.me td{background:#c9a14a22}
 #rInfo b{color:#fff}
 #rBest{font-size:13px;color:var(--gold);min-height:18px}
 .tabs{display:flex;gap:6px;margin:8px 0}.tabs button{flex:1;font-size:13px;padding:8px 4px;border-radius:999px;border:1px solid #4a4458;color:#cfc6b3}.tabs button.on{background:#e9e2cf;color:#14131c}
+.chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:0 0 8px}.chips button{font-size:12px;padding:5px 9px;border-radius:999px;border:1px solid #4a4458;color:#cfc6b3}.chips button.on{background:#e9e2cf;color:#14131c}.chips button i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;box-shadow:0 0 0 1px #fff4;vertical-align:-1px}
 table.rk{width:100%;border-collapse:collapse;font-size:13.5px}table.rk td{padding:6px 3px;border-bottom:1px solid #2e2b3a;text-align:left;vertical-align:middle}
 table.rk td.n{width:26px;color:var(--gold);font-weight:700;text-align:right}table.rk td.d{text-align:right;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
 table.rk td small{display:block;color:#9a93a8;font-size:11px}table.rk td i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;box-shadow:0 0 0 1px #fff4}
@@ -182,8 +183,8 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
 <script>window.NSB_NEXT={"g": "onikiri", "r": [{"a": "#result .card", "v": "#result"}], "ad": 1};</script>
 <script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
-<script src="gsap.min.js?v=11260100"></script>
-<script src="pfx.js?v=11260100"></script>
+<script src="gsap.min.js?v=11260120"></script>
+<script src="pfx.js?v=11260120"></script>
 </head>
 <body>
 <canvas id="gl"></canvas>
@@ -246,12 +247,14 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <div class="panel" id="rank" hidden>
   <div class="card">
     <div style="font-size:22px;font-weight:800;letter-spacing:.1em" id="rkT"></div>
+    <div class="note g" id="rkNote"></div>
     <div class="tabs g" id="rkTabs"></div>
+    <div class="chips g" id="rkK"></div>
     <div id="rkBox" class="g"></div>
     <button class="sub g" id="rkBack"></button>
   </div>
 </div>
 
-<script type="module" src="game.js?v=11260100"></script>
+<script type="module" src="game.js?v=11260120"></script>
 </body>
 </html>
