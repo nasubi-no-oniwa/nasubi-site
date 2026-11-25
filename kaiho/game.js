@@ -1,5 +1,5 @@
-import { THREE } from './lib.js?v=11251552';
-import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251552';
+import { THREE, GLTFLoader } from './lib.js?v=11251614';
+import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251614';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -110,23 +110,29 @@ float crack(vec2 p){ vec2 g = floor(p), f = fract(p); float d1 = 8.0, d2 = 8.0; 
 `;
 // スーツ（つるっとした人型）。筋が下から光っていく。怪獣側ではひび割れが光る
 const suitMat = new THREE.ShaderMaterial({
-  uniforms: G,
-  vertexShader: `varying vec3 vW; varying vec3 vN; varying vec3 vV;
-    void main(){ vec4 w = modelMatrix * vec4(position,1.0); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); vV = cameraPosition - w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
-  fragmentShader: `uniform float uTime,uProg,uPulse,uKai,uKp,uErr,uPow; uniform vec3 uCol; varying vec3 vW; varying vec3 vN; varying vec3 vV;` + NOISE + `
+  uniforms: G, vertexColors: true,
+  vertexShader: `varying vec3 vW; varying vec3 vN; varying vec3 vV; varying vec3 vC;
+    void main(){ vC = vec3(0.0);
+      #ifdef USE_COLOR
+      vC = color.rgb;
+      #endif
+      vec4 w = modelMatrix * vec4(position,1.0); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); vV = cameraPosition - w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
+  fragmentShader: `uniform float uTime,uProg,uPulse,uKai,uKp,uErr,uPow; uniform vec3 uCol; varying vec3 vW; varying vec3 vN; varying vec3 vV; varying vec3 vC;` + NOISE + `
     void main(){
       vec3 n = normalize(vN), v = normalize(vV);
       float fr = pow(1.0 - clamp(dot(n,v),0.0,1.0), 2.2);
       float df = clamp(dot(n, normalize(vec3(.35,.85,.55))),0.0,1.0);
       float df2 = clamp(dot(n, normalize(vec3(-.7,.25,-.5))),0.0,1.0);
-      vec3 base = mix(vec3(.06,.085,.115), vec3(.022,.017,.019), uKai);
+      vec3 base = mix(mix(vec3(.05,.07,.095), vec3(.13,.16,.19), vC.g), vec3(.022,.017,.019), uKai);
+      float sp = pow(clamp(dot(n, normalize(normalize(vec3(.35,.85,.55)) + v)),0.0,1.0), 40.0);
       vec3 c = base*(.3 + 1.15*df) + mix(vec3(.10,.19,.27), vec3(.32,.03,.03), uKai)*df2*.9;
       c += fr * mix(vec3(.13,.24,.32), vec3(.36,.04,.04), uKai);
+      c += sp * mix(vec3(.35,.45,.5)*(.5+vC.g), vec3(.5,.12,.08), uKai);
       float h = clamp(vW.y/2.78, 0.0, 1.0);
       float ang = atan(vW.z, vW.x);
       float seam = smoothstep(.05,.0,abs(fract(ang*4.0/6.2831853+.125)-.5));
       float band = smoothstep(.07,.0,abs(fract(vW.y*2.4+.2)-.5));
-      float ln = max(seam, band*.85);
+      float ln = max(max(seam, band)*.22*(1.0-vC.g), step(.5,vC.r));
       float on = step(.001,uProg);
       float lit = smoothstep(uProg+.015, uProg-.03, h) * on;
       float fl = .55+.45*sin(vW.y*22.0 - uTime*10.0);
@@ -134,7 +140,8 @@ const suitMat = new THREE.ShaderMaterial({
       e += uCol * exp(-pow((h-uProg)*26.0,2.0)) * on * (1.1+2.2*uPulse);
       e += uCol * lit * fr * (.55 + 1.5*uPulse + 1.6*uPow);
       e += uCol * lit * uPow * .35;
-      e += uCol * ln * .07;
+      e += uCol * ln * .10;
+      e += uCol * step(.5,vC.b) * (1.3 + 2.2*uPulse + 1.5*clamp(uProg*2.0,0.0,1.0)) * (1.0-uKai);
       e += vec3(1.0,.16,.08) * ln * uErr * step(.5, fract(uTime*9.0));
       vec2 cp = vec2(ang*1.7, vW.y*2.3) * 2.2;
       float cr = crack(cp);
@@ -146,28 +153,25 @@ const suitMat = new THREE.ShaderMaterial({
       gl_FragColor = vec4(c + e, 1.0);` + TM + `}`
 });
 const fig = new THREE.Group(); scene.add(fig);
-const capG = (r, l) => new THREE.CapsuleGeometry(r, l, 8, 22), sphG = r => new THREE.SphereGeometry(r, 30, 22);
-const part = (par, geo, x, y, z, sx, sy, sz, rz) => { const m = new THREE.Mesh(geo, suitMat); m.position.set(x, y, z); m.scale.set(sx || 1, sy || 1, sz || 1); m.rotation.z = rz || 0; par.add(m); return m; };
-const up = new THREE.Group(); up.position.y = 1.08; fig.add(up); // 上半身（腰を軸に前かがみにできる）
-part(fig, sphG(.34), 0, 1.06, 0, 1.08, .72, .8);
-part(up, capG(.35, .56), 0, .52, 0, 1.16, 1, .74);
-part(up, sphG(.31), 0, .8, .05, 1.34, .82, .78);
-part(up, capG(.1, .1), 0, 1.13, 0);
-const head = new THREE.Group(); head.position.set(0, 1.4, 0); up.add(head);
-part(head, sphG(.25), 0, 0, 0, .92, 1.08, 1);
-const armL = new THREE.Group(), armR = new THREE.Group(); armL.position.set(-.56, .92, 0); armR.position.set(.56, .92, 0); up.add(armL, armR);
-[[armL, -1], [armR, 1]].forEach(([a, s]) => { part(a, sphG(.2), 0, 0, 0); part(a, capG(.118, .5), s * .07, -.4, 0, 1, 1, 1, s * .1); part(a, capG(.1, .5), s * .13, -.98, .03, 1, 1, 1, s * .05); part(a, sphG(.12), s * .15, -1.36, .04, 1, 1.15, 1); });
-[-1, 1].forEach(s => { part(fig, capG(.17, .46), s * .2, .72, 0, 1, 1, 1, s * -.03); part(fig, capG(.135, .46), s * .215, .22, 0); part(fig, sphG(.15), s * .22, .07, .09, .95, .5, 1.6); });
-// バイザー（人の側）と目（怪獣側）
-const visorMat = new THREE.MeshBasicMaterial({ color: CYAN.clone(), transparent: true, opacity: .9, blending: THREE.AdditiveBlending, depthWrite: false });
-const visor = new THREE.Mesh(new THREE.TorusGeometry(.2, .028, 8, 28, Math.PI * .9), visorMat); visor.rotation.set(Math.PI / 2, 0, Math.PI * .05); visor.position.set(0, .03, .05); visor.scale.set(1, 1.12, 1); head.add(visor);
-const eyeMat = new THREE.MeshBasicMaterial({ color: '#ff3a1a', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
-const eyes = [-1, 1].map(s => { const m = new THREE.Mesh(new THREE.SphereGeometry(.036, 10, 8), eyeMat); m.position.set(s * .09, .03, .225); m.scale.set(1.5, .55, 1); head.add(m); return m; });
+const figH = new THREE.Group(), figK = new THREE.Group(); fig.add(figH, figK); figK.visible = false; // 人の側（スーツ）と、怪獣の側
+// Blender で作ったモデルの目・胸の位置（build_models.py が書きだした値）
+const PT = { suit: { eye: [0, 2.551, .136], chest: [0, 2.125, .2] }, kaiju: { eyeL: [.054, 2.877, .275], eyeR: [-.052, 2.878, .275], chest: [0, 2.267, .33] } };
+{ // 読みこめるまでの仮の人型（丸と筒）
+  const tmp = new THREE.Group(); figH.add(tmp); const capG = (r, l) => new THREE.CapsuleGeometry(r, l, 6, 14), sphG = r => new THREE.SphereGeometry(r, 18, 12);
+  const part = (geo, x, y, z, sx, sy, sz) => { const m = new THREE.Mesh(geo, suitMat); m.position.set(x, y, z); m.scale.set(sx || 1, sy || 1, sz || 1); tmp.add(m); };
+  part(capG(.33, .9), 0, 1.6, 0, 1.1, 1, .7); part(sphG(.24), 0, 2.5, 0, .92, 1.08, 1);[-1, 1].forEach(s => { part(capG(.11, 1.1), s * .6, 1.5, 0); part(capG(.15, 1.0), s * .2, .6, 0); });
+  const ld = new GLTFLoader(), use = (g, par, done) => { g.scene.traverse(o => { if (o.isMesh) { o.material = suitMat; o.frustumCulled = false; } }); par.add(g.scene); done && done(); };
+  ld.load('suit.glb?v=11251614', g => use(g, figH, () => figH.remove(tmp)), undefined, () => { });
+  ld.load('kaiju.glb?v=11251614', g => use(g, figK), undefined, () => { const c = tmp.clone(); c.scale.setScalar(1.15); figK.add(c); });
+}
+// 目（怪獣側）
+const eyeMat = new THREE.SpriteMaterial({ map: null, color: '#ff5a2a', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+const eyes = [PT.kaiju.eyeL, PT.kaiju.eyeR].map(p => { const m = new THREE.Sprite(eyeMat); m.position.set(p[0], p[1], p[2]); m.scale.set(.2, .1, 1); figK.add(m); return m; });
 // ぼんやりした光（胸の芯と、うしろのオーラ）
 function glowTex() { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'), g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, '#ffffffff'); g.addColorStop(.25, '#ffffff88'); g.addColorStop(.6, '#ffffff22'); g.addColorStop(1, '#ffffff00'); x.fillStyle = g; x.fillRect(0, 0, 128, 128); const t = new THREE.CanvasTexture(c); return t; }
-const GT = glowTex();
+const GT = glowTex(); eyeMat.map = GT;
 const coreMat = new THREE.SpriteMaterial({ map: GT, color: CYAN.clone(), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false });
-const core = new THREE.Sprite(coreMat); core.position.set(0, 1.86, .3); core.scale.setScalar(1.2); fig.add(core);
+const core = new THREE.Sprite(coreMat); core.position.set(PT.suit.chest[0], PT.suit.chest[1], PT.suit.chest[2] + .05); core.scale.setScalar(1.2); fig.add(core);
 const auraMat = new THREE.SpriteMaterial({ map: GT, color: CYAN.clone(), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
 const aura = new THREE.Sprite(auraMat); aura.position.set(0, 1.5, -.6); aura.scale.set(5.2, 6.4, 1); scene.add(aura);
 // 床（測定台）
@@ -257,12 +261,11 @@ function frame(now) {
   // 光
   coreMat.opacity = Math.min(1, (kai > .5 ? .25 + G.uKp.value : G.uProg.value * .8) + G.uPulse.value * .6 + G.uPow.value); coreMat.color.copy(G.uCol.value).lerp(RED, kai); core.scale.setScalar(1.0 + pw * 1.4 + G.uPulse.value * .7 + G.uPow.value * 1.5);
   auraMat.opacity = Math.min(.9, .05 + pw * .4 + G.uPulse.value * .25 + G.uPow.value * .5); auraMat.color.copy(G.uCol.value).lerp(RED, kai);
-  visorMat.color.copy(G.uCol.value); visorMat.opacity = (1 - kai) * (.55 + .45 * Math.min(1, G.uProg.value * 2 + G.uPulse.value));
-  eyeMat.opacity = kai * (.7 + .3 * Math.sin(tAll * 9)); eyes.forEach(e => e.scale.set(1.5 + G.uPulse.value, .55 + G.uPulse.value * .5, 1));
+  eyeMat.opacity = kai * (.75 + .25 * Math.sin(tAll * 9)); eyes.forEach(e => e.scale.set(.2 + G.uPulse.value * .12 + G.uKp.value * .08, .09 + G.uPulse.value * .06, 1));
   // 立ち姿（息づかい・ふるえ）
   const tr = (kai > .5 ? G.uKp.value * .02 : G.uProg.value * .008) + G.uPulse.value * .012;
   fig.position.set((Math.random() - .5) * tr, 0, (Math.random() - .5) * tr);
-  up.scale.y = 1 + Math.sin(tAll * (1.6 + kai * 2.4)) * (.008 + kai * .012);
+  fig.scale.y = fig.scale.x * (1 + Math.sin(tAll * (1.6 + kai * 2.4)) * (.004 + kai * .008));
   // がれき
   rockMat.opacity = kai; rockMat.emissiveIntensity = kai * (.03 + G.uKp.value * .12 + G.uPulse.value * .25);
   rocks.forEach(m => { const u = m.userData; u.y += dt * u.sp * (.3 + G.uKp.value * 1.8) * kai; if (u.y > 4.4) u.y = 0; m.position.set(Math.cos(u.a + tAll * .1) * u.r, kai > .01 ? u.y : -5, Math.sin(u.a + tAll * .1) * u.r); m.rotation.x += dt * u.rs; m.rotation.y += dt * u.rs * .7; });
@@ -285,6 +288,11 @@ const fctx = $('fxc').getContext('2d'); let FXS = [], fxRaf = 0, fxLast = 0, fxF
 function ramp(hex) { const c = new THREE.Color(hex), o = []; for (let i = 0; i < 8; i++) { const t = i / 7, k = c.clone().multiplyScalar(.6 + .4 * Math.min(1, t * 1.4)).lerp(new THREE.Color('#ffffff'), Math.max(0, t - .55) * 1.6); o.push('#' + k.getHexString()); } return o; }
 function fxAdd(mod, o) { try { if (!PFX || !mod) return; if (!fxFrame) { fxFrame = PFX.createFrame(160, 160); fxImg = new ImageData(160, 160); } const f = PFX.createFx(mod, o); f._life = mod === PFX.fx.confetti ? 3 : 1.4; FXS.push(f); if (!fxRaf) { fxLast = performance.now(); fxRaf = requestAnimationFrame(fxLoop); } } catch (e) { } }
 function fxLoop(now) { const dt = Math.min(.05, (now - fxLast) / 1000); fxLast = now; try { PFX.clearFrame(fxFrame); FXS = FXS.filter(f => { f.update(dt); f.draw(fxFrame, 'back'); f.draw(fxFrame, 'front'); f._life -= dt; return !f.done() && f._life > 0; }); PFX.composite(fxFrame, fxImg.data, null); fctx.putImageData(fxImg, 0, 0); } catch (e) { FXS = []; } if (FXS.length) fxRaf = requestAnimationFrame(fxLoop); else { fxRaf = 0; fctx.clearRect(0, 0, 160, 160); } }
+
+// 大きめのドット絵エフェクト（道具箱の pixelfx：プラズマ爆発・地面への一撃・落雷・電磁パルス・吸いこみ・画面の乱れ）
+const PFX2 = window.PFX2, f2 = $('fx2').getContext('2d'); let FX2 = [], fx2Raf = 0, fx2Last = 0, fx2Frame = null, fx2Img = null;
+function fx2Add(name, o, life) { try { if (!PFX2 || !PFX2.fx[name]) return; if (!fx2Frame) { fx2Frame = PFX2.createFrame(320, 300); fx2Img = new ImageData(320, 300); } const f = PFX2.createFx(PFX2.fx[name], o); f._life = life || 4; FX2.push(f); if (!fx2Raf) { fx2Last = performance.now(); fx2Raf = requestAnimationFrame(fx2Loop); } } catch (e) { } }
+function fx2Loop(now) { const dt = Math.min(.05, (now - fx2Last) / 1000); fx2Last = now; try { PFX2.clearFrame(fx2Frame); FX2 = FX2.filter(f => { f.update(dt); f.draw(fx2Frame, 'back'); f.draw(fx2Frame, 'front'); f._life -= dt; return !f.done() && f._life > 0; }); PFX2.composite(fx2Frame, fx2Img.data, null); f2.putImageData(fx2Img, 0, 0); } catch (e) { FX2 = []; } if (FX2.length) fx2Raf = requestAnimationFrame(fx2Loop); else { fx2Raf = 0; f2.clearRect(0, 0, 320, 300); } }
 
 // ---------- 画面のひび割れ ----------
 const CRK = { paths: [], prog: 0, alpha: 1, ox: 0, oy: 0 };
@@ -320,9 +328,9 @@ const DUR = FAST ? 2.5 : 10, NEED = 34, MINT = FAST ? .8 : 2.4;
 let M = null, LAST = null, busy = false;
 function setTheme(k) { document.body.classList.toggle('kai', !!k); }
 function resetScene() {
-  gsap.killTweensOf([G.uProg, G.uKai, G.uKp, G.uPow, G.uErr, G.uBeam, up.rotation, armL.rotation, armR.rotation, head.rotation, fig.scale]);
+  gsap.killTweensOf([G.uProg, G.uKai, G.uKp, G.uPow, G.uErr, G.uBeam, fig.scale, figK.scale]);
   G.uProg.value = 0; G.uKai.value = 0; G.uKp.value = 0; G.uPow.value = 0; G.uErr.value = 0; G.uBeam.value = 0; G.uCol.value.copy(CYAN);
-  up.rotation.set(0, 0, 0); armL.rotation.set(0, 0, 0); armR.rotation.set(0, 0, 0); head.rotation.set(0, 0, 0); fig.scale.setScalar(1);
+  fig.scale.setScalar(1); figH.visible = true; figK.visible = false; figK.scale.setScalar(1); core.position.set(PT.suit.chest[0], PT.suit.chest[1], PT.suit.chest[2] + .05);
   setTheme(false); crackClear(); SEIS.on = false; SEIS.amp = 0; $('seis').style.opacity = 0;
   gsap.set(['#warn1', '#warn2'], { opacity: 0 });
 }
@@ -392,12 +400,12 @@ document.addEventListener('pointerdown', e => { if (ST === 'locked' && !(e.targe
 function lockHuman(R) {
   humStop(); const big = $('hVal');
   if (R.type === 'unknown') {
-    setVal('測定不能', '', 60); setGauge(0); G.uProg.value = 0; G.uCol.value.copy(AMBER); sfx('err'); flash('#ffb020', .5, .6); shake = .4; $('hSub').textContent = 'エラー'; $('hSub').className = 'hbig';
+    setVal('測定不能', '', 60); setGauge(0); G.uProg.value = 0; G.uCol.value.copy(AMBER); sfx('err'); flash('#ffb020', .5, .6); shake = .4; fx2Add('emp', { x: 160, y: 150, seed: 4, palette: ramp('#ffb020') }, 3.4); $('hSub').textContent = 'エラー'; $('hSub').className = 'hbig';
     gsap.fromTo(big, { scale: 1.5 }, { scale: 1, duration: .5, ease: 'back.out(2)' });
     gsap.delayedCall(1.2, () => op('数値が…出ません。<br><b>測定不能</b>です。', showResult)); return;
   }
   if (R.pct === 0) {
-    setVal('0', '%'); setGauge(0); sfx('err'); shake = .15; $('hSub').textContent = '反応なし'; $('hSub').className = 'hbig'; $('tap').classList.add('dead'); $('tapS').textContent = '反応なし';
+    setVal('0', '%'); setGauge(0); sfx('err'); shake = .15; fx2Add('implosion', { x: 160, y: 150, seed: 2, palette: ramp('#6f8590') }, 2); $('hSub').textContent = '反応なし'; $('hSub').className = 'hbig'; $('tap').classList.add('dead'); $('tapS').textContent = '反応なし';
     gsap.fromTo(big, { scale: 1.3 }, { scale: 1, duration: .5, ease: 'back.out(2)' });
     gsap.delayedCall(1.3, () => op('解放戦力…<b>0%</b>。<br>スーツが、まったく反応しません。', showResult)); return;
   }
@@ -405,7 +413,7 @@ function lockHuman(R) {
   setVal(String(R.pct), '%'); setGauge(R.pct / 100); G.uProg.value = .04 + .96 * R.pct / 100;
   sfx('lock'); flash('#c8f7ff', top ? .95 : .7, top ? 1.1 : .7); wave(); beamUp(.5 + R.pct / 100); shake = .25 + R.pct / 100 * .6; emit(40 + R.pct, true);
   G.uPulse.value = 1; gsap.fromTo(G.uPow, { value: .4 + R.pct / 100 }, { value: R.pct / 100 * .35, duration: 1.2 });
-  fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 5, palette: ramp('#3fe0ff') });
+  fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 5, palette: ramp('#3fe0ff') }); fx2Add('plasma', { x: 160, y: 150, seed: R.pct, palette: ramp('#3fe0ff') }, 2); if (R.pct >= 60) fx2Add('strike', { x: 160, y: 276, seed: R.pct + 3, palette: ramp('#8ff0ff') }, 3.2);
   gsap.fromTo(big, { scale: 1.9 }, { scale: 1, duration: .6, ease: 'elastic.out(1,.45)' });
   gsap.fromTo(CAM, { d: 6.6 }, { d: 7.7, duration: 1.1, ease: 'power3.out' });
   $('hSub').textContent = '測定完了'; try { if (navigator.vibrate) navigator.vibrate([30, 40, 60]); } catch (e) { }
@@ -443,11 +451,10 @@ function goKaiju(el) {
     t.hidden = false; t.className = 'kai'; $('tapT').textContent = '連打'; $('tapS').textContent = ''; gsap.set(t, { x: 0, y: 0 }); gsap.fromTo(t, { scale: 1.8, opacity: 0 }, { scale: 1, opacity: 1, duration: .5, ease: 'back.out(2)' });
     gsap.to(G.uKai, { value: 1, duration: 1.1, ease: 'power2.out' }); gsap.to(G.uProg, { value: 0, duration: .3 }); G.uPow.value = 0;
     gsap.to(CRK, { alpha: .22, duration: 1.2, delay: .4, onUpdate: crackDraw });
-    gsap.to(up.rotation, { x: .3, duration: 1.1, ease: 'power3.out' }); gsap.to(head.rotation, { x: -.12, duration: 1.1 });
-    gsap.to(armL.rotation, { z: -.55, x: .25, duration: 1.1, ease: 'back.out(2)' }); gsap.to(armR.rotation, { z: .55, x: .25, duration: 1.1, ease: 'back.out(2)' });
-    gsap.to(fig.scale, { x: 1.16, y: 1.16, z: 1.16, duration: 1.4, ease: 'power2.out' });
+    figH.visible = false; figK.visible = true; core.position.set(PT.kaiju.chest[0], PT.kaiju.chest[1], PT.kaiju.chest[2] + .05); // 赤い光のなかで、怪獣の体に入れかわる
+    gsap.fromTo(figK.scale, { x: .82, y: .82, z: .82 }, { x: 1, y: 1, z: 1, duration: 1.5, ease: 'elastic.out(1,.55)' });
     camTo({ d: 7.3, off: .03, y: .95, ty: 1.55 }, 1.4, 'power3.out'); wave(); wave(1); emit(120, true);
-    fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3020') });
+    fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3020') }); fx2Add('wipe', { x: 160, y: 150, seed: 6 }, 2); fx2Add('slam', { x: 160, y: 272, seed: 6, palette: ramp('#ff3020') }, 3.4);
     gsap.to(['#warn1', '#warn2'], { opacity: 1, duration: .3 }); gsap.to(['#warn1', '#warn2'], { opacity: 0, duration: .5, delay: 2.6 });
     $('seis').style.opacity = 1; SEIS.on = true; SEIS.amp = .06; SEIS.buf.fill(0);
     cap('怪獣反応を検知', 1.5);
@@ -459,7 +466,7 @@ function lockKaiju(R) {
   setVal(fstr(f), '', f == null ? 76 : 0); setGauge(f == null ? 0 : f / 100); G.uKp.value = 1; SEIS.amp = 1;
   sfx('roar'); sfx('lock'); flash(top ? '#ffffff' : '#ff3a1a', 1, top ? 1.6 : .9); wave(); gsap.delayedCall(.18, () => wave(1)); beamUp(1.2); shake = top ? 1.6 : 1.1; emit(220, true); G.uPulse.value = 1;
   gsap.fromTo(G.uPow, { value: 1.4 }, { value: .35, duration: 1.6 });
-  fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 9, palette: ramp('#ff3020') });
+  fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 9, palette: ramp('#ff3020') }); fx2Add('slam', { x: 160, y: 272, seed: 9, palette: ramp('#ff3020') }, 3.4); fx2Add('strike', { x: 160, y: 276, seed: 12, palette: ramp('#ff6a3a') }, 3.2);
   gsap.fromTo('#hVal', { scale: 2.1 }, { scale: 1, duration: .7, ease: 'elastic.out(1,.4)' });
   gsap.fromTo(CAM, { d: 6.0 }, { d: 7.3, duration: 1.3, ease: 'power3.out' });
   $('hSub').textContent = '計測完了'; try { if (navigator.vibrate) navigator.vibrate([60, 40, 60, 40, 200]); } catch (e) { }
