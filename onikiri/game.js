@@ -47,12 +47,14 @@ function applyLang() {
 const toHira = s => s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
 const norm = s => toHira(String(s).normalize('NFKC').replace(/[\s　・･]/g, '').toLowerCase());
 function hash(s, seed) { let h = (2166136261 ^ seed) >>> 0; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13; h = Math.imul(h, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
+// 原作キャラは、漢字・ひらがな・カタカナ、名字のあるなし、名字と名前の漢字／よみの組みあわせを同じに扱う（解放戦力と同じ決まり）。名字だけは対象外。色を決める計算に使う名前（norm）は変えない
+const charKey = s => norm(s).replace(/[\uFE00-\uFE0F]/g, '').replace(/竃/g, '竈').replace(/祢/g, '禰').replace(/髓/g, '髄').replace(/を/g, 'お');
 const CHMAP = new Map();
-CHARS.forEach(c => c.n.forEach(v => { const n = norm(v); if (!CHMAP.has(n)) CHMAP.set(n, c); }));
+CHARS.forEach(c => { const n = c.n, v = n.slice(); if (n.length >= 4 && n[0].endsWith(n[2]) && n[1].endsWith(n[3])) { const s = n[0].slice(0, -n[2].length), sy = n[1].slice(0, -n[3].length); if (s && sy) v.push(s + n[3], sy + n[2]); } v.forEach(x => { const k = charKey(x); if (!CHMAP.has(k)) CHMAP.set(k, c); }); });
 const POOL = ORDER.map(k => [k, COLORS[k].w]);
 function judge(name) {
   const n = norm(name); const r1 = hash(n, 0x6b61), r2 = hash(n, 0x7461);
-  const c = CHMAP.get(n); if (c) return { key: c.k, den: c.den, n, aka: !!c.aka, stab: !!c.stab, ch: c.n[0] };
+  const c = CHMAP.get(charKey(name)); if (c) return { key: c.k, den: c.den, n, aka: !!c.aka, stab: !!c.stab, ch: c.n[0] };
   let key = null, x = r1 * 100; for (const [k, w] of POOL) { if (x < w) { key = k; break; } x -= w; } key = key || 'none';
   let den;
   if (key === 'none') den = Math.floor(r2 * 6);
@@ -162,8 +164,10 @@ function clearEnts() { for (const e of ENT) { e.m.visible = false; FREE[e.type].
 
 // ---------- 走る ----------
 let ST = 'load', R = null, G = { x: 0, speed: 0, lane: 2 }, SEL = [], BEST = ls.get('onikiri_best', 0);
+// 1体斬るごとの刃こぼれ：才能100%でも少しは減る（約33体）。才能がないほど早い（0%で約4体）。赫刀は1割だけ減りにくい
+const costOf = r => (3 + 12 * (1 - r.den / 100)) * (r.akaDone ? .9 : 1);
 function newRun() {
-  clearEnts(); const den = R.den, cost = 15 * (1 - den / 100) * (R.akaDone ? .8 : 1);
+  clearEnts(); const den = R.den, cost = costOf(R);
   G = { t: 0, dist: 0, speed: 13, lane: 2, x: 0, max: Math.round(70 + 30 * den / 100), cost, sharp: 0, gauge: 0, kills: 0, over: 0, inv: 0, fx: null, slowT: 0, slowS: 1, hit: 0, lastCut: -9, next: 12, safe: 2, shake: 0, pend: [], sel: 0, wz: SEL.map(i => WAZA[R.key][i]), used: {}, why: '', cutN: 0, pt: 0 };
   G.sharp = G.max; for (let z = -48; z > -124; z -= 19) spawnRow(z); G.next = 12; hudWaza(); $('hud').hidden = false; $('wzBtns').hidden = !G.wz.length; $('wzB').hidden = G.wz.length < 2; RIG.setLoop(null); setLook(1); ST = 'run'; hudStep(true);
 }
@@ -197,7 +201,7 @@ function kill(e, free, quiet) {
 function smash(e) { if (e.dead) return; e.dead = .001; e.vx = rnd(-5, 5); e.vy = 6; FX.glow('#ffd9a0', e.m.position.x, .8, e.z, 3, .2, { world: 1 }); FX.burst('gray', e.m.position.x, .7, e.z, 8, { sp: 8 }); sfx('thud'); }
 function inZone(e, Lw, Rr, zNear) { return e.z <= (zNear == null ? 1 : zNear) && e.z >= -Rr && (Lw >= 9 || Math.abs(e.lane - G.lane) <= Lw); }
 function zoneKill(Lw, Rr, O, zNear) { let n = 0; for (const e of ENT) { if (e.dead || !inZone(e, Lw, Rr, zNear)) continue; if (e.type === 'oni') { kill(e, true, n > 2); n++; } else if (e.type === 'obs' && O) smash(e); } return n; }
-function die(why) { if (G.over) return; G.over = .001; G.why = why; G.shake = .9; G.fx = null; RIG.setLoop('down'); FX.dragon.stop(); sfx('thud'); sfx('clang'); flash('#ff2a2a', .6); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 90, seed: 9, palette: ramp('#ff3048') }); }
+function die(why) { if (G.over || (DEV && window.__god)) return; G.over = .001; G.why = why; G.shake = .9; G.fx = null; RIG.setLoop('down'); FX.dragon.stop(); sfx('thud'); sfx('clang'); flash('#ff2a2a', .6); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 90, seed: 9, palette: ramp('#ff3048') }); }
 // 型ごとの動き（原作の動きに合わせる）
 function actOf(p) { if (p.a) return p.a; const v = p.v; if (p.k === 'inst') return v === 'wheel' ? 'flipV' : v === 'arcUp' ? 'rise' : (v === 'arcDown' || v === 'fall') ? 'smash' : v === 'thrust' ? 'thrust' : (v === 'bolt' || v === 'dash' || v === 'mega') ? 'iai' : (v === 'claws' || v === 'storm') ? 'slashH2' : 'slashH'; if (p.k === 'multi') return 'multi'; if (p.k === 'aura') return v === 'calm' ? 'calm' : v === 'dashAura' ? 'charge' : 'spin'; if (p.k === 'flow') return v === 'dragon' ? 'dragon' : 'flow'; if (p.k === 'rain') return 'raise'; return p.v === 'eye' && p.S > .45 ? 'sense' : null; }
 // 一撃の型のエフェクト
@@ -274,7 +278,8 @@ function runStep(dt) {
 }
 let tAll = 0, lastT = 0; const V1 = new THREE.Vector3(), V2 = new THREE.Vector3();
 function frame(now) {
-  requestAnimationFrame(frame);
+  if (!(DEV && window.__ticking)) requestAnimationFrame(frame);
+  if (DEV && window.__manual && !window.__ticking) return;
   if (ST === 'title' || ST === 'grip' || ST === 'load') { renderer.toneMapping = THREE.ACESFilmicToneMapping; gripFrame(now); lastT = now; return; }
   const dt = Math.min(.05, (now - lastT) / 1000 || 0) * (DEV && window.__ts || 1); lastT = now; tAll += dt; if (document.hidden) return;
   renderer.toneMapping = THREE.NoToneMapping;
@@ -322,7 +327,7 @@ gripOnDone(r => { if (r !== R) return; if (R.key === 'nezuko') { toast(T.isOni);
 function openPick() {
   ST = 'pick'; clearEnts(); RIG.setLoop('idle'); setLook(1); $('hud').hidden = true; $('title').hidden = true; const W = WAZA[R.key] || [], C = COLORS[R.key], un = R.forms;
   $('pkWho').innerHTML = T.who(R.name); const pc = $('pkCol'); pc.textContent = cl(R.key) + '　' + R.kk; pc.style.background = R.key === 'none' ? '#b9bec4' : C.hex; pc.style.color = new THREE.Color(R.key === 'none' ? '#b9bec4' : C.hex).getHSL({}).l > .55 ? '#14131c' : '#fff';
-  const cost = 15 * (1 - R.den / 100) * (R.akaDone ? .8 : 1), mx = 70 + 30 * R.den / 100;
+  const cost = costOf(R), mx = 70 + 30 * R.den / 100;
   $('pkInfo').innerHTML = `${T.den} <b style="color:#fff">${R.den}%</b>${R.akaDone ? '<span class="aka">' + T.aka + '</span>' : ''}<br>${T.sharp}：${T.sharpInfo(cost, mx)}${R.akaDone && cost >= .2 ? '（' + T.akaInfo + '）' : ''}`;
   const saved = ls.get('onikiri_sel', {})[R.n]; SEL = (Array.isArray(saved) ? saved.filter(i => un.includes(i)) : []).slice(0, R.slots); for (let i = un.length - 1; i >= 0 && SEL.length < R.slots; i--) if (!SEL.includes(un[i])) SEL.push(un[i]);
   $('pkT').textContent = !un.length ? T.noWaza : (R.slots === 2 ? T.pick2(un.length) : T.pick1(un.length));
@@ -403,4 +408,7 @@ applyLang(); gripSnd(SND); $('nm').value = ls.get('onikiri_name', '') || ''; $('
   else { ST = 'title'; $('title').hidden = false; gsap.fromTo('#title .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: 'power3.out' }); }
 }
 if (DEV) window.__G = () => ({ ST, G, R, SEL, ENT: ENT.length, FXL: FX.count() });
+if (DEV) window.__cast = (key, i) => { R.key = key; R.kk = kk(key); setLook(1); G.wz = [WAZA[key][i]]; G.sel = 0; G.gauge = 100; G.fx = null; G.over = 0; G.sharp = G.max; G.inv = 9; RIG.setLoop(null); useWaza(); return WAZA[key][i][1]; };
+if (DEV) window.__W = WAZA;
+if (DEV) { window.__E = ENT; let fk = 0; window.__tick = () => { if (!fk) { fk = performance.now(); try { gsap.ticker.remove(gsap.updateRoot); } catch (e) { } } fk += 1000 / 30; window.__ticking = 1; try { gsap.updateRoot(fk / 1000); frame(fk); } finally { window.__ticking = 0; } }; window.__judge = n => { const r = judge(n); return [r.key, r.den, usable(r).length]; }; }
 requestAnimationFrame(frame);
