@@ -1,6 +1,9 @@
-import { THREE } from './lib.js?v=11260040';
-import { COLORS, CHARS, ORDER } from './data.js?v=11260040';
-import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11260040';
+import { THREE } from './lib.js?v=11260100';
+import { COLORS, CHARS, ORDER } from './data.js?v=11260100';
+import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11260100';
+import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, fxAdd, ramp } from './grip.js?v=11260100';
+import { makeFx, STY } from './fx.js?v=11260100';
+import { makeRig, toon, part } from './rig.js?v=11260100';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -18,7 +21,7 @@ const TX = {
     sharp: '切れ味', kills: n => `鬼 ${n}体`, why: { dull: '刃こぼれで、斬れなかった', obs: '障害物にぶつかった' }, rInfo: (R, k, wz) => `「<b>${esc(R.name)}</b>」の日輪刀<br>${R.kk}・才能 <b>${R.den}%</b>${R.akaDone ? '<span class="aka">赫刀</span>' : ''}<br>斬った鬼 <b>${k}</b>体${wz ? '<br>技：' + esc(wz) : ''}`,
     best: d => `自己ベスト ${d.toLocaleString()}m`, newBest: '自己ベスト更新！', again: 'もう一度走る', repick: '技を選びなおす', rename: '名前を変える', x: '𝕏 に投稿', fan: '※非公式のファンゲームです',
     post: (R, d, k) => `「${R.name}」の日輪刀（${R.kk}・才能${R.den}%${R.akaDone ? '・赫刀' : ''}）で ${d.toLocaleString()}m 走り、鬼を${k}体斬った。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
-    rkAll: '全体', loading: '読みこみ中…', rkErr: '読みこめませんでした', rkEmpty: 'まだ記録がありません', nogl: 'この端末では3Dを表示できませんでした', capCol: (c, k) => `${c}　${k}` },
+    rkAll: '全体', rkToday: '今日', loading: '読みこみ中…', rkErr: '読みこめませんでした', rkEmpty: 'まだ記録がありません', nogl: 'この端末では3Dを表示できませんでした', capCol: (c, k) => `${c}　${k}` },
   en: { lang: 'English', ttl: 'MUGEN ONIKIRI', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: 'Your name decides your Nichirin Blade.<br>Run, slash demons, and mind the chipping edge.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', rank: 'Ranking', prev: 'See your blade color',
     hold: 'Hold to grip', keep: 'Keep holding…?', aka: 'The blade burns crimson', isOni: "You're a demon. The blade won't let you hold it", who: n => `<b>${esc(n)}</b>'s Nichirin Blade`, den: 'Talent', sharpInfo: (c, m) => c < .2 ? 'Never chips' : `Chips out after ${Math.max(1, Math.floor(m / c))} demons`, akaInfo: 'Crimson blade: chips slower',
     noWaza: 'No breathing aptitude. No techniques. Dodge, slash, keep going.', pick1: n => `Pick 1 technique (${n} unlocked)`, pick2: n => `Pick 2 techniques (${n} unlocked)`, lockAt: p => `Talent ${p}%+`, go: 'Go', back: 'Back',
@@ -26,15 +29,15 @@ const TX = {
     sharp: 'Edge', kills: n => `${n} demons`, why: { dull: 'The chipped blade could not cut', obs: 'Hit an obstacle' }, rInfo: (R, k, wz) => `<b>${esc(R.name)}</b>'s Nichirin Blade<br>${R.kk} · Talent <b>${R.den}%</b>${R.akaDone ? '<span class="aka">Crimson</span>' : ''}<br>Demons slain: <b>${k}</b>${wz ? '<br>Technique: ' + esc(wz) : ''}`,
     best: d => `Best ${d.toLocaleString()}m`, newBest: 'New best!', again: 'Run again', repick: 'Change technique', rename: 'Change name', x: 'Post on 𝕏', fan: '※Unofficial fan game',
     post: (R, d, k) => `"${R.name}"'s Nichirin Blade (${R.kk}, talent ${R.den}%${R.akaDone ? ', crimson' : ''}) ran ${d.toLocaleString()}m and slew ${k} demons.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
-    rkAll: 'All', loading: 'Loading…', rkErr: 'Could not load', rkEmpty: 'No records yet', nogl: "This device can't show 3D", capCol: (c, k) => `${c}  ${k}` },
+    rkAll: 'All', rkToday: 'Today', loading: 'Loading…', rkErr: 'Could not load', rkEmpty: 'No records yet', nogl: "This device can't show 3D", capCol: (c, k) => `${c}  ${k}` },
 };
 function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || [])[1]; if (TX[q]) return q; const s = ls.get('onikiri_lang', null); if (TX[s]) return s; return (navigator.language || 'ja').toLowerCase().startsWith('ja') ? 'ja' : 'en'; }
 let L = pickLang(), T = TX[L];
 const cl = k => (COLORS[k].name[L] || COLORS[k].name.en), kk = k => (COLORS[k].kokyu[L] || COLORS[k].kokyu.en);
 function applyLang() {
-  T = TX[L]; document.documentElement.lang = L; document.title = T.ttl;
+  T = TX[L]; gripLang(L); document.documentElement.lang = L; document.title = T.ttl;
   $('tH1').innerHTML = T.h1; $('tLead').innerHTML = T.lead; $('nm').placeholder = T.ph; $('startBtn').textContent = T.start; $('rkBtn').textContent = T.rank; $('rkBtn2').textContent = T.rank; $('prevBtn').textContent = T.prev;
-  $('holdT').textContent = T.hold; $('goBtn').textContent = T.go; $('pkBack').textContent = T.back; $('shL').textContent = T.sharp; $('again').textContent = T.again; $('repick').textContent = T.repick; $('rename').textContent = T.rename; $('xBtn').textContent = T.x; $('rkT').textContent = T.rank; $('rkBack').textContent = T.back;
+  $('goBtn').textContent = T.go; $('pkBack').textContent = T.back; $('shL').textContent = T.sharp; $('again').textContent = T.again; $('repick').textContent = T.repick; $('rename').textContent = T.rename; $('xBtn').textContent = T.x; $('rkT').textContent = T.rank; $('rkBack').textContent = T.back;
   $('tFan').textContent = T.fan; $('rFan').textContent = T.fan; sndLabel();
   $('langs').innerHTML = Object.keys(TX).map(k => `<button data-l="${k}" class="${k === L ? 'on' : ''}">${TX[k].lang}</button>`).join('');
   $('langs').querySelectorAll('button').forEach(b => b.onclick = () => { L = b.dataset.l; ls.set('onikiri_lang', L); applyLang(); });
@@ -71,7 +74,7 @@ const wzName = (key, i) => { const w = WAZA[key][i]; return w[0] + ' ' + w[1]; }
 // ---------- 音 ----------
 let AC = null, SND = ls.get('onikiri_snd', true);
 function sndLabel() { $('sndBtn').textContent = SND ? T.sndOn : T.sndOff; }
-$('sndBtn').onclick = () => { SND = !SND; ls.set('onikiri_snd', SND); sndLabel(); };
+$('sndBtn').onclick = () => { SND = !SND; ls.set('onikiri_snd', SND); gripSnd(SND); sndLabel(); };
 function ac() { if (!SND) return null; try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; } catch (e) { return null; } }
 function noise(a, dur) { const b = a.createBuffer(1, a.sampleRate * dur, a.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = a.createBufferSource(); s.buffer = b; return s; }
 function sfx(k, v) {
@@ -86,38 +89,30 @@ function sfx(k, v) {
   else if (k === 'move') { const o = a.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(300, t); o.frequency.exponentialRampToValueAtTime(520, t + .06); o.connect(g); g.gain.setValueAtTime(.05, t); g.gain.exponentialRampToValueAtTime(.0001, t + .08); o.start(t); o.stop(t + .08); }
 }
 
-// ---------- 2Dの演出（pixelfx） ----------
-const fctx = $('fxc').getContext('2d'); let FXS = [], fxRaf = 0, fxLast = 0, fxFrame = null, fxImg = null;
-function ramp(hex) { const c = new THREE.Color(hex), o = []; for (let i = 0; i < 8; i++) { const t = i / 7, k = c.clone().multiplyScalar(.6 + .4 * Math.min(1, t * 1.4)).lerp(new THREE.Color('#ffffff'), Math.max(0, t - .55) * 1.6); o.push('#' + k.getHexString()); } return o; }
-function fxAdd(mod, o) { try { if (!PFX || !mod) return; if (!fxFrame) { fxFrame = PFX.createFrame(160, 160); fxImg = new ImageData(160, 160); } const f = PFX.createFx(mod, o); f._life = mod === PFX.fx.confetti ? 3 : 1.4; FXS.push(f); if (!fxRaf) { fxLast = performance.now(); fxRaf = requestAnimationFrame(fxLoop); } } catch (e) { } }
-function fxLoop(now) { const dt = Math.min(.05, (now - fxLast) / 1000); fxLast = now; try { PFX.clearFrame(fxFrame); FXS = FXS.filter(f => { f.update(dt); f.draw(fxFrame, 'back'); f.draw(fxFrame, 'front'); f._life -= dt; return !f.done() && f._life > 0; }); PFX.composite(fxFrame, fxImg.data, null); fctx.putImageData(fxImg, 0, 0); } catch (e) { FXS = []; } if (FXS.length) fxRaf = requestAnimationFrame(fxLoop); else { fxRaf = 0; fctx.clearRect(0, 0, 160, 160); } }
+// ---------- 小さな表示 ----------
 function cap(t, hold) { const c = $('cap'); c.textContent = t; gsap.killTweensOf(c); gsap.fromTo(c, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .3 }); if (hold) gsap.to(c, { opacity: 0, duration: .4, delay: hold }); }
 function flash(hex, a) { const f = $('flash'); f.style.background = hex; gsap.fromTo(f, { opacity: a || .7 }, { opacity: 0, duration: .5, ease: 'power2.out' }); }
 let toastT = 0; function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 5000); }
 
-// ---------- 3D ----------
-let renderer;
-try { renderer = new THREE.WebGLRenderer({ canvas: $('gl'), antialias: true }); } catch (e) { $('load').textContent = T.nogl; throw e; }
-renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
-renderer.outputColorSpace = THREE.SRGBColorSpace;
+// ---------- 3D（走る場面）。描く道具（renderer）は握る場面と共用 ----------
 const scene = new THREE.Scene(); scene.background = new THREE.Color(0x06070f); scene.fog = new THREE.Fog(0x06070f, 45, 135);
 const camera = new THREE.PerspectiveCamera(60, 1, .1, 400);
 const CAM = new THREE.Vector3(0, 4.7, 9.4);
-function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; const hf = 2 * Math.atan(4.5 / 10.5); camera.fov = clamp(THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(hf / 2) / camera.aspect)), 44, 86); camera.updateProjectionMatrix(); }
+function resize() { const w = innerWidth, h = innerHeight; camera.aspect = w / h; const hf = 2 * Math.atan(4.5 / 10.5); camera.fov = clamp(THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(hf / 2) / camera.aspect)), 44, 86); camera.updateProjectionMatrix(); }
 addEventListener('resize', resize); resize();
-scene.add(new THREE.HemisphereLight(0x9aa6e0, 0x1a1420, 1.5));
-const moonL = new THREE.DirectionalLight(0xc6d4ff, 1.6); moonL.position.set(-6, 14, 6); scene.add(moonL);
+scene.add(new THREE.HemisphereLight(0xaab4f0, 0x2a2030, 1.9));
+const moonL = new THREE.DirectionalLight(0xd6e0ff, 2.0); moonL.position.set(-5, 12, 8); scene.add(moonL);
 const auraL = new THREE.PointLight(0xffffff, 0, 16, 1.6); auraL.position.set(0, 1.6, -1.2); scene.add(auraL);
-const LW = 1.4, lx = l => (l - 2) * LW;
+const LW = 1.4, lx = l => (l - 2) * LW, rnd = (a, b) => a + Math.random() * (b - a);
 function ctex(w, h, fn) { const c = document.createElement('canvas'); c.width = w; c.height = h; fn(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; }
 // 道（石畳）
-const roadTex = ctex(256, 256, (x, w, h) => { x.fillStyle = '#23263a'; x.fillRect(0, 0, w, h); for (let i = 0; i < 90; i++) { const a = Math.random() * w, b = Math.random() * h, s = 14 + Math.random() * 26; x.fillStyle = `rgba(${40 + Math.random() * 30 | 0},${44 + Math.random() * 30 | 0},${70 + Math.random() * 30 | 0},.55)`; x.fillRect(a, b, s, s * .6); } x.fillStyle = '#5d6694'; for (let i = 1; i < 5; i++) x.fillRect(i * w / 5 - 1.5, 0, 3, h); x.fillStyle = '#8a93c4'; x.fillRect(0, 0, 4, h); x.fillRect(w - 4, 0, 4, h); x.fillStyle = '#ffffff10'; x.fillRect(0, 0, w, 6); });
+const roadTex = ctex(256, 256, (x, w, h) => { x.fillStyle = '#23263a'; x.fillRect(0, 0, w, h); for (let i = 0; i < 90; i++) { const a = Math.random() * w, b = Math.random() * h, s = 14 + Math.random() * 26; x.fillStyle = `rgba(${40 + Math.random() * 30 | 0},${44 + Math.random() * 30 | 0},${70 + Math.random() * 30 | 0},.55)`; x.fillRect(a, b, s, s * .6); } x.fillStyle = '#4b5380'; for (let i = 1; i < 5; i++) x.fillRect(i * w / 5 - 1, 0, 2, h); x.fillStyle = '#8a93c4'; x.fillRect(0, 0, 4, h); x.fillRect(w - 4, 0, 4, h); x.fillStyle = '#ffffff10'; x.fillRect(0, 0, w, 6); });
 roadTex.wrapS = roadTex.wrapT = THREE.RepeatWrapping; roadTex.repeat.set(1, 30); roadTex.anisotropy = 4;
 const road = new THREE.Mesh(new THREE.PlaneGeometry(LW * 5, 240), new THREE.MeshLambertMaterial({ map: roadTex })); road.rotation.x = -Math.PI / 2; road.position.set(0, 0, -100); scene.add(road);
 const side = new THREE.Mesh(new THREE.PlaneGeometry(120, 260), new THREE.MeshLambertMaterial({ color: 0x0d0e18 })); side.rotation.x = -Math.PI / 2; side.position.set(0, -.03, -100); scene.add(side);
 const moon = new THREE.Mesh(new THREE.CircleGeometry(10, 40), new THREE.MeshBasicMaterial({ color: 0xf6ecc9, fog: false })); moon.position.set(34, 52, -190); scene.add(moon);
 const moonG = new THREE.Mesh(new THREE.CircleGeometry(22, 40), new THREE.MeshBasicMaterial({ color: 0x8892c8, fog: false, transparent: true, opacity: .16 })); moonG.position.set(34, 52, -191); scene.add(moonG);
-// 町並み（大正の夜）
+// 町並み（大正の夜）と藤の花
 const SCEN = [];
 {
   const wallM = [0x2a2230, 0x1f2636, 0x33262a, 0x262a2e].map(c => new THREE.MeshLambertMaterial({ color: c })), roofM = new THREE.MeshLambertMaterial({ color: 0x14161f }), winM = new THREE.MeshBasicMaterial({ color: 0xffc66a }), winM2 = new THREE.MeshBasicMaterial({ color: 0xff9a4a });
@@ -131,78 +126,57 @@ const SCEN = [];
   }
   const postM = new THREE.MeshLambertMaterial({ color: 0x1a1a22 }), lampM = new THREE.MeshBasicMaterial({ color: 0xffb04a });
   for (let i = 0; i < 16; i++) { const sgn = i % 2 ? 1 : -1, g = new THREE.Group(); const p = new THREE.Mesh(box, postM); p.scale.set(.12, 2.6, .12); p.position.y = 1.3; g.add(p); const l = new THREE.Mesh(box, lampM); l.scale.set(.34, .44, .34); l.position.y = 2.7; g.add(l); g.position.set(sgn * (LW * 2.5 + .8), 0, -Math.floor(i / 2) * 28 + 6); scene.add(g); SCEN.push({ m: g, span: 224 }); }
+  const fujiT = ctex(128, 256, (x, w, h) => { for (let k = 0; k < 7; k++) { const cx = 12 + k * 17 + Math.random() * 8, len = 110 + Math.random() * 130; for (let j = 0; j < 40; j++) { const t = j / 40, rr = (1 - t) * 9 + 2; x.fillStyle = `hsla(${268 + Math.random() * 20},${55 + Math.random() * 20}%,${60 + t * 18}%,${.9 - t * .3})`; x.beginPath(); x.arc(cx + (Math.random() - .5) * rr * 2, 8 + t * len, 2.5 + (1 - t) * 3, 0, 7); x.fill(); } } });
+  const fujiM = new THREE.MeshBasicMaterial({ map: fujiT, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+  for (let i = 0; i < 8; i++) { const sgn = i % 2 ? 1 : -1, m = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 4.6), fujiM); m.position.set(sgn * (LW * 2.5 + 1.5), 3.6, -Math.floor(i / 2) * 56 - 20); m.rotation.y = sgn * -.9; scene.add(m); SCEN.push({ m, span: 224 }); }
 }
-// 演出の板（光る線・弧・輪）
-const beamTex = ctex(64, 256, (x, w, h) => { const g = x.createLinearGradient(0, 0, w, 0); g.addColorStop(0, '#0000'); g.addColorStop(.35, '#fff6'); g.addColorStop(.5, '#fff'); g.addColorStop(.65, '#fff6'); g.addColorStop(1, '#0000'); x.fillStyle = g; x.fillRect(0, 0, w, h); x.globalCompositeOperation = 'destination-in'; const v = x.createLinearGradient(0, 0, 0, h); v.addColorStop(0, '#0000'); v.addColorStop(.15, '#fff'); v.addColorStop(.85, '#fff'); v.addColorStop(1, '#0000'); x.fillStyle = v; x.fillRect(0, 0, w, h); });
-const arcTex = ctex(256, 256, (x, w, h) => { x.strokeStyle = '#fff'; x.lineCap = 'round'; for (let i = 0; i < 3; i++) { x.globalAlpha = [.25, .5, 1][i]; x.lineWidth = [46, 26, 10][i]; x.beginPath(); x.arc(w / 2, h * 1.02, h * .78, Math.PI * 1.13, Math.PI * 1.87); x.stroke(); } });
-const ringTex = ctex(256, 256, (x, w, h) => { x.strokeStyle = '#fff'; for (let i = 0; i < 3; i++) { x.globalAlpha = [.2, .45, 1][i]; x.lineWidth = [40, 20, 6][i]; x.beginPath(); x.arc(w / 2, h / 2, w * .38, 0, 6.3); x.stroke(); } x.globalAlpha = .9; x.lineWidth = 10; for (let k = 0; k < 4; k++) { x.beginPath(); x.arc(w / 2, h / 2, w * .3, k * 1.57, k * 1.57 + .7); x.stroke(); } });
-const glowTex = ctex(128, 128, (x, w, h) => { const g = x.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); g.addColorStop(0, '#ffffffff'); g.addColorStop(.3, '#ffffff99'); g.addColorStop(.6, '#ffffff33'); g.addColorStop(1, '#ffffff00'); x.fillStyle = g; x.fillRect(0, 0, w, h); });
-const planeG = new THREE.PlaneGeometry(1, 1);
-const FXP = [], FXL = [];
-function fxMesh(tex) { let m = FXP.pop(); if (!m) { m = new THREE.Mesh(planeG, new THREE.MeshBasicMaterial({ transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); scene.add(m); } m.material.map = tex; m.material.needsUpdate = true; m.visible = true; m.rotation.set(0, 0, 0); m.scale.set(1, 1, 1); return m; }
-function fxPush(m, col, life, o) { m.material.color.set(col); m.material.opacity = 1; FXL.push(Object.assign({ m, life, max: life, a: 1 }, o || {})); }
-function beam(x, z0, z1, w, col, life, o) { const m = fxMesh(beamTex); m.rotation.x = -Math.PI / 2; m.position.set(x, .22, (z0 + z1) / 2); m.scale.set(w, Math.abs(z1 - z0), 1); fxPush(m, col, life || .35, o); }
-function vbeam(x, z, h, w, col, life, o) { const m = fxMesh(beamTex); m.position.set(x, h / 2, z); m.scale.set(w, h, 1); fxPush(m, col, life || .3, o); }
-function arcFlat(x, z, w, col, life, o) { const m = fxMesh(arcTex); m.rotation.x = -Math.PI / 2; m.position.set(x, .5, z); m.scale.set(w, w * .7, 1); fxPush(m, col, life || .4, o); }
-function arcVert(x, z, s, col, life, o) { const m = fxMesh(arcTex); m.position.set(x, 1.3, z); m.scale.set(s, s, 1); m.rotation.z = (o && o.rz) || 0; fxPush(m, col, life || .3, o); }
-function ringFx(r, col, life, o) { const m = fxMesh(ringTex); m.rotation.x = -Math.PI / 2; m.position.set(G.x, .3, -1); m.scale.set(r * 2, r * 2, 1); fxPush(m, col, life, Object.assign({ follow: 1, spin: 9 }, o || {})); }
-function glowFx(x, y, z, s, col, life, o) { const m = fxMesh(glowTex); m.position.set(x, y, z); m.scale.set(s, s, 1); fxPush(m, col, life, o); }
-function fxStep(dt, wdt) {
-  for (let i = FXL.length - 1; i >= 0; i--) { const f = FXL[i], m = f.m; f.life -= dt; if (f.life <= 0) { m.visible = false; FXP.push(m); FXL.splice(i, 1); continue; }
-    const p = f.life / f.max; m.material.opacity = (f.hold ? Math.min(1, p * 4) : p) * f.a; if (f.vz) m.position.z += f.vz * dt; if (f.vy) m.position.y += f.vy * dt; if (f.grow) { const k = 1 + f.grow * dt; m.scale.x *= k; m.scale.y *= k; } if (f.follow) { m.position.x = G.x; } if (f.spin) m.rotation.z += f.spin * dt; if (f.world) m.position.z += G.speed * wdt; }
-}
-// 剣士（後ろ姿）
-const player = new THREE.Group(); scene.add(player);
+// エフェクトと剣士
+const WREF = { x: 0 }, FX = makeFx(scene, WREF);
+STY.ash = { kind: 'plain', c: '#5a2414', c2: '#ffb07a', shape: 'ember' };
+const RIG = makeRig(FX.glowTex); scene.add(RIG.root);
 const P = {};
 {
-  const dark = new THREE.MeshLambertMaterial({ color: 0x16161e }), skin = new THREE.MeshLambertMaterial({ color: 0xe8c4a0 });
-  P.haoriM = new THREE.MeshLambertMaterial({ color: 0x334466, side: THREE.DoubleSide }); P.bladeM = new THREE.MeshBasicMaterial({ color: 0xb9bec4 });
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(.24, .3, .8, 10), dark); body.position.y = 1.0; player.add(body);
-  const haori = new THREE.Mesh(new THREE.CylinderGeometry(.3, .55, .95, 12, 1, true), P.haoriM); haori.position.y = .93; player.add(haori); P.haori = haori;
-  P.legL = new THREE.Mesh(new THREE.BoxGeometry(.17, .62, .17), dark); P.legR = P.legL.clone(); P.legL.geometry.translate(0, -.31, 0); P.legL.position.set(-.14, .62, 0); P.legR.position.set(.14, .62, 0); player.add(P.legL, P.legR);
-  const head = new THREE.Mesh(new THREE.SphereGeometry(.23, 14, 10), new THREE.MeshLambertMaterial({ color: 0x1c1418 })); head.position.y = 1.62; player.add(head);
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(.08, .08, .12, 8), skin); neck.position.y = 1.43; player.add(neck);
-  P.arm = new THREE.Group(); P.arm.position.set(.34, 1.25, 0); player.add(P.arm);
-  const arm = new THREE.Mesh(new THREE.BoxGeometry(.12, .5, .12), dark); arm.position.y = -.2; P.arm.add(arm);
-  P.kat = new THREE.Group(); P.kat.position.set(0, -.42, 0); P.arm.add(P.kat);
-  const blade = new THREE.Mesh(new THREE.BoxGeometry(.05, 1.3, .02), P.bladeM); blade.position.y = .72; P.kat.add(blade);
-  const tsuba = new THREE.Mesh(new THREE.CylinderGeometry(.1, .1, .03, 10), new THREE.MeshLambertMaterial({ color: 0xc9a14a })); tsuba.position.y = .06; P.kat.add(tsuba);
-  P.kat.rotation.x = -1.15; P.arm.rotation.z = -.2;
-  P.auraM = new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, fog: false }); P.aura = new THREE.Sprite(P.auraM); P.aura.scale.set(3.0, 4.0, 1); P.aura.position.set(0, 1.15, -.1); player.add(P.aura);
-  P.bladeGlowM = new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, fog: false }); P.bladeGlow = new THREE.Sprite(P.bladeGlowM); P.bladeGlow.scale.set(.5, 1.7, 1); P.bladeGlow.position.y = .72; P.kat.add(P.bladeGlow);
-  const n = 46, pos = new Float32Array(n * 3); P.pv = []; for (let i = 0; i < n; i++) { pos[i * 3] = (Math.random() - .5) * 1.4; pos[i * 3 + 1] = Math.random() * 2.6; pos[i * 3 + 2] = (Math.random() - .5) * 1.0; P.pv.push(.6 + Math.random() * 1.4); }
-  P.pg = new THREE.BufferGeometry(); P.pg.setAttribute('position', new THREE.BufferAttribute(pos, 3)); P.pm = new THREE.PointsMaterial({ size: .09, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, fog: false }); player.add(new THREE.Points(P.pg, P.pm));
+  P.auraM = new THREE.SpriteMaterial({ map: FX.glowTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, fog: false }); P.aura = new THREE.Sprite(P.auraM); P.aura.scale.set(3.0, 4.0, 1); P.aura.position.set(0, 1.15, -.1); RIG.root.add(P.aura);
+  const n = 60, pos = new Float32Array(n * 3); P.pv = []; for (let i = 0; i < n; i++) { pos[i * 3] = (Math.random() - .5) * 1.5; pos[i * 3 + 1] = Math.random() * 2.8; pos[i * 3 + 2] = (Math.random() - .5) * 1.1; P.pv.push(.7 + Math.random() * 1.6); }
+  P.pg = new THREE.BufferGeometry(); P.pg.setAttribute('position', new THREE.BufferAttribute(pos, 3)); P.pm = new THREE.PointsMaterial({ size: .1, map: FX.glowTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, fog: false }); RIG.root.add(new THREE.Points(P.pg, P.pm));
 }
 // 鬼・障害物・砥石
-const GEO = { box: new THREE.BoxGeometry(1, 1, 1), sph: new THREE.SphereGeometry(.5, 12, 9), horn: new THREE.ConeGeometry(.07, .34, 6), rock: new THREE.DodecahedronGeometry(.62, 0), eye: new THREE.SphereGeometry(.06, 6, 5) };
-const MAT = { oni: [0x7a2030, 0x3e5a36, 0x34406e, 0x6a3470, 0x7a5a20].map(c => new THREE.MeshLambertMaterial({ color: c })), horn: new THREE.MeshLambertMaterial({ color: 0xece4cc }), eye: new THREE.MeshBasicMaterial({ color: 0xffd23c }), crate: new THREE.MeshLambertMaterial({ color: 0x6b4a22 }), crate2: new THREE.MeshLambertMaterial({ color: 0x3a2812 }), rock: new THREE.MeshLambertMaterial({ color: 0x5a5c6c, flatShading: true }), stone: new THREE.MeshBasicMaterial({ color: 0xdfe6ff }) };
+const GEO = { box: new THREE.BoxGeometry(1, 1, 1), sph: new THREE.SphereGeometry(.5, 12, 10), horn: new THREE.ConeGeometry(.07, .36, 6), rock: new THREE.DodecahedronGeometry(.62, 0), eye: new THREE.SphereGeometry(.06, 6, 5), body: new THREE.CapsuleGeometry(.3, .5, 4, 10), limb: new THREE.CapsuleGeometry(.1, .5, 3, 8) };
+const MAT = { oni: [[0x8a2a3a, 0xb7a7b2], [0x4a6a40, 0xa9c79a], [0x3a4a80, 0xa8b0d8], [0x70397a, 0xc9b0d0], [0x8a6a24, 0xd8c8a0], [0x2a2a34, 0xc8c2cc]].map(c => [toon(c[0]), toon(c[1])]), horn: toon(0xf2ead0), eye: new THREE.MeshBasicMaterial({ color: 0xff3040 }), crate: toon(0x7a5426), crate2: toon(0x3a2812), rock: toon(0x6a6c7e), stone: new THREE.MeshBasicMaterial({ color: 0xdfe6ff }) };
 const FREE = { oni: [], obs: [], stone: [] }, ENT = [];
 function mkEnt(type) {
   const g = new THREE.Group();
-  if (type === 'oni') { const mt = MAT.oni[Math.random() * 5 | 0]; const b = new THREE.Mesh(GEO.box, mt); b.scale.set(.78, 1.15, .5); b.position.y = .62; g.add(b); const h = new THREE.Mesh(GEO.sph, mt); h.scale.setScalar(.66); h.position.y = 1.48; g.add(h); for (const s of [-1, 1]) { const hn = new THREE.Mesh(GEO.horn, MAT.horn); hn.position.set(s * .15, 1.86, .04); hn.rotation.z = -s * .25; g.add(hn); const e = new THREE.Mesh(GEO.eye, MAT.eye); e.position.set(s * .12, 1.52, .3); g.add(e); const a = new THREE.Mesh(GEO.box, mt); a.scale.set(.2, .7, .2); a.position.set(s * .52, .95, .18); a.rotation.x = -.9; g.add(a); } }
-  else if (type === 'obs') { if (Math.random() < .5) { const c = new THREE.Mesh(GEO.box, MAT.crate); c.scale.set(1.12, 1.12, 1.12); c.position.y = .56; g.add(c); for (const y of [.12, 1.0]) { const s = new THREE.Mesh(GEO.box, MAT.crate2); s.scale.set(1.18, .12, 1.18); s.position.y = y; g.add(s); } } else { const r = new THREE.Mesh(GEO.rock, MAT.rock); r.scale.set(1, 1.05, 1); r.position.y = .56; r.rotation.y = Math.random() * 3; g.add(r); } }
-  else { const s = new THREE.Mesh(GEO.box, MAT.stone); s.scale.set(.55, .2, .32); s.position.y = .75; g.add(s); const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xaecbff, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: .8 })); gl.scale.set(1.8, 1.8, 1); gl.position.y = .75; g.add(gl); }
+  if (type === 'oni') { const mt = MAT.oni[Math.random() * 6 | 0], body = new THREE.Group(), head = new THREE.Group(); g.add(body, head);
+    const b = part(GEO.body, mt[0]); b.position.y = .78; b.scale.set(1.15, 1, .85); b.rotation.x = .2; body.add(b);
+    for (const s of [-1, 1]) { const a = part(GEO.limb, mt[1], 1.14); a.position.set(s * .42, .98, .28); a.rotation.set(1.15, 0, -s * .25); body.add(a); const l = part(GEO.limb, mt[0], 1.14); l.position.set(s * .17, .3, 0); body.add(l); }
+    const hd = part(GEO.sph, mt[1]); hd.scale.setScalar(.6); head.add(hd); const hair = part(GEO.sph, toon(0x16121a), 0); hair.scale.set(.64, .5, .62); hair.position.set(0, .1, -.06); head.add(hair);
+    for (const s of [-1, 1]) { const hn = new THREE.Mesh(GEO.horn, MAT.horn); hn.position.set(s * .14, .33, .1); hn.rotation.set(.25, 0, -s * .3); head.add(hn); const e = new THREE.Mesh(GEO.eye, MAT.eye); e.position.set(s * .11, .02, .27); head.add(e); }
+    const eg = new THREE.Sprite(new THREE.SpriteMaterial({ map: FX.glowTex, color: 0xff2030, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: .75 })); eg.scale.set(.9, .45, 1); eg.position.set(0, .02, .3); head.add(eg);
+    g.userData = { body, head }; }
+  else if (type === 'obs') { if (Math.random() < .5) { const c = part(GEO.box, MAT.crate, 1.05); c.scale.set(1.12, 1.12, 1.12); c.position.y = .56; g.add(c); for (const y of [.12, 1.0]) { const s = new THREE.Mesh(GEO.box, MAT.crate2); s.scale.set(1.18, .12, 1.18); s.position.y = y; g.add(s); } } else { const r = part(GEO.rock, MAT.rock, 1.06); r.scale.set(1, 1.05, 1); r.position.y = .56; r.rotation.y = Math.random() * 3; g.add(r); } }
+  else { const s = new THREE.Mesh(GEO.box, MAT.stone); s.scale.set(.55, .2, .32); s.position.y = .75; g.add(s); const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: FX.glowTex, color: 0xaecbff, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: .8 })); gl.scale.set(1.8, 1.8, 1); gl.position.y = .75; g.add(gl); }
   scene.add(g); return g;
 }
-function spawn(type, lane, z) { const m = FREE[type].pop() || mkEnt(type); m.visible = true; m.position.set(lx(lane), 0, z); m.rotation.set(0, 0, 0); m.scale.set(1, 1, 1); const e = { type, lane, z, m, dead: 0, ph: Math.random() * 6 }; ENT.push(e); return e; }
-function clearEnts() { for (const e of ENT) { e.m.visible = false; FREE[e.type].push(e.m); } ENT.length = 0; for (const f of FXL) { f.m.visible = false; FXP.push(f.m); } FXL.length = 0; }
+function spawn(type, lane, z) { const m = FREE[type].pop() || mkEnt(type); m.visible = true; m.position.set(lx(lane), 0, z); m.rotation.set(0, 0, 0); const sc = type === 'oni' ? rnd(.92, 1.14) : 1; m.scale.set(sc, sc, sc); if (type === 'oni') { const u = m.userData; u.head.position.set(0, 1.56, .1); u.head.rotation.set(0, 0, 0); u.head.scale.set(1, 1, 1); u.body.scale.set(1, 1, 1); u.body.position.set(0, 0, 0); } const e = { type, lane, z, m, dead: 0, ph: Math.random() * 6 }; ENT.push(e); return e; }
+function clearEnts() { for (const e of ENT) { e.m.visible = false; FREE[e.type].push(e.m); } ENT.length = 0; FX.clear(); FX.trail.reset(); FX.dragon.reset(); }
 
 // ---------- 走る ----------
-let ST = 'load', R = null, G = { x: 0, speed: 0 }, SEL = [], BEST = ls.get('onikiri_best', 0);
+let ST = 'load', R = null, G = { x: 0, speed: 0, lane: 2 }, SEL = [], BEST = ls.get('onikiri_best', 0);
 function newRun() {
   clearEnts(); const den = R.den, cost = 15 * (1 - den / 100) * (R.akaDone ? .8 : 1);
-  G = { t: 0, dist: 0, speed: 13, lane: 2, x: 0, max: Math.round(70 + 30 * den / 100), cost, sharp: 0, gauge: 0, kills: 0, over: 0, inv: 0, fx: null, slowT: 0, slowS: 1, hit: 0, lastCut: -9, next: 12, safe: 2, shake: 0, q: [], sel: 0, wz: SEL.map(i => WAZA[R.key][i]), used: {}, why: '' };
-  G.sharp = G.max; for (let z = -48; z > -124; z -= 19) spawnRow(z); G.next = 12; hudWaza(); $('hud').hidden = false; $('wzBtns').hidden = !G.wz.length; $('wzB').hidden = G.wz.length < 2; ST = 'run'; hudStep(true);
+  G = { t: 0, dist: 0, speed: 13, lane: 2, x: 0, max: Math.round(70 + 30 * den / 100), cost, sharp: 0, gauge: 0, kills: 0, over: 0, inv: 0, fx: null, slowT: 0, slowS: 1, hit: 0, lastCut: -9, next: 12, safe: 2, shake: 0, pend: [], sel: 0, wz: SEL.map(i => WAZA[R.key][i]), used: {}, why: '', cutN: 0, pt: 0 };
+  G.sharp = G.max; for (let z = -48; z > -124; z -= 19) spawnRow(z); G.next = 12; hudWaza(); $('hud').hidden = false; $('wzBtns').hidden = !G.wz.length; $('wzB').hidden = G.wz.length < 2; RIG.setLoop(null); setLook(1); ST = 'run'; hudStep(true);
 }
-function auraCol() { if (!R || R.key === 'none') return new THREE.Color(0x9aa0aa); const c = new THREE.Color(COLORS[R.key].hex); if (R.key === 'black') c.set(0xff7a3a); if (R.akaDone) c.lerp(new THREE.Color(0xff2a14), .62); return c; }
+const KEY = () => (R && STY[R.key] ? R.key : 'none');
+function auraCol() { if (!R || R.key === 'none') return new THREE.Color(0x9aa0aa); const c = new THREE.Color(STY[R.key].c); if (R.akaDone) c.lerp(new THREE.Color(0xff2a14), .6); return c; }
 const hexOf = () => '#' + auraCol().getHexString();
-function setLook(prog, aura) {
-  const C = COLORS[R.key], steel = new THREE.Color(0xb9bec4), col = new THREE.Color(R.key === 'none' ? '#b9bec4' : C.hex);
-  P.bladeM.color.copy(steel).lerp(col, prog); if (R.akaDone) P.bladeM.color.lerp(new THREE.Color(0xff3a14), .7);
-  const a = auraCol(); P.auraM.color.copy(a); P.pm.color.copy(a); P.bladeGlowM.color.copy(R.akaDone ? new THREE.Color(0xff3a14) : col); P.bladeGlowM.opacity = (R.key === 'none' ? .15 : .7) * prog;
-  P.haoriM.color.copy(col).multiplyScalar(R.key === 'black' ? 2.2 : .5).lerp(new THREE.Color(0x202432), R.key === 'none' ? .7 : .25);
+function setLook(aura) {
+  const C = COLORS[R.key], col = new THREE.Color(R.key === 'none' ? '#b9bec4' : C.hex);
+  RIG.bladeM.color.copy(col); if (R.key === 'black') RIG.bladeM.color.set(0x2a2a30); if (R.akaDone) RIG.bladeM.color.lerp(new THREE.Color(0xff3a14), .75);
+  const a = auraCol(); P.auraM.color.copy(a); P.pm.color.copy(a); RIG.bladeGlow.color.copy(R.akaDone ? new THREE.Color(0xff3a14) : (R.key === 'black' ? new THREE.Color(0xff7a3a) : col)); RIG.bladeGlow.opacity = R.key === 'none' ? .15 : .75;
+  RIG.haoriM.color.copy(R.key === 'none' ? new THREE.Color(0x4a4e58) : (R.key === 'black' ? new THREE.Color(0x2c3a34) : col.clone().multiplyScalar(.8)));
   const k = R.key === 'none' ? .12 : (.3 + .5 * R.den / 100); P.auraM.opacity = aura * k * .9; P.pm.opacity = aura * k; auraL.color.copy(a); auraL.intensity = aura * (R.key === 'none' ? 3 : 26);
-  document.documentElement.style.setProperty('--tint', hexOf());
+  FX.trail.key(KEY()); document.documentElement.style.setProperty('--tint', hexOf());
 }
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0;[a[i], a[j]] = [a[j], a[i]]; } return a; }
 function spawnRow(z) {
@@ -214,91 +188,107 @@ function spawnRow(z) {
   else { let n = 1 + (Math.random() < .35 + .4 * q ? 1 : 0) + (Math.random() < .5 * q ? 1 : 0) + (Math.random() < .3 * q ? 1 : 0), o = 0; for (let i = 0; i < n; i++) { const l = lanes[i]; if (l !== G.safe && o < 2 && Math.random() < .26 + .14 * q) { cells[l] = 'obs'; o++; } else cells[l] = 'oni'; } if (Math.random() < .075) cells[lanes[4]] = 'stone'; }
   cells.forEach((c, l) => { if (c) spawn(c, l, z); });
 }
+// 鬼を斬る：頸が飛び、体は灰になる
 function kill(e, free, quiet) {
-  if (e.dead) return; e.dead = .001; e.vx = (Math.random() - .5) * 7; G.kills++; G.gauge = Math.min(100, G.gauge + (free ? 2.5 : 7));
-  const col = hexOf(); arcVert(e.m.position.x, e.z + .2, 2.4, col, .22, { rz: (Math.random() - .5) * 2.4, world: 1 }); glowFx(e.m.position.x, 1.1, e.z, 2.2, '#ffffff', .14, { world: 1 });
+  if (e.dead) return; e.dead = .001; e.vx = rnd(-1, 1) * 4 + (e.m.position.x - G.x) * 2; e.vy = rnd(6, 10); G.kills++; G.gauge = Math.min(100, G.gauge + (free ? 2.5 : 7));
+  const K = KEY(), x = e.m.position.x; FX.arcVert(K, x, e.z + .3, 2.8, .26, { rz: rnd(-1.4, 1.4), world: 1, y: 1.4 }); FX.glow('#ffffff', x, 1.4, e.z, 2.6, .12, { world: 1 }); FX.burst(K, x, 1.3, e.z, free ? 3 : 6, { sp: 6 }); FX.burst('ash', x, .8, e.z, 5, { sp: 3, g: -3, life: 1.3 });
   if (!quiet) sfx('cut', free ? .5 : 1);
 }
-function smash(e) { if (e.dead) return; e.dead = .001; e.vx = (Math.random() - .5) * 10; glowFx(e.m.position.x, .8, e.z, 3, '#ffd9a0', .2, { world: 1 }); sfx('thud'); }
+function smash(e) { if (e.dead) return; e.dead = .001; e.vx = rnd(-5, 5); e.vy = 6; FX.glow('#ffd9a0', e.m.position.x, .8, e.z, 3, .2, { world: 1 }); FX.burst('gray', e.m.position.x, .7, e.z, 8, { sp: 8 }); sfx('thud'); }
 function inZone(e, Lw, Rr, zNear) { return e.z <= (zNear == null ? 1 : zNear) && e.z >= -Rr && (Lw >= 9 || Math.abs(e.lane - G.lane) <= Lw); }
 function zoneKill(Lw, Rr, O, zNear) { let n = 0; for (const e of ENT) { if (e.dead || !inZone(e, Lw, Rr, zNear)) continue; if (e.type === 'oni') { kill(e, true, n > 2); n++; } else if (e.type === 'obs' && O) smash(e); } return n; }
-function die(why) { if (G.over) return; G.over = .001; G.why = why; G.shake = .9; sfx('thud'); sfx('clang'); flash('#ff2a2a', .6); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 90, seed: 9, palette: ramp('#ff3048') }); }
+function die(why) { if (G.over) return; G.over = .001; G.why = why; G.shake = .9; G.fx = null; RIG.setLoop('down'); FX.dragon.stop(); sfx('thud'); sfx('clang'); flash('#ff2a2a', .6); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 90, seed: 9, palette: ramp('#ff3048') }); }
+// 型ごとの動き（原作の動きに合わせる）
+function actOf(p) { if (p.a) return p.a; const v = p.v; if (p.k === 'inst') return v === 'wheel' ? 'flipV' : v === 'arcUp' ? 'rise' : (v === 'arcDown' || v === 'fall') ? 'smash' : v === 'thrust' ? 'thrust' : (v === 'bolt' || v === 'dash' || v === 'mega') ? 'iai' : (v === 'claws' || v === 'storm') ? 'slashH2' : 'slashH'; if (p.k === 'multi') return 'multi'; if (p.k === 'aura') return v === 'calm' ? 'calm' : v === 'dashAura' ? 'charge' : 'spin'; if (p.k === 'flow') return v === 'dragon' ? 'dragon' : 'flow'; if (p.k === 'rain') return 'raise'; return p.v === 'eye' && p.S > .45 ? 'sense' : null; }
+// 一撃の型のエフェクト
+function castFx(p) {
+  const K = KEY(), S = STY[K], px = G.x, all = p.L >= 9, Wd = (all ? 5 : 2 * p.L + 1) * LW, cx = all ? 0 : px, v = p.v, Rr = p.R, lanes = [];
+  for (let l = 0; l < 5; l++) if (all || Math.abs(l - G.lane) <= p.L) lanes.push(l);
+  FX.ring(S.c, px, -1, 1.2, .45, { grow: 6 }); FX.burst(K, px, 1.1, -1.5, 16, { sp: 8, fwd: 2.5 }); sfx('cut');
+  if (v === 'arcH' || v === 'rain') { for (let i = 0; i < 3; i++) FX.arcFlat(K, cx, -2 - i * 1.3, Wd + 2.4 - i * .3, .5 + i * .08, { vz: -Rr * 2.4, grow: .5, a: 1 - i * .25 }); FX.arcVert(K, cx, -1.6, Wd + 1.6, .28, { y: 1.2 }); if (v === 'rain') for (let i = 0; i < 14; i++) FX.vbeam(K, cx + rnd(-Wd, Wd) * .6, -rnd(2, Rr), 7, .5, rnd(.3, .6), { a: .6 }); }
+  else if (v === 'wheel' || v === 'arcUp' || v === 'arcDown' || v === 'fall') {
+    lanes.forEach(l => { FX.arcVert(K, lx(l), -2, 4.4, .55, { vz: -Rr * 2, rz: (v === 'arcDown' || v === 'fall') ? Math.PI : 0, spin: v === 'wheel' ? -16 : 0, y: 1.7 }); FX.beam(K, lx(l), 0, -Rr, 1.5, .45); });
+    if (v === 'fall' || v === 'arcDown') { G.shake = .65; lanes.forEach(l => { FX.vbeam(K, lx(l), -Rr * .45, 9, 1.7, .42); FX.ring(S.c2, lx(l), -Rr * .45, 1.5, .5, { grow: 5 }); }); FX.burst(K, cx, .5, -Rr * .45, 26, { sp: 10, w: Wd }); }
+    if (v === 'arcUp') lanes.forEach(l => FX.vbeam(K, lx(l), -Rr * .5, 10, 1.4, .45, { vy: 6 }));
+  }
+  else if (v === 'claws') lanes.forEach((l, i) => { FX.beam(K, lx(l), 0, -Rr, 1.2, .5); FX.arcVert(K, lx(l), -3, 3.2, .42, { vz: -Rr * 2.2, rz: i % 2 ? -.6 : .6 }); });
+  else if (v === 'storm') { lanes.forEach(l => { FX.beam(K, lx(l), 0, -Rr, 1.4, .5); for (let i = 0; i < 2; i++) FX.vbeam(K, lx(l), -3 - Math.random() * Rr * .9, 11, 1.5, rnd(.25, .5)); }); G.shake = .6; flash(S.c2, .35); }
+  else if (v === 'mega') { FX.beam(K, cx, 0, -Rr, Wd * 1.5, .85); FX.beam(K, cx, 0, -Rr, Wd * .7, .6); for (let i = 0; i < 5; i++) FX.arcFlat(K, cx, -3 - i * 3, Wd + 3, .75, { vz: -Rr * 1.5, grow: .9, a: 1 - i * .12 }); FX.dragon.start(K, .8, Math.min(42, Rr * .6), 1.7); G.shake = 1; flash(S.c, .55); FX.burst(K, cx, 1, -6, 40, { sp: 13, w: Wd, fwd: 3 }); lanes.forEach(l => FX.vbeam(K, lx(l), -rnd(6, Rr * .7), 12, 1.6, .5)); }
+  else { FX.beam(K, px, .5, -Rr, v === 'dash' ? 2.3 : 1.7, .5); FX.beam(K, px, 0, -Rr, .8, .35); if (p.L > 0 && !all) for (const s of [-1, 1]) FX.beam(K, px + s * LW, 0, -Rr, 1.3, .42);
+    if (v === 'bolt') { for (let i = 0; i < 4; i++) FX.vbeam(K, px + rnd(-1.5, 1.5), -rnd(2, Rr), 12, 1.7, rnd(.18, .4)); flash('#ffffff', .3); }
+    if (v === 'dash') FX.arcVert(K, px, -3, 4.2, .42, { vz: -Rr * 2, rz: -.8 }); FX.ring(S.c2, px, -Rr * .5, 1, .4, { grow: 7 }); FX.arcFlat(K, px, -Rr * .6, 3.6, .4, { grow: 1.5 }); }
+}
+// 続く型のエフェクト
+function auraFx(p) {
+  const K = KEY(), S = STY[K], D = p.D, v = p.v;
+  if (p.k === 'aura') { const r = p.L >= 9 ? 6.6 : (2 * p.L + 1) * LW * .5 + 1.4; for (let i = 0; i < 3; i++) FX.arcFlat(K, G.x, -1, r * 2.3, D, { rz: i * 2.094, spin: v === 'calm' ? 1.3 : 8.5, follow: 1, hold: 1, y: .6, a: v === 'calm' ? .55 : 1 }); FX.ring(S.c, G.x, -1, r, D, { follow: 1, hold: 1 }); if (v === 'calm') { FX.ring('#ffffff', G.x, -1, r * .55, D, { follow: 1, hold: 1, a: .4 }); FX.glow(S.c, G.x, 1.2, -1, r * 2.2, D, { follow: 1, hold: 1, a: .3 }); } if (v === 'dashAura') FX.dragon.start(K, D, 9, .8); }
+  else if (p.k === 'flow') FX.dragon.start(K, D, v === 'dragon' ? 22 : 13, v === 'dragon' ? 1.4 : .85);
+  else if (p.k === 'slow') { gsap.to('#tint', { opacity: .55, duration: .25 }); gsap.to('#tint', { opacity: 0, duration: .5, delay: D }); FX.ring(S.c, G.x, -1, 2, .8, { grow: 5, follow: 1 }); }
+}
 function useWaza() {
-  if (ST !== 'run' || G.over || !G.wz.length || G.gauge < 100 || G.fx) return;
-  const w = G.wz[G.sel], p = w[3], col = hexOf(), px = G.x, W = (p.L >= 9 ? 5 : (2 * p.L + 1)) * LW, cx = p.L >= 9 ? 0 : px;
-  G.gauge = 0; G.hit = .32; G.used[w[0] + ' ' + w[1]] = 1; sfx('waza'); flash(col, .22);
-  const el = $('wz'); el.innerHTML = `<small>${esc(kk(R.key))}</small>${esc(w[0])}　${esc(w[1])}`; gsap.killTweensOf(el); gsap.fromTo(el, { opacity: 0, y: 8 }, { opacity: .62, y: 0, duration: .18 }); gsap.to(el, { opacity: 0, duration: .5, delay: .95 });
+  if (ST !== 'run' || G.over || !G.wz.length || G.gauge < 100 || G.fx || RIG.playing()) return;
+  const w = G.wz[G.sel], p = w[3], col = hexOf(), a = actOf(p);
+  G.gauge = 0; G.used[w[0] + ' ' + w[1]] = 1; sfx('waza'); flash(col, .2);
+  const el = $('wz'); el.innerHTML = `<small>${esc(kk(R.key))}</small>${esc(w[0])}　${esc(w[1])}`; gsap.killTweensOf(el); gsap.fromTo(el, { opacity: 0, y: 8 }, { opacity: .62, y: 0, duration: .18 }); gsap.to(el, { opacity: 0, duration: .5, delay: 1.0 });
   if (p.H) G.sharp = Math.min(G.max, G.sharp + p.H);
-  if (p.k === 'inst') {
-    zoneKill(p.L, p.R, p.O); G.inv = Math.max(G.inv, p.I || .4);
-    const v = p.v;
-    if (v === 'arcH') { arcFlat(cx, -3, W + 1.5, col, .45, { vz: -p.R * 2.2, grow: .6 }); arcFlat(cx, -1.5, W + .8, '#ffffff', .3, { vz: -p.R * 2.2, a: .6 }); }
-    else if (v === 'wheel' || v === 'arcUp' || v === 'arcDown' || v === 'fall') { for (let l = -p.L; l <= p.L; l++) { if (p.L >= 9 && l) continue; arcVert(px + l * LW, -2, 3.4, col, .5, { vz: -p.R * 2, rz: v === 'arcDown' || v === 'fall' ? Math.PI : 0, spin: v === 'wheel' ? -14 : 0 }); } beam(px, 0, -p.R, W * .8, col, .35); if (v === 'fall') { G.shake = .5; glowFx(px, .5, -p.R * .5, W * 2.2, col, .4); } }
-    else if (v === 'claws') { for (let l = 0; l < 5; l++) if (p.L >= 9 || Math.abs(l - G.lane) <= p.L) beam(lx(l), 0, -p.R, .7, col, .42); }
-    else if (v === 'storm') { for (let l = 0; l < 5; l++) { beam(lx(l), 0, -p.R, .9, col, .4); vbeam(lx(l), -4 - Math.random() * p.R * .8, 9, .8, '#ffffff', .25); } G.shake = .4; }
-    else if (v === 'mega') { beam(cx, 0, -p.R, W * 1.25, col, .7); beam(cx, 0, -p.R, W * .5, '#ffffff', .45); arcFlat(cx, -4, W + 3, col, .6, { vz: -p.R * 1.6, grow: 1 }); G.shake = .8; flash(col, .5); }
-    else { beam(px, 0, -p.R, v === 'dash' ? 1.5 : 1.0, col, .45); beam(px, 0, -p.R, .35, '#ffffff', .3); if (p.L > 0) for (const s of [-1, 1]) beam(px + s * LW, 0, -p.R, .8, col, .38); if (v === 'bolt') vbeam(px, -p.R * .5, 10, 1, '#ffffff', .18); }
-  } else if (p.k === 'multi') {
-    const ts = ENT.filter(e => !e.dead && e.type === 'oni' && e.z < 1 && e.z > -p.R).sort((a, b) => b.z - a.z).slice(0, p.N);
-    ts.forEach((e, i) => G.q.push({ t: i * .05, e })); G.inv = Math.max(G.inv, .35 + ts.length * .05); if (!ts.length) arcVert(px, -2, 3, col, .3, { vz: -30 });
-  } else if (p.k === 'slow') { G.slowT = p.D; G.slowS = p.S; gsap.to('#tint', { opacity: .55, duration: .25 }); gsap.to('#tint', { opacity: 0, duration: .5, delay: p.D / 1 }); G.fx = { p, t: 0, D: p.D }; }
-  else { G.fx = { p, t: 0, D: p.D, rain: 0 }; const r = p.k === 'rain' ? 0 : (p.v === 'calm' ? Math.max(4, W * .55) : W * .5 + 1.2); if (r) { ringFx(r, col, p.D, { hold: 1, spin: p.v === 'calm' ? 1.5 : 10 }); ringFx(r * .6, '#ffffff', p.D, { hold: 1, spin: -7, a: .4 }); } if (p.v === 'calm') glowFx(G.x, 1.2, -1, r * 2.6, col, p.D, { hold: 1, follow: 1, a: .35 }); }
+  if (p.k === 'inst') { const hit = RIG.play(a) || .1; G.hit = hit + .14; G.inv = Math.max(G.inv, hit + (p.I || .45)); FX.trail.on(hit + .45); G.pend.push({ t: hit, f: () => { zoneKill(p.L, p.R, p.O); castFx(p); } }); }
+  else { const D = p.k === 'multi' ? p.N * .1 + .15 : p.D; G.hit = .3; G.fx = { p, t: 0, D, tick: 0, n: 0 }; if (a) RIG.setLoop(a); FX.trail.on(D); if (p.k === 'slow') { G.slowT = p.D; G.slowS = p.S; } auraFx(p); }
 }
 function runStep(dt) {
-  if (G.over) { G.over += dt; if (G.over > 1.05) { showResult(); } return 0; }
+  if (G.over) { G.over += dt; if (G.over > 1.1) showResult(); return 0; }
   if (G.hit > 0) G.hit -= dt; if (G.slowT > 0) G.slowT -= dt;
-  const ts = (G.hit > 0 ? .35 : 1) * (G.slowT > 0 ? G.slowS : 1), wdt = dt * ts;
+  const ts = (G.hit > 0 ? .3 : 1) * (G.slowT > 0 ? G.slowS : 1), wdt = dt * ts;
   G.t += wdt; G.speed = 13 + 17 * Math.min(1, G.dist / 1800); const mv = G.speed * wdt; G.dist += mv;
   const p1 = Math.min(1, G.dist / 1800), gap = G.dist < 1800 ? 18 - 8 * p1 : Math.max(7, 10 - (G.dist - 1800) / 1500);
   G.next -= mv; while (G.next <= 0) { spawnRow(); G.next += gap; }
-  // 技（続くもの）
+  for (let i = G.pend.length - 1; i >= 0; i--) { const k = G.pend[i]; k.t -= dt; if (k.t <= 0) { G.pend.splice(i, 1); k.f(); } }
+  // 続く型
   const F = G.fx; let immune = G.inv > 0, ghost = false, brk = false;
   if (G.inv > 0) G.inv -= dt;
   if (F) {
-    F.t += dt; const p = F.p;
-    if (p.k === 'aura') { immune = true; ghost = !!p.G; brk = !!p.O; zoneKill(p.L, p.R, p.O); }
-    else if (p.k === 'flow') { immune = true; ghost = true; brk = !!p.O; const Lw = p.grow ? Math.min(2, Math.floor(F.t / F.D * 3)) : p.L; let tg = null; for (const e of ENT) if (!e.dead && e.type === 'oni' && e.z < -1 && e.z > -34 && (!tg || e.z > tg.z)) tg = e; if (tg && tg.lane !== G.lane) { G.lane = tg.lane; beam(G.x, 0, -3, .5, hexOf(), .25); } zoneKill(Lw, 7, p.O); }
-    else if (p.k === 'rain') { F.rain -= dt; if (F.rain <= 0) { F.rain = .22; zoneKill(9, p.R, p.O, -2.5); for (let i = 0; i < 3; i++) vbeam(lx(Math.random() * 5 | 0), -4 - Math.random() * (p.R - 4), 11, 1.0, hexOf(), .3, { world: 1 }); G.shake = Math.max(G.shake, .18); } }
-    if (F.t >= F.D) { G.fx = null; G.inv = Math.max(G.inv, .35); }
+    F.t += dt; F.tick -= dt; const p = F.p, K = KEY();
+    if (p.k === 'aura') { immune = true; ghost = !!p.G; brk = !!p.O; zoneKill(p.L, p.R, p.O); if (F.tick <= 0) { F.tick = .07; FX.burst(K, G.x + rnd(-1, 1) * (p.L >= 9 ? 3 : p.L * LW + 1), .8, -1 + rnd(-2, 1), 2, { sp: 4, world: 0 }); } }
+    else if (p.k === 'flow') { immune = true; ghost = true; brk = !!p.O; const Lw = p.grow ? Math.min(2, Math.floor(F.t / F.D * 3)) : p.L; let tg = null; for (const e of ENT) if (!e.dead && e.type === 'oni' && e.z < -1 && e.z > -34 && (!tg || e.z > tg.z)) tg = e; if (tg && tg.lane !== G.lane) { G.lane = tg.lane; FX.arcFlat(K, G.x, -1, 3.4, .3, { rz: rnd(0, 6) }); } zoneKill(Lw, 7, p.O); if (F.tick <= 0) { F.tick = .06; FX.burst(K, G.x, 1, -.5, 2, { sp: 5 }); } }
+    else if (p.k === 'rain') { if (F.tick <= 0) { F.tick = .2; zoneKill(9, p.R, p.O, -2.5); for (let i = 0; i < 4; i++) { const x = lx(Math.random() * 5 | 0), z = -4 - Math.random() * (p.R - 4); FX.vbeam(K, x, z, 12, 1.5, .32, { world: 1 }); FX.ring(STY[K].c, x, z, .8, .35, { grow: 6, world: 1 }); FX.burst(K, x, .4, z, 3, { sp: 6 }); } G.shake = Math.max(G.shake, .22); } }
+    else if (p.k === 'multi') { immune = true; if (F.tick <= 0 && F.n < p.N) { F.tick = .1; F.n++; let tg = null; for (const e of ENT) if (!e.dead && e.type === 'oni' && e.z < 1 && e.z > -p.R && (!tg || e.z > tg.z)) tg = e; if (tg) { kill(tg, true); FX.beam(K, (G.x + tg.m.position.x) / 2, 0, tg.z, .7, .2); } else FX.arcVert(K, G.x + rnd(-.6, .6), -2, 3, .25, { rz: rnd(-1.5, 1.5), vz: -20 }); } }
+    if (F.t >= F.D) { G.fx = null; G.inv = Math.max(G.inv, .4); RIG.setLoop(null); FX.dragon.stop(); }
   }
-  for (let i = G.q.length - 1; i >= 0; i--) { const k = G.q[i]; k.t -= dt; if (k.t <= 0) { if (ENT.includes(k.e)) kill(k.e, true); G.q.splice(i, 1); } }
   if (!G.fx && G.gauge < 100) { const g0 = G.gauge; G.gauge = Math.min(100, G.gauge + 1.3 * wdt); if (g0 < 100 && G.gauge >= 100) sfx('full'); }
-  // 切れ味は、斬らずにいると戻る
-  if (G.t - G.lastCut > 1.0) G.sharp = Math.min(G.max, G.sharp + 10 * wdt);
-  // 自分
+  if (G.t - G.lastCut > 1.0) G.sharp = Math.min(G.max, G.sharp + 10 * wdt); // 切れ味は、斬らずにいると戻る
   const tx = lx(G.lane); G.x += (tx - G.x) * Math.min(1, dt * 24); const pl = clamp(Math.round(G.x / LW) + 2, 0, 4);
-  // 鬼・障害物
   for (let i = ENT.length - 1; i >= 0; i--) {
     const e = ENT[i]; e.z += mv; e.m.position.z = e.z;
-    if (e.dead) { e.dead += dt; const m = e.m; m.position.y += 6 * dt; m.position.x += e.vx * dt; m.rotation.z += e.vx * 1.4 * dt; const s = Math.max(.01, 1 - e.dead / .34); m.scale.set(s, s, s); if (e.dead > .34) { m.visible = false; FREE[e.type].push(m); ENT.splice(i, 1); } continue; }
-    if (e.type === 'oni') { e.m.position.y = Math.abs(Math.sin(G.t * 9 + e.ph)) * .12; e.m.rotation.z = Math.sin(G.t * 9 + e.ph) * .06; } else if (e.type === 'stone') { e.m.rotation.y += dt * 3; e.m.position.y = Math.sin(G.t * 4 + e.ph) * .12; }
+    if (e.dead) { e.dead += dt; const m = e.m, u = m.userData;
+      if (e.type === 'oni' && u.head) { const h = u.head; e.vy -= 20 * dt; h.position.y += e.vy * dt; h.position.x += e.vx * dt; h.position.z -= 3 * dt; h.rotation.z += 11 * dt; h.rotation.x += 7 * dt; const s = Math.max(.01, 1 - e.dead / .5); u.body.scale.set(s, s * s, s); u.body.position.y = 0; if (e.dead > .38) h.scale.setScalar(Math.max(.01, 1 - (e.dead - .38) / .2)); }
+      else { m.position.y += e.vy * dt; m.position.x += e.vx * dt; m.rotation.z += e.vx * dt; const s = Math.max(.01, 1 - e.dead / .34); m.scale.set(s, s, s); }
+      if (e.dead > (e.type === 'oni' ? .58 : .34)) { m.visible = false; FREE[e.type].push(m); ENT.splice(i, 1); } continue; }
+    if (e.type === 'oni') { e.m.position.y = Math.abs(Math.sin(G.t * 9 + e.ph)) * .12; e.m.rotation.z = Math.sin(G.t * 9 + e.ph) * .07; } else if (e.type === 'stone') { e.m.rotation.y += dt * 3; e.m.position.y = Math.sin(G.t * 4 + e.ph) * .12; }
     if (e.z > -.75 && e.z < .85 && e.lane === pl) {
-      if (e.type === 'stone') { e.dead = .3; G.sharp = Math.min(G.max, G.sharp + 40); sfx('stone'); glowFx(G.x, 1, 0, 3.5, '#cfe0ff', .35, { follow: 1 }); }
-      else if (e.type === 'oni') { if (immune) kill(e, true); else if (G.sharp >= G.cost) { G.sharp -= G.cost; G.lastCut = G.t; kill(e); swing = .22; } else { die('dull'); } }
+      if (e.type === 'stone') { e.dead = .3; e.vx = 0; e.vy = 3; G.sharp = Math.min(G.max, G.sharp + 40); sfx('stone'); FX.glow('#cfe0ff', G.x, 1, 0, 3.5, .35, { follow: 1 }); FX.ring('#cfe0ff', G.x, 0, 1, .4, { grow: 5, follow: 1 }); }
+      else if (e.type === 'oni') { if (immune) kill(e, true); else if (G.sharp >= G.cost) { G.sharp -= G.cost; G.lastCut = G.t; kill(e); RIG.play(G.cutN++ % 2 ? 'cutB' : 'cutA'); FX.trail.on(.3); } else die('dull'); }
       else { if (brk) smash(e); else if (ghost) { } else die('obs'); }
     }
     if (e.z > 12) { e.m.visible = false; FREE[e.type].push(e.m); ENT.splice(i, 1); }
   }
   return mv;
 }
-let swing = 0, tAll = 0, lastT = 0, HOLD = null, holding = false;
+let tAll = 0, lastT = 0; const V1 = new THREE.Vector3(), V2 = new THREE.Vector3();
 function frame(now) {
-  requestAnimationFrame(frame); const dt = Math.min(.05, (now - lastT) / 1000 || 0); lastT = now; tAll += dt; if (document.hidden) return;
-  let mv = 0;
-  if (ST === 'run') mv = runStep(dt); else if (ST === 'grip') gripStep(dt); else if (ST === 'title' || ST === 'pick') mv = 5 * dt;
-  // 景色を流す
+  requestAnimationFrame(frame);
+  if (ST === 'title' || ST === 'grip' || ST === 'load') { renderer.toneMapping = THREE.ACESFilmicToneMapping; gripFrame(now); lastT = now; return; }
+  const dt = Math.min(.05, (now - lastT) / 1000 || 0) * (DEV && window.__ts || 1); lastT = now; tAll += dt; if (document.hidden) return;
+  renderer.toneMapping = THREE.NoToneMapping;
+  let mv = 0; if (ST === 'run') mv = runStep(dt); else mv = 4 * dt;
   roadTex.offset.y += mv / 8; for (const s of SCEN) { s.m.position.z += mv; if (s.m.position.z > 16) s.m.position.z -= s.span; }
-  // 剣士の動き
-  const run = ST === 'run' && !G.over, sp = run ? 13 + G.speed * .25 : 3;
-  P.legL.rotation.x = Math.sin(tAll * sp) * (run ? .9 : .12); P.legR.rotation.x = -P.legL.rotation.x; player.position.set(ST === 'run' ? G.x : 0, run ? Math.abs(Math.sin(tAll * sp)) * .1 : 0, 0);
-  player.rotation.z = ST === 'run' ? clamp((lx(G.lane) - G.x) * -.35, -.4, .4) : 0; player.rotation.x = run ? .16 : 0;
-  if (swing > 0) { swing -= dt; P.arm.rotation.x = -2.2 * Math.sin(Math.max(0, swing) / .22 * Math.PI); } else P.arm.rotation.x = run ? Math.sin(tAll * sp) * .25 : 0;
-  if (ST === 'run' && G.over) { player.rotation.x = Math.min(1.4, G.over * 2.4); player.position.y = Math.max(-.2, .1 - G.over * .4); }
-  const pp = P.pg.attributes.position; for (let i = 0; i < P.pv.length; i++) { let y = pp.getY(i) + P.pv[i] * dt; if (y > 2.8) y = 0; pp.setY(i, y); } pp.needsUpdate = true;
-  if (ST === 'run' || ST === 'pick') { const pulse = .85 + .15 * Math.sin(tAll * 5); P.aura.scale.set(3.0 * pulse, 4.0 * pulse, 1); }
-  fxStep(dt, dt);
-  if (ST === 'run') { G.shake = Math.max(0, G.shake - dt * 1.8); hudStep(); }
-  const sh = ST === 'run' ? G.shake : 0; camera.position.set(CAM.x + (ST === 'run' ? G.x * .35 : 0) + (Math.random() - .5) * sh, CAM.y + (Math.random() - .5) * sh, CAM.z); camera.lookAt((ST === 'run' ? G.x * .35 : 0), 1.1, -10);
+  const inRun = ST === 'run', run = inRun && !G.over && RIG.loop() !== 'calm', slow = inRun && (G.hit > 0 ? .3 : 1) * (G.slowT > 0 ? Math.max(.6, G.slowS) : 1);
+  WREF.x = inRun ? G.x : 0; RIG.root.position.x = WREF.x; RIG.root.rotation.z = inRun ? clamp((lx(G.lane) - G.x) * -.3, -.35, .35) : 0;
+  RIG.step(dt * (inRun ? slow || 1 : 1), run, run ? 13 + G.speed * .25 : 3);
+  RIG.root.updateMatrixWorld(true); RIG.J.kat.localToWorld(V1.set(0, .18, 0)); RIG.J.kat.localToWorld(V2.set(0, 1.34, 0)); FX.trail.step(dt, V1, V2); FX.dragon.step(dt);
+  const pp = P.pg.attributes.position; for (let i = 0; i < P.pv.length; i++) { let y = pp.getY(i) + P.pv[i] * dt; if (y > 2.9) y = 0; pp.setY(i, y); } pp.needsUpdate = true;
+  const pulse = .85 + .15 * Math.sin(tAll * 5); P.aura.scale.set(3.0 * pulse, 4.0 * pulse, 1);
+  FX.step(dt, mv);
+  if (inRun) { G.shake = Math.max(0, G.shake - dt * 1.8); hudStep(); }
+  const sh = inRun ? G.shake : 0, cx = inRun ? G.x * .35 : 0; camera.position.set(CAM.x + cx + (Math.random() - .5) * sh, CAM.y + (Math.random() - .5) * sh, CAM.z); camera.lookAt(cx, 1.1, -10);
   renderer.render(scene, camera);
 }
 // 画面の上の表示
@@ -320,33 +310,17 @@ $('gl').addEventListener('pointerdown', e => { if (ST === 'run') { e.preventDefa
   b.addEventListener('pointerup', e => { const dx = e.clientX - sx, dy = e.clientY - sy; if (Math.hypot(dx, dy) > 22 || (tg && tg.id === 'wzB')) swapWaza(); else useWaza(); tg = null; }); }
 addEventListener('keydown', e => { if (ST !== 'run') return; if (e.key === 'ArrowLeft' || e.key === 'a') move(-1); else if (e.key === 'ArrowRight' || e.key === 'd') move(1); else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); useWaza(); } else if (e.key === 'ArrowUp' || e.key === 'Shift' || e.key === 'w') swapWaza(); });
 
-// ---------- 握る ----------
+// ---------- 握る（前作「色変わりの刀」の場面をそのまま使う） ----------
+function prep(name) { R = judge(name); R.name = name; R.akaDone = false; R.kk = kk(R.key); R.forms = usable(R); R.slots = R.den >= 100 && R.forms.length >= 2 ? 2 : (R.forms.length ? 1 : 0); return R; }
 function grip() {
-  const name = $('nm').value.trim(); if (!name) { $('nmNote').textContent = T.needName; $('nmNote').classList.add('err'); return; }
-  $('nmNote').textContent = ''; ac(); R = judge(name); R.name = name; R.akaDone = false;
-  if (R.key === 'nezuko') { sfx('thud'); flash('#ff3048', .5); toast(T.isOni); return; }
-  R.kk = kk(R.key); R.forms = usable(R); R.slots = R.den >= 100 && R.forms.length >= 2 ? 2 : (R.forms.length ? 1 : 0);
-  ls.set('onikiri_name', name); $('title').hidden = true; clearEnts(); $('hud').hidden = true; setLook(0, 0); HOLD = { p: 0, ph: 0, t: 0, h2: 0 }; holding = false; $('hold').hidden = false; $('holdRing').style.setProperty('--p', 0); $('holdT').textContent = T.hold; ST = 'grip';
+  const name = $('nm').value.trim(); if (!name) { $('nmNote').textContent = T.needName; $('nmNote').classList.add('err'); gsap.fromTo('#nm', { x: -8 }, { x: 0, duration: .4, ease: 'elastic.out(1,.3)' }); return; }
+  if (ST !== 'title') return; $('nmNote').textContent = ''; ac(); prep(name); ls.set('onikiri_name', name); $('title').hidden = true; $('hud').hidden = true; ST = 'grip'; gripSnd(SND); gripStart(R);
 }
-{ const h = $('hold'); const dn = e => { e.preventDefault(); holding = true; h.classList.add('on'); ac(); }, up = () => { holding = false; h.classList.remove('on'); };
-  h.addEventListener('pointerdown', dn); addEventListener('pointerup', up); addEventListener('pointercancel', up); h.addEventListener('contextmenu', e => e.preventDefault()); }
-function ignite() { R.akaDone = true; sfx('ring'); sfx('waza'); flash('#ff3a14', .6); cap(T.aka, 1.2); setLook(1, 1); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 5, palette: ramp('#ff3a14') }); }
-function gripStep(dt) {
-  const H = HOLD; if (!H) return;
-  if (H.ph === 0) { if (holding) H.p = Math.min(1, H.p + dt / 1.1); else H.p = Math.max(0, H.p - dt * .8); $('holdRing').style.setProperty('--p', (H.p * 100).toFixed(0)); setLook(H.p, H.p * .6);
-    if (H.p >= 1) { H.ph = 1; H.t = 0; sfx('ring'); flash(R.key === 'none' ? '#b9bec4' : COLORS[R.key].hex, .35); setLook(1, 1); cap(T.capCol(cl(R.key), R.kk), 1.3); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 3, palette: ramp(R.key === 'none' ? '#b9bec4' : COLORS[R.key].hex) }); } return; }
-  H.t += dt;
-  if (H.ph === 1) { // 色が決まったあと：そのまま握りしめ続けると赫く灼ける（キャラは作中で到達した人だけ、自動で）
-    if (R.key === 'none') { if (H.t > 1.1) H.ph = 3; return; }
-    if (R.ch) { if (R.aka && !H.done && H.t > .7) { H.done = 1; ignite(); } if (H.t > (R.aka ? 2.0 : 1.1)) H.ph = 3; return; }
-    if (H.done) { if (H.t > H.doneAt + 1.2) H.ph = 3; return; }
-    if (holding) { H.h2 += dt; if (H.h2 > .45 && !H.hint) { H.hint = 1; cap(T.keep); } if (H.h2 >= 1.7) { H.done = 1; H.doneAt = H.t; ignite(); } } else if (H.t > .9) H.ph = 3;
-    return; }
-  if (H.ph === 3) { HOLD = null; $('hold').hidden = true; gsap.to('#cap', { opacity: 0, duration: .2 }); holding = false; openPick(); }
-}
+gripOnDone(r => { if (r !== R) return; if (R.key === 'nezuko') { toast(T.isOni); toTitle(); return; } flash(R.key === 'none' ? '#b9bec4' : COLORS[R.key].hex, .5); openPick(); });
+
 // ---------- 技を選ぶ ----------
 function openPick() {
-  ST = 'pick'; setLook(1, 1); const W = WAZA[R.key] || [], C = COLORS[R.key], un = R.forms;
+  ST = 'pick'; clearEnts(); RIG.setLoop('idle'); setLook(1); $('hud').hidden = true; $('title').hidden = true; const W = WAZA[R.key] || [], C = COLORS[R.key], un = R.forms;
   $('pkWho').innerHTML = T.who(R.name); const pc = $('pkCol'); pc.textContent = cl(R.key) + '　' + R.kk; pc.style.background = R.key === 'none' ? '#b9bec4' : C.hex; pc.style.color = new THREE.Color(R.key === 'none' ? '#b9bec4' : C.hex).getHSL({}).l > .55 ? '#14131c' : '#fff';
   const cost = 15 * (1 - R.den / 100) * (R.akaDone ? .8 : 1), mx = 70 + 30 * R.den / 100;
   $('pkInfo').innerHTML = `${T.den} <b style="color:#fff">${R.den}%</b>${R.akaDone ? '<span class="aka">' + T.aka + '</span>' : ''}<br>${T.sharp}：${T.sharpInfo(cost, mx)}${R.akaDone && cost >= .2 ? '（' + T.akaInfo + '）' : ''}`;
@@ -359,7 +333,7 @@ function openPick() {
 }
 $('goBtn').onclick = () => { if (R.slots && SEL.length < R.slots) { for (const i of R.forms.slice().reverse()) if (SEL.length < R.slots && !SEL.includes(i)) SEL.push(i); } const s = ls.get('onikiri_sel', {}); s[R.n] = SEL; ls.set('onikiri_sel', s); $('pick').hidden = true; ac(); newRun(); };
 $('pkBack').onclick = () => { $('pick').hidden = true; toTitle(); };
-function toTitle() { ST = 'title'; $('hud').hidden = true; $('result').hidden = true; $('hold').hidden = true; clearEnts(); if (R) setLook(1, .5); $('title').hidden = false; $('title').scrollTop = 0; }
+function toTitle() { $('hud').hidden = true; $('result').hidden = true; $('pick').hidden = true; clearEnts(); gripReset(); ST = 'title'; $('title').hidden = false; $('title').scrollTop = 0; }
 $('startBtn').onclick = grip;
 $('nm').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('nm').blur(); grip(); } });
 $('prevBtn').onclick = () => { location.href = '../katana/'; };
@@ -395,20 +369,22 @@ async function auth() {
   if (!r.ok) throw new Error('auth'); const j = await r.json(); a = { uid: j.localId, token: j.idToken, refresh: j.refreshToken, exp: Date.now() + (+j.expiresIn) * 1000 }; ls.set('onikiri_auth', a); return AUTH = a;
 }
 const DBU = p => FB.db + '/onikiri/' + p + '.json';
+const dayKey = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10).replace(/-/g, ''); // 日本の日付
 async function submit(d, k, wz) {
   if (DEV || d < 30) return; const sent = ls.get('onikiri_sent', {}), rec = { n: R.name.slice(0, 16), d, k: R.key, t: R.den, c: k, w: String(wz).slice(0, 60), a: R.akaDone ? 1 : 0, ts: { '.sv': 'timestamp' } };
-  const doAll = d > (sent.all || 0), doB = d > (sent[R.key] || 0); if (!doAll && !doB) return; const a = await auth(), q = '?auth=' + encodeURIComponent(a.token), o = { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) };
+  const day = dayKey(), doAll = d > (sent.all || 0), doB = !!WAZA[R.key] && d > (sent[R.key] || 0), doD = d > (sent['d' + day] || 0); if (!doAll && !doB && !doD) return; const a = await auth(), q = '?auth=' + encodeURIComponent(a.token), o = { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) };
   if (doAll) { const r = await fx(DBU('r/' + a.uid) + q, o); if (r.ok) sent.all = d; }
   if (doB) { const r = await fx(DBU('b/' + R.key + '/' + a.uid) + q, o); if (r.ok) sent[R.key] = d; }
+  if (doD) { const r = await fx(DBU('d/' + day + '/' + a.uid) + q, o); if (r.ok) { for (const k of Object.keys(sent)) if (k[0] === 'd' && k !== 'd' + day) delete sent[k]; sent['d' + day] = d; } }
   ls.set('onikiri_sent', sent);
 }
 let rkFrom = 'title', rkTab = 'all';
 async function openRank(from) {
   rkFrom = from; $('title').hidden = true; $('result').hidden = true; $('rank').hidden = false; $('rank').scrollTop = 0;
-  const tabs = [['all', T.rkAll]]; if (R && WAZA[R.key]) tabs.push([R.key, R.kk]); if (!tabs.some(t => t[0] === rkTab)) rkTab = 'all';
+  const tabs = [['all', T.rkAll], ['today', T.rkToday]]; if (R && WAZA[R.key]) tabs.push([R.key, R.kk]); if (!tabs.some(t => t[0] === rkTab)) rkTab = 'all';
   $('rkTabs').innerHTML = tabs.map(t => `<button data-t="${t[0]}" class="${t[0] === rkTab ? 'on' : ''}">${esc(t[1])}</button>`).join(''); $('rkTabs').querySelectorAll('button').forEach(b => b.onclick = () => { rkTab = b.dataset.t; openRank(rkFrom); });
   const box = $('rkBox'); box.innerHTML = '<p class="note">' + T.loading + '</p>';
-  try { const r = await fx(DBU(rkTab === 'all' ? 'r' : 'b/' + rkTab) + '?orderBy=%22d%22&limitToLast=50'); if (!r.ok) throw 0; const j = (await r.json()) || {}; const me = (AUTH || ls.get('onikiri_auth', {}) || {}).uid;
+  try { const r = await fx(DBU(rkTab === 'all' ? 'r' : rkTab === 'today' ? 'd/' + dayKey() : 'b/' + rkTab) + '?orderBy=%22d%22&limitToLast=50'); if (!r.ok) throw 0; const j = (await r.json()) || {}; const me = (AUTH || ls.get('onikiri_auth', {}) || {}).uid;
     const rows = Object.entries(j).map(([u, v]) => Object.assign({ u }, v)).filter(v => v && typeof v.d === 'number').sort((a, b) => b.d - a.d);
     if ($('rank').hidden) return; if (!rows.length) { box.innerHTML = '<p class="note">' + T.rkEmpty + '</p>'; return; }
     box.innerHTML = '<table class="rk">' + rows.map((v, i) => { const C = COLORS[v.k] || COLORS.none; return `<tr${v.u === me ? ' class="me"' : ''}><td class="n">${i + 1}</td><td>${esc(v.n || '')}${v.a ? '<span class="aka">' + (L === 'ja' ? '赫刀' : 'Crimson') + '</span>' : ''}<small><i style="background:${C.hex}"></i>${esc(C.kokyu[L] || C.kokyu.en)}・${T.den}${+v.t || 0}%${v.w ? '・' + esc(String(v.w)) : ''}</small></td><td class="d">${(+v.d).toLocaleString()}m<small>${T.kills(+v.c || 0)}</small></td></tr>`; }).join('') + '</table>';
@@ -418,8 +394,13 @@ $('rkBtn').onclick = () => openRank('title'); $('rkBtn2').onclick = () => openRa
 $('rkBack').onclick = () => { $('rank').hidden = true; if (rkFrom === 'result' && LAST) $('result').hidden = false; else $('title').hidden = false; };
 
 // ---------- はじめ ----------
-applyLang();
-{ const q = (/[?&]n=([^&]+)/.exec(location.search) || [])[1]; let nm = ''; try { nm = q ? decodeURIComponent(q.replace(/\+/g, ' ')).slice(0, 16) : ''; } catch (e) { } $('nm').value = nm || ls.get('onikiri_name', '') || ''; }
-R = null; P.auraM.opacity = 0; ST = 'title'; $('load').hidden = true; $('title').hidden = false;
-if (DEV) window.__G = () => ({ ST, G, R, SEL, ENT: ENT.length, FXL: FXL.length });
+applyLang(); gripSnd(SND); $('nm').value = ls.get('onikiri_name', '') || ''; $('load').hidden = true;
+{ // 前作「色変わりの刀」の結果から来たとき：握る場面をとばして、すぐ技を選ぶところへ（名前は同じサイトの中で受けわたす）
+  const go = /[?&]go=1/.test(location.search), h = go ? ls.get('onikiri_go', null) : null; let direct = false;
+  if (h && h.n && Date.now() - (+h.t || 0) < 10 * 60e3) { const nm = String(h.n).trim().slice(0, 16); if (nm && judge(nm).key !== 'nezuko') { prep(nm); if (R.ch ? R.aka : !!h.a) R.akaDone = true; $('nm').value = nm; ls.set('onikiri_name', nm); direct = true; } }
+  try { localStorage.removeItem('onikiri_go'); if (go) history.replaceState(null, '', location.pathname); } catch (e) { }
+  if (direct) { openPick(); gsap.fromTo('#pick .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .45, ease: 'power3.out' }); }
+  else { ST = 'title'; $('title').hidden = false; gsap.fromTo('#title .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: 'power3.out' }); }
+}
+if (DEV) window.__G = () => ({ ST, G, R, SEL, ENT: ENT.length, FXL: FX.count() });
 requestAnimationFrame(frame);
