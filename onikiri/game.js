@@ -1,9 +1,9 @@
-import { THREE } from './lib.js?v=11260200';
-import { COLORS, CHARS, ORDER } from './data.js?v=11260200';
-import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11260200';
-import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, fxAdd, ramp } from './grip.js?v=11260200';
-import { makeFx, STY } from './fx.js?v=11260200';
-import { makeRig, toon, part, OUT } from './rig.js?v=11260200';
+import { THREE } from './lib.js?v=11260900';
+import { COLORS, CHARS, ORDER } from './data.js?v=11260900';
+import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11260900';
+import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, fxAdd, ramp } from './grip.js?v=11260900';
+import { makeFx, STY } from './fx.js?v=11260900';
+import { makeRig, toon, part, OUT } from './rig.js?v=11260900';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -21,7 +21,7 @@ const TX = {
     sharp: '切れ味', kills: n => `鬼 ${n}体`, why: { dull: '刃こぼれで、斬れなかった', obs: '障害物にぶつかった' }, rInfo: (R, k, wz) => `「<b>${esc(R.name)}</b>」の日輪刀<br>${R.kk}・才能 <b>${R.den}%</b>${R.akaDone ? '<span class="aka">赫刀</span>' : ''}<br>斬った鬼 <b>${k}</b>体${wz ? '<br>技：' + esc(wz) : ''}`,
     best: d => `自己ベスト ${d.toLocaleString()}m`, newBest: '自己ベスト更新！', again: 'もう一度走る', repick: '技を選びなおす', rename: '名前を変える', x: '𝕏 に投稿', img: '画像にする', xCopied: '画像をコピーしました。Xの投稿欄に貼りつけ（Ctrl+V）すると画像がつきます', xSaved: '画像を保存しました。Xの投稿に、保存した画像を追加してください', hintL: 'タップで左へ', hintR: 'タップで右へ', hintS: '指を横にスライドでも動ける', wzTip: '押して技！', fan: '※非公式のファンゲームです',
     post: (R, d, k) => `「${R.name}」の日輪刀（${R.kk}・才能${R.den}%${R.akaDone ? '・赫刀' : ''}）で ${d.toLocaleString()}m 走り、鬼を${k}体斬った。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
-    rkAll: '全体', rkToday: '今日', rkNote: '名前1つにつき1件（その名前でいちばん走った記録）・上位100', loading: '読みこみ中…', rkErr: '読みこめませんでした', rkEmpty: 'まだ記録がありません', nogl: 'この端末では3Dを表示できませんでした', capCol: (c, k) => `${c}　${k}` },
+    rkAll: '全体', rkToday: '今日', rkNone: '才能なし', rkNote: '名前1つにつき1件（その名前でいちばん走った記録）・上位100', loading: '読みこみ中…', rkErr: '読みこめませんでした', rkEmpty: 'まだ記録がありません', nogl: 'この端末では3Dを表示できませんでした', capCol: (c, k) => `${c}　${k}` },
   en: { lang: 'English', ttl: 'MUGEN ONIKIRI', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: 'Your name decides your Nichirin Blade.<br>Run, slash demons, and mind the chipping edge.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', rank: 'Ranking', prev: 'See your blade color',
     hold: 'Hold to grip', keep: 'Keep holding…?', aka: 'The blade burns crimson', isOni: "You're a demon. The blade won't let you hold it", who: n => `<b>${esc(n)}</b>'s Nichirin Blade`, den: 'Talent', sharpInfo: (c, m) => c < .2 ? 'Never chips' : `Chips out after ${Math.max(1, Math.floor(m / c))} demons`, akaInfo: 'Crimson blade: chips slower',
     noWaza: 'No breathing aptitude. No techniques. Dodge, slash, keep going.', pick1: n => `Pick 1 technique (${n} unlocked)`, pick2: n => `Pick 2 techniques (${n} unlocked)`, lockAt: p => `Talent ${p}%+`, go: 'Go', back: 'Back',
@@ -29,7 +29,7 @@ const TX = {
     sharp: 'Edge', kills: n => `${n} demons`, why: { dull: 'The chipped blade could not cut', obs: 'Hit an obstacle' }, rInfo: (R, k, wz) => `<b>${esc(R.name)}</b>'s Nichirin Blade<br>${R.kk} · Talent <b>${R.den}%</b>${R.akaDone ? '<span class="aka">Crimson</span>' : ''}<br>Demons slain: <b>${k}</b>${wz ? '<br>Technique: ' + esc(wz) : ''}`,
     best: d => `Best ${d.toLocaleString()}m`, newBest: 'New best!', again: 'Run again', repick: 'Change technique', rename: 'Change name', x: 'Post on 𝕏', img: 'Save image', xCopied: 'Image copied. Paste it (Ctrl+V) into your post to attach it', xSaved: 'Image saved. Add the saved image to your post', hintL: 'Tap: left', hintR: 'Tap: right', hintS: 'Sliding sideways works too', wzTip: 'Tap!', fan: '※Unofficial fan game',
     post: (R, d, k) => `"${R.name}"'s Nichirin Blade (${R.kk}, talent ${R.den}%${R.akaDone ? ', crimson' : ''}) ran ${d.toLocaleString()}m and slew ${k} demons.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
-    rkAll: 'All', rkToday: 'Today', rkNote: 'One entry per name (its best run). Top 100', loading: 'Loading…', rkErr: 'Could not load', rkEmpty: 'No records yet', nogl: "This device can't show 3D", capCol: (c, k) => `${c}  ${k}` },
+    rkAll: 'All', rkToday: 'Today', rkNone: 'No talent', rkNote: 'One entry per name (its best run). Top 100', loading: 'Loading…', rkErr: 'Could not load', rkEmpty: 'No records yet', nogl: "This device can't show 3D", capCol: (c, k) => `${c}  ${k}` },
 };
 function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || [])[1]; if (TX[q]) return q; const s = ls.get('onikiri_lang', null); if (TX[s]) return s; return (navigator.language || 'ja').toLowerCase().startsWith('ja') ? 'ja' : 'en'; }
 let L = pickLang(), T = TX[L];
@@ -463,7 +463,7 @@ async function submit(d, k, wz) {
   if (DEV || d < 30) return; const h = nameKey(R), day = dayKey(), sent = ls.get('onikiri_best2', {}), rec = { n: (R.ch || R.name).slice(0, 16), d, k: R.key, t: R.den, c: k, w: String(wz).slice(0, 60), a: R.akaDone ? 1 : 0, ts: { '.sv': 'timestamp' } };
   const doAll = d > (sent[h] || 0), doD = d > (sent[day + h] || 0); if (!doAll && !doD) return; const a = await auth(), q = '?auth=' + encodeURIComponent(a.token), o = { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) };
   // いまの記録より伸びていないときは、サーバーが書きこみを受けつけない（ほかの人が同じ名前でもっと走っているとき）
-  if (doAll) { try { await fx(DBU('n/' + h) + q, o); if (WAZA[R.key]) await fx(DBU('k/' + R.key + '/' + h) + q, o); } catch (e) { } sent[h] = d; }
+  if (doAll) { try { await fx(DBU('n/' + h) + q, o); await fx(DBU('k/' + R.key + '/' + h) + q, o); } catch (e) { } sent[h] = d; }
   if (doD) { try { await fx(DBU('t/' + day + '/' + h) + q, o); } catch (e) { } for (const x of Object.keys(sent)) if (/^20\d{6}/.test(x) && !x.startsWith(day)) delete sent[x]; sent[day + h] = d; }
   ls.set('onikiri_best2', sent);
 }
@@ -472,7 +472,7 @@ async function openRank(from) {
   rkFrom = from; $('title').hidden = true; $('result').hidden = true; $('rank').hidden = false; $('rank').scrollTop = 0;
   const ks = ORDER.filter(x => WAZA[x]), short = x => (COLORS[x].kokyu[L] || COLORS[x].kokyu.en).replace(/の呼吸$| Breathing$/, '');
   $('rkTabs').innerHTML = [['all', T.rkAll], ['today', T.rkToday]].map(t => `<button data-t="${t[0]}" class="${t[0] === rkTab ? 'on' : ''}">${esc(t[1])}</button>`).join('');
-  $('rkK').innerHTML = ks.map(x => `<button data-t="${x}" class="${x === rkTab ? 'on' : ''}"><i style="background:${COLORS[x].hex}"></i>${esc(short(x))}</button>`).join('');
+  $('rkK').innerHTML = ks.map(x => `<button data-t="${x}" class="${x === rkTab ? 'on' : ''}"><i style="background:${COLORS[x].hex}"></i>${esc(short(x))}</button>`).join('') + `<button data-t="none" class="${rkTab === 'none' ? 'on' : ''}"><i style="background:#b9bec4"></i>${esc(T.rkNone)}</button>`; // 才能なし（刀の色が変わらない人）だけのランキング
   document.querySelectorAll('#rkTabs button,#rkK button').forEach(b => b.onclick = () => { rkTab = b.dataset.t; openRank(rkFrom); });
   const box = $('rkBox'), tab = rkTab; box.innerHTML = '<p class="note">' + T.loading + '</p>';
   try { const r = await fx(DBU(tab === 'all' ? 'n' : tab === 'today' ? 't/' + dayKey() : 'k/' + tab) + '?orderBy=%22d%22&limitToLast=100'); if (!r.ok) throw 0; const j = (await r.json()) || {}; const me = R ? nameKey(R) : '';
