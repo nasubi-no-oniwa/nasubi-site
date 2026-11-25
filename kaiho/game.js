@@ -1,5 +1,5 @@
-import { THREE, GLTFLoader } from './lib.js?v=11251734';
-import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251734';
+import { THREE, GLTFLoader } from './lib.js?v=11251643';
+import { CHARS, KAIJU, NUMS, ABIL, RANKS, UNKNOWN, FORTS, BUCKETS } from './data.js?v=11251643';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -162,8 +162,8 @@ const PT = { suit: { eye: [0, 2.551, .136], chest: [0, 2.125, .2] }, kaiju: { ey
   const part = (geo, x, y, z, sx, sy, sz) => { const m = new THREE.Mesh(geo, suitMat); m.position.set(x, y, z); m.scale.set(sx || 1, sy || 1, sz || 1); tmp.add(m); };
   part(capG(.33, .9), 0, 1.6, 0, 1.1, 1, .7); part(sphG(.24), 0, 2.5, 0, .92, 1.08, 1);[-1, 1].forEach(s => { part(capG(.11, 1.1), s * .6, 1.5, 0); part(capG(.15, 1.0), s * .2, .6, 0); });
   const ld = new GLTFLoader(), use = (g, par, done) => { g.scene.traverse(o => { if (o.isMesh) { o.material = suitMat; o.frustumCulled = false; } }); par.add(g.scene); done && done(); };
-  ld.load('suit.glb?v=11251734', g => use(g, figH, () => figH.remove(tmp)), undefined, () => { });
-  ld.load('kaiju.glb?v=11251734', g => use(g, figK), undefined, () => { const c = tmp.clone(); c.scale.setScalar(1.15); figK.add(c); });
+  ld.load('suit.glb?v=11251643', g => use(g, figH, () => figH.remove(tmp)), undefined, () => { });
+  ld.load('kaiju.glb?v=11251643', g => use(g, figK), undefined, () => { const c = tmp.clone(); c.scale.setScalar(1.15); figK.add(c); });
 }
 // 目（怪獣側）
 const eyeMat = new THREE.SpriteMaterial({ map: null, color: '#ff5a2a', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
@@ -523,15 +523,14 @@ function showResult() {
   R.card = makeCard(R);
   if (k) loadKTotal().then(shareLine); else loadCounts().then(shareLine);
 }
-function toTitle(keep) { // keep：入れた名前を残したままタイトルへ
+function toTitle() {
   $('result').hidden = true; $('stats').hidden = true; $('hud').hidden = true; $('tap').hidden = true; $('op').hidden = true; M = null; busy = false; humStop();
   resetScene(); camTo({ d: 9.4, off: .27, y: 1.5, ty: 1.35, yaw: 0 }, .8); ST = 'title'; $('title').hidden = false; $('title').scrollTop = 0;
-  const n = $('nm'); if (keep !== true) { n.value = ''; setTimeout(() => { try { if (!IS_PHONE) n.focus(); } catch (e) { } }, 50); }
+  const n = $('nm'); n.value = ''; setTimeout(() => { try { if (!IS_PHONE) n.focus(); } catch (e) { } }, 50);
 }
 $('startBtn').onclick = start;
 $('nm').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); start(); } });
-$('again').onclick = () => toTitle(false);
-$('homeBtn').onclick = () => toTitle(true);
+$('again').onclick = toTitle;
 
 // ---------- 記録（otokonoji の kaiho/。同じ名前は何人が入れても1人として数える） ----------
 const FB = { key: 'AIzaSyAcJgJLVbuvx85_qEGJe1WhwsOelidxeYk', db: 'https://otokonoji-default-rtdb.asia-southeast1.firebasedatabase.app' };
