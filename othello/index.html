@@ -58,7 +58,7 @@ footer a{color:var(--sub)}
 </head>
 <body>
 <main>
-  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v7（11/27 2:55）</small></h1>
+  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v8（11/27 2:50）</small></h1>
   <p class="lead">動画を選ぶと、白と黒のオセロの石がパタパタ裏返る動画に変わります。影絵のように白黒がはっきりした動画ほどきれいに出ます。</p>
 
   <div class="card">
@@ -230,7 +230,7 @@ const samp = document.createElement('canvas');
 const sctx = samp.getContext('2d', { willReadFrequently: true });
 const FPS = 30;
 const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const VERSION = 'v7（11/27 2:55）';
+const VERSION = 'v8（11/27 2:50）';
 
 function levelsFor(maxG, ramp, rampSec) {
   if (!ramp) return [[0, maxG]];
@@ -689,7 +689,8 @@ async function convert() {
   $('share').classList.toggle('hidden', !(navigator.canShare && navigator.canShare({ files: [file] })));
   $('share').onclick = () => navigator.share({ files: [file], title: 'オセロ変換機' }).catch(() => {});
   $('bar').style.width = '100%';
-  $('status').innerHTML = `できました！（${(blob.size / 1048576).toFixed(1)}MB・${Math.round((performance.now() - t0) / 1000)}秒）「動画を保存」か「共有」で保存できます。` + esc(audioNote) + `<br><small>${VERSION}｜${esc(audioInfo)}</small>`;
+  $('status').innerHTML = `できました！（${(blob.size / 1048576).toFixed(1)}MB・${Math.round((performance.now() - t0) / 1000)}秒）「動画を保存」か「共有」で保存できます。` + esc(audioNote) + `<br><small>${VERSION}</small>`;
+  console.log('audio', audioInfo);
   gtag('event', 'othello_done', { max_g: maxG, sec: Math.round(dur) });
 }
 })();
