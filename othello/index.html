@@ -58,7 +58,7 @@ footer a{color:var(--sub)}
 </head>
 <body>
 <main>
-  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v9（11/27 3:30）</small></h1>
+  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v10（11/27 3:25）</small></h1>
   <p class="lead">動画を選ぶと、白と黒のオセロの石がパタパタ裏返る動画に変わります。影絵のように白黒がはっきりした動画ほどきれいに出ます。</p>
 
   <div class="card">
@@ -232,12 +232,13 @@ const samp = document.createElement('canvas');
 const sctx = samp.getContext('2d', { willReadFrequently: true });
 let FPS = 30;
 const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const VERSION = 'v9（11/27 3:30）';
+const VERSION = 'v10（11/27 3:25）';
 
 function levelsFor(maxG, ramp, rampSec) {
   if (!ramp) return [[0, maxG]];
   const seq = [];
-  for (let g = 8; g < maxG; g *= 2) seq.push(g);
+  // 8→12→16→24→32→48…と、1段ごとの変化を小さく
+  for (let g = 8, i = 0; g < maxG; g = i % 2 === 0 ? g * 1.5 : g * 4 / 3, i++) seq.push(Math.round(g));
   seq.push(maxG);
   return seq.map((g, i) => [seq.length === 1 ? 0 : i * rampSec / (seq.length - 1), g]);
 }
@@ -634,12 +635,14 @@ async function convert() {
     $('status').textContent = `変換中… ${done} / ${total}コマ（${size}マス）　のこり約${Math.ceil(left)}秒`;
   };
   let used = 'seek';
+  var readMode = '';
   if (D.ok) {
     // ① ファイルの中のコマを、最初から順番に全部取り出す（同じコマの重複・飛びがない）
     used = 'decode';
     const queue = [];
     let decErr = null, flushed = false, finished = false, si = 0, base = null, lastT = -1;
-    const total = D.samples.length, minDt = 1 / FPS - 0.004;
+    const total = D.samples.length;
+    let prev = null, prevT = 0, nextT = 0, lastSize = '';
     const dec = new VideoDecoder({ output: f => queue.push(f), error: e => decErr = e });
     dec.configure(D.cfg);
     while (true) {
@@ -653,12 +656,20 @@ async function convert() {
         const f = queue.shift();
         let t = f.timestamp / 1e6; if (base === null) base = t; t -= base;
         try {
-          if (lastT < 0 || t - lastT >= minDt) { const size = await emit(t, f); lastT = t; if (outN % 3 === 0) showP(si, total, size); }
-        } finally { f.close(); }
+          // 書き出しは「1秒にFPSコマ」の決まった間隔。元のコマがない時間は直前のコマを使い、石の動きだけ進める
+          while (prev && nextT < t - 1e-6) { lastSize = await emit(nextT, prev); nextT += 1 / FPS; if (outN % 3 === 0) showP(si, total, lastSize); }
+        } catch (e) { f.close(); throw e; }
+        if (prev) prev.close();
+        prev = f; prevT = t; lastT = t;
         continue;
       }
       if (finished) break;
       await sleep(1);
+    }
+    if (prev) {
+      const endT = Math.min(dur, prevT + 0.25);
+      while (nextT < endT - 1e-6) { lastSize = await emit(nextT, prev); nextT += 1 / FPS; }
+      prev.close();
     }
     try { dec.close(); } catch (e) {}
   } else {
@@ -673,6 +684,7 @@ async function convert() {
     }
   }
   console.log('frames via', used, outN);
+  readMode = used === 'decode' ? '順番読み' : '止め読み';
   await venc.flush(); venc.close();
   if (encErr) throw encErr;
 
@@ -784,7 +796,7 @@ async function convert() {
   $('share').classList.toggle('hidden', !(navigator.canShare && navigator.canShare({ files: [file] })));
   $('share').onclick = () => navigator.share({ files: [file], title: 'オセロ変換機' }).catch(() => {});
   $('bar').style.width = '100%';
-  $('status').innerHTML = `できました！（${(blob.size / 1048576).toFixed(1)}MB・${Math.round((performance.now() - t0) / 1000)}秒）「動画を保存」か「共有」で保存できます。` + esc(audioNote) + `<br><small>${VERSION}</small>`;
+  $('status').innerHTML = `できました！（${(blob.size / 1048576).toFixed(1)}MB・${Math.round((performance.now() - t0) / 1000)}秒）「動画を保存」か「共有」で保存できます。` + esc(audioNote) + `<br><small>${VERSION}・${readMode}・${FPS}コマ</small>`;
   console.log('audio', audioInfo);
   gtag('event', 'othello_done', { max_g: maxG, sec: Math.round(dur) });
 }
