@@ -260,10 +260,15 @@ $('go').onclick = async () => {
   $('stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
   $('go').disabled = true; $('pickLabel').classList.add('hidden'); $('sample').disabled = true;
   $('saveRow').hidden = true; $('result').classList.add('hidden'); out.classList.remove('hidden');
+  // 元の音：タップの直後に、裏で元動画を流して音を録り始める（iPhoneのSafariは動画の音を直接読めないため）
+  capture = null;
+  const am = $('audio').value;
+  if (am === 'orig' || am === 'both') { try { capture = startCapture(srcURL); } catch (e) { console.error(e); capture = null; } }
   let wake = null; try { wake = await navigator.wakeLock.request('screen'); } catch (e) {}
   try { await convert(); }
   catch (e) { $('status').textContent = 'うまく変換できませんでした：' + (e && e.message || e); console.error(e); }
   if (wake) try { wake.release(); } catch (e) {}
+  if (capture) capture.stop();
   running = false; $('go').disabled = false; $('pickLabel').classList.remove('hidden'); $('sample').disabled = false;
 };
 
@@ -282,6 +287,47 @@ async function pickAudioCodec() {
     try { const r = await AudioEncoder.isConfigSupported(cfg); if (r.supported) return { cfg, mux }; } catch (e) {}
   }
   return null;
+}
+
+
+let capture = null;
+function startCapture(url) {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const ac = new AC();
+  ac.resume();
+  const ve = document.createElement('video');
+  ve.src = url; ve.playsInline = true; ve.preload = 'auto'; ve.crossOrigin = 'anonymous';
+  const src = ac.createMediaElementSource(ve);
+  const sp = ac.createScriptProcessor(4096, 2, 2);
+  const L = [], R = [];
+  let startAt = null, stopped = false, resolveDone;
+  const done = new Promise(ok => resolveDone = ok);
+  sp.onaudioprocess = e => {
+    if (stopped || ve.paused || ve.ended || ve.currentTime <= 0) return;
+    const ib = e.inputBuffer;
+    if (startAt === null) startAt = Math.max(0, ve.currentTime - ib.duration);
+    L.push(new Float32Array(ib.getChannelData(0)));
+    R.push(new Float32Array(ib.numberOfChannels > 1 ? ib.getChannelData(1) : ib.getChannelData(0)));
+  };
+  src.connect(sp); sp.connect(ac.destination); // sp の出力は無音なので聞こえない
+  const finish = () => { if (stopped) return; stopped = true; try { ve.pause(); } catch (e) {} resolveDone(); };
+  ve.onended = finish;
+  ve.onerror = finish;
+  const p = ve.play(); if (p) p.catch(() => finish());
+  return {
+    get progress() { return ve.duration ? ve.currentTime / ve.duration : 0; },
+    stop() { finish(); try { sp.disconnect(); src.disconnect(); ac.close(); } catch (e) {} },
+    async result() {
+      await done;
+      const n = L.reduce((a, b) => a + b.length, 0);
+      if (!n) return null;
+      const off = Math.round((startAt || 0) * ac.sampleRate);
+      const buf = new AudioBuffer({ length: n + off, numberOfChannels: 2, sampleRate: ac.sampleRate });
+      let o = off;
+      for (let i = 0; i < L.length; i++) { buf.copyToChannel(L[i], 0, o); buf.copyToChannel(R[i], 1, o); o += L[i].length; }
+      return buf;
+    },
+  };
 }
 
 async function convert() {
@@ -409,11 +455,18 @@ async function convert() {
     const SR = 48000, len = Math.ceil(dur * SR);
     const oc = new OfflineAudioContext(2, len, SR);
     if (audioMode === 'orig' || audioMode === 'both') {
-      try {
+      let buf = null;
+      try {   // まずファイルから直接読む（PCのChromeなど）
         const ab = await (await fetch(srcURL)).arrayBuffer();
-        const buf = await oc.decodeAudioData(ab);
-        const s = oc.createBufferSource(); s.buffer = buf; s.connect(oc.destination); s.start(0);
-      } catch (e) { audioNote = '（元の動画の音は読めなかったので入っていません）'; }
+        buf = await oc.decodeAudioData(ab);
+      } catch (e) { buf = null; }
+      if (!buf && capture) {   // 読めなければ、裏で録っていた音を使う
+        const iv = setInterval(() => { $('status').textContent = `元の動画の音を録っています… ${Math.floor(capture.progress * 100)}%`; }, 300);
+        try { buf = await Promise.race([capture.result(), sleep(Math.max(15000, (dur + 30) * 1000)).then(() => null)]); } catch (e) { buf = null; }
+        clearInterval(iv);
+      }
+      if (buf) { const s = oc.createBufferSource(); s.buffer = buf; s.connect(oc.destination); s.start(0); }
+      else audioNote = '（元の動画の音は読めなかったので入っていません）';
     }
     if (audioMode === 'clicks' || audioMode === 'both') {
       const cl = Math.floor(SR * .03), cb = oc.createBuffer(1, cl, SR), cd = cb.getChannelData(0);
