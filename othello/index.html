@@ -58,7 +58,7 @@ footer a{color:var(--sub)}
 </head>
 <body>
 <main>
-  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v8（11/27 2:50）</small></h1>
+  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v9（11/27 3:30）</small></h1>
   <p class="lead">動画を選ぶと、白と黒のオセロの石がパタパタ裏返る動画に変わります。影絵のように白黒がはっきりした動画ほどきれいに出ます。</p>
 
   <div class="card">
@@ -83,6 +83,8 @@ footer a{color:var(--sub)}
       <input type="range" id="th" min="0" max="256" value="256"></div>
     <div class="row"><div>石の裏返り方<small>「なし」だとパッと変わってくっきり</small></div>
       <select id="flip"><option value="1" selected>ふつう</option><option value="0.5">速い</option><option value="0">なし</option></select></div>
+    <div class="row"><div>なめらかさ<small>60コマは元動画が60コマのときだけ効きます</small></div>
+      <select id="fps"><option value="60" selected>1秒60コマ（なめらか）</option><option value="30">1秒30コマ（変換が速い）</option></select></div>
     <div class="row"><div>白黒を反対にする</div><input type="checkbox" id="inv"></div>
     <div class="row"><div>盤の形</div>
       <select id="shape"><option value="fit" selected>動画に合わせる</option><option value="square">正方形</option></select></div>
@@ -103,7 +105,7 @@ footer a{color:var(--sub)}
   </div>
 
   <div class="card note">
-    ・1コマずつ変換するので、できた動画はカクつきません。そのかわり変換には時間がかかります（スマホやマスの細かさによって、動画の長さの1〜5倍くらい）。変換中はこの画面を開いたままにしてください。<br>
+    ・元の動画のコマを1枚ずつ全部変換するので、できた動画はカクつきません。そのかわり変換には時間がかかります（スマホ・マスの細かさ・なめらかさによって、動画の長さの1〜8倍くらい）。変換中はこの画面を開いたままにしてください。<br>
     ・256マス以上は大きい動画（400マスは4K）になり、変換にさらに時間がかかります。<br>
     ・動画はあなたのスマホやPCの中だけで変換します。どこにも送りません。<br>
     ・人のアニメやMVなどは使わず、自分で撮った動画や使っていい動画で作ってください。<br>
@@ -228,9 +230,9 @@ function click(n, dest) {
 // ---------- 変換 ----------
 const samp = document.createElement('canvas');
 const sctx = samp.getContext('2d', { willReadFrequently: true });
-const FPS = 30;
+let FPS = 30;
 const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const VERSION = 'v8（11/27 2:50）';
+const VERSION = 'v9（11/27 3:30）';
 
 function levelsFor(maxG, ramp, rampSec) {
   if (!ramp) return [[0, maxG]];
@@ -456,11 +458,51 @@ async function extractAudio(url, onStep) {
   return buf;
 }
 
+// 動画ファイルを読んで、映像のコマを順番に取り出す準備（mp4・mov）
+async function openDecoder(url) {
+  if (!window.VideoDecoder || !window.MP4Box || !window.DataStream) return { ok: false, rot: 0 };
+  const ab = await (await fetch(url)).arrayBuffer();
+  const file = MP4Box.createFile();
+  const samples = [];
+  let info = null;
+  const ready = new Promise((ok, ng) => {
+    file.onError = e => ng(new Error('mp4box:' + e));
+    file.onReady = i => {
+      info = i;
+      const vt = i.videoTracks && i.videoTracks[0];
+      if (!vt) return ng(new Error('no-video-track'));
+      file.setExtractionOptions(vt.id, null, { nbSamples: 1e9 });
+      file.onSamples = (id, u, sm) => { for (const x of sm) samples.push(x); };
+      file.start();
+      ok();
+    };
+  });
+  ab.fileStart = 0;
+  file.appendBuffer(ab);
+  file.flush();
+  await ready;
+  const vt = info.videoTracks[0], trak = file.getTrackById(vt.id);
+  let desc;
+  for (const e of trak.mdia.minf.stbl.stsd.entries) {
+    const box = e.avcC || e.hvcC || e.vpcC || e.av1C;
+    if (box) { const st = new DataStream(undefined, 0, DataStream.BIG_ENDIAN); box.write(st); desc = new Uint8Array(st.buffer, 8); break; }
+  }
+  const cfg = { codec: vt.codec, codedWidth: vt.video.width, codedHeight: vt.video.height };
+  if (desc) cfg.description = desc;
+  const sup = await VideoDecoder.isConfigSupported(cfg);
+  if (!sup.supported || !samples.length) return { ok: false, rot: 0 };
+  let rot = 0;
+  const m = vt.matrix;
+  if (m && m.length >= 4) { rot = Math.round(Math.atan2(m[1], m[0]) * 180 / Math.PI); rot = ((rot % 360) + 360) % 360; rot = Math.round(rot / 90) * 90 % 360; }
+  return { ok: true, cfg, samples, rot };
+}
+
 async function convert() {
   if (!window.VideoEncoder || !window.VideoFrame || !window.Mp4Muxer) throw 'このブラウザは対応していません。iPhoneはiOSを新しくするか、PCのChromeで開いてください';
   const maxG = +$('maxG').value, ramp = $('ramp').checked, rampSec = +$('rampSec').value;
   const thSet = +$('th').value, inv = $('inv').checked, square = $('shape').value === 'square';
   const audioMode = $('audio').value, flipK = +$('flip').value;
+  FPS = +$('fps').value || 30;
   gtag('event', 'othello_convert', { max_g: maxG, audio: audioMode });
 
   const v = document.createElement('video');
@@ -477,6 +519,19 @@ async function convert() {
   else if (aspect < 1 / 1.15) { out.width = Lg; out.height = S; }
   else { out.width = S; out.height = S; }
   const levels = levelsFor(maxG, ramp, rampSec);
+  $('status').textContent = '動画のコマを読みこみ中…';
+  const D = await openDecoder(srcURL).catch(e => { console.warn('openDecoder', e); return { ok: false, rot: 0 }; });
+  // 元動画の向き（縦撮りの回転）に合わせてコマを描く
+  function drawFrame(ctx, f, rot, W, H) {
+    ctx.save();
+    ctx.setTransform(W / sw, 0, 0, H / sh2, -sx * W / sw, -sy * H / sh2);
+    if (rot === 90) { ctx.translate(VW, 0); ctx.rotate(Math.PI / 2); }
+    else if (rot === 180) { ctx.translate(VW, VH); ctx.rotate(Math.PI); }
+    else if (rot === 270) { ctx.translate(0, VH); ctx.rotate(-Math.PI / 2); }
+    const side = rot === 90 || rot === 270;
+    ctx.drawImage(f, 0, 0, side ? VH : VW, side ? VW : VH);
+    ctx.restore();
+  }
 
   // 白黒の分かれ目：自動なら最初に動画全体から1つに決める（途中で変えない＝チラつかない）
   let th = thSet;
@@ -494,7 +549,7 @@ async function convert() {
   }
 
   // 書き出しの準備
-  const bitrate = S === 1080 ? 16e6 : S === 1440 ? 28e6 : 45e6;
+  const bitrate = (S === 1080 ? 16e6 : S === 1440 ? 28e6 : 45e6) * (FPS > 30 ? 1.5 : 1);
   const vcfg = await pickVideoCodec(out.width, out.height, bitrate);
   if (!vcfg) throw 'この大きさの動画は書き出せません。マスを少なくしてください';
   const wantAudio = audioMode !== 'none';
@@ -510,7 +565,7 @@ async function convert() {
   const target = new Mp4Muxer.ArrayBufferTarget();
   const muxer = new Mp4Muxer.Muxer({
     target, fastStart: 'in-memory', firstTimestampBehavior: 'offset',
-    video: { codec: 'avc', width: out.width, height: out.height, frameRate: FPS },
+    video: { codec: 'avc', width: out.width, height: out.height },
     audio: acodec ? { codec: acodec.mux, numberOfChannels: 2, sampleRate: acodec.rec ? gAC.sampleRate : 48000 } : undefined,
   });
   let encErr = null;
@@ -519,7 +574,7 @@ async function convert() {
 
   let curKey = '';
   const events = [];
-  function step(t) {
+  function step(t, src) {
     let G = levels[0][1]; for (const [s, g] of levels) if (t >= s) G = g;
     const Gx = G, Gy = Math.max(1, Math.round(G * aspect));
     const key = Gx + 'x' + Gy;
@@ -527,7 +582,8 @@ async function convert() {
     const k = Math.max(1, Math.min(4, Math.floor(480 / Gx)));
     if (samp.width !== Gx * k || samp.height !== Gy * k) { samp.width = Gx * k; samp.height = Gy * k; }
     sctx.imageSmoothingEnabled = true; sctx.imageSmoothingQuality = 'high';
-    sctx.drawImage(v, sx, sy, sw, sh2, 0, 0, samp.width, samp.height);
+    if (src) drawFrame(sctx, src, D.rot, samp.width, samp.height);
+    else sctx.drawImage(v, sx, sy, sw, sh2, 0, 0, samp.width, samp.height);
     const px = sctx.getImageData(0, 0, samp.width, samp.height).data;
     const W = samp.width;
     // 裏返る時間：細かい盤ほど短く
@@ -559,25 +615,64 @@ async function convert() {
     return Gx + '×' + Gy;
   }
 
-  // 1コマずつ：止める → 変換 → 書き出す（コマ飛びなし）
-  const N = Math.max(1, Math.floor(dur * FPS));
+  // 動画のコマを1枚ずつ：取り出す → 変換 → 書き出す
   const t0 = performance.now();
-  for (let i = 0; i < N; i++) {
-    if (encErr) throw encErr;
-    const t = i / FPS;
-    await seekTo(v, Math.min(t + 0.5 / FPS, dur - 0.001));
-    const size = step(t);
+  let outN = 0;
+  async function emit(t, src) {
+    const size = step(t, src);
     gl.finish();
-    const frame = new VideoFrame(out, { timestamp: Math.round(i * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
-    venc.encode(frame, { keyFrame: i % (FPS * 2) === 0 });
-    frame.close();
-    while (venc.encodeQueueSize > 3) await sleep(4);
-    if (i % 3 === 0 || i === N - 1) {
-      const el = (performance.now() - t0) / 1000, left = el / (i + 1) * (N - i - 1);
-      $('bar').style.width = ((i + 1) / N * 95) + '%';
-      $('status').textContent = `変換中… ${i + 1} / ${N}コマ（${size}マス）　のこり約${Math.ceil(left)}秒`;
+    const frame = new VideoFrame(out, { timestamp: Math.round(t * 1e6), duration: Math.round(1e6 / FPS) });
+    venc.encode(frame, { keyFrame: outN % (FPS * 2) === 0 });
+    frame.close(); outN++;
+    while (venc.encodeQueueSize > 3) await sleep(2);
+    if (encErr) throw encErr;
+    return size;
+  }
+  const showP = (done, total, size) => {
+    const el = (performance.now() - t0) / 1000, left = el / Math.max(1, done) * (total - done);
+    $('bar').style.width = (done / total * 95) + '%';
+    $('status').textContent = `変換中… ${done} / ${total}コマ（${size}マス）　のこり約${Math.ceil(left)}秒`;
+  };
+  let used = 'seek';
+  if (D.ok) {
+    // ① ファイルの中のコマを、最初から順番に全部取り出す（同じコマの重複・飛びがない）
+    used = 'decode';
+    const queue = [];
+    let decErr = null, flushed = false, finished = false, si = 0, base = null, lastT = -1;
+    const total = D.samples.length, minDt = 1 / FPS - 0.004;
+    const dec = new VideoDecoder({ output: f => queue.push(f), error: e => decErr = e });
+    dec.configure(D.cfg);
+    while (true) {
+      if (decErr) throw decErr;
+      while (queue.length < 2 && si < total && dec.decodeQueueSize < 3) {
+        const sm = D.samples[si++];
+        dec.decode(new EncodedVideoChunk({ type: sm.is_sync ? 'key' : 'delta', timestamp: Math.round(sm.cts / sm.timescale * 1e6), duration: Math.round(sm.duration / sm.timescale * 1e6), data: sm.data }));
+      }
+      if (si >= total && !flushed) { flushed = true; dec.flush().then(() => finished = true, e => decErr = e); }
+      if (queue.length) {
+        const f = queue.shift();
+        let t = f.timestamp / 1e6; if (base === null) base = t; t -= base;
+        try {
+          if (lastT < 0 || t - lastT >= minDt) { const size = await emit(t, f); lastT = t; if (outN % 3 === 0) showP(si, total, size); }
+        } finally { f.close(); }
+        continue;
+      }
+      if (finished) break;
+      await sleep(1);
+    }
+    try { dec.close(); } catch (e) {}
+  } else {
+    // ② 読めない形式は、動画を少しずつ止めて読む（止めたあと絵が切りかわるのを待つ）
+    const N = Math.max(1, Math.floor(dur * FPS));
+    for (let i = 0; i < N; i++) {
+      const t = i / FPS;
+      await seekTo(v, Math.min(t + 0.5 / FPS, dur - 0.001));
+      if ('requestVideoFrameCallback' in v) await Promise.race([new Promise(r => v.requestVideoFrameCallback(() => r())), sleep(150)]);
+      const size = await emit(t, null);
+      if (i % 3 === 0 || i === N - 1) showP(i + 1, N, size);
     }
   }
+  console.log('frames via', used, outN);
   await venc.flush(); venc.close();
   if (encErr) throw encErr;
 
