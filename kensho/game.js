@@ -47,7 +47,7 @@ function bigName(R) {
     return L === 'zh' ? '「' + e + '」' + short : "'" + e + "' " + short;
   }
   const e = R.epi[LI()], n = R.name;
-  return L === 'ja' ? e + 'の' + n : L === 'en' ? (/^the\b/.test(e) ? n + ' ' + e : '"' + e + '" ' + n) : L === 'zh' ? '「' + e + '」' + n : "'" + e + "' " + n;
+  return L === 'ja' ? '「' + e + '」' + n : L === 'en' ? (/^the\b/.test(e) ? n + ' ' + e : '"' + e + '" ' + n) : L === 'zh' ? '「' + e + '」' + n : "'" + e + "' " + n;
 }
 const digits = b => Math.round(b).toLocaleString('en-US');
 function amtWord(b) {
@@ -206,7 +206,7 @@ async function openRank(from) {
     const mine = new Set(TEAM.filter(t => !t.R.ch).map(t => hkey('n:' + t.R.k)));
     const rows = Object.entries(j).map(([u, v]) => Object.assign({ u }, v)).filter(v => v && typeof v.b === 'number').sort((a, b) => b.b - a.b).slice(0, 100);
     if ($('rank').hidden || tab !== rkTab) return; if (!rows.length) { box.innerHTML = '<p class="note">' + esc(T.rkEmpty) + '</p>'; return; }
-    box.innerHTML = '<table class="rk">' + rows.map((v, i) => `<tr${mine.has(v.u) ? ' class="me"' : ''}><td class="n">${i + 1}</td><td>${esc(v.n || '')}${v.i && L === 'ja' ? '<small>' + esc(v.i) + 'の' + esc(v.n || '') + '</small>' : ''}</td><td class="b">${esc(amtWord(v.b))}🍆</td></tr>`).join('') + '</table>';
+    box.innerHTML = '<table class="rk">' + rows.map((v, i) => `<tr${mine.has(v.u) ? ' class="me"' : ''}><td class="n">${i + 1}</td><td>${esc(v.n || '')}${v.i && L === 'ja' ? '<small>「' + esc(v.i) + '」' + esc(v.n || '') + '</small>' : ''}</td><td class="b">${esc(amtWord(v.b))}🍆</td></tr>`).join('') + '</table>';
   } catch (e) { if (tab === rkTab) box.innerHTML = '<p class="note" style="color:#a8231b">' + esc(T.rkErr) + '</p>'; }
 }
 $('rkBtn').onclick = () => openRank('title'); $('rkBtn2').onclick = () => openRank('result');
@@ -215,6 +215,9 @@ $('rkBack').onclick = () => { if (rkFrom === 'result' && TEAM.length) show('resu
 // ---------- 発行 ----------
 let TEAM = [], MODE = 'main'; // TEAM：[{ R, ph, no, cv }]（最大5人）
 const MAXT = 5;
+const crewName = () => fill(T.crewFmt, { n: clean($('crew').value) || (TEAM[0] ? TEAM[0].R.name : '') });
+$('crew').addEventListener('input', () => { ls.set('kensho_crew', $('crew').value); info(); });
+$('crew').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('crew').blur(); } });
 function start() {
   const nm = clean($('nm').value); if (!nm) { $('tErr').textContent = T.needName; return; }
   const R = judge(nm); if (MODE === 'friend' && TEAM.some(t => t.R.k === R.k)) { $('tErr').textContent = T.same; return; }
@@ -257,12 +260,13 @@ function info() {
   $('rCmp').innerHTML = compare(R);
   $('rNote').textContent = R.unknown ? T.unknownNote : R.pet ? T.petNote : R.ch ? T.charNote : '';
   const known = TEAM.filter(x => x.R.b != null), tot = known.reduce((a, x) => a + x.R.b, 0);
-  $('rTot').innerHTML = TEAM.length > 1 ? esc(T.totL) + '<br><b style="font-size:22px">' + esc(amtWord(tot)) + '🍆</b>' : '';
+  $('rTot').innerHTML = TEAM.length > 1 ? esc(fill(T.totN, { c: crewName() })) + '<br><b style="font-size:22px">' + esc(amtWord(tot)) + '🍆</b>' : '';
+  $('crewRow').hidden = TEAM.length < 2;
   const left = MAXT - TEAM.length; $('friendBtn').hidden = left <= 0; $('friendBtn').textContent = TEAM.length === 1 ? T.friend : fill(T.friend2, { n: left });
 }
 $('friendBtn').onclick = () => { MODE = 'friend'; $('nm').value = ''; applyLang(); show('title'); setTimeout(() => { try { $('nm').focus(); } catch (e) { } }, 50); ev('friend_open', { team: TEAM.length }); };
 $('backBtn').onclick = () => { if (TEAM.length) { MODE = 'main'; applyLang(); show('result'); } };
-$('again').onclick = () => { MODE = 'main'; TEAM = []; PHOTO = null; drawThumb(); $('nm').value = ''; applyLang(); show('title'); };
+$('again').onclick = () => { MODE = 'main'; TEAM = []; $('crew').value = ''; ls.set('kensho_crew', ''); PHOTO = null; drawThumb(); $('nm').value = ''; applyLang(); show('title'); };
 
 // ---------- 投稿用の画像 ----------
 function shareCanvas() {
@@ -272,7 +276,7 @@ function shareCanvas() {
   TEAM.forEach((t, i) => { const row = i < cols ? 0 : 1, inRow = row ? n - cols : Math.min(n, cols), col = row ? i - cols : i, rw = inRow * pw + (inRow - 1) * gap, sx = (W - rw) / 2 + col * (pw + gap), sy = top + row * (ph + gap), rot = (hash(t.R.k, 5) - .5) * .05;
     x.save(); x.translate(sx + pw / 2, sy + ph / 2); x.rotate(rot); x.shadowColor = '#000a'; x.shadowBlur = 24; x.shadowOffsetY = 10; x.drawImage(t.cv, -pw / 2, -ph / 2, pw, ph); x.shadowColor = '#0000'; x.fillStyle = '#b3241a'; x.beginPath(); x.arc(0, -ph / 2 + 18, 11, 0, Math.PI * 2); x.fill(); x.fillStyle = '#ffffff55'; x.beginPath(); x.arc(-3, -ph / 2 + 15, 4, 0, Math.PI * 2); x.fill(); x.restore(); });
   const cy = H - cap / 2 - 10; x.fillStyle = '#efe0b6'; x.textAlign = 'center'; x.textBaseline = 'middle';
-  if (n > 1) { const tot = TEAM.filter(t => t.R.b != null).reduce((a, t) => a + t.R.b, 0), s = T.totL + '  ' + digits(tot) + '-'; x.font = '900 40px ' + SERIF[L]; const w = x.measureText(s).width; nasu(x, W / 2 - w / 2 - 30, cy - 18, 46); x.fillText(s, W / 2 + 10, cy - 20); x.font = '700 24px ' + NUMF; x.fillStyle = '#d9c08acc'; x.fillText('懸賞🍆  nasubi-no-oniwa.com/kensho', W / 2, cy + 30); }
+  if (n > 1) { const tot = TEAM.filter(t => t.R.b != null).reduce((a, t) => a + t.R.b, 0), s = fill(T.totN, { c: crewName() }) + '  ' + digits(tot) + '-'; const f0 = fitText(x, s, W - 160, 40, '900', SERIF[L]); x.font = '900 ' + f0 + 'px ' + SERIF[L]; const w = x.measureText(s).width; nasu(x, W / 2 - w / 2 - 30, cy - 18, 46); x.fillText(s, W / 2 + 10, cy - 20); x.font = '700 24px ' + NUMF; x.fillStyle = '#d9c08acc'; x.fillText('懸賞🍆  nasubi-no-oniwa.com/kensho', W / 2, cy + 30); }
   else { x.font = '900 44px ' + SERIF.ja; x.fillText('懸賞🍆', W / 2, cy - 14); x.font = '700 24px ' + NUMF; x.fillStyle = '#d9c08acc'; x.fillText('nasubi-no-oniwa.com/kensho', W / 2, cy + 30); }
   return c;
 }
@@ -284,7 +288,7 @@ function quoteURL() { const u = (L === 'ja' ? QUOTE.ja : (QUOTE.en || QUOTE.ja))
 function postText() {
   const n = TEAM.length, R = TEAM[n - 1].R; let s;
   if (n === 1) s = fill(T.post, { a: amtWord(R.b), n: bigName(R) });
-  else { const tot = TEAM.filter(t => t.R.b != null).reduce((a, t) => a + t.R.b, 0); s = fill(T.postT, { a: amtWord(tot), c: n, list: TEAM.map(t => bigName(t.R) + ' ' + amtWord(t.R.b) + (t.R.b == null ? '' : '🍆')).join('\n') }); }
+  else { const tot = TEAM.filter(t => t.R.b != null).reduce((a, t) => a + t.R.b, 0); s = fill(T.postT, { crew: crewName(), a: amtWord(tot), c: n, list: TEAM.map(t => bigName(t.R) + ' ' + amtWord(t.R.b) + (t.R.b == null ? '' : '🍆')).join('\n') }); }
   return s + '\n#懸賞なす #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/kensho/';
 }
 async function saveImg() { const b = await toBlob(shareCanvas()); const f = new File([b], fileName(), { type: 'image/png' });
@@ -307,13 +311,15 @@ function applyLang() {
   $('tSmall').textContent = T.small; $('tLead').innerHTML = fr ? T.leadF : T.lead; $('nmL').textContent = fr ? T.nmLF : T.nmL; $('nm').placeholder = T.ph; $('phL').textContent = T.phL;
   $('startBtn').textContent = fr ? T.startF : T.start; $('rkBtn').textContent = T.rank; $('backBtn').textContent = T.back; $('backBtn').hidden = !fr; $('tNote').innerHTML = T.notes;
   $('edT').textContent = T.edT; $('edHint').textContent = T.edHint; $('edOk').textContent = T.edOk; $('edRe').textContent = T.edRe; $('edDel').textContent = T.edDel;
-  $('xBtn').textContent = T.x; $('imgBtn').textContent = T.img; $('again').textContent = T.again; $('rkBtn2').textContent = T.rank; $('rkT').textContent = T.rkT; $('rkNote').textContent = T.rkNote; $('rkBack').textContent = T.back;
+  $('crewL').textContent = T.crewL; $('crew').placeholder = T.crewPh; $('crewPre').textContent = T.crewPre; $('crewSuf').textContent = T.crewSuf; $('xBtn').textContent = T.x; $('imgBtn').textContent = T.img; $('again').textContent = T.again; $('rkBtn2').textContent = T.rank; $('rkT').textContent = T.rkT; $('rkNote').textContent = T.rkNote; $('rkBack').textContent = T.back;
   $('snd').textContent = SND ? T.sndOn : T.sndOff; $('load').textContent = T.load; drawThumb(); if (TEAM.length) info();
 }
 
 // ---------- OGP・アイコン用（?ogp=1 / ?icon=1 のときだけ） ----------
 function special() {
-  const q = location.search; if (!/[?&](ogp|icon)=1/.test(q)) return false;
+  const q = location.search;
+  if (/[?&]pv=1/.test(q)) { document.body.innerHTML = ''; const st = document.createElement('style'); st.textContent = 'body:before{display:none!important}body{margin:0;background:#000}'; document.head.appendChild(st); import('./pv.js').then(m => m.run({ drawPoster, judge, nasu, SERIF, NUMF, PW, PH, digits, bigName, amtWord, hash, rng, setLang: l => { L = l; T = TT[l]; } })); return true; }
+  if (!/[?&](ogp|icon)=1/.test(q)) return false;
   document.body.innerHTML = ''; document.body.style.cssText = 'margin:0;background:#000'; document.body.style.minHeight = '0';
   const st = document.createElement('style'); st.textContent = 'body:before{display:none!important}'; document.head.appendChild(st);
   if (/icon=1/.test(q)) { const c = document.createElement('canvas'); c.width = c.height = 512; const x = c.getContext('2d'); const g = x.createRadialGradient(256, 256, 60, 256, 256, 380); g.addColorStop(0, '#efdcab'); g.addColorStop(1, '#b8915a'); x.fillStyle = g; x.fillRect(0, 0, 512, 512); x.strokeStyle = '#2a1a0c'; x.lineWidth = 14; x.strokeRect(24, 24, 464, 464); x.lineWidth = 4; x.strokeRect(46, 46, 420, 420); x.fillStyle = '#2a1a0c'; x.textAlign = 'center'; x.font = '900 120px ' + SERIF.ja; x.fillText('懸賞', 256, 168); nasu(x, 256, 330, 250); c.style.cssText = 'display:block'; document.body.appendChild(c); return true; }
@@ -326,7 +332,7 @@ function special() {
 
 // ---------- はじめ ----------
 if (!special()) {
-  applyLang(); $('nm').value = ls.get('kensho_name', '') || ''; $('load').hidden = true; show('title');
+  applyLang(); $('nm').value = ls.get('kensho_name', '') || ''; $('crew').value = ls.get('kensho_crew', '') || ''; $('load').hidden = true; show('title');
   gsap.fromTo('#title .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: 'power3.out' });
   if (DEV) window.__K = { judge, TEAM: () => TEAM, bigName, amtWord, compare, setL: l => { L = l; applyLang(); } };
 }
