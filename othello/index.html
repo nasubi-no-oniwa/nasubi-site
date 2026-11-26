@@ -58,7 +58,7 @@ footer a{color:var(--sub)}
 </head>
 <body>
 <main>
-  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v6（11/27 2:55）</small></h1>
+  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v7（11/27 2:55）</small></h1>
   <p class="lead">動画を選ぶと、白と黒のオセロの石がパタパタ裏返る動画に変わります。影絵のように白黒がはっきりした動画ほどきれいに出ます。</p>
 
   <div class="card">
@@ -230,7 +230,7 @@ const samp = document.createElement('canvas');
 const sctx = samp.getContext('2d', { willReadFrequently: true });
 const FPS = 30;
 const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const VERSION = 'v6（11/27 2:55）';
+const VERSION = 'v7（11/27 2:55）';
 
 function levelsFor(maxG, ramp, rampSec) {
   if (!ramp) return [[0, maxG]];
@@ -317,7 +317,7 @@ async function recordAAC(buffer, mime, onP) {
   await sleep(300); rec.stop(); await stopped;
   const ab = await new Blob(chunks).arrayBuffer();
   const t = await parseAudioTrack(ab);
-  if (!/^mp4a/.test(t.codec)) throw new Error('rec-not-aac ' + t.codec);
+  if (!/^mp4a/i.test(t.codec)) throw new Error('rec-not-aac ' + t.codec);
   return Object.assign(t, { offset: Math.max(0, srcT - recT) });
 }
 
@@ -397,7 +397,7 @@ async function parseAudioTrack(ab) {
   const sr = track.audio.sample_rate, ch = track.audio.channel_count;
   // .mov は「mp4a」だけのことがあるので、中身から mp4a.40.2 などの名前を作る
   let codec = track.codec || '';
-  if (!/^mp4a\.[0-9a-fA-F]+\.\d+$/.test(codec) && !/^(opus|mp3|flac)/.test(codec)) {
+  if (!/^mp4a\.[0-9a-fA-F]+\.\d+$/.test(codec) && !/^(opus|mp3|flac)/i.test(codec)) {
     const aot = desc && desc.length ? (desc[0] >> 3) : 2;
     codec = 'mp4a.40.' + (aot || 2);
   }
@@ -500,9 +500,11 @@ async function convert() {
   const wantAudio = audioMode !== 'none';
   let acodec = wantAudio ? await pickAudioCodec() : null;
   let recMime = null;
-  if (wantAudio && (!acodec || acodec.mux !== 'aac') && gAC && window.MediaRecorder) {
-    const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|CriOS|Android/.test(navigator.userAgent);
-    recMime = ['audio/mp4;codecs=mp4a.40.2', 'audio/mp4'].find(m => MediaRecorder.isTypeSupported(m) && (m !== 'audio/mp4' || isSafari)) || null;
+  const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|CriOS|FxiOS|Android/.test(navigator.userAgent);
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  // iPhone・Safariは、AudioEncoderのAACが再生で鳴らないことがあるので、録音機能（MediaRecorder）でAACを作る
+  if (wantAudio && (isSafari || isIOS || !acodec || acodec.mux !== 'aac') && gAC && window.MediaRecorder) {
+    recMime = ['audio/mp4;codecs=mp4a.40.2', 'audio/mp4'].find(m => MediaRecorder.isTypeSupported(m) && (m !== 'audio/mp4' || isSafari || isIOS)) || null;
     if (recMime) acodec = { mux: 'aac', rec: true };
   }
   const target = new Mp4Muxer.ArrayBufferTarget();
@@ -619,9 +621,13 @@ async function convert() {
       }
     }
     const mixed = await oc.startRendering();
+    let peak = 0; { const c0 = mixed.getChannelData(0); for (let i = 0; i < c0.length; i += 7) { const v = Math.abs(c0[i]); if (v > peak) peak = v; } }
+    const hex = d => d ? Array.from(new Uint8Array(d.buffer ? d.buffer.slice(d.byteOffset || 0, (d.byteOffset || 0) + d.byteLength) : d)).slice(0, 8).map(x => x.toString(16).padStart(2, '0')).join('') : 'なし';
     if (acodec.rec) {
       $('status').textContent = '音を書き出しています…（動画の長さぶん時間がかかります）';
-      const r = await recordAAC(mixed, recMime, p => $('status').textContent = `音を書き出しています… ${Math.floor(p * 100)}%`);
+      let r;
+      try { r = await recordAAC(mixed, recMime, p => $('status').textContent = `音を書き出しています… ${Math.floor(p * 100)}%`); }
+      catch (e) { throw '音の書き出しに失敗しました（' + (e && e.message || e) + '）。音を「なし」にすると変換できます'; }
       let first = true, n = 0;
       for (const sm of r.samples) {
         const ts = sm.cts / sm.timescale - r.offset;
@@ -630,11 +636,11 @@ async function convert() {
         muxer.addAudioChunk(chunk, first ? { decoderConfig: { codec: 'mp4a.40.2', sampleRate: r.sr, numberOfChannels: r.ch, description: r.desc || new Uint8Array([0x11, 0x90]) } } : undefined);
         first = false; n++;
       }
-      audioInfo = `音：aac（録り直し・${r.sr}Hz）・${n}個`;
+      audioInfo = `音：aac（録音で作成・${r.sr}Hz・${r.ch}ch）・${n}個・音量${peak.toFixed(2)}・情報${hex(r.desc)}`;
     } else {
     // iPhoneのSafari対策：再生に必要な情報（説明データ）がなければ補い、ADTSの頭がついていれば外す
     const ASC = new Uint8Array([0x11, 0x90]); // AAC-LC・48000Hz・2ch
-    let gotDesc = false, fixedDesc = false, adts = false, nChunks = 0;
+    let gotDesc = false, fixedDesc = false, adts = false, nChunks = 0, lastDesc = null;
     const aenc = new AudioEncoder({
       output: (c, m) => {
         nChunks++;
@@ -644,7 +650,7 @@ async function convert() {
           adts = true; const hl = (raw[1] & 1) ? 7 : 9; data = raw.subarray(hl);
         }
         let meta = m;
-        if (m && m.decoderConfig && m.decoderConfig.description && m.decoderConfig.description.byteLength) gotDesc = true;
+        if (m && m.decoderConfig && m.decoderConfig.description && m.decoderConfig.description.byteLength) { gotDesc = true; lastDesc = m.decoderConfig.description; }
         if (acodec.mux === 'aac' && nChunks === 1 && !gotDesc) {
           fixedDesc = true;
           meta = { decoderConfig: { codec: 'mp4a.40.2', sampleRate: 48000, numberOfChannels: 2, description: ASC } };
@@ -667,7 +673,7 @@ async function convert() {
     }
     await aenc.flush(); aenc.close();
     if (encErr) throw encErr;
-    audioInfo = `音：${acodec.mux}${fixedDesc ? '・情報を補った' : ''}${adts ? '・頭を外した' : ''}・${nChunks}個`;
+    audioInfo = `音：${acodec.mux}${fixedDesc ? '・情報を補った' : ''}${adts ? '・頭を外した' : ''}・${nChunks}個・音量${peak.toFixed(2)}・情報${hex(lastDesc)}`;
     }
   }
   muxer.finalize();
