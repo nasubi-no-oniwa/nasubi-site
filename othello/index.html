@@ -58,7 +58,7 @@ footer a{color:var(--sub)}
 </head>
 <body>
 <main>
-  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v5（11/27 2:40）</small></h1>
+  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v6（11/27 2:55）</small></h1>
   <p class="lead">動画を選ぶと、白と黒のオセロの石がパタパタ裏返る動画に変わります。影絵のように白黒がはっきりした動画ほどきれいに出ます。</p>
 
   <div class="card">
@@ -230,7 +230,7 @@ const samp = document.createElement('canvas');
 const sctx = samp.getContext('2d', { willReadFrequently: true });
 const FPS = 30;
 const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const VERSION = 'v5（11/27 2:40）';
+const VERSION = 'v6（11/27 2:55）';
 
 function levelsFor(maxG, ramp, rampSec) {
   if (!ramp) return [[0, maxG]];
@@ -266,6 +266,7 @@ $('go').onclick = async () => {
   // 元の音：タップの直後に、裏で元動画を流して音を録り始める（iPhoneのSafariは動画の音を直接読めないため）
   capture = null;
   const am = $('audio').value;
+  if (am !== 'none') { try { gAC = gAC || new (window.AudioContext || window.webkitAudioContext)(); gAC.resume(); } catch (e) { gAC = null; } }
   if (am === 'orig' || am === 'both') { try { capture = startCapture(srcURL); } catch (e) { console.error(e); capture = null; } }
   let wake = null; try { wake = await navigator.wakeLock.request('screen'); } catch (e) {}
   try { await convert(); }
@@ -293,7 +294,33 @@ async function pickAudioCodec() {
 }
 
 
-let capture = null;
+let capture = null, gAC = null;
+
+// iPhone向け：混ぜた音をMediaRecorderでAAC（iPhoneで必ず鳴る形式）に録り直し、中の音データを取り出す
+async function recordAAC(buffer, mime, onP) {
+  const ac = gAC; await ac.resume();
+  const dest = ac.createMediaStreamDestination();
+  const src = ac.createBufferSource(); src.buffer = buffer; src.connect(dest);
+  const rec = new MediaRecorder(dest.stream, { mimeType: mime, audioBitsPerSecond: 160000 });
+  const chunks = []; rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  const stopped = new Promise(ok => rec.onstop = ok);
+  let recT = null;
+  const started = new Promise(ok => rec.onstart = () => { recT = ac.currentTime; ok(); });
+  rec.start(500);
+  await Promise.race([started, sleep(1000)]);
+  if (recT === null) recT = ac.currentTime;
+  const srcT = ac.currentTime + 0.1;
+  src.start(srcT);
+  const iv = setInterval(() => onP && onP(Math.min(1, (ac.currentTime - srcT) / buffer.duration)), 300);
+  await new Promise(ok => src.onended = ok);
+  clearInterval(iv);
+  await sleep(300); rec.stop(); await stopped;
+  const ab = await new Blob(chunks).arrayBuffer();
+  const t = await parseAudioTrack(ab);
+  if (!/^mp4a/.test(t.codec)) throw new Error('rec-not-aac ' + t.codec);
+  return Object.assign(t, { offset: Math.max(0, srcT - recT) });
+}
+
 function startCapture(url) {
   const AC = window.AudioContext || window.webkitAudioContext;
   const ac = new AC();
@@ -334,9 +361,8 @@ function startCapture(url) {
 }
 
 // 動画ファイルの中の音（AAC）を直接取り出して、AudioDecoderで読む（iPhoneのSafari向け）
-async function extractAudio(url, onStep) {
-  if (!window.MP4Box || !window.AudioDecoder) throw new Error('no-decoder');
-  const ab = await (await fetch(url)).arrayBuffer();
+async function parseAudioTrack(ab) {
+  if (!window.MP4Box) throw new Error('no-mp4box');
   const file = MP4Box.createFile();
   let track = null, trak = null;
   const samples = [];
@@ -375,6 +401,13 @@ async function extractAudio(url, onStep) {
     const aot = desc && desc.length ? (desc[0] >> 3) : 2;
     codec = 'mp4a.40.' + (aot || 2);
   }
+  return { samples, desc, codec, sr, ch };
+}
+
+async function extractAudio(url, onStep) {
+  if (!window.MP4Box || !window.AudioDecoder) throw new Error('no-decoder');
+  const ab = await (await fetch(url)).arrayBuffer();
+  const { samples, desc, codec, sr, ch } = await parseAudioTrack(ab);
   const cfg = { codec, sampleRate: sr, numberOfChannels: ch };
   if (desc) cfg.description = desc;
   const sup = await AudioDecoder.isConfigSupported(cfg);
@@ -465,12 +498,18 @@ async function convert() {
   const vcfg = await pickVideoCodec(out.width, out.height, bitrate);
   if (!vcfg) throw 'この大きさの動画は書き出せません。マスを少なくしてください';
   const wantAudio = audioMode !== 'none';
-  const acodec = wantAudio ? await pickAudioCodec() : null;
+  let acodec = wantAudio ? await pickAudioCodec() : null;
+  let recMime = null;
+  if (wantAudio && (!acodec || acodec.mux !== 'aac') && gAC && window.MediaRecorder) {
+    const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|CriOS|Android/.test(navigator.userAgent);
+    recMime = ['audio/mp4;codecs=mp4a.40.2', 'audio/mp4'].find(m => MediaRecorder.isTypeSupported(m) && (m !== 'audio/mp4' || isSafari)) || null;
+    if (recMime) acodec = { mux: 'aac', rec: true };
+  }
   const target = new Mp4Muxer.ArrayBufferTarget();
   const muxer = new Mp4Muxer.Muxer({
     target, fastStart: 'in-memory', firstTimestampBehavior: 'offset',
     video: { codec: 'avc', width: out.width, height: out.height, frameRate: FPS },
-    audio: acodec ? { codec: acodec.mux, numberOfChannels: 2, sampleRate: 48000 } : undefined,
+    audio: acodec ? { codec: acodec.mux, numberOfChannels: 2, sampleRate: acodec.rec ? gAC.sampleRate : 48000 } : undefined,
   });
   let encErr = null;
   const venc = new VideoEncoder({ output: (c, m) => muxer.addVideoChunk(c, m), error: e => encErr = e });
@@ -580,6 +619,19 @@ async function convert() {
       }
     }
     const mixed = await oc.startRendering();
+    if (acodec.rec) {
+      $('status').textContent = '音を書き出しています…（動画の長さぶん時間がかかります）';
+      const r = await recordAAC(mixed, recMime, p => $('status').textContent = `音を書き出しています… ${Math.floor(p * 100)}%`);
+      let first = true, n = 0;
+      for (const sm of r.samples) {
+        const ts = sm.cts / sm.timescale - r.offset;
+        if (ts < -0.01) continue;
+        const chunk = new EncodedAudioChunk({ type: 'key', timestamp: Math.round(Math.max(0, ts) * 1e6), duration: Math.round(sm.duration / sm.timescale * 1e6), data: sm.data });
+        muxer.addAudioChunk(chunk, first ? { decoderConfig: { codec: 'mp4a.40.2', sampleRate: r.sr, numberOfChannels: r.ch, description: r.desc || new Uint8Array([0x11, 0x90]) } } : undefined);
+        first = false; n++;
+      }
+      audioInfo = `音：aac（録り直し・${r.sr}Hz）・${n}個`;
+    } else {
     // iPhoneのSafari対策：再生に必要な情報（説明データ）がなければ補い、ADTSの頭がついていれば外す
     const ASC = new Uint8Array([0x11, 0x90]); // AAC-LC・48000Hz・2ch
     let gotDesc = false, fixedDesc = false, adts = false, nChunks = 0;
@@ -616,6 +668,7 @@ async function convert() {
     await aenc.flush(); aenc.close();
     if (encErr) throw encErr;
     audioInfo = `音：${acodec.mux}${fixedDesc ? '・情報を補った' : ''}${adts ? '・頭を外した' : ''}・${nChunks}個`;
+    }
   }
   muxer.finalize();
 
