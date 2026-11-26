@@ -81,6 +81,8 @@ footer a{color:var(--sub)}
       <input type="range" id="rampSec" min="2" max="20" value="6"></div>
     <div class="row"><div>白と黒の分かれ目<small id="thVal">自動</small></div>
       <input type="range" id="th" min="0" max="256" value="256"></div>
+    <div class="row"><div>石の裏返り方<small>「なし」だとパッと変わってくっきり</small></div>
+      <select id="flip"><option value="1" selected>ふつう</option><option value="0.5">速い</option><option value="0">なし</option></select></div>
     <div class="row"><div>白黒を反対にする</div><input type="checkbox" id="inv"></div>
     <div class="row"><div>盤の形</div>
       <select id="shape"><option value="fit" selected>動画に合わせる</option><option value="square">正方形</option></select></div>
@@ -101,8 +103,8 @@ footer a{color:var(--sub)}
   </div>
 
   <div class="card note">
-    ・変換は動画と同じ長さの時間がかかります（1分の動画なら1分）。変換中はこの画面を開いたままにしてください。<br>
-    ・256マス以上は大きい動画（400マスは4K）になります。古いスマホでは動きがカクついたり、変換できないことがあります。そのときは200マス以下にしてください。<br>
+    ・1コマずつ変換するので、できた動画はカクつきません。そのかわり変換には時間がかかります（スマホやマスの細かさによって、動画の長さの1〜5倍くらい）。変換中はこの画面を開いたままにしてください。<br>
+    ・256マス以上は大きい動画（400マスは4K）になり、変換にさらに時間がかかります。<br>
     ・動画はあなたのスマホやPCの中だけで変換します。どこにも送りません。<br>
     ・人のアニメやMVなどは使わず、自分で撮った動画や使っていい動画で作ってください。<br>
     ・きれいに出るコツ：明るい窓や白い壁の前で、人や手を影のように撮る。
@@ -110,6 +112,7 @@ footer a{color:var(--sub)}
 
 </main>
 
+<script src="mp4-muxer.js"></script>
 <script>
 (() => {
 const $ = id => document.getElementById(id);
@@ -224,6 +227,7 @@ function click(n, dest) {
 // ---------- 変換 ----------
 const samp = document.createElement('canvas');
 const sctx = samp.getContext('2d', { willReadFrequently: true });
+const FPS = 30;
 
 function levelsFor(maxG, ramp, rampSec) {
   if (!ramp) return [[0, maxG]];
@@ -232,9 +236,9 @@ function levelsFor(maxG, ramp, rampSec) {
   seq.push(maxG);
   return seq.map((g, i) => [seq.length === 1 ? 0 : i * rampSec / (seq.length - 1), g]);
 }
-function otsu(hist, total) {
-  let sum = 0; for (let i = 0; i < 256; i++) sum += i * hist[i];
-  let sumB = 0, wB = 0, best = 0, th = 128;
+function otsu(hist) {
+  let total = 0, sum = 0; for (let i = 0; i < 256; i++) { total += hist[i]; sum += i * hist[i]; }
+  let sumB = 0, wB = 0, best = -1, th = 128;
   for (let i = 0; i < 256; i++) {
     wB += hist[i]; if (!wB) continue; const wF = total - wB; if (!wF) break;
     sumB += i * hist[i]; const mB = sumB / wB, mF = (sum - sumB) / wF;
@@ -242,6 +246,13 @@ function otsu(hist, total) {
   }
   return th + .5;
 }
+const seekTo = (v, t) => new Promise((ok, ng) => {
+  const done = () => { v.removeEventListener('seeked', done); clearTimeout(to); ok(); };
+  const to = setTimeout(done, 4000);
+  v.addEventListener('seeked', done);
+  v.currentTime = t;
+});
+const sleep = ms => new Promise(ok => setTimeout(ok, ms));
 
 $('go').onclick = async () => {
   if (running || !srcURL) return;
@@ -249,86 +260,108 @@ $('go').onclick = async () => {
   $('stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
   $('go').disabled = true; $('pickLabel').classList.add('hidden'); $('sample').disabled = true;
   $('saveRow').hidden = true; $('result').classList.add('hidden'); out.classList.remove('hidden');
+  let wake = null; try { wake = await navigator.wakeLock.request('screen'); } catch (e) {}
   try { await convert(); }
   catch (e) { $('status').textContent = 'うまく変換できませんでした：' + (e && e.message || e); console.error(e); }
+  if (wake) try { wake.release(); } catch (e) {}
   running = false; $('go').disabled = false; $('pickLabel').classList.remove('hidden'); $('sample').disabled = false;
 };
 
+async function pickVideoCodec(w, h, bitrate) {
+  const list = ['avc1.640034', 'avc1.640033', 'avc1.640032', 'avc1.64002A', 'avc1.640028', 'avc1.4D0034', 'avc1.4D0028', 'avc1.42E034', 'avc1.42E028'];
+  for (const codec of list) {
+    const cfg = { codec, width: w, height: h, bitrate, framerate: FPS, avc: { format: 'avc' } };
+    try { const r = await VideoEncoder.isConfigSupported(cfg); if (r.supported) return cfg; } catch (e) {}
+  }
+  return null;
+}
+async function pickAudioCodec() {
+  if (!window.AudioEncoder) return null;
+  for (const [codec, mux] of [['mp4a.40.2', 'aac'], ['opus', 'opus']]) {
+    const cfg = { codec, sampleRate: 48000, numberOfChannels: 2, bitrate: 128000 };
+    try { const r = await AudioEncoder.isConfigSupported(cfg); if (r.supported) return { cfg, mux }; } catch (e) {}
+  }
+  return null;
+}
+
 async function convert() {
+  if (!window.VideoEncoder || !window.VideoFrame || !window.Mp4Muxer) throw 'このブラウザは対応していません。iPhoneはiOSを新しくするか、PCのChromeで開いてください';
   const maxG = +$('maxG').value, ramp = $('ramp').checked, rampSec = +$('rampSec').value;
   const thSet = +$('th').value, inv = $('inv').checked, square = $('shape').value === 'square';
-  const audioMode = $('audio').value;
+  const audioMode = $('audio').value, flipK = +$('flip').value;
   gtag('event', 'othello_convert', { max_g: maxG, audio: audioMode });
 
   const v = document.createElement('video');
-  v.src = srcURL; v.playsInline = true; v.preload = 'auto'; v.crossOrigin = 'anonymous';
-  v.muted = !(audioMode === 'orig' || audioMode === 'both');
+  v.src = srcURL; v.playsInline = true; v.muted = true; v.preload = 'auto'; v.crossOrigin = 'anonymous';
   $('status').textContent = '動画を読みこみ中…';
-
-  actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-  await actx.resume();
-  clickBuf = clickBuf || makeClick();
-  const dest = actx.createMediaStreamDestination();
-  if (!v.muted) {
-    const src = actx.createMediaElementSource(v);
-    src.connect(dest); src.connect(actx.destination);
-  }
-  await new Promise((ok, ng) => { v.onloadedmetadata = ok; v.onerror = () => ng('この動画は開けませんでした'); });
+  await new Promise((ok, ng) => { v.onloadeddata = ok; v.onerror = () => ng('この動画は開けませんでした'); v.load(); });
   const VW = v.videoWidth, VH = v.videoHeight, dur = v.duration;
-  // 切り取り範囲
+  if (!isFinite(dur) || dur <= 0) throw '動画の長さが読めませんでした';
   let sx = 0, sy = 0, sw = VW, sh2 = VH;
   if (square) { const m = Math.min(VW, VH); sx = (VW - m) / 2; sy = (VH - m) / 2; sw = sh2 = m; }
   const aspect = sh2 / sw;
-  // マスが細かいほど大きい動画にする（1マス5ピクセル以上を保つ）
   const S = maxG <= 200 ? 1080 : maxG <= 288 ? 1440 : 2160, Lg = Math.round(S * 16 / 9 / 2) * 2;
   if (aspect > 1.15) { out.width = S; out.height = Lg; }
   else if (aspect < 1 / 1.15) { out.width = Lg; out.height = S; }
   else { out.width = S; out.height = S; }
   const levels = levelsFor(maxG, ramp, rampSec);
 
-  // 録画の準備
-  const stream = out.captureStream(30);
-  const useAudio = audioMode !== 'none';
-  if (useAudio) dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
-  const types = ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
-  const mime = types.find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t));
-  if (!window.MediaRecorder) throw 'このブラウザは録画に対応していません';
-  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: maxG <= 200 ? 16e6 : maxG <= 288 ? 28e6 : 45e6, audioBitsPerSecond: 128e3 });
-  const chunks = []; rec.ondataavailable = e => e.data.size && chunks.push(e.data);
-  const stopped = new Promise(ok => rec.onstop = ok);
+  // 白黒の分かれ目：自動なら最初に動画全体から1つに決める（途中で変えない＝チラつかない）
+  let th = thSet;
+  if (thSet === 256) {
+    $('status').textContent = '明るさを調べています…';
+    const hist = new Float64Array(256);
+    samp.width = 96; samp.height = Math.max(1, Math.round(96 * aspect));
+    for (let i = 0; i < 12; i++) {
+      await seekTo(v, Math.min(dur - 0.05, dur * (i + .5) / 12));
+      sctx.drawImage(v, sx, sy, sw, sh2, 0, 0, samp.width, samp.height);
+      const px = sctx.getImageData(0, 0, samp.width, samp.height).data;
+      for (let o = 0; o < px.length; o += 4) hist[(px[o] * .299 + px[o+1] * .587 + px[o+2] * .114) | 0]++;
+    }
+    th = otsu(hist);
+  }
 
-  let wake = null; try { wake = await navigator.wakeLock.request('screen'); } catch (e) {}
+  // 書き出しの準備
+  const bitrate = S === 1080 ? 16e6 : S === 1440 ? 28e6 : 45e6;
+  const vcfg = await pickVideoCodec(out.width, out.height, bitrate);
+  if (!vcfg) throw 'この大きさの動画は書き出せません。マスを少なくしてください';
+  const wantAudio = audioMode !== 'none';
+  const acodec = wantAudio ? await pickAudioCodec() : null;
+  const target = new Mp4Muxer.ArrayBufferTarget();
+  const muxer = new Mp4Muxer.Muxer({
+    target, fastStart: 'in-memory', firstTimestampBehavior: 'offset',
+    video: { codec: 'avc', width: out.width, height: out.height, frameRate: FPS },
+    audio: acodec ? { codec: acodec.mux, numberOfChannels: 2, sampleRate: 48000 } : undefined,
+  });
+  let encErr = null;
+  const venc = new VideoEncoder({ output: (c, m) => muxer.addVideoChunk(c, m), error: e => encErr = e });
+  venc.configure(vcfg);
 
-  let curKey = '', th = thSet < 256 ? thSet : 128;
-  const hist = new Uint32Array(256);
-
+  let curKey = '';
+  const events = [];
   function step(t) {
     let G = levels[0][1]; for (const [s, g] of levels) if (t >= s) G = g;
     const Gx = G, Gy = Math.max(1, Math.round(G * aspect));
     const key = Gx + 'x' + Gy;
     if (key !== curKey) { curKey = key; L = newLevel(Gx, Gy); }
-    // 縮小して明るさを読む
     const k = Math.max(1, Math.min(4, Math.floor(480 / Gx)));
     if (samp.width !== Gx * k || samp.height !== Gy * k) { samp.width = Gx * k; samp.height = Gy * k; }
     sctx.imageSmoothingEnabled = true; sctx.imageSmoothingQuality = 'high';
     sctx.drawImage(v, sx, sy, sw, sh2, 0, 0, samp.width, samp.height);
     const px = sctx.getImageData(0, 0, samp.width, samp.height).data;
-    const W = samp.width, lum = new Float32Array(L.n);
-    hist.fill(0);
+    const W = samp.width;
+    // 裏返る時間：細かい盤ほど短く
+    const F = flipK * (Gx <= 8 ? .33 : Gx <= 16 ? .2 : Gx <= 32 ? .13 : Gx <= 96 ? .1 : .067);
+    let started = 0;
     for (let y = 0; y < Gy; y++) for (let x = 0; x < Gx; x++) {
       let s = 0;
       for (let yy = 0; yy < k; yy++) { let o = ((y * k + yy) * W + x * k) * 4;
         for (let xx = 0; xx < k; xx++, o += 4) s += px[o] * .299 + px[o+1] * .587 + px[o+2] * .114; }
-      const m = s / (k * k); lum[y * Gx + x] = m; hist[m | 0]++;
-    }
-    if (thSet === 256) th = th * .8 + otsu(hist, L.n) * .2;   // 自動：少しずつ合わせる
-    const F = Gx <= 8 ? .33 : Gx <= 16 ? .2 : Gx <= 32 ? .14 : .1;
-    let started = 0;
-    for (let i = 0; i < L.n; i++) {
-      let tg = lum[i] >= th ? 1 : 0; if (inv) tg = 1 - tg;
+      const i = y * Gx + x;
+      let tg = s / (k * k) >= th ? 1 : 0; if (inv) tg = 1 - tg;
       if (L.first) { L.cur[i] = L.frm[i] = L.to[i] = tg; continue; }
-      const p = (t - L.start[i]) / F;
-      if (p >= 1) {
+      if (F <= 0) { if (L.cur[i] !== tg) started++; L.cur[i] = L.frm[i] = L.to[i] = tg; continue; }
+      if (t - L.start[i] >= F - 1e-6) {
         L.cur[i] = L.to[i];
         if (tg !== L.cur[i]) { L.frm[i] = L.cur[i]; L.to[i] = tg; L.start[i] = t; started++; }
       }
@@ -336,51 +369,92 @@ async function convert() {
     L.first = false;
     const d = L.tex;
     for (let i = 0; i < L.n; i++) {
-      const p = Math.min(1, Math.max(0, (t - L.start[i]) / F));
-      d[i*4] = L.frm[i] * 255; d[i*4+1] = L.to[i] * 255; d[i*4+2] = p >= 1 ? 0 : Math.round(p * 254); d[i*4+3] = 255;
-      if (p >= 1) { d[i*4] = d[i*4+1] = L.to[i] * 255; }
+      const p = F <= 0 ? 1 : (t - L.start[i]) / F;
+      if (p >= 1 - 1e-6) { d[i*4] = d[i*4+1] = L.to[i] * 255; d[i*4+2] = 0; }
+      else { d[i*4] = L.frm[i] * 255; d[i*4+1] = L.to[i] * 255; d[i*4+2] = Math.round(Math.max(0, p) * 254); }
+      d[i*4+3] = 255;
     }
     render(d, Gx, Gy, L.cell);
-    if (audioMode === 'clicks' || audioMode === 'both') click(started, dest);
-    $('bar').style.width = Math.min(100, t / dur * 100) + '%';
-    $('status').textContent = `変換中… ${Math.floor(t)}秒 / ${Math.floor(dur)}秒（${Gx}×${Gy}マス）`;
+    if (started) events.push([t, started]);
+    return Gx + '×' + Gy;
   }
 
-  // 1コマ目を描いてから録画開始
-  await new Promise(ok => { v.onseeked = ok; v.currentTime = 0.001; });
-  step(0);
-  rec.start(500);
-  await v.play();
-  await new Promise(done => {
-    const useRVFC = 'requestVideoFrameCallback' in v;
-    const loop = (now, meta) => {
-      if (v.ended) return done();
-      step(meta && meta.mediaTime != null ? meta.mediaTime : v.currentTime);
-      useRVFC ? v.requestVideoFrameCallback(loop) : requestAnimationFrame(() => loop());
-    };
-    v.onended = () => done();
-    useRVFC ? v.requestVideoFrameCallback(loop) : requestAnimationFrame(() => loop());
-  });
-  step(dur);
-  await new Promise(ok => setTimeout(ok, 300));
-  rec.stop(); await stopped;
-  if (wake) try { wake.release(); } catch (e) {}
-  v.pause();
+  // 1コマずつ：止める → 変換 → 書き出す（コマ飛びなし）
+  const N = Math.max(1, Math.floor(dur * FPS));
+  const t0 = performance.now();
+  for (let i = 0; i < N; i++) {
+    if (encErr) throw encErr;
+    const t = i / FPS;
+    await seekTo(v, Math.min(t + 0.5 / FPS, dur - 0.001));
+    const size = step(t);
+    gl.finish();
+    const frame = new VideoFrame(out, { timestamp: Math.round(i * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
+    venc.encode(frame, { keyFrame: i % (FPS * 2) === 0 });
+    frame.close();
+    while (venc.encodeQueueSize > 3) await sleep(4);
+    if (i % 3 === 0 || i === N - 1) {
+      const el = (performance.now() - t0) / 1000, left = el / (i + 1) * (N - i - 1);
+      $('bar').style.width = ((i + 1) / N * 95) + '%';
+      $('status').textContent = `変換中… ${i + 1} / ${N}コマ（${size}マス）　のこり約${Math.ceil(left)}秒`;
+    }
+  }
+  await venc.flush(); venc.close();
+  if (encErr) throw encErr;
 
-  const type = (mime || 'video/webm').split(';')[0];
-  const blob = new Blob(chunks, { type });
-  const ext = type.includes('mp4') ? 'mp4' : 'webm';
+  // 音
+  let audioNote = '';
+  if (wantAudio && !acodec) audioNote = '（このブラウザでは音を入れられなかったので、音なしです）';
+  if (acodec) {
+    $('status').textContent = '音を作っています…';
+    const SR = 48000, len = Math.ceil(dur * SR);
+    const oc = new OfflineAudioContext(2, len, SR);
+    if (audioMode === 'orig' || audioMode === 'both') {
+      try {
+        const ab = await (await fetch(srcURL)).arrayBuffer();
+        const buf = await oc.decodeAudioData(ab);
+        const s = oc.createBufferSource(); s.buffer = buf; s.connect(oc.destination); s.start(0);
+      } catch (e) { audioNote = '（元の動画の音は読めなかったので入っていません）'; }
+    }
+    if (audioMode === 'clicks' || audioMode === 'both') {
+      const cl = Math.floor(SR * .03), cb = oc.createBuffer(1, cl, SR), cd = cb.getChannelData(0);
+      for (let i = 0; i < cl; i++) { const tt = i / SR; cd[i] = (Math.random() - .5 + Math.sin(2 * Math.PI * 1500 * tt)) * Math.exp(-tt * 180) * .5; }
+      let last = -1;
+      for (const [t, n] of events) {
+        if (n > 300 && t - last < .06) continue;
+        last = t;
+        const s = oc.createBufferSource(); s.buffer = cb; s.playbackRate.value = n < 10 ? 1.2 : .85;
+        const g = oc.createGain(); g.gain.value = Math.min(1, .3 + .1 * Math.log1p(n));
+        s.connect(g); g.connect(oc.destination); s.start(t);
+      }
+    }
+    const mixed = await oc.startRendering();
+    const aenc = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: e => encErr = e });
+    aenc.configure(acodec.cfg);
+    const L0 = mixed.getChannelData(0), R0 = mixed.getChannelData(1), CH = 4096;
+    for (let o = 0; o < len; o += CH) {
+      const n = Math.min(CH, len - o), data = new Float32Array(n * 2);
+      for (let j = 0; j < n; j++) { const l = Math.max(-1, Math.min(1, L0[o + j])), r = Math.max(-1, Math.min(1, R0[o + j])); data[j] = l; data[n + j] = r; }
+      const ad = new AudioData({ format: 'f32-planar', sampleRate: SR, numberOfFrames: n, numberOfChannels: 2, timestamp: Math.round(o / SR * 1e6), data });
+      aenc.encode(ad); ad.close();
+      while (aenc.encodeQueueSize > 8) await sleep(2);
+    }
+    await aenc.flush(); aenc.close();
+    if (encErr) throw encErr;
+  }
+  muxer.finalize();
+
+  const blob = new Blob([target.buffer], { type: 'video/mp4' });
   const url = URL.createObjectURL(blob);
   const res = $('result'); res.src = url; res.classList.remove('hidden'); out.classList.add('hidden');
   res.play().catch(() => {});
-  const fname = 'othello_' + Date.now() + '.' + ext;
+  const fname = 'othello_' + Date.now() + '.mp4';
   $('save').href = url; $('save').download = fname;
   $('saveRow').hidden = false;
-  const file = new File([blob], fname, { type });
+  const file = new File([blob], fname, { type: 'video/mp4' });
   $('share').classList.toggle('hidden', !(navigator.canShare && navigator.canShare({ files: [file] })));
   $('share').onclick = () => navigator.share({ files: [file], title: 'オセロ変換機' }).catch(() => {});
   $('bar').style.width = '100%';
-  $('status').textContent = `できました！（${(blob.size / 1048576).toFixed(1)}MB）「動画を保存」か「共有」で保存できます。`;
+  $('status').textContent = `できました！（${(blob.size / 1048576).toFixed(1)}MB・${Math.round((performance.now() - t0) / 1000)}秒）「動画を保存」か「共有」で保存できます。` + audioNote;
   gtag('event', 'othello_done', { max_g: maxG, sec: Math.round(dur) });
 }
 })();
