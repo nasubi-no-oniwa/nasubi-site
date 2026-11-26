@@ -58,7 +58,7 @@ footer a{color:var(--sub)}
 </head>
 <body>
 <main>
-  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機</h1>
+  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機<small style="font-size:12px;color:#9fb8a6;font-weight:400;margin-left:4px">v5（11/27 2:40）</small></h1>
   <p class="lead">動画を選ぶと、白と黒のオセロの石がパタパタ裏返る動画に変わります。影絵のように白黒がはっきりした動画ほどきれいに出ます。</p>
 
   <div class="card">
@@ -229,6 +229,8 @@ function click(n, dest) {
 const samp = document.createElement('canvas');
 const sctx = samp.getContext('2d', { willReadFrequently: true });
 const FPS = 30;
+const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const VERSION = 'v5（11/27 2:40）';
 
 function levelsFor(maxG, ramp, rampSec) {
   if (!ramp) return [[0, maxG]];
@@ -539,7 +541,7 @@ async function convert() {
   if (encErr) throw encErr;
 
   // 音
-  let audioNote = '';
+  let audioNote = '', audioInfo = wantAudio ? '音：なし（このブラウザは音の書き出しに未対応）' : '音：なし';
   if (wantAudio && !acodec) audioNote = '（このブラウザでは音を入れられなかったので、音なしです）';
   if (acodec) {
     $('status').textContent = '音を作っています…';
@@ -578,8 +580,31 @@ async function convert() {
       }
     }
     const mixed = await oc.startRendering();
-    const aenc = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: e => encErr = e });
-    aenc.configure(acodec.cfg);
+    // iPhoneのSafari対策：再生に必要な情報（説明データ）がなければ補い、ADTSの頭がついていれば外す
+    const ASC = new Uint8Array([0x11, 0x90]); // AAC-LC・48000Hz・2ch
+    let gotDesc = false, fixedDesc = false, adts = false, nChunks = 0;
+    const aenc = new AudioEncoder({
+      output: (c, m) => {
+        nChunks++;
+        const raw = new Uint8Array(c.byteLength); c.copyTo(raw);
+        let data = raw;
+        if (acodec.mux === 'aac' && raw.length > 7 && raw[0] === 0xFF && (raw[1] & 0xF6) === 0xF0) {
+          adts = true; const hl = (raw[1] & 1) ? 7 : 9; data = raw.subarray(hl);
+        }
+        let meta = m;
+        if (m && m.decoderConfig && m.decoderConfig.description && m.decoderConfig.description.byteLength) gotDesc = true;
+        if (acodec.mux === 'aac' && nChunks === 1 && !gotDesc) {
+          fixedDesc = true;
+          meta = { decoderConfig: { codec: 'mp4a.40.2', sampleRate: 48000, numberOfChannels: 2, description: ASC } };
+        }
+        const chunk = data === raw ? c : new EncodedAudioChunk({ type: 'key', timestamp: c.timestamp, duration: c.duration || undefined, data });
+        muxer.addAudioChunk(chunk, meta);
+      },
+      error: e => encErr = e,
+    });
+    const acfg = Object.assign({}, acodec.cfg);
+    if (acodec.mux === 'aac') acfg.aac = { format: 'aac' };
+    try { aenc.configure(acfg); } catch (e) { aenc.configure(acodec.cfg); }
     const L0 = mixed.getChannelData(0), R0 = mixed.getChannelData(1), CH = 4096;
     for (let o = 0; o < len; o += CH) {
       const n = Math.min(CH, len - o), data = new Float32Array(n * 2);
@@ -590,6 +615,7 @@ async function convert() {
     }
     await aenc.flush(); aenc.close();
     if (encErr) throw encErr;
+    audioInfo = `音：${acodec.mux}${fixedDesc ? '・情報を補った' : ''}${adts ? '・頭を外した' : ''}・${nChunks}個`;
   }
   muxer.finalize();
 
@@ -604,7 +630,7 @@ async function convert() {
   $('share').classList.toggle('hidden', !(navigator.canShare && navigator.canShare({ files: [file] })));
   $('share').onclick = () => navigator.share({ files: [file], title: 'オセロ変換機' }).catch(() => {});
   $('bar').style.width = '100%';
-  $('status').textContent = `できました！（${(blob.size / 1048576).toFixed(1)}MB・${Math.round((performance.now() - t0) / 1000)}秒）「動画を保存」か「共有」で保存できます。` + audioNote;
+  $('status').innerHTML = `できました！（${(blob.size / 1048576).toFixed(1)}MB・${Math.round((performance.now() - t0) / 1000)}秒）「動画を保存」か「共有」で保存できます。` + esc(audioNote) + `<br><small>${VERSION}｜${esc(audioInfo)}</small>`;
   gtag('event', 'othello_done', { max_g: maxG, sec: Math.round(dur) });
 }
 })();
