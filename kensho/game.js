@@ -37,7 +37,11 @@ function judge(raw) {
   return { name, k, ch: null, b, pet, epi: pet ? EPI_PET : box[Math.floor(w * box.length)] };
 }
 // 手配書に大きく出す名前（異名つき）
+function plainName(R) { if (!R.ch) return R.name; const c = R.ch; return L !== 'ja' && c.en ? c.en[c.en.length - 1] : c.a[c.a.length - 1]; }
+function fmtEpi(e, n) { return L === 'ja' ? '「' + e + '」' + n : L === 'en' ? '"' + e + '" ' + n : L === 'zh' ? '「' + e + '」' + n : "'" + e + "' " + n; }
+function epiText(R) { if (R.my != null) return R.my; if (R.ch) return L === 'ja' || L === 'zh' ? R.ch.e : (R.ch.ee || ''); return R.epi[LI()]; }
 function bigName(R) {
+  if (R.my != null) return R.my ? fmtEpi(R.my, plainName(R)) : plainName(R);
   if (R.ch) {
     const c = R.ch, en = L !== 'ja' && c.en, short = en ? c.en[c.en.length - 1] : c.a[c.a.length - 1], full = en ? c.en[0] : c.a[0];
     const e = L === 'ja' || L === 'zh' ? c.e : (c.ee || '');
@@ -190,9 +194,9 @@ async function issueNo(R) { // 同じ端末で同じ名前なら、前と同じ�
 // ---------- ランキング（名前1つにつき1件。作中のキャラは載せない） ----------
 const dayKey = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10).replace(/-/g, '');
 function hkey(s) { const a = Math.floor(hash(s, 0x51ed) * 4294967296), b = Math.floor(hash(s, 0x9e37) * 4294967296); return (a.toString(36) + b.toString(36)).padStart(10, '0').slice(0, 14); }
-async function submit(R) {
-  if (DEV || R.ch || R.b == null) return; const h = hkey('n:' + R.k), day = dayKey(), sent = ls.get('kensho_sent', {}); if (sent[day + h]) return;
-  const rec = { n: R.name.slice(0, 16), b: R.b, i: R.epi[0].slice(0, 24), ts: { '.sv': 'timestamp' } };
+async function submit(R, again) {
+  if (DEV || R.ch || R.b == null) return; const h = hkey('n:' + R.k), day = dayKey(), sent = ls.get('kensho_sent', {}); if (again) { delete sent[h]; delete sent[day + h]; } if (sent[day + h]) return;
+  const rec = { n: R.name.slice(0, 16), b: R.b, i: String(R.my != null ? R.my : R.epi[0]).slice(0, 24), ts: { '.sv': 'timestamp' } };
   try { const a = await auth(), q = '?auth=' + encodeURIComponent(a.token), o = { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) }; if (!sent[h]) { await fx(DBU('n/' + h) + q, o); sent[h] = 1; } await fx(DBU('t/' + day + '/' + h) + q, o); for (const x of Object.keys(sent)) if (/^20\d{6}/.test(x) && !x.startsWith(day)) delete sent[x]; sent[day + h] = 1; ls.set('kensho_sent', sent); } catch (e) { }
 }
 let rkFrom = 'title', rkTab = 'all';
@@ -206,7 +210,7 @@ async function openRank(from) {
     const mine = new Set(TEAM.filter(t => !t.R.ch).map(t => hkey('n:' + t.R.k)));
     const rows = Object.entries(j).map(([u, v]) => Object.assign({ u }, v)).filter(v => v && typeof v.b === 'number').sort((a, b) => b.b - a.b).slice(0, 100);
     if ($('rank').hidden || tab !== rkTab) return; if (!rows.length) { box.innerHTML = '<p class="note">' + esc(T.rkEmpty) + '</p>'; return; }
-    box.innerHTML = '<table class="rk">' + rows.map((v, i) => `<tr${mine.has(v.u) ? ' class="me"' : ''}><td class="n">${i + 1}</td><td>${esc(v.n || '')}${v.i && L === 'ja' ? '<small>「' + esc(v.i) + '」' + esc(v.n || '') + '</small>' : ''}</td><td class="b">${esc(amtWord(v.b))}🍆</td></tr>`).join('') + '</table>';
+    box.innerHTML = '<table class="rk">' + rows.map((v, i) => `<tr${mine.has(v.u) ? ' class="me"' : ''}><td class="n">${i + 1}</td><td>${esc(v.n || '')}${v.i ? '<small>「' + esc(v.i) + '」' + esc(v.n || '') + '</small>' : ''}</td><td class="b">${esc(amtWord(v.b))}🍆</td></tr>`).join('') + '</table>';
   } catch (e) { if (tab === rkTab) box.innerHTML = '<p class="note" style="color:#a8231b">' + esc(T.rkErr) + '</p>'; }
 }
 $('rkBtn').onclick = () => openRank('title'); $('rkBtn2').onclick = () => openRank('result');
@@ -231,6 +235,8 @@ $('startBtn').onclick = start; $('nm').addEventListener('keydown', e => { if (e.
 function renderResult(anim, noP) {
   show('result'); const box = $('posters'), n = TEAM.length; box.innerHTML = ''; box.style.flexWrap = n > 2 ? 'wrap' : 'nowrap';
   TEAM.forEach((t, i) => { const last = anim && i === n - 1, d = document.createElement('div'); d.className = 'pw'; d.style.flex = n === 1 ? '1' : n === 2 ? '0 0 calc(50% - 5px)' : '0 0 calc(33.3% - 7px)'; const cv = drawPoster(t.R, t.ph, { amount: !last, stamp: !last, no: t.no }); t.cv = cv; d.appendChild(cv); box.appendChild(d); if (last) d.id = 'pwLast'; });
+  SEL = anim ? n - 1 : Math.min(SEL, n - 1); markSel();
+  box.querySelectorAll('.pw').forEach((d, i) => d.onclick = () => { SEL = i; markSel(); epiField(); info(); });
   info(anim);
   if (!anim) return;
   const t = TEAM[n - 1], d = $('pwLast'), R = t.R;
@@ -254,8 +260,17 @@ function renderResult(anim, noP) {
   } });
   gsap.set(['#rAmt', '#rCmp', '#rNote', '#rTot'], { opacity: 0 });
 }
+let SEL = 0, epiTimer = 0;
+function markSel() { $('posters').querySelectorAll('.pw').forEach((d, i) => d.classList.toggle('sel', TEAM.length > 1 && i === SEL)); }
+function epiField() { const t = TEAM[SEL]; if (!t) return; if (document.activeElement !== $('epi')) $('epi').value = epiText(t.R); $('epiPick').hidden = TEAM.length < 2; }
+function redrawSel() { const t = TEAM[SEL], d = $('posters').querySelectorAll('.pw')[SEL]; if (!t || !d) return; const cv = drawPoster(t.R, t.ph, { no: t.no }); t.cv = cv; const old = d.querySelector('canvas'); if (old) d.replaceChild(cv, old); }
+$('epi').addEventListener('input', () => { const t = TEAM[SEL]; if (!t) return; t.R.my = clean($('epi').value); info(); clearTimeout(epiTimer); epiTimer = setTimeout(redrawSel, 120); });
+$('epi').addEventListener('change', () => { const t = TEAM[SEL]; if (t && !t.R.ch) submit(t.R, true); ev('epi_edit'); });
+$('epi').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('epi').blur(); } });
+$('epi').addEventListener('focus', () => { try { $('epi').select(); } catch (e) { } });
+$('epiReset').onclick = () => { const t = TEAM[SEL]; if (!t) return; delete t.R.my; $('epi').value = epiText(t.R); redrawSel(); info(); if (!t.R.ch) submit(t.R, true); };
 function info() {
-  const t = TEAM[TEAM.length - 1], R = t.R;
+  const t = TEAM[SEL] || TEAM[TEAM.length - 1], R = t.R; epiField();
   $('rAmt').innerHTML = esc(bigName(R)) + '<b>' + esc(T.amtL) + ' ' + esc(amtWord(R.b)) + (R.b == null ? '' : '🍆') + '</b>';
   $('rCmp').innerHTML = compare(R);
   $('rNote').textContent = R.unknown ? T.unknownNote : R.pet ? T.petNote : R.ch ? T.charNote : '';
@@ -306,12 +321,12 @@ $('xBtn').onclick = async () => {
 function applyLang() {
   T = TT[L]; document.documentElement.lang = L === 'zh' ? 'zh-CN' : L;
   $('langs').innerHTML = LANGS.map(k => `<button data-l="${k}" class="${k === L ? 'on' : ''}">${esc(TT[k].lang)}</button>`).join('');
-  document.querySelectorAll('#langs button').forEach(b => b.onclick = () => { L = b.dataset.l; ls.set('kensho_lang', L); applyLang(); if (TEAM.length) TEAM.forEach(t => t.cv = drawPoster(t.R, t.ph, { no: t.no })); });
+  document.querySelectorAll('#langs button').forEach(b => b.onclick = () => { L = b.dataset.l; ls.set('kensho_lang', L); applyLang(); if (TEAM.length) { const ds = $('posters').querySelectorAll('.pw'); TEAM.forEach((t, i) => { t.cv = drawPoster(t.R, t.ph, { no: t.no }); const d = ds[i], o = d && d.querySelector('canvas'); if (o) d.replaceChild(t.cv, o); }); } });
   const fr = MODE === 'friend';
   $('tSmall').textContent = T.small; $('tLead').innerHTML = fr ? T.leadF : T.lead; $('nmL').textContent = fr ? T.nmLF : T.nmL; $('nm').placeholder = T.ph; $('phL').textContent = T.phL;
   $('startBtn').textContent = fr ? T.startF : T.start; $('rkBtn').textContent = T.rank; $('backBtn').textContent = T.back; $('backBtn').hidden = !fr; $('tNote').innerHTML = T.notes;
   $('edT').textContent = T.edT; $('edHint').textContent = T.edHint; $('edOk').textContent = T.edOk; $('edRe').textContent = T.edRe; $('edDel').textContent = T.edDel;
-  $('crewL').textContent = T.crewL; $('crew').placeholder = T.crewPh; $('crewPre').textContent = T.crewPre; $('crewSuf').textContent = T.crewSuf; $('xBtn').textContent = T.x; $('imgBtn').textContent = T.img; $('again').textContent = T.again; $('rkBtn2').textContent = T.rank; $('rkT').textContent = T.rkT; $('rkNote').textContent = T.rkNote; $('rkBack').textContent = T.back;
+  $('epiL').textContent = T.epiL; $('epi').placeholder = T.epiPh; $('epiReset').textContent = T.epiReset; $('epiPick').textContent = T.epiPick; $('crewL').textContent = T.crewL; $('crew').placeholder = T.crewPh; $('crewPre').textContent = T.crewPre; $('crewSuf').textContent = T.crewSuf; $('xBtn').textContent = T.x; $('imgBtn').textContent = T.img; $('again').textContent = T.again; $('rkBtn2').textContent = T.rank; $('rkT').textContent = T.rkT; $('rkNote').textContent = T.rkNote; $('rkBack').textContent = T.back;
   $('snd').textContent = SND ? T.sndOn : T.sndOff; $('load').textContent = T.load; drawThumb(); if (TEAM.length) info();
 }
 

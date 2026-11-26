@@ -2,6 +2,7 @@
 export const LANGS = ['ja', 'en', 'zh', 'ko'];
 export const T = {
   ja: {
+    epiL: '二つ名（押すと自由に書きかえられます）', epiPh: '二つ名なし', epiReset: '元に戻す', epiPick: '変える手配書を押して選べます',
     crewL: '一味の名前', crewPh: '名前を入れる', crewPre: '', crewSuf: 'の一味', crewFmt: '{n}の一味', totN: '{c} 懸賞金 総額',
     lang: '日本語', small: 'けんしょうなす', lead: '名前を入れると、あなたの懸賞金が決まる。<br>お尋ね者の手配書を発行しよう。', leadF: '仲間の名前を入れて、<br>一味の手配書を並べよう。（5人まで）',
     nmL: '名前', nmLF: '仲間の名前', ph: '名前を入れる', phL: '写真（なくてもOK）', phPick: '写真を選ぶ', phSub: '手配書の顔に入ります', phSet: '写真を変える', phSetSub: '押すと位置を合わせなおせます',
@@ -16,6 +17,7 @@ export const T = {
     post: '私の懸賞金は {a}🍆\n{n}', postT: '{crew} 懸賞金 総額 {a}🍆（{c}人）\n{list}', sndOn: '🔊 音あり', sndOff: '🔇 音なし', load: '読みこみ中…',
   },
   en: {
+    epiL: 'Epithet (tap to write your own)', epiPh: 'No epithet', epiReset: 'Reset', epiPick: 'Tap a poster to pick which one to edit',
     crewL: 'Crew name', crewPh: 'Enter a name', crewPre: 'the', crewSuf: 'Crew', crewFmt: 'the {n} Crew', totN: 'Total bounty of {c}',
     lang: 'English', small: 'BOUNTY', lead: 'Your name decides your bounty.<br>Get your WANTED-style poster issued.', leadF: 'Add your crewmates’ names<br>and line up the posters. (up to 5)',
     nmL: 'Name', nmLF: 'Crewmate’s name', ph: 'Enter a name', phL: 'Photo (optional)', phPick: 'Choose a photo', phSub: 'It goes on the poster', phSet: 'Change photo', phSetSub: 'Tap to adjust the position',
@@ -30,6 +32,7 @@ export const T = {
     post: 'My bounty is {a} 🍆\n"{n}"', postT: 'Total bounty of {crew}: {a} 🍆 ({c} members)\n{list}', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', load: 'Loading…',
   },
   zh: {
+    epiL: '外号（点一下可自由修改）', epiPh: '无外号', epiReset: '恢复', epiPick: '点通缉令可选择要改哪一张',
     crewL: '一伙的名字', crewPh: '输入名字', crewPre: '', crewSuf: '一伙', crewFmt: '{n}一伙', totN: '{c}的悬赏金 总额',
     lang: '中文', small: '悬赏茄子', lead: '输入名字，决定你的悬赏金。<br>发行属于你的通缉令吧。', leadF: '输入伙伴的名字，<br>把一伙人的通缉令排在一起。（最多5人）',
     nmL: '名字', nmLF: '伙伴的名字', ph: '输入名字', phL: '照片（可不选）', phPick: '选择照片', phSub: '会放在通缉令的头像处', phSet: '更换照片', phSetSub: '点击可重新调整位置',
@@ -44,6 +47,7 @@ export const T = {
     post: '我的悬赏金是 {a}🍆\n{n}', postT: '{crew}的悬赏金总额 {a}🍆（{c}人）\n{list}', sndOn: '🔊 有声', sndOff: '🔇 静音', load: '读取中…',
   },
   ko: {
+    epiL: '별명 (누르면 자유롭게 바꿀 수 있어요)', epiPh: '별명 없음', epiReset: '되돌리기', epiPick: '수배서를 눌러서 바꿀 것을 고를 수 있어요',
     crewL: '일당 이름', crewPh: '이름 입력', crewPre: '', crewSuf: ' 일당', crewFmt: '{n} 일당', totN: '{c} 현상금 총액',
     lang: '한국어', small: '현상금 가지', lead: '이름을 넣으면 당신의 현상금이 정해진다.<br>현상수배서를 발행하자.', leadF: '동료의 이름을 넣어서<br>일당의 수배서를 나란히 놓자. (5명까지)',
     nmL: '이름', nmLF: '동료의 이름', ph: '이름을 입력', phL: '사진 (없어도 OK)', phPick: '사진 고르기', phSub: '수배서의 얼굴에 들어갑니다', phSet: '사진 바꾸기', phSetSub: '누르면 위치를 다시 맞출 수 있어요',

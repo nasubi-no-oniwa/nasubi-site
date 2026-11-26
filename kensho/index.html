@@ -72,6 +72,10 @@ h1 small{display:block;font-size:13px;letter-spacing:.5em;color:var(--sub);font-
 #rCmp{text-align:center;font-size:13.5px;line-height:1.7;font-weight:700;margin:6px 0 0}
 #rCmp em{font-style:normal;color:var(--red)}
 #rNote{text-align:center;font-size:11.5px;color:var(--sub);margin-top:6px}
+#epiRow{margin:12px 0 0}
+.crew.epi input{text-align:center}
+#epiReset{flex:none;font-size:13px;font-weight:800;padding:6px 10px;border-radius:14px;border:1.5px solid #6b4a22;color:#6b4a22}
+.pw{cursor:pointer}.pw.sel canvas{outline:3px solid #b8322a;outline-offset:3px;border-radius:2px}
 #crewRow{margin:12px 0 0}
 .crew{display:flex;align-items:center;gap:6px;background:#fbf3dc;border:2px solid #6b4a22;border-radius:8px;padding:4px 10px}
 .crew input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:20px;font-weight:900;padding:8px 2px;text-align:right}
@@ -141,8 +145,8 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
 <script>window.NSB_NEXT={"g": "kensho", "r": [{"a": "#result .card", "v": "#result"}], "ad": 1};</script>
 <script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
-<script src="gsap.min.js?v=11261625"></script>
-<script src="pfx.js?v=11261625"></script>
+<script src="gsap.min.js?v=11261633"></script>
+<script src="pfx.js?v=11261633"></script>
 </head>
 <body>
 <div id="load">読みこみ中…</div>
@@ -180,6 +184,7 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <div id="result" class="scr" hidden>
   <div class="card">
     <div id="posters"></div>
+    <div id="epiRow"><div class="lbl" id="epiL">二つ名</div><div class="crew epi"><input id="epi" maxlength="16" autocomplete="off" enterkeyhint="done"><button id="epiReset">元に戻す</button></div><div class="hint" id="epiPick" hidden></div></div>
     <div id="rAmt"></div>
     <div id="rCmp"></div>
     <div id="rNote"></div>
@@ -201,6 +206,6 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
     <button class="btn sub" id="rkBack">もどる</button>
   </div>
 </div>
-<script type="module" src="game.js?v=11261625"></script>
+<script type="module" src="game.js?v=11261633"></script>
 </body>
 </html>
