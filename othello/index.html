@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RB6XMN0QR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-5RB6XMN0QR');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>オセロ変換機｜動画をオセロの石にする</title>
+<meta name="description" content="動画を選ぶだけで、白黒のオセロの石がパタパタ裏返る動画に変換。最大200マス。スマホだけで完結、動画はどこにも送りません。">
+<meta property="og:title" content="オセロ変換機">
+<meta property="og:description" content="動画を選ぶだけで、オセロの石がパタパタ裏返る動画に変換。">
+<meta property="og:image" content="https://nasubi-no-oniwa.com/othello/ogp.png">
+<meta property="og:url" content="https://nasubi-no-oniwa.com/othello/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon.png">
+<style>
+:root{--bg:#07140c;--board:#207a3e;--line:#0e4222;--ink:#eef3ea;--sub:#9fb8a6;--card:#0f2617;--acc:#f2f2ea}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic UI",system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:18px 16px 60px}
+h1{font-size:26px;margin:6px 0 2px;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
+h1 .dots{display:inline-grid;grid-template-columns:repeat(2,12px);gap:3px;background:var(--board);padding:4px;border-radius:4px}
+h1 .dots i{width:12px;height:12px;border-radius:50%;display:block}
+.lead{color:var(--sub);font-size:14px;margin:0 0 16px;line-height:1.6}
+.card{background:var(--card);border-radius:14px;padding:14px;margin:12px 0}
+.pick{display:flex;gap:10px;flex-wrap:wrap}
+.btn{appearance:none;border:0;border-radius:12px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn.main{background:var(--acc);color:#0b1a10;flex:1}
+.btn.sub{background:#1d3b27;color:var(--ink)}
+.btn:disabled{opacity:.4}
+label.file{display:block;flex:1}
+label.file input{display:none}
+.fname{font-size:13px;color:var(--sub);margin-top:8px;word-break:break-all}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid #1b3a25;font-size:15px}
+.row:first-child{border-top:0}
+.row small{display:block;color:var(--sub);font-size:12px;margin-top:2px}
+select,input[type=range]{font-size:15px;font-family:inherit}
+select{background:#1d3b27;color:var(--ink);border:0;border-radius:8px;padding:8px}
+input[type=range]{width:140px;accent-color:#e9e9df}
+input[type=checkbox]{width:22px;height:22px;accent-color:#e9e9df}
+.stage{position:relative;background:#000;border-radius:12px;overflow:hidden;display:flex;justify-content:center;align-items:center;min-height:200px}
+.stage canvas,.stage video{max-width:100%;max-height:70vh;display:block}
+.bar{height:8px;background:#1d3b27;border-radius:4px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:0;background:var(--acc)}
+.status{font-size:14px;color:var(--sub);margin-top:8px;min-height:20px;line-height:1.5}
+.note{font-size:12px;color:var(--sub);line-height:1.7}
+.hidden{display:none!important}
+footer{text-align:center;margin-top:30px;font-size:13px}
+footer a{color:var(--sub)}
+</style>
+</head>
+<body>
+<main>
+  <h1><span class="dots"><i style="background:#f0f0e8"></i><i style="background:#111"></i><i style="background:#111"></i><i style="background:#f0f0e8"></i></span>オセロ変換機</h1>
+  <p class="lead">動画を選ぶと、白と黒のオセロの石がパタパタ裏返る動画に変わります。影絵のように白黒がはっきりした動画ほどきれいに出ます。</p>
+
+  <div class="card">
+    <div class="pick">
+      <label class="file btn main" id="pickLabel">動画を選ぶ<input type="file" id="file" accept="video/*"></label>
+      <button class="btn sub" id="sample">見本で試す</button>
+    </div>
+    <div class="fname" id="fname"></div>
+  </div>
+
+  <div class="card" id="settings">
+    <div class="row"><div>細かさ（横のマス数）<small>多いほど細かい絵になります</small></div>
+      <select id="maxG">
+        <option value="32">32マス</option><option value="64">64マス</option><option value="96">96マス</option>
+        <option value="128" selected>128マス</option><option value="160">160マス</option><option value="200">200マス</option>
+      </select></div>
+    <div class="row"><div>だんだん細かくする<small>8マスから始めて、だんだん細かくなります</small></div>
+      <input type="checkbox" id="ramp" checked></div>
+    <div class="row" id="rampRow"><div>細かくなりきるまで<small id="rampVal">6秒</small></div>
+      <input type="range" id="rampSec" min="2" max="20" value="6"></div>
+    <div class="row"><div>白と黒の分かれ目<small id="thVal">自動</small></div>
+      <input type="range" id="th" min="0" max="256" value="256"></div>
+    <div class="row"><div>白黒を反対にする</div><input type="checkbox" id="inv"></div>
+    <div class="row"><div>盤の形</div>
+      <select id="shape"><option value="fit" selected>動画に合わせる</option><option value="square">正方形</option></select></div>
+    <div class="row"><div>音</div>
+      <select id="audio"><option value="clicks" selected>石の音</option><option value="orig">元の動画の音</option><option value="both">両方</option><option value="none">なし</option></select></div>
+  </div>
+
+  <button class="btn main" id="go" style="width:100%" disabled>変換スタート</button>
+
+  <div class="card">
+    <div class="stage" id="stage"><canvas id="out" width="1080" height="1080"></canvas><video id="result" class="hidden" playsinline controls loop></video></div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="status" id="status">動画を選んでください。</div>
+    <div class="pick" id="saveRow" style="margin-top:10px" hidden>
+      <a class="btn main" id="save" download="othello.mp4" style="text-align:center;text-decoration:none">動画を保存</a>
+      <button class="btn sub" id="share">共有</button>
+    </div>
+  </div>
+
+  <div class="card note">
+    ・変換は動画と同じ長さの時間がかかります（1分の動画なら1分）。変換中はこの画面を開いたままにしてください。<br>
+    ・動画はあなたのスマホやPCの中だけで変換します。どこにも送りません。<br>
+    ・人のアニメやMVなどは使わず、自分で撮った動画や使っていい動画で作ってください。<br>
+    ・きれいに出るコツ：明るい窓や白い壁の前で、人や手を影のように撮る。
+  </div>
+
+  <footer><a href="https://nasubi-no-oniwa.com/">なすびのお庭</a></footer>
+</main>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const out = $('out');
+let srcURL = null, srcName = '', running = false;
+
+// ---------- 設定 ----------
+$('rampSec').oninput = () => $('rampVal').textContent = $('rampSec').value + '秒';
+$('ramp').onchange = () => $('rampRow').classList.toggle('hidden', !$('ramp').checked);
+$('th').oninput = () => $('thVal').textContent = $('th').value == 256 ? '自動' : $('th').value;
+
+function setSource(url, name) {
+  if (srcURL && srcURL.startsWith('blob:')) URL.revokeObjectURL(srcURL);
+  srcURL = url; srcName = name;
+  $('fname').textContent = name;
+  $('go').disabled = false;
+  $('status').textContent = '「変換スタート」を押してください。';
+}
+$('file').onchange = e => {
+  const f = e.target.files[0];
+  if (f) setSource(URL.createObjectURL(f), f.name);
+};
+$('sample').onclick = () => setSource('sample.mp4', '見本（影絵の人）');
+
+// ---------- WebGL の盤 ----------
+const gl = out.getContext('webgl', { preserveDrawingBuffer: true, antialias: false });
+const VS = `attribute vec2 p;varying vec2 uv;void main(){uv=vec2(p.x*.5+.5,.5-p.y*.5);gl_Position=vec4(p,0.,1.);}`;
+const FS = `precision highp float;varying vec2 uv;uniform sampler2D st;uniform vec2 grid;uniform float cpx;
+void main(){
+  vec2 cf=uv*grid; vec2 cell=floor(cf); vec2 l=fract(cf);
+  vec4 s=texture2D(st,(cell+.5)/grid);
+  float p=s.b; float col=p<.5?s.r:s.g; float sc=abs(cos(p*3.14159265));
+  vec3 green=vec3(.125,.478,.243); vec3 line=vec3(.055,.259,.133);
+  vec3 c=green;
+  float lw=cpx>=6.?1./cpx:0.;
+  if(l.x<lw||l.y<lw) c=line;
+  float R=.42; float rx=max(R*sc,.0001);
+  vec2 d=vec2((l.x-.5)/rx,(l.y-.5)/R);
+  float r=length(d);
+  float aa=1.4/(cpx*rx);
+  float a=1.-smoothstep(1.-aa,1.+aa,r);
+  vec3 face=col>.5?vec3(.94,.94,.92):vec3(.07,.07,.07);
+  vec3 rim =col>.5?vec3(.70,.70,.67):vec3(.30,.30,.30);
+  vec3 stone=mix(rim,face,1.-smoothstep(.86,.92,r));
+  if(sc*cpx<1.) a*=sc*cpx;
+  gl_FragColor=vec4(mix(c,stone,a),1.);
+}`;
+function sh(t, s) { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o);
+  if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(o); return o; }
+const prog = gl.createProgram();
+gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+gl.linkProgram(prog); gl.useProgram(prog);
+const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.NEAREST], [gl.TEXTURE_MAG_FILTER, gl.NEAREST], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+const uGrid = gl.getUniformLocation(prog, 'grid'), uCpx = gl.getUniformLocation(prog, 'cpx');
+
+// 最初の絵（はじめの4つ）
+function drawIdle() {
+  out.width = 1080; out.height = 1080;
+  const G = 8, d = new Uint8Array(G * G * 4);
+  for (let i = 0; i < G * G; i++) { d[i*4] = d[i*4+1] = 0; d[i*4+2] = 255; }
+  const set = (x, y, c) => { const i = (y * G + x) * 4; d[i] = d[i+1] = c ? 255 : 0; };
+  // 全部黒にしておき、真ん中4つだけ白黒に
+  set(3,3,1); set(4,4,1); set(3,4,0); set(4,3,0);
+  render(d, G, G);
+}
+
+// ---------- 状態 ----------
+let L = null; // 現在のマスの状態
+function newLevel(Gx, Gy) {
+  const n = Gx * Gy;
+  const cell = Math.floor(Math.min((out.width - 32) / Gx, (out.height - 32) / Gy));
+  return { Gx, Gy, n, cell, cur: new Uint8Array(n), frm: new Uint8Array(n), to: new Uint8Array(n),
+           start: new Float64Array(n).fill(-1e9), tex: new Uint8Array(n * 4), first: true };
+}
+function render(texData, Gx, Gy, cell) {
+  cell = cell || Math.floor(Math.min((out.width - 32) / Gx, (out.height - 32) / Gy));
+  const bw = cell * Gx, bh = cell * Gy;
+  gl.viewport(0, 0, out.width, out.height);
+  gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.viewport(Math.floor((out.width - bw) / 2), Math.floor((out.height - bh) / 2), bw, bh);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, Gx, Gy, 0, gl.RGBA, gl.UNSIGNED_BYTE, texData);
+  gl.uniform2f(uGrid, Gx, Gy); gl.uniform1f(uCpx, cell);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+}
+drawIdle();
+
+// ---------- 音 ----------
+let actx = null, clickBuf = null;
+function makeClick() {
+  const sr = actx.sampleRate, L = Math.floor(sr * .03), b = actx.createBuffer(1, L, sr), d = b.getChannelData(0);
+  for (let i = 0; i < L; i++) { const t = i / sr; d[i] = (Math.random() - .5 + Math.sin(2 * Math.PI * 1500 * t)) * Math.exp(-t * 180) * .5; }
+  return b;
+}
+let lastClick = 0;
+function click(n, dest) {
+  if (!n || !actx) return;
+  const now = actx.currentTime;
+  if (n > 300 && now - lastClick < .06) return;
+  lastClick = now;
+  const s = actx.createBufferSource(); s.buffer = clickBuf;
+  s.playbackRate.value = n < 10 ? 1.2 : .85;
+  const g = actx.createGain(); g.gain.value = Math.min(1, .3 + .1 * Math.log1p(n));
+  s.connect(g); g.connect(dest); g.connect(actx.destination);
+  s.start();
+}
+
+// ---------- 変換 ----------
+const samp = document.createElement('canvas');
+const sctx = samp.getContext('2d', { willReadFrequently: true });
+
+function levelsFor(maxG, ramp, rampSec) {
+  if (!ramp) return [[0, maxG]];
+  const seq = [];
+  for (let g = 8; g < maxG; g *= 2) seq.push(g);
+  seq.push(maxG);
+  return seq.map((g, i) => [seq.length === 1 ? 0 : i * rampSec / (seq.length - 1), g]);
+}
+function otsu(hist, total) {
+  let sum = 0; for (let i = 0; i < 256; i++) sum += i * hist[i];
+  let sumB = 0, wB = 0, best = 0, th = 128;
+  for (let i = 0; i < 256; i++) {
+    wB += hist[i]; if (!wB) continue; const wF = total - wB; if (!wF) break;
+    sumB += i * hist[i]; const mB = sumB / wB, mF = (sum - sumB) / wF;
+    const v = wB * wF * (mB - mF) * (mB - mF); if (v > best) { best = v; th = i; }
+  }
+  return th + .5;
+}
+
+$('go').onclick = async () => {
+  if (running || !srcURL) return;
+  running = true;
+  $('stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  $('go').disabled = true; $('pickLabel').classList.add('hidden'); $('sample').disabled = true;
+  $('saveRow').hidden = true; $('result').classList.add('hidden'); out.classList.remove('hidden');
+  try { await convert(); }
+  catch (e) { $('status').textContent = 'うまく変換できませんでした：' + (e && e.message || e); console.error(e); }
+  running = false; $('go').disabled = false; $('pickLabel').classList.remove('hidden'); $('sample').disabled = false;
+};
+
+async function convert() {
+  const maxG = +$('maxG').value, ramp = $('ramp').checked, rampSec = +$('rampSec').value;
+  const thSet = +$('th').value, inv = $('inv').checked, square = $('shape').value === 'square';
+  const audioMode = $('audio').value;
+  gtag('event', 'othello_convert', { max_g: maxG, audio: audioMode });
+
+  const v = document.createElement('video');
+  v.src = srcURL; v.playsInline = true; v.preload = 'auto'; v.crossOrigin = 'anonymous';
+  v.muted = !(audioMode === 'orig' || audioMode === 'both');
+  $('status').textContent = '動画を読みこみ中…';
+
+  actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+  await actx.resume();
+  clickBuf = clickBuf || makeClick();
+  const dest = actx.createMediaStreamDestination();
+  if (!v.muted) {
+    const src = actx.createMediaElementSource(v);
+    src.connect(dest); src.connect(actx.destination);
+  }
+  await new Promise((ok, ng) => { v.onloadedmetadata = ok; v.onerror = () => ng('この動画は開けませんでした'); });
+  const VW = v.videoWidth, VH = v.videoHeight, dur = v.duration;
+  // 切り取り範囲
+  let sx = 0, sy = 0, sw = VW, sh2 = VH;
+  if (square) { const m = Math.min(VW, VH); sx = (VW - m) / 2; sy = (VH - m) / 2; sw = sh2 = m; }
+  const aspect = sh2 / sw;
+  if (aspect > 1.15) { out.width = 1080; out.height = 1920; }
+  else if (aspect < 1 / 1.15) { out.width = 1920; out.height = 1080; }
+  else { out.width = 1080; out.height = 1080; }
+  const levels = levelsFor(maxG, ramp, rampSec);
+
+  // 録画の準備
+  const stream = out.captureStream(30);
+  const useAudio = audioMode !== 'none';
+  if (useAudio) dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+  const types = ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  const mime = types.find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t));
+  if (!window.MediaRecorder) throw 'このブラウザは録画に対応していません';
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 16e6, audioBitsPerSecond: 128e3 });
+  const chunks = []; rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  const stopped = new Promise(ok => rec.onstop = ok);
+
+  let wake = null; try { wake = await navigator.wakeLock.request('screen'); } catch (e) {}
+
+  let curKey = '', th = thSet < 256 ? thSet : 128;
+  const hist = new Uint32Array(256);
+
+  function step(t) {
+    let G = levels[0][1]; for (const [s, g] of levels) if (t >= s) G = g;
+    const Gx = G, Gy = Math.max(1, Math.round(G * aspect));
+    const key = Gx + 'x' + Gy;
+    if (key !== curKey) { curKey = key; L = newLevel(Gx, Gy); }
+    // 縮小して明るさを読む
+    const k = Math.max(1, Math.min(4, Math.floor(480 / Gx)));
+    if (samp.width !== Gx * k || samp.height !== Gy * k) { samp.width = Gx * k; samp.height = Gy * k; }
+    sctx.imageSmoothingEnabled = true; sctx.imageSmoothingQuality = 'high';
+    sctx.drawImage(v, sx, sy, sw, sh2, 0, 0, samp.width, samp.height);
+    const px = sctx.getImageData(0, 0, samp.width, samp.height).data;
+    const W = samp.width, lum = new Float32Array(L.n);
+    hist.fill(0);
+    for (let y = 0; y < Gy; y++) for (let x = 0; x < Gx; x++) {
+      let s = 0;
+      for (let yy = 0; yy < k; yy++) { let o = ((y * k + yy) * W + x * k) * 4;
+        for (let xx = 0; xx < k; xx++, o += 4) s += px[o] * .299 + px[o+1] * .587 + px[o+2] * .114; }
+      const m = s / (k * k); lum[y * Gx + x] = m; hist[m | 0]++;
+    }
+    if (thSet === 256) th = th * .8 + otsu(hist, L.n) * .2;   // 自動：少しずつ合わせる
+    const F = Gx <= 8 ? .33 : Gx <= 16 ? .2 : Gx <= 32 ? .14 : .1;
+    let started = 0;
+    for (let i = 0; i < L.n; i++) {
+      let tg = lum[i] >= th ? 1 : 0; if (inv) tg = 1 - tg;
+      if (L.first) { L.cur[i] = L.frm[i] = L.to[i] = tg; continue; }
+      const p = (t - L.start[i]) / F;
+      if (p >= 1) {
+        L.cur[i] = L.to[i];
+        if (tg !== L.cur[i]) { L.frm[i] = L.cur[i]; L.to[i] = tg; L.start[i] = t; started++; }
+      }
+    }
+    L.first = false;
+    const d = L.tex;
+    for (let i = 0; i < L.n; i++) {
+      const p = Math.min(1, Math.max(0, (t - L.start[i]) / F));
+      d[i*4] = L.frm[i] * 255; d[i*4+1] = L.to[i] * 255; d[i*4+2] = p >= 1 ? 0 : Math.round(p * 254); d[i*4+3] = 255;
+      if (p >= 1) { d[i*4] = d[i*4+1] = L.to[i] * 255; }
+    }
+    render(d, Gx, Gy, L.cell);
+    if (audioMode === 'clicks' || audioMode === 'both') click(started, dest);
+    $('bar').style.width = Math.min(100, t / dur * 100) + '%';
+    $('status').textContent = `変換中… ${Math.floor(t)}秒 / ${Math.floor(dur)}秒（${Gx}×${Gy}マス）`;
+  }
+
+  // 1コマ目を描いてから録画開始
+  await new Promise(ok => { v.onseeked = ok; v.currentTime = 0.001; });
+  step(0);
+  rec.start(500);
+  await v.play();
+  await new Promise(done => {
+    const useRVFC = 'requestVideoFrameCallback' in v;
+    const loop = (now, meta) => {
+      if (v.ended) return done();
+      step(meta && meta.mediaTime != null ? meta.mediaTime : v.currentTime);
+      useRVFC ? v.requestVideoFrameCallback(loop) : requestAnimationFrame(() => loop());
+    };
+    v.onended = () => done();
+    useRVFC ? v.requestVideoFrameCallback(loop) : requestAnimationFrame(() => loop());
+  });
+  step(dur);
+  await new Promise(ok => setTimeout(ok, 300));
+  rec.stop(); await stopped;
+  if (wake) try { wake.release(); } catch (e) {}
+  v.pause();
+
+  const type = (mime || 'video/webm').split(';')[0];
+  const blob = new Blob(chunks, { type });
+  const ext = type.includes('mp4') ? 'mp4' : 'webm';
+  const url = URL.createObjectURL(blob);
+  const res = $('result'); res.src = url; res.classList.remove('hidden'); out.classList.add('hidden');
+  res.play().catch(() => {});
+  const fname = 'othello_' + Date.now() + '.' + ext;
+  $('save').href = url; $('save').download = fname;
+  $('saveRow').hidden = false;
+  const file = new File([blob], fname, { type });
+  $('share').classList.toggle('hidden', !(navigator.canShare && navigator.canShare({ files: [file] })));
+  $('share').onclick = () => navigator.share({ files: [file], title: 'オセロ変換機' }).catch(() => {});
+  $('bar').style.width = '100%';
+  $('status').textContent = `できました！（${(blob.size / 1048576).toFixed(1)}MB）「動画を保存」か「共有」で保存できます。`;
+  gtag('event', 'othello_done', { max_g: maxG, sec: Math.round(dur) });
+}
+})();
+</script>
+</body>
+</html>
