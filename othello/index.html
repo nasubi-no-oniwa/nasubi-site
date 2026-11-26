@@ -113,6 +113,7 @@ footer a{color:var(--sub)}
 </main>
 
 <script src="mp4-muxer.js"></script>
+<script src="mp4box.all.min.js"></script>
 <script>
 (() => {
 const $ = id => document.getElementById(id);
@@ -330,6 +331,96 @@ function startCapture(url) {
   };
 }
 
+// 動画ファイルの中の音（AAC）を直接取り出して、AudioDecoderで読む（iPhoneのSafari向け）
+async function extractAudio(url, onStep) {
+  if (!window.MP4Box || !window.AudioDecoder) throw new Error('no-decoder');
+  const ab = await (await fetch(url)).arrayBuffer();
+  const file = MP4Box.createFile();
+  let track = null, trak = null;
+  const samples = [];
+  const ready = new Promise((ok, ng) => {
+    file.onError = e => ng(new Error('mp4box:' + e));
+    file.onReady = info => {
+      track = info.audioTracks && info.audioTracks[0];
+      if (!track) return ng(new Error('no-audio-track'));
+      trak = file.getTrackById(track.id);
+      file.setExtractionOptions(track.id, null, { nbSamples: 1e9 });
+      file.onSamples = (id, user, s) => { for (const x of s) samples.push(x); };
+      file.start();
+      ok();
+    };
+  });
+  ab.fileStart = 0;
+  file.appendBuffer(ab);
+  file.flush();
+  await ready;
+  // AudioSpecificConfig（デコードに必要な情報）を探す
+  const findBox = (b, type, depth = 0) => {
+    if (!b || depth > 6) return null;
+    if (b.type === type) return b;
+    for (const k of ['boxes', 'entries']) if (b[k]) for (const c of b[k]) { const r = findBox(c, type, depth + 1); if (r) return r; }
+    for (const k of ['esds', 'wave']) if (b[k]) { const r = findBox(b[k], type, depth + 1); if (r) return r; }
+    return null;
+  };
+  const entry = trak.mdia.minf.stbl.stsd.entries[0];
+  let desc;
+  const esds = entry.esds || findBox(entry, 'esds');
+  try { desc = esds.esd.descs[0].descs[0].data; } catch (e) { desc = undefined; }
+  const sr = track.audio.sample_rate, ch = track.audio.channel_count;
+  // .mov は「mp4a」だけのことがあるので、中身から mp4a.40.2 などの名前を作る
+  let codec = track.codec || '';
+  if (!/^mp4a\.[0-9a-fA-F]+\.\d+$/.test(codec) && !/^(opus|mp3|flac)/.test(codec)) {
+    const aot = desc && desc.length ? (desc[0] >> 3) : 2;
+    codec = 'mp4a.40.' + (aot || 2);
+  }
+  const cfg = { codec, sampleRate: sr, numberOfChannels: ch };
+  if (desc) cfg.description = desc;
+  const sup = await AudioDecoder.isConfigSupported(cfg);
+  if (!sup.supported) throw new Error('unsupported-codec ' + cfg.codec);
+  const outs = [];
+  let err = null;
+  const dec = new AudioDecoder({
+    output: d => {
+      const n = d.numberOfFrames, c = d.numberOfChannels, planes = [];
+      for (let k = 0; k < Math.min(2, c); k++) {
+        const p = new Float32Array(n);
+        try { d.copyTo(p, { planeIndex: k, format: 'f32-planar' }); }
+        catch (e) { // 交互並びしか出せない場合
+          const all = new Float32Array(n * c); d.copyTo(all, { planeIndex: 0, format: 'f32' });
+          for (let j = 0; j < n; j++) p[j] = all[j * c + k];
+        }
+        planes.push(p);
+      }
+      outs.push({ t: d.timestamp / 1e6, sr: d.sampleRate, planes });
+      d.close();
+    },
+    error: e => err = e,
+  });
+  dec.configure(cfg);
+  for (let i = 0; i < samples.length; i++) {
+    const s = samples[i];
+    dec.decode(new EncodedAudioChunk({ type: 'key', timestamp: Math.round(s.cts / s.timescale * 1e6), duration: Math.round(s.duration / s.timescale * 1e6), data: s.data }));
+    if (dec.decodeQueueSize > 50) await new Promise(r => setTimeout(r, 1));
+    if (onStep && i % 200 === 0) onStep(i / samples.length);
+  }
+  await dec.flush(); dec.close();
+  if (err) throw err;
+  if (!outs.length) throw new Error('no-output');
+  const osr = outs[0].sr;
+  const t0a = outs[0].t;
+  const last = outs[outs.length - 1];
+  const len = Math.round((last.t - Math.min(0, t0a)) * osr) + last.planes[0].length + 1;
+  const buf = new AudioBuffer({ length: Math.max(1, len), numberOfChannels: 2, sampleRate: osr });
+  for (const o of outs) {
+    const at = Math.max(0, Math.round(o.t * osr));
+    if (at >= len) continue;
+    const L = o.planes[0], R = o.planes[1] || o.planes[0];
+    const n = Math.min(L.length, len - at);
+    buf.copyToChannel(L.subarray(0, n), 0, at); buf.copyToChannel(R.subarray(0, n), 1, at);
+  }
+  return buf;
+}
+
 async function convert() {
   if (!window.VideoEncoder || !window.VideoFrame || !window.Mp4Muxer) throw 'このブラウザは対応していません。iPhoneはiOSを新しくするか、PCのChromeで開いてください';
   const maxG = +$('maxG').value, ramp = $('ramp').checked, rampSec = +$('rampSec').value;
@@ -460,13 +551,19 @@ async function convert() {
         const ab = await (await fetch(srcURL)).arrayBuffer();
         buf = await oc.decodeAudioData(ab);
       } catch (e) { buf = null; }
+      let why = '';
+      if (!buf) {   // 次に、ファイルの中の音のデータを直接取り出す（iPhoneのSafari）
+        try { buf = await extractAudio(srcURL, p => $('status').textContent = `元の動画の音を取り出しています… ${Math.floor(p * 100)}%`); }
+        catch (e) { buf = null; why = String(e && e.message || e); console.warn('extractAudio', e); }
+        if (buf && capture) capture.stop();
+      }
       if (!buf && capture) {   // 読めなければ、裏で録っていた音を使う
         const iv = setInterval(() => { $('status').textContent = `元の動画の音を録っています… ${Math.floor(capture.progress * 100)}%`; }, 300);
         try { buf = await Promise.race([capture.result(), sleep(Math.max(15000, (dur + 30) * 1000)).then(() => null)]); } catch (e) { buf = null; }
         clearInterval(iv);
       }
       if (buf) { const s = oc.createBufferSource(); s.buffer = buf; s.connect(oc.destination); s.start(0); }
-      else audioNote = '（元の動画の音は読めなかったので入っていません）';
+      else audioNote = '（元の動画の音は読めなかったので入っていません' + (why ? '：' + why : '') + '）';
     }
     if (audioMode === 'clicks' || audioMode === 'both') {
       const cl = Math.floor(SR * .03), cb = oc.createBuffer(1, cl, SR), cd = cb.getChannelData(0);
