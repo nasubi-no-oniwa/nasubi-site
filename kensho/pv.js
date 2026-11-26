@@ -37,7 +37,7 @@ export function run(K) {
       const d = seg(t, 8.1, 8.6), w = 820, cy = 950 - (1 - eb(d)) * 1400, shake = t > 9.6 && t < 10 ? Math.sin(t * 90) * 14 * (10 - t) : 0; poster(t > 9.65 ? B.b : B.a, W / 2 + shake, cy, w, 0, d > 0 ? 1 : 0);
       if (t > 8.6 && t < 9.65) rollOn(B.R, W / 2, cy, w, eo(seg(t, 8.6, 9.4)), true); if (t >= 9.4 && t < 9.65) stampAt(W / 2, cy, w, seg(t, 9.4, 9.65)); confetti(9.65, t); }
     // 4：一味の手配書（11.2〜15秒）
-    else if (t < 15) { cap('仲間の名前も入れて', 170, 80, seg(t, 11.3, 11.7)); cap('一味の名前をつけて並べる（5人まで）', 280, 60, seg(t, 11.5, 11.9), '#ffe08a');
+    else if (t < 15) { cap('仲間の名前も入れて', 170, 80, seg(t, 11.3, 11.7)); cap('一味の名前をつけて並べる（5人まで）', 280, 52, seg(t, 11.5, 11.9), '#ffe08a');
       const w = 330, pos = [[200, 640], [540, 620], [880, 640], [370, 1100], [710, 1100]]; TEAM.forEach((p, i) => { const d = seg(t, 11.7 + i * .45, 12.05 + i * .45); if (d <= 0) return; poster(p.b, pos[i][0], pos[i][1] - (1 - eb(d)) * 300, w * (0.6 + 0.4 * eb(d)), (i % 2 ? .04 : -.04), cl(d * 2)); });
       const v = Math.round(total * eo(seg(t, 13.4, 14.4)) / 1e5) * 1e5; if (t > 13.3) { cap('なすびの一味', 1400, 64, seg(t, 13.1, 13.4), '#efe0b6'); cap('懸賞金 総額', 1480, 52, seg(t, 13.3, 13.6)); cap(K.digits(v) + '🍆', 1570, 92, seg(t, 13.3, 13.6), '#ffe08a'); } }
     // 5：4言語（15〜17.4秒）
