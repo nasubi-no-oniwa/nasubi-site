@@ -1,6 +1,6 @@
 // 「色変わりの刀」の握る場面をそのまま移したもの（刀の3D・長押しで色づく・赫刀・伝令の烏）。katana/game.js から機械的に切り出している
-import { THREE, RoomEnvironment } from './lib.js?v=11260900';
-import { COLORS, ORDER, CHARS } from './data.js?v=11260900';
+import { THREE, RoomEnvironment } from './lib.js?v=11261250';
+import { COLORS, ORDER, CHARS } from './data.js?v=11261250';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);

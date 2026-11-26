@@ -1,9 +1,9 @@
-import { THREE } from './lib.js?v=11260900';
-import { COLORS, CHARS, ORDER } from './data.js?v=11260900';
-import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11260900';
-import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, fxAdd, ramp } from './grip.js?v=11260900';
-import { makeFx, STY } from './fx.js?v=11260900';
-import { makeRig, toon, part, OUT } from './rig.js?v=11260900';
+import { THREE } from './lib.js?v=11261250';
+import { COLORS, CHARS, ORDER } from './data.js?v=11261250';
+import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11261250';
+import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, fxAdd, ramp } from './grip.js?v=11261250';
+import { makeFx, STY } from './fx.js?v=11261250';
+import { makeRig, toon, part, OUT } from './rig.js?v=11261250';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -223,9 +223,9 @@ function spawnRow(z) {
 }
 // 鬼を斬る：頸が飛び、体は灰になる
 function kill(e, free, quiet) {
-  if (e.dead) return; e.dead = .001; e.vx = rnd(-1, 1) * 4 + (e.m.position.x - G.x) * 2; e.vy = rnd(6, 10); G.kills++; G.gauge = Math.min(100, G.gauge + (free ? 2.5 : 7));
+  if (e.dead) return; e.dead = .001; e.vx = rnd(-1, 1) * 4 + (e.m.position.x - G.x) * 2; e.vy = rnd(6, 10); G.kills++; if (!free) G.gauge = Math.min(100, G.gauge + 7); // 技で倒した鬼ではゲージはたまらない
   const K = KEY(), x = e.m.position.x; FX.arcVert(K, x, e.z + .3, 2.8, .26, { rz: rnd(-1.4, 1.4), world: 1, y: 1.4 }); FX.glow('#ffffff', x, 1.4, e.z, 2.6, .12, { world: 1 }); FX.burst(K, x, 1.3, e.z, free ? 3 : 6, { sp: 6 }); FX.burst('ash', x, .8, e.z, 5, { sp: 3, g: -3, life: 1.3 });
-  if (e.hard) { const u = e.m.userData; u.au.visible = u.au2.visible = false; G.shake = Math.max(G.shake, .45); FX.ring('#c030ff', x, e.z, 1.2, .5, { grow: 6, world: 1 }); FX.burst('ash', x, 1.2, e.z, 14, { sp: 7, g: -2, life: 1.4 }); FX.glow('#c030ff', x, 1.3, e.z, 5, .25, { world: 1 }); if (!free) sfx('clang'); G.gauge = Math.min(100, G.gauge + 8); }
+  if (e.hard) { const u = e.m.userData; u.au.visible = u.au2.visible = false; G.shake = Math.max(G.shake, .45); FX.ring('#c030ff', x, e.z, 1.2, .5, { grow: 6, world: 1 }); FX.burst('ash', x, 1.2, e.z, 14, { sp: 7, g: -2, life: 1.4 }); FX.glow('#c030ff', x, 1.3, e.z, 5, .25, { world: 1 }); if (!free) { sfx('clang'); G.gauge = Math.min(100, G.gauge + 8); } }
   if (!quiet) sfx('cut', free ? .5 : 1); if (!free) reqSnap(1, .06);
 }
 function smash(e) { if (e.dead) return; e.dead = .001; e.vx = rnd(-5, 5); e.vy = 6; FX.glow('#ffd9a0', e.m.position.x, .8, e.z, 3, .2, { world: 1 }); FX.burst('gray', e.m.position.x, .7, e.z, 8, { sp: 8 }); sfx('thud'); }
