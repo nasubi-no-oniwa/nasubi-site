@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11271810';
+import { EXTRA } from './i18n.js?v=11271835';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -29,6 +29,19 @@ export const OT_STY = {
   x_oden: { kind: 'moon', c: '#7a2bd6', c2: '#ffd6ff', shape: 'crescent', fl: 'f_cross' },
   x_shuku: { kind: 'wind', c: '#e8f4ff', c2: '#ffffff', shape: 'streak', fl: 'f_fang' },
   x_kodachi: { kind: 'snake', c: '#5b6cf0', c2: '#dfe4ff', shape: 'streak', fl: 'f_cross' },
+  x_tessaiga: { kind: 'wind', c: '#ffd34a', c2: '#fffbe0', shape: 'streak', fl: 'f_quake' },
+  x_meido: { kind: 'moon', c: '#1a1030', c2: '#b48cff', shape: 'crescent', fl: 'f_crescent' },
+  x_bakusai: { kind: 'boom', c: '#57e08a', c2: '#f0fff4', shape: 'spark', fl: 'f_quake' },
+  x_soryu: { kind: 'bolt', c: '#3a8cff', c2: '#e6f2ff', shape: 'spark', fl: 'f_fang' },
+  x_chidori: { kind: 'bolt', c: '#7fb8ff', c2: '#ffffff', shape: 'spark', fl: 'k_kbolt' },
+  x_susanoo: { kind: 'moon', c: '#7a3cff', c2: '#e8d8ff', shape: 'crescent', fl: 'f_pillar' },
+  x_sao: { kind: 'bolt', c: '#3fe0ff', c2: '#ffffff', shape: 'spark', fl: 'f_cross' },
+  x_rapier: { kind: 'bolt', c: '#ffd6ea', c2: '#ffffff', shape: 'spark', fl: 'f_fang' },
+  x_strash: { kind: 'bolt', c: '#4aa8ff', c2: '#fff7c0', shape: 'spark', fl: 'f_crescent' },
+  x_yami: { kind: 'moon', c: '#3a1a5c', c2: '#c9a0ff', shape: 'crescent', fl: 'f_crescent' },
+  x_kaze: { kind: 'wind', c: '#9fd8ff', c2: '#ffffff', shape: 'streak', fl: 'f_cross' },
+  x_excalibur: { kind: 'sun', c: '#ffd24a', c2: '#fffbe0', shape: 'spark', fl: 'f_pillar' },
+  x_shigure: { kind: 'wave', c: '#3f9cff', c2: '#d8f0ff', shape: 'drop', fl: 'f_fang' },
 };
 
 // 作品
@@ -36,13 +49,21 @@ export const WORKS = {
   bleach: ['BLEACH', 'BLEACH', 'BLEACH 死神', '블리치'],
   onepiece: ['ONE PIECE', 'ONE PIECE', 'ONE PIECE 航海王', '원피스'],
   kenshin: ['るろうに剣心', 'Rurouni Kenshin', '神劍闖江湖', '바람의 검심'],
+  inuyasha: ['犬夜叉', 'Inuyasha', '犬夜叉', '이누야샤'],
+  naruto: ['NARUTO -ナルト-', 'Naruto', '火影忍者', '나루토'],
+  sao: ['ソードアート・オンライン', 'Sword Art Online', '刀劍神域', '소드 아트 온라인'],
+  dai: ['ダイの大冒険', 'Dragon Quest: The Adventure of Dai', '勇者鬥惡龍 達伊的大冒險', '드래곤 퀘스트 다이의 대모험'],
+  bclover: ['ブラッククローバー', 'Black Clover', '黑色五葉草', '블랙 클로버'],
+  fate: ['Fate', 'Fate', 'Fate', '페이트'],
+  reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
 
 // 技1つ：t(見出し×4, 技名×4, 説明×4, 効果)
 const t = (lb, nm, ds, p) => [lb[0], nm[0], ds[0], p, { en: [nm[1], ds[1], lb[1]], zh: [nm[2], ds[2], lb[2]], ko: [nm[3], ds[3], lb[3]] }];
-// 剣士1人：c(漢字のフルネーム, よみ, [英語, 中国語, 韓国語], 作品, 色, 才能, 流派×4, 技, ほかの書き方)
-const c = (name, yomi, nm, w, k, den, sch, wz, alt) => ({ n: [name, yomi].concat(alt || []), nm: [name].concat(nm), w, k, den, sch, wz });
+// 剣士1人：c(漢字のフルネーム, よみ, [英語, 中国語, 韓国語], 作品, 色, 才能, 流派×4, 技, ほかの書き方, その書き方だけの名前)
+// x＝その書き方のときだけ反応する名前（名字のない短い名前。「だい」「あすな」のような、ふつうの人の名前とぶつからないように、ひらがなでは反応させない）
+const c = (name, yomi, nm, w, k, den, sch, wz, alt, x) => ({ n: (yomi ? [name, yomi] : []).concat(alt || []), n0: name, nm: [name].concat(nm), w, k, den, sch, wz, x: x || null });
 
 // よく使う見出し
 const SHIKAI = ['始解', 'Shikai', '始解', '시해'], BANKAI = ['卍解', 'Bankai', '卍解', '만해'], OUGI = ['奥義', 'Secret Technique', '奧義', '오의'];
@@ -193,23 +214,96 @@ export const OTHERS = [
     t(['小太刀二刀流', 'Twin Kodachi Style', '小太刀二刀流', '소태도 이도류'], ['回天剣舞', 'Kaiten Kenbu', '迴天劍舞', '회천검무'], ['流水の動きから、回りながらの三連撃', 'From the flowing movement, three spinning strikes in a row', '由流水之動接旋轉的三連擊', '유수의 움직임에서 돌면서 3연격'], { k: 'multi', N: 3, R: 20, v: 'arcs', sty: 'x_kodachi' }),
     t(['小太刀二刀流', 'Twin Kodachi Style', '小太刀二刀流', '소태도 이도류'], ['回天剣舞・六連', 'Kaiten Kenbu Rokuren', '迴天劍舞・六連', '회천검무·육련'], ['二刀で左右から打ちこむ、六連撃', 'Six consecutive strikes driven in from both sides with two blades', '以雙刀從左右打入的六連擊', '두 칼로 좌우에서 꽂는 6연격'], { k: 'multi', N: 12, R: 34, v: 'arcs', sty: 'x_kodachi' }),
   ]),
+  // ---------- 3回目：犬夜叉・NARUTO・SAO・ダイの大冒険・ブラッククローバー・Fate・REBORN ----------
+  c('犬夜叉', 'いぬやしゃ', ['Inuyasha', '犬夜叉', '이누야샤'], 'inuyasha', 'red', 96, ['鉄砕牙', 'Tessaiga', '鐵碎牙', '철쇄아'], [
+    t(['鉄砕牙', 'Tessaiga', '鐵碎牙', '철쇄아'], ['風の傷', 'Wind Scar', '風之傷', '바람의 상처'], ['妖気がぶつかる裂け目を斬り、ひと振りで百の妖怪をなぎ払う', 'Cuts the rift where demonic auras clash and mows down a hundred demons in one swing', '斬開妖氣相撞的裂縫，一揮掃倒百隻妖怪', '요기가 부딪치는 틈을 베어 한 번 휘둘러 백 마리 요괴를 쓸어 버린다'], { k: 'inst', L: 2, R: 40, v: 'arcH', sty: 'x_tessaiga' }),
+    t(['鉄砕牙', 'Tessaiga', '鐵碎牙', '철쇄아'], ['爆流破', 'Backlash Wave', '爆流破', '폭류파'], ['相手の妖気を巻きこみ、竜巻にして押し返す', 'Catches the foe\'s demonic energy and hurls it back as a tornado', '捲入對手的妖氣，化為龍捲反擊回去', '상대의 요기를 휘감아 회오리로 만들어 되돌려 보낸다'], { k: 'inst', L: 9, R: 50, O: 1, v: 'storm', sty: 'x_tessaiga' }),
+    t(['鉄砕牙', 'Tessaiga', '鐵碎牙', '철쇄아'], ['金剛槍破', 'Adamant Barrage', '金剛槍破', '금강창파'], ['金剛石の槍を数えきれないほど撃ち出す', 'Fires countless spears of diamond', '射出數不清的金剛石之槍', '금강석의 창을 셀 수 없이 쏘아 낸다'], { k: 'rain', D: 4, R: 40, O: 1, v: 'rainfall', sty: 'x_tessaiga' }),
+    t(['竜鱗の鉄砕牙', 'Dragon-Scaled Tessaiga', '龍鱗鐵碎牙', '용린의 철쇄아'], ['妖力吸収', 'Demonic Power Absorption', '吸收妖力', '요력 흡수'], ['斬った相手の妖力を吸いとって自分のものにする', 'Absorbs the demonic power of whoever it cuts', '吸取被斬對手的妖力化為己用', '벤 상대의 요력을 빨아들여 제 것으로 삼는다'], { k: 'inst', L: 1, R: 20, H: 40, v: 'arcH', sty: 'x_tessaiga' }),
+    t(['黒い鉄砕牙', 'Black Tessaiga', '黑色鐵碎牙', '검은 철쇄아'], ['冥道残月破', 'Meido Zangetsuha', '冥道殘月破', '명도잔월파'], ['冥界への道を刃の形に開き、相手を送りこむ', 'Opens paths to the underworld shaped like blades and sends the foe through', '以刀刃之形開啟通往冥界之路，將對手送入其中', '명계로 가는 길을 칼날 모양으로 열어 상대를 보내 버린다'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', sty: 'x_meido' }),
+  ]),
+  c('殺生丸', 'せっしょうまる', ['Sesshomaru', '殺生丸', '셋쇼마루'], 'inuyasha', 'white', 99, ['爆砕牙', 'Bakusaiga', '爆碎牙', '폭쇄아'], [
+    t(['妖術', 'Demon Art', '妖術', '요술'], ['光の鞭', 'Whip of Light', '光之鞭', '빛의 채찍'], ['指先から光の鞭を伸ばして薙ぐ', 'Extends a whip of light from the fingertips and sweeps', '從指尖伸出光之鞭橫掃', '손끝에서 빛의 채찍을 뻗어 휩쓴다'], { k: 'multi', N: 6, R: 24, v: 'arcs', sty: 'x_bakusai' }),
+    t(['闘鬼神', 'Tokijin', '鬥鬼神', '투귀신'], ['蒼龍破', 'Dragon Strike', '蒼龍破', '창룡파'], ['青い龍の形をした雷を放つ', 'Fires lightning in the shape of a blue dragon', '放出青龍形狀的雷', '푸른 용 모양의 번개를 쏜다'], { k: 'inst', L: 1, R: 50, O: 1, v: 'thrust', sty: 'x_soryu' }),
+    t(['天生牙', 'Tenseiga', '天生牙', '천생아'], ['冥道残月破', 'Meido Zangetsuha', '冥道殘月破', '명도잔월파'], ['完全な円の冥道を開き、相手をまるごと冥界へ送る', 'Opens a perfect circle to the underworld and sends the foe through whole', '開啟完整圓形的冥道，將對手整個送往冥界', '완전한 원의 명도를 열어 상대를 통째로 명계로 보낸다'], { k: 'inst', L: 9, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_meido' }),
+    t(['爆砕牙', 'Bakusaiga', '爆碎牙', '폭쇄아'], ['爆砕牙', 'Bakusaiga', '爆碎牙', '폭쇄아'], ['斬ったものを壊しつづけ、二度と再生させない', 'Keeps destroying whatever it cuts so it can never regenerate', '持續破壞被斬之物，使其再也無法再生', '벤 것을 계속 부수어 다시는 재생하지 못하게 한다'], { k: 'inst', L: 2, R: 38, O: 1, v: 'storm', sty: 'x_bakusai' }),
+  ]),
+  c('うちはサスケ', 'うちはさすけ', ['Sasuke Uchiha', '宇智波佐助', '우치하 사스케'], 'naruto', 'purple', 99, ['草薙の剣', 'Sword of Kusanagi', '草薙劍', '쿠사나기의 검'], [
+    t(['雷遁', 'Lightning Release', '雷遁', '뇌둔'], ['千鳥流し', 'Chidori Stream', '千鳥流', '치도리 흘리기'], ['全身から雷を放ち、まわりをしびれさせる', 'Releases lightning from the whole body and paralyzes everything around', '從全身放出雷電，麻痺四周', '온몸에서 번개를 뿜어 주위를 마비시킨다'], { k: 'aura', L: 1, R: 7, D: 3, v: 'spin', sty: 'x_chidori' }),
+    t(['雷遁', 'Lightning Release', '雷遁', '뇌둔'], ['千鳥刀', 'Chidori Katana', '千鳥刀', '치도리 검'], ['刀に千鳥を流し、防げない刃にする', 'Channels Chidori through the sword, making a blade that cannot be blocked', '將千鳥注入刀中，化為無法防禦的刀刃', '칼에 치도리를 흘려 막을 수 없는 칼날로 만든다'], { k: 'inst', L: 1, R: 18, O: 1, v: 'arcH', sty: 'x_chidori' }),
+    t(['雷遁', 'Lightning Release', '雷遁', '뇌둔'], ['千鳥鋭槍', 'Chidori Sharp Spear', '千鳥銳槍', '치도리 예창'], ['雷を槍の形に伸ばして遠くまで貫く', 'Extends lightning into a spear that pierces far ahead', '將雷電伸長成槍形貫穿遠處', '번개를 창 모양으로 뻗어 멀리까지 꿰뚫는다'], { k: 'inst', L: 0, R: 50, v: 'thrust', sty: 'x_chidori' }),
+    t(['万華鏡写輪眼', 'Mangekyo Sharingan', '萬花筒寫輪眼', '만화경 사륜안'], ['炎遁・加具土命', 'Blaze Release: Kagutsuchi', '炎遁・加具土命', '염둔·카구츠치'], ['消えない黒い炎を剣の形にしてあやつる', 'Shapes the unquenchable black flames into a sword and wields it', '將不滅的黑炎化為劍形加以操縱', '꺼지지 않는 검은 불꽃을 검 모양으로 만들어 다룬다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_kuro' }),
+    t(['万華鏡写輪眼', 'Mangekyo Sharingan', '萬花筒寫輪眼', '만화경 사륜안'], ['須佐能乎', 'Susanoo', '須佐能乎', '스사노오'], ['紫の巨人をまとい、その太刀で前をなぎ払う', 'Cloaked in a purple giant, sweeps everything ahead with its great sword', '身披紫色巨人，以其太刀橫掃前方', '보랏빛 거인을 두르고 그 태도로 앞을 휩쓴다'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', sty: 'x_susanoo' }),
+  ]),
+  c('キリト', '', ['Kirito', '桐人', '키리토'], 'sao', 'black', 99, ['二刀流', 'Dual Blades', '二刀流', '이도류'], [
+    t(['片手剣', 'One-Handed Sword', '單手劍', '한손검'], ['ソニックリープ', 'Sonic Leap', '音速衝擊', '소닉 리프'], ['ひと息に間合いをつめる突進の一撃', 'A charging blow that closes the distance in one breath', '一口氣拉近距離的突進一擊', '단숨에 거리를 좁히는 돌진의 일격'], { k: 'inst', L: 0, R: 26, I: .5, v: 'dash', a: 'iai', sty: 'x_sao' }),
+    t(['片手剣', 'One-Handed Sword', '單手劍', '한손검'], ['ホリゾンタル・スクエア', 'Horizontal Square', '水平方陣斬', '호리존탈 스퀘어'], ['水平の四連撃で四角を描く', 'Four horizontal slashes that trace a square', '以水平四連擊畫出方形', '수평 4연격으로 사각형을 그린다'], { k: 'inst', L: 2, R: 14, v: 'arcH', sty: 'x_sao' }),
+    t(['片手剣', 'One-Handed Sword', '單手劍', '한손검'], ['バーチカル・スクエア', 'Vertical Square', '垂直方陣斬', '버티컬 스퀘어'], ['垂直の四連撃', 'Four vertical slashes in a row', '垂直四連擊', '수직 4연격'], { k: 'multi', N: 4, R: 20, v: 'arcs', sty: 'x_sao' }),
+    t(['片手剣', 'One-Handed Sword', '單手劍', '한손검'], ['ヴォーパル・ストライク', 'Vorpal Strike', '奪命擊', '보팔 스트라이크'], ['刀身の倍の長さまで届く、重い突き', 'A heavy thrust that reaches twice the length of the blade', '攻擊距離達刀身兩倍的重突刺', '칼날의 두 배 길이까지 닿는 묵직한 찌르기'], { k: 'inst', L: 0, R: 50, O: 1, v: 'thrust', sty: 'x_sao' }),
+    t(['二刀流', 'Dual Blades', '二刀流', '이도류'], ['スターバースト・ストリーム', 'Starburst Stream', '星爆氣流斬', '스타버스트 스트림'], ['二刀で打ちこむ十六連撃', 'Sixteen consecutive strikes with two swords', '以雙刀打出的十六連擊', '두 칼로 꽂는 16연격'], { k: 'multi', N: 16, R: 34, v: 'arcs', sty: 'x_sao' }),
+    t(['二刀流', 'Dual Blades', '二刀流', '이도류'], ['ジ・イクリプス', 'The Eclipse', '日蝕', '디 이클립스'], ['二刀の二十七連撃。太陽のコロナのように全方位を斬る', 'Twenty-seven strikes with two swords, cutting in every direction like a solar corona', '雙刀二十七連擊。如日冕般斬向全方位', '두 칼의 27연격. 태양의 코로나처럼 모든 방향을 벤다'], { k: 'aura', L: 9, R: 10, D: 5, O: 1, v: 'spin', sty: 'x_sao' }),
+  ], ['桐ヶ谷和人', 'きりがやかずと', '桐ケ谷和人', 'Kazuto Kirigaya'], ['キリト']),
+  c('アスナ', '', ['Asuna', '亞絲娜', '아스나'], 'sao', 'white', 97, ['細剣', 'Rapier', '細劍', '세검'], [
+    t(['細剣', 'Rapier', '細劍', '세검'], ['リニアー', 'Linear', '線性攻擊', '리니어'], ['基本のひと突き。速すぎて光の線にしか見えない', 'A basic single thrust, so fast it looks like a line of light', '基本的一刺。快到只能看見一道光線', '기본 찌르기. 너무 빨라 빛의 선으로만 보인다'], { k: 'inst', L: 0, R: 34, I: .4, v: 'thrust', sty: 'x_rapier' }),
+    t(['細剣', 'Rapier', '細劍', '세검'], ['スター・スプラッシュ', 'Star Splash', '星屑飛濺', '스타 스플래시'], ['八連続の突き', 'Eight consecutive thrusts', '八連突刺', '8연속 찌르기'], { k: 'multi', N: 8, R: 24, v: 'arcs', sty: 'x_rapier' }),
+    t(['細剣', 'Rapier', '細劍', '세검'], ['フラッシング・ペネトレイター', 'Flashing Penetrator', '閃光穿刺', '플래싱 페네트레이터'], ['光の尾を引いて突進し、まとめて貫く', 'Charges trailing light and pierces everything in the way', '拖著光尾突進，一併貫穿', '빛의 꼬리를 끌며 돌진해 한꺼번에 꿰뚫는다'], { k: 'inst', L: 1, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_rapier' }),
+    t(['オリジナル・ソードスキル', 'Original Sword Skill', '原創劍技', '오리지널 소드 스킬'], ['マザーズ・ロザリオ', "Mother's Rosario", '聖母聖詠', '마더즈 로자리오'], ['十字を描く十連突きと、とどめの一突き。ユウキから受けついだ十一連撃', 'Ten thrusts tracing a cross and one finishing thrust: the eleven-hit combo inherited from Yuuki', '畫出十字的十連刺加上最後一刺。從有紀手中繼承的十一連擊', '십자를 그리는 10연속 찌르기와 마지막 일격. 유우키에게 물려받은 11연격'], { k: 'multi', N: 11, R: 36, v: 'arcs', sty: 'x_rapier' }),
+  ], ['結城明日奈', 'ゆうきあすな', 'Asuna Yuuki'], ['アスナ']),
+  c('ダイ', '', ['Dai', '達伊', '다이'], 'dai', 'blue', 100, ['アバン流刀殺法', 'Avan-Style Sword Technique', '阿邦流刀殺法', '아방류 도살법'], [
+    t(['アバン流刀殺法', 'Avan-Style', '阿邦流刀殺法', '아방류 도살법'], ['大地斬', 'Earth Slash', '大地斬', '대지참'], ['力で、岩も鉄も断ち割る', 'Splits rock and iron with sheer strength', '以力量斬斷岩石與鋼鐵', '힘으로 바위도 쇠도 가른다'], { k: 'inst', L: 0, R: 14, O: 1, v: 'arcDown', sty: 'x_strash' }),
+    t(['アバン流刀殺法', 'Avan-Style', '阿邦流刀殺法', '아방류 도살법'], ['海波斬', 'Wave Slash', '海波斬', '해파참'], ['速さで、炎も水も斬り裂く', 'Cuts through fire and water with sheer speed', '以速度斬開火焰與水', '속도로 불꽃도 물도 베어 가른다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_strash' }),
+    t(['アバン流刀殺法', 'Avan-Style', '阿邦流刀殺法', '아방류 도살법'], ['空裂斬', 'Air Slash', '空裂斬', '공렬참'], ['目に見えない邪悪を、光の闘気で斬る', 'Cuts unseen evil with an aura of light', '以光之鬥氣斬斷肉眼看不見的邪惡', '눈에 보이지 않는 사악함을 빛의 투기로 벤다'], { k: 'inst', L: 0, R: 45, v: 'thrust', sty: 'x_strash' }),
+    t(['必殺技', 'Finishing Move', '必殺技', '필살기'], ['アバンストラッシュ', 'Avan Strash', '阿邦斯特拉修', '아방 스트랏슈'], ['三つの技を一つにした、必殺の一撃', 'The finishing blow that combines the three techniques into one', '將三招合而為一的必殺一擊', '세 가지 기술을 하나로 합친 필살의 일격'], { k: 'inst', L: 1, R: 50, O: 1, I: .6, v: 'thrust', sty: 'x_strash' }),
+    t(['魔法剣', 'Magic Sword', '魔法劍', '마법검'], ['ライデインストラッシュ', 'Lightning Strash', '雷電斯特拉修', '라이데인 스트랏슈'], ['雷の呪文を剣に宿して放つ', 'Fires the Strash with a lightning spell held in the blade', '將雷電咒文寄宿於劍中放出', '번개의 주문을 검에 깃들여 쏜다'], { k: 'inst', L: 2, R: 50, O: 1, v: 'claws', sty: 'x_strash' }),
+    t(['魔法剣', 'Magic Sword', '魔法劍', '마법검'], ['ギガストラッシュ', 'Giga Strash', '終極斯特拉修', '기가 스트랏슈'], ['最強の雷を宿した、勇者の最大の一撃', "The hero's greatest blow, carrying the mightiest lightning", '寄宿最強雷電的勇者最大一擊', '최강의 번개를 깃들인 용사의 최대 일격'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_strash' }),
+  ], [], ['ダイ']),
+  c('アスタ', '', ['Asta', '亞斯塔', '아스타'], 'bclover', 'black', 97, ['反魔法の剣', 'Anti-Magic Swords', '反魔法之劍', '반마법의 검'], [
+    t(['断魔の剣', 'Demon-Slayer Sword', '斷魔之劍', '단마의 검'], ['ブル・スラスト', 'Bull Thrust', '蠻牛突刺', '불 스러스트'], ['剣に引っぱられるように突進して貫く', 'Charges as if pulled by the sword and pierces through', '如同被劍拉著一般突進貫穿', '검에 이끌리듯 돌진해 꿰뚫는다'], { k: 'inst', L: 0, R: 45, I: .6, v: 'thrust', sty: 'x_kuro' }),
+    t(['断魔の剣', 'Demon-Slayer Sword', '斷魔之劍', '단마의 검'], ['ブラック・ハリケーン', 'Black Hurricane', '黑色颶風', '블랙 허리케인'], ['回転しながら、まわりの魔法ごと斬る', 'Spins and cuts down everything around, magic included', '一邊旋轉一邊連同周圍的魔法一起斬斷', '회전하며 주위의 마법째 벤다'], { k: 'aura', L: 1, R: 7, D: 3.5, v: 'spin', sty: 'x_kuro' }),
+    t(['ブラックアスタ', 'Black Asta', '黑色亞斯塔', '블랙 아스타'], ['ブラック・メテオライト', 'Black Meteorite', '黑色隕石', '블랙 메테오라이트'], ['黒い流星になって突っこむ', 'Becomes a black meteor and crashes in', '化為黑色流星衝入', '검은 유성이 되어 돌진한다'], { k: 'inst', L: 1, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_kuro' }),
+    t(['宿魔の剣', 'Demon-Dweller Sword', '宿魔之劍', '숙마의 검'], ['ブラック・ディバイダー', 'Black Divider', '黑色分割者', '블랙 디바이더'], ['反魔法をのばした巨大な刃で両断する', 'Cleaves with a gigantic blade of extended anti-magic', '以延伸反魔法形成的巨大刀刃一刀兩斷', '반마법을 뻗은 거대한 칼날로 양단한다'], { k: 'inst', L: 9, R: 50, O: 1, v: 'storm', sty: 'x_kuro' }),
+    t(['滅魔の剣', 'Demon-Destroyer Sword', '滅魔之劍', '멸마의 검'], ['因果崩し', 'Causality Break', '因果破除', '인과 깨기'], ['かけられた魔法の効果そのものを打ち消す', 'Cancels the very effects of magic cast upon it', '將被施加的魔法效果本身消除', '걸린 마법의 효과 자체를 지운다'], { k: 'aura', L: 2, R: 9, D: 5, G: 1, v: 'calm', sty: 'x_kuro' }),
+  ], [], ['アスタ']),
+  c('ヤミ・スケヒロ', 'やみすけひろ', ['Yami Sukehiro', '夜見介大', '야미 스케히로'], 'bclover', 'purple', 99, ['闇魔法', 'Dark Magic', '闇魔法', '암흑 마법'], [
+    t(['闇魔法', 'Dark Magic', '闇魔法', '암흑 마법'], ['闇纏・無明斬り', 'Dark Cloaked Lightless Slash', '闇纏・無明斬', '어둠 두르기·무명참'], ['闇をまとった刀から、斬撃を飛ばす', 'Fires a slash from a sword cloaked in darkness', '從纏繞黑暗的刀放出斬擊', '어둠을 두른 칼에서 참격을 날린다'], { k: 'inst', L: 1, R: 36, v: 'arcH', sty: 'x_yami' }),
+    t(['闇魔法', 'Dark Magic', '闇魔法', '암흑 마법'], ['闇纏・黒刃', 'Dark Cloaked Black Blade', '闇纏・黑刃', '어둠 두르기·흑인'], ['闇で刃をのばして斬る', 'Extends the blade with darkness and cuts', '以黑暗延伸刀刃斬擊', '어둠으로 칼날을 늘여 벤다'], { k: 'inst', L: 2, R: 20, O: 1, v: 'arcH', sty: 'x_yami' }),
+    t(['闇魔法', 'Dark Magic', '闇魔法', '암흑 마법'], ['黒穴', 'Black Hole', '黑穴', '블랙홀'], ['相手の魔法を吸いこむ闇の穴を開く', 'Opens a hole of darkness that swallows enemy magic', '開啟吸入對手魔法的黑暗之穴', '상대의 마법을 빨아들이는 어둠의 구멍을 연다'], { k: 'aura', L: 2, R: 9, D: 4.5, G: 1, v: 'calm', sty: 'x_yami' }),
+    t(['闇魔法', 'Dark Magic', '闇魔法', '암흑 마법'], ['闇纏・次元斬り', 'Dark Cloaked Dimension Slash', '闇纏・次元斬', '어둠 두르기·차원참'], ['空間ごと断ち切る', 'Cuts through space itself', '連同空間一起斬斷', '공간째 베어 끊는다'], { k: 'inst', L: 9, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_yami' }),
+    t(['闇魔法', 'Dark Magic', '闇魔法', '암흑 마법'], ['闇纏・次元斬り 彼岸', 'Dark Cloaked Dimension Slash: Equinox', '闇纏・次元斬 彼岸', '어둠 두르기·차원참 피안'], ['離れた相手を、空間ごと斬る', 'Cuts a distant foe along with the space around them', '將遠處的對手連同空間一起斬斷', '떨어진 상대를 공간째 벤다'], { k: 'inst', L: 1, R: 70, O: 1, v: 'thrust', sty: 'x_yami' }),
+  ], ['夜見介大']),
+  c('アルトリア・ペンドラゴン', 'あるとりあぺんどらごん', ['Artoria Pendragon', '阿爾托莉雅・潘德拉剛', '아르토리아 펜드래건'], 'fate', 'yellow', 100, ['聖剣エクスカリバー', 'Holy Sword Excalibur', '聖劍 Excalibur', '성검 엑스칼리버'], [
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['風王結界', 'Invisible Air', '風王結界', '풍왕결계'], ['風で刀身を見えなくする。間合いが読めない', 'Hides the blade with wind so its reach cannot be read', '以風使劍身隱形，讓人讀不出攻擊距離', '바람으로 칼날을 보이지 않게 한다. 간격을 읽을 수 없다'], { k: 'inst', L: 1, R: 16, v: 'arcH', sty: 'x_kaze' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['風王鉄槌', 'Strike Air', '風王鐵槌', '풍왕철퇴'], ['まとっていた風を、ひと息に撃ち出す', 'Releases the cloaking wind in a single blast', '將纏繞的風一口氣擊出', '두르고 있던 바람을 단숨에 쏘아 낸다'], { k: 'inst', L: 1, R: 45, O: 1, v: 'thrust', sty: 'x_kaze' }),
+    t(['スキル', 'Skill', '技能', '스킬'], ['魔力放出', 'Mana Burst', '魔力放出', '마력 방출'], ['魔力を噴き出して加速し、斬りこむ', 'Bursts mana to accelerate and cut in', '噴出魔力加速並斬入', '마력을 뿜어 가속하며 베어 들어간다'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_kaze' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['全て遠き理想郷', 'Avalon', '遙遠的理想鄉', '전부 머나먼 이상향'], ['あらゆる攻めを通さない、絶対の守り', 'An absolute defense that lets no attack through', '任何攻擊都無法穿透的絕對防禦', '어떤 공격도 통하지 않는 절대의 방어'], { k: 'aura', L: 1, R: 7, D: 5, G: 1, v: 'calm', sty: 'x_excalibur' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['約束された勝利の剣', 'Excalibur', '誓約勝利之劍', '약속된 승리의 검'], ['星の光を束ねて放つ、黄金の斬撃', 'A golden slash that gathers the light of the stars and releases it', '匯聚星光放出的黃金斬擊', '별빛을 모아 쏘는 황금의 참격'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_excalibur' }),
+  ], [], ['セイバー']),
+  c('山本武', 'やまもとたけし', ['Takeshi Yamamoto', '山本武', '야마모토 타케시'], 'reborn', 'blue', 95, ['時雨蒼燕流', 'Shigure Soen Style', '時雨蒼燕流', '시구레 소엔류'], [
+    t(['攻式', 'Offensive Form', '攻式', '공식'], ['一の型 車軸の雨', '1st Form: Shajiku no Ame', '一之型 車軸之雨', '제1형 차축의 비'], ['突進からの鋭いひと突き', 'A sharp thrust out of a charge', '由突進接上的銳利一刺', '돌진에서 이어지는 날카로운 찌르기'], { k: 'inst', L: 0, R: 40, v: 'thrust', sty: 'x_shigure' }),
+    t(['守式', 'Defensive Form', '守式', '수식'], ['二の型 逆巻く雨', '2nd Form: Sakamaku Ame', '二之型 逆卷之雨', '제2형 역류하는 비'], ['水の壁を巻き上げて身を隠す', 'Whips up a wall of water to hide behind', '捲起水牆藏身其後', '물의 벽을 말아 올려 몸을 숨긴다'], { k: 'aura', L: 1, R: 7, D: 3.5, G: 1, v: 'vortex', sty: 'x_shigure' }),
+    t(['攻式', 'Offensive Form', '攻式', '공식'], ['五の型 五月雨', '5th Form: Samidare', '五之型 五月雨', '제5형 오월비'], ['途中で刀を持ちかえ、守りの間を狂わせる', 'Switches hands mid-swing to throw off the timing of the guard', '中途換手持刀，打亂對手防守的時機', '도중에 칼을 바꿔 쥐어 방어의 타이밍을 흐트러뜨린다'], { k: 'multi', N: 5, R: 24, v: 'arcs', sty: 'x_shigure' }),
+    t(['攻式', 'Offensive Form', '攻式', '공식'], ['八の型 篠突く雨', '8th Form: Shinotsuku Ame', '八之型 篠突之雨', '제8형 억수 같은 비'], ['父が友のためにつくった型。鋭い斬り上げ', 'A form his father created for a friend: a sharp rising slash', '父親為友人所創的型。銳利的上斬', '아버지가 친구를 위해 만든 형. 날카로운 올려 베기'], { k: 'inst', L: 1, R: 18, O: 1, v: 'arcUp', sty: 'x_shigure' }),
+    t(['攻式', 'Offensive Form', '攻式', '공식'], ['九の型 うつし雨', '9th Form: Utsushi Ame', '九之型 映雨', '제9형 비치는 비'], ['水面に自分の姿を映して惑わせ、背後から斬る', 'Deceives with a reflection on the water and cuts from behind', '以水面映出自己的身影迷惑對手，從背後斬擊', '수면에 제 모습을 비춰 현혹하고 등 뒤에서 벤다'], { k: 'multi', N: 7, R: 30, v: 'arcs', sty: 'x_shigure' }),
+    t(['特式', 'Special Form', '特式', '특식'], ['十の型 燕特攻', '10th Form: Scontro di Rondine', '十之型 燕特攻', '제10형 제비 특공'], ['雨の炎の燕とともに、水をまとって突っこむ', 'Charges cloaked in water alongside a swallow of Rain Flame', '與雨之炎的燕子一同身纏水流衝入', '비의 불꽃 제비와 함께 물을 두르고 돌진한다'], { k: 'inst', L: 2, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_shigure' }),
+  ]),
 ];
 
 // ---------- 名前で引く ----------
 // 同じ人として扱う字（旧字・異体字）。登録した名前にも、入力された名前にも同じ直しをかける
 const VAR = { '齋': '斎', '斉': '斎', '齊': '斎', '劍': '剣', '劔': '剣', '剱': '剣', '國': '国', '眞': '真', '實': '実', '澤': '沢', '邊': '辺', '邉': '辺', '髙': '高', '﨑': '崎', '龍': '竜', '瀧': '滝', '櫻': '桜', '條': '条', '廣': '広', '濱': '浜', '嶋': '島', '嶌': '島', '惠': '恵', '藏': '蔵', '壽': '寿', '彌': '弥', '禮': '礼', '靜': '静', '曉': '暁', '樂': '楽', '戀': '恋', '瀨': '瀬', '姬': '姫', '黑': '黒', '德': '徳', '榮': '栄', '圓': '円', '兒': '児', '將': '将', '豐': '豊', '淺': '浅', '傳': '伝', '櫻': '桜', '鐵': '鉄', '燈': '灯', '彈': '弾', '發': '発', '續': '続', '學': '学', '氣': '気', '靈': '霊', '龜': '亀', '萬': '万', '與': '与', '禪': '禅', '眞': '真' };
 export const okey = s => String(s).normalize('NFKC').replace(/[\s　・･=＝\-‐—.,、。「」『』'’]/g, '').toLowerCase().replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60)).replace(/[︀-️]/g, '').replace(/[^\u0000-\u007f]/g, ch => VAR[ch] || ch);
-const OMAP = new Map();
+const OMAP = new Map(), OEX = new Map(), exkey = s => String(s).normalize('NFKC').replace(/[\s　・･]/g, '').toLowerCase();
 for (const o of OTHERS) {
+  if (o.x) for (const x of o.x) OEX.set(exkey(x), o);
   const v = o.n.concat(o.nm.slice(1)), en = o.nm[1].split(' ');
   if (en.length === 2) v.push(en[1] + ' ' + en[0]); // 英語は「名 姓」「姓 名」のどちらでも
   for (const x of v) { const k = okey(x); if (k && !OMAP.has(k)) OMAP.set(k, o); }
   for (const w of o.wz) EXTRA[w[0] + ' ' + w[1]] = w[4]; // 記録に残った技名（「見出し 技名」）を、ほかの言葉で出せるように
 }
 // その名前が別作品の剣士なら、その中身を返す（フルネームのときだけ）
-export const otherOf = name => OMAP.get(okey(name)) || null;
+export const otherOf = name => OEX.get(exkey(name)) || OMAP.get(okey(name)) || null;
 // いちばん正式な名前（漢字のフルネーム）から引く（ランキングの表示用）
-const BYN = new Map(OTHERS.map(o => [o.n[0], o]));
+const BYN = new Map(OTHERS.map(o => [o.n0, o]));
 export const otherByName = n => BYN.get(n) || null;
 export const otName = (o, lang) => pick(o.nm, lang), otSch = (o, lang) => pick(o.sch, lang), otWork = (o, lang) => pick(WORKS[o.w], lang);
 // ひとこと（色変わりの刀の結果に出す）

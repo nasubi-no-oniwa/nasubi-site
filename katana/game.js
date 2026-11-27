@@ -1,8 +1,8 @@
 import { THREE, RoomEnvironment } from './lib.js?v=11241806';
 import { COLORS, ORDER, CHARS } from './data.js?v=11241806';
-import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11271810';
-import { locW, oniNameL } from '../onikiri/i18n.js?v=11271810';
-import { otherOf, otSch, otWord } from '../onikiri/others.js?v=11271810';
+import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11271835';
+import { locW, oniNameL } from '../onikiri/i18n.js?v=11271835';
+import { otherOf, otSch, otWord } from '../onikiri/others.js?v=11271835';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -90,7 +90,7 @@ function makeOni(R) { R.oni = oniInfo(R.name, R.cn); R.ot = null; R.key = 'nezuk
 const POOL = ORDER.map(k => [k, COLORS[k].w]);
 function judge(name) {
   const n = norm(name); const r1 = hash(n, 0x6b61), r2 = hash(n, 0x7461);
-  const o = otherOf(name); if (o) return { key: o.k, den: o.den, n, aka: false, stab: false, ch: true, cn: o.n[0], ot: o }; // 別作品の剣士（フルネームのときだけ）
+  const o = otherOf(name); if (o) return { key: o.k, den: o.den, n, aka: false, stab: false, ch: true, cn: o.n0, ot: o }; // 別作品の剣士（フルネームのときだけ）
   const c = CHMAP.get(charKey(name)); if (c) return { key: c.k, den: c.den, n, rank: c.rank, aka: !!c.aka, word: c.word, stab: !!c.stab, ch: true, cn: c.n[0] };
   let key = null, x = r1 * 100; for (const [k, w] of POOL) { if (x < w) { key = k; break; } x -= w; } key = key || 'none';
   let den;

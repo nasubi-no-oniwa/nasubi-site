@@ -1,5 +1,5 @@
 // 剣士（全員同じモデル。関節つき・アニメ風の塗りと輪郭線）と、型ごとの動き
-import { THREE } from './lib.js?v=11271810';
+import { THREE } from './lib.js?v=11271835';
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function toonMap() { const d = new Uint8Array([70, 70, 70, 255, 150, 150, 150, 255, 215, 215, 215, 255, 255, 255, 255, 255]); const t = new THREE.DataTexture(d, 4, 1, THREE.RGBAFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; }
 const GM = toonMap();
