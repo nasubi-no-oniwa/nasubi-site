@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272110';
+import { EXTRA } from './i18n.js?v=11272120';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -915,6 +915,50 @@ export const OTHERS = [
     t(['剣技', 'Sword Technique', '劍技', '검기'], ['五本の剣', 'Five Swords', '五把劍', '다섯 자루의 검'], ['腰の五本の剣を次々に抜き、戦車さえ斬る', 'Draws the five swords at his waist one after another and cuts down even a tank', '接連拔出腰間的五把劍，連戰車都能斬斷', '허리의 다섯 자루 검을 잇달아 뽑아 전차마저 벤다'], { k: 'multi', N: 10, R: 34, v: 'arcs', sty: 'x_shinsen' }),
     t(['異名', 'Alias', '異名', '이명'], ['憤怒のラース', 'Wrath', '憤怒的拉斯', '분노의 라스'], ['老いを感じさせない速さで、斬りぬける', 'Cuts through with a speed that shows no sign of age', '以不顯老態的速度斬穿而過', '늙음을 느낄 수 없는 속도로 베고 지나간다'], { k: 'flow', L: 1, D: 5, O: 1, v: 'ribbon', sty: 'x_shinsen' }),
   ]),
+  // ---------- 15回目：BLEACH（仮面の軍勢・零番隊・滅却師ほか） ----------
+  c('志波海燕', 'しばかいえん', ['Kaien Shiba', '志波海燕', '시바 카이엔'], 'bleach', 'blue', 95, ['斬魄刀「捩花」', 'Zanpakuto: Nejibana', '斬魄刀「捩花」', '참백도 「네지바나」'], [
+    t(SHIKAI, ['捩花', 'Nejibana', '捩花', '네지바나'], ['三つまたの槍を回し、うずまく水で近づくものを打つ', 'Spins a trident and strikes whatever comes near with swirling water', '旋轉三叉槍，以漩渦之水擊打靠近的一切', '삼지창을 돌려 소용돌이치는 물로 다가오는 것을 친다'], { k: 'aura', L: 1, R: 8, D: 4, v: 'vortex', sty: 'x_shigure' }),
+    t(['解号', 'Release Call', '解號', '해호'], ['水天逆巻け', 'Rankle the Seas and Heavens', '水天逆卷', '수천을 거슬러 감아라'], ['波を巻きあげて、槍ごと叩きつける', 'Whips up a wave and slams it down along with the spear', '捲起波浪，連同長槍一起砸下', '파도를 말아 올려 창째 내리친다'], { k: 'inst', L: 2, R: 24, O: 1, v: 'fall', sty: 'x_shigure' }),
+  ]),
+  c('草鹿やちる', 'くさじしやちる', ['Yachiru Kusajishi', '草鹿八千流', '쿠사지시 야치루'], 'bleach', 'pink', 90, ['斬魄刀「三歩剣獣」', 'Zanpakuto: Sanpo Kenju', '斬魄刀「三步劍獸」', '참백도 「삼보검수」'], [
+    t(SHIKAI, ['三歩剣獣', 'Sanpo Kenju', '三步劍獸', '삼보검수'], ['自分の前と後ろで、二ひきの獣が同じように斬る', 'Two beasts, one ahead of her and one behind, cut just as she does', '在自己的前後，兩隻野獸以同樣的動作斬擊', '자신의 앞과 뒤에서 두 마리의 짐승이 똑같이 벤다'], { k: 'multi', N: 9, R: 26, v: 'arcs', sty: 'x_katen' }),
+    t(ZANJUTSU, ['見えない斬撃', 'Unseen Cuts', '看不見的斬擊', '보이지 않는 참격'], ['刀は当たっていないのに、なぜか斬れている', 'Her sword never touches, and yet the foe is cut', '刀明明沒碰到，卻不知為何被斬了', '칼은 닿지 않았는데 어째선지 베여 있다'], { k: 'inst', L: 1, R: 18, v: 'arcH', sty: 'x_katen' }),
+  ], ['草鹿八千流']),
+  c('六車拳西', 'むぐるまけんせい', ['Kensei Muguruma', '六車拳西', '무구루마 켄세이'], 'bleach', 'orange', 94, ['斬魄刀「断風」', 'Zanpakuto: Tachikaze', '斬魄刀「斷風」', '참백도 「타치카제」'], [
+    t(SHIKAI, ['断風', 'Tachikaze', '斷風', '타치카제'], ['ナイフの通った道が風の糸になり、切り口が爆発する', 'The path of the knife becomes threads of wind, and the cut explodes', '小刀劃過的軌跡化為風之絲，切口隨之爆炸', '나이프가 지나간 길이 바람의 실이 되고 벤 자리가 폭발한다'], { k: 'inst', L: 1, R: 36, O: 1, v: 'arcH', sty: 'x_bazooka' }),
+    t(BANKAI, ['鐵拳断風', 'Tekken Tachikaze', '鐵拳斷風', '철권 타치카제'], ['こぶしが当たっているかぎり、爆発が打ちこまれつづける', 'As long as his fist stays in contact, the explosions keep driving in', '只要拳頭還貼著，爆炸就會不斷打入', '주먹이 닿아 있는 한 폭발이 계속 꽂힌다'], { k: 'multi', N: 12, R: 20, v: 'arcs', sty: 'x_bazooka' }),
+  ]),
+  c('鳳橋楼十郎', 'おおとりばしろうじゅうろう', ['Rojuro Otoribashi', '鳳橋樓十郎', '오토리바시 로쥬로'], 'bleach', 'yellow', 93, ['斬魄刀「金沙羅」', 'Zanpakuto: Kinshara', '斬魄刀「金沙羅」', '참백도 「킨샤라」'], [
+    t(SHIKAI, ['金沙羅', 'Kinshara', '金沙羅', '킨샤라'], ['金色のむちの先についた花で打つ', 'Strikes with the flower at the tip of a golden whip', '以金色鞭子前端的花擊打', '금빛 채찍 끝에 달린 꽃으로 친다'], { k: 'multi', N: 6, R: 30, v: 'arcs', sty: 'x_sakanade' }),
+    t(SHIKAI, ['金沙羅奏曲第十一番「十六夜薔薇」', 'Kinshara Sonata No. 11: Izayoi Bara', '金沙羅奏曲第十一號「十六夜薔薇」', '킨샤라 주곡 제11번 「이자요이 바라」'], ['むちを伝わる音で、相手を内から爆発させる', 'Sound running down the whip makes the foe explode from within', '以沿鞭子傳遞的聲音使對手由內爆炸', '채찍을 타고 흐르는 소리로 상대를 안에서 폭발시킨다'], { k: 'inst', L: 1, R: 40, O: 1, v: 'storm', sty: 'x_sakanade' }),
+    t(BANKAI, ['金沙羅舞踏団', 'Kinshara Butodan', '金沙羅舞蹈團', '킨샤라 무도단'], ['おどり手たちのかなでる音楽が、聞いた者にまぼろしを本物と思わせる', "The dancers' music makes all who hear it take illusions for reality", '舞者們演奏的音樂使聽者將幻覺當作現實', '춤꾼들이 연주하는 음악이 들은 자에게 환상을 진짜로 여기게 한다'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_sakanade' }),
+  ], ['鳳橋樓十郎']),
+  c('愛川羅武', 'あいかわらぶ', ['Love Aikawa', '愛川羅武', '아이카와 러브'], 'bleach', 'gray', 93, ['斬魄刀「天狗丸」', 'Zanpakuto: Tengumaru', '斬魄刀「天狗丸」', '참백도 「텐구마루」'], [
+    t(SHIKAI, ['天狗丸', 'Tengumaru', '天狗丸', '텐구마루'], ['とげのついた巨大な金棒で叩きつぶす', 'Crushes with a gigantic spiked club', '以帶刺的巨大金棒砸爛', '가시 돋친 거대한 쇠몽둥이로 때려 부순다'], { k: 'inst', L: 2, R: 18, O: 1, v: 'fall', sty: 'x_tenken' }),
+    t(SHIKAI, ['火吹の小槌', 'Hifuki no Kozuchi', '噴火小槌', '히후키노코즈치'], ['金棒に火をともして叩きつけ、火の玉を飛ばす', 'Lights the club aflame, slams it down, and sends out a fireball', '點燃金棒砸下，放出火球', '쇠몽둥이에 불을 붙여 내리치고 불덩이를 날린다'], { k: 'inst', L: 1, R: 44, O: 1, v: 'storm', sty: 'x_homura' }),
+  ]),
+  c('矢胴丸リサ', 'やどうまるりさ', ['Lisa Yadomaru', '矢胴丸莉莎', '야도마루 리사'], 'bleach', 'bluepurple', 92, ['斬魄刀「鉄漿蜻蛉」', 'Zanpakuto: Haguro Tonbo', '斬魄刀「鐵漿蜻蛉」', '참백도 「하구로 톤보」'], [
+    t(SHIKAI, ['鉄漿蜻蛉', 'Haguro Tonbo', '鐵漿蜻蛉', '하구로 톤보'], ['巨大な槍に変えて、まっすぐ突きぬく', 'Turns it into a gigantic spear and thrusts straight through', '化為巨大長槍筆直刺穿', '거대한 창으로 바꿔 곧장 꿰뚫는다'], { k: 'inst', L: 0, R: 42, O: 1, v: 'thrust', sty: 'x_kodachi' }),
+    t(ZANJUTSU, ['槍の乱れ突き', 'Flurry of Spear Thrusts', '長槍亂刺', '창의 난타 찌르기'], ['長い槍で、とぎれなく突きつづける', 'Keeps thrusting without pause with the long spear', '以長槍不間斷地持續突刺', '긴 창으로 끊임없이 계속 찌른다'], { k: 'multi', N: 8, R: 30, v: 'arcs', sty: 'x_kodachi' }),
+  ]),
+  c('猿柿ひよ里', 'さるがきひより', ['Hiyori Sarugaki', '猿柿日世里', '사루가키 히요리'], 'bleach', 'red', 88, ['斬魄刀「馘大蛇」', 'Zanpakuto: Kubikiri Orochi', '斬魄刀「馘大蛇」', '참백도 「쿠비키리 오로치」'], [
+    t(SHIKAI, ['馘大蛇', 'Kubikiri Orochi', '馘大蛇', '쿠비키리 오로치'], ['のこぎりのような刃の大刀で、ぶった斬る', 'Hacks through with a great blade edged like a saw', '以鋸齒般刀刃的大刀猛砍', '톱날 같은 대도로 냅다 벤다'], { k: 'inst', L: 1, R: 18, O: 1, v: 'arcDown', sty: 'x_zabi' }),
+    t(['虚化', 'Hollowfication', '虛化', '호로화'], ['虚閃', 'Cero', '虛閃', '세로'], ['仮面をつけ、破壊の光線を放つ', 'Dons the mask and fires a beam of destruction', '戴上面具，放出破壞的光線', '가면을 쓰고 파괴의 광선을 쏜다'], { k: 'inst', L: 1, R: 45, O: 1, v: 'thrust', sty: 'x_beni' }),
+  ], ['猿柿日世里']),
+  c('兵主部一兵衛', 'ひょうすべいちべえ', ['Ichibe Hyosube', '兵主部一兵衛', '효스베 이치베'], 'bleach', 'black', 100, ['斬魄刀「一文字」', 'Zanpakuto: Ichimonji', '斬魄刀「一文字」', '참백도 「이치몬지」'], [
+    t(SHIKAI, ['一文字', 'Ichimonji', '一文字', '이치몬지'], ['墨でぬりつぶしたものの名前と力をうばう', 'Takes the name and power of whatever it blots out with ink', '奪去被墨塗黑之物的名字與力量', '먹으로 칠해 버린 것의 이름과 힘을 빼앗는다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_meido' }),
+    t(['裏破道', 'Ura Hado', '裏破道', '우라 파도'], ['千里通天掌', 'Senri Tsutensho', '千里通天掌', '천리통천장'], ['てのひらのひと押しで、千里の先まで吹き飛ばす', 'One push of the palm sends the foe flying a thousand leagues', '一掌推出，將對手擊飛至千里之外', '손바닥 한 번 밀어 천 리 앞까지 날려 버린다'], { k: 'inst', L: 1, R: 70, O: 1, v: 'thrust', sty: 'x_meido' }),
+    t(BANKAI, ['しら筆一文字', 'Shirafude Ichimonji', '白筆一文字', '시라후데 이치몬지'], ['ぬりつぶしたものに、新しい名前を書きこむ', 'Writes a new name onto whatever it has blotted out', '在被塗黑之物上寫下新的名字', '칠해 버린 것에 새 이름을 써 넣는다'], { k: 'aura', L: 9, R: 10, D: 5, v: 'calm', sty: 'x_meido' }),
+  ]),
+  c('ユーハバッハ', '', ['Yhwach', '友哈巴赫', '유하바하'], 'bleach', 'purple', 100, ['全知全能', 'The Almighty', '全知全能', '전지전능'], [
+    t(['聖文字', 'Schrift', '聖文字', '슈리프트'], ['全知全能', 'The Almighty', '全知全能', '전지전능'], ['これから起こる未来をすべて見とおし、書きかえる', 'Sees every future yet to come and rewrites it', '看穿即將發生的所有未來並加以改寫', '앞으로 일어날 미래를 모두 내다보고 고쳐 쓴다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_kuro' }),
+    t(['血装', 'Blut', '血裝', '블루트'], ['外殻静血装', 'Blut Vene Anhaben', '外殼靜血裝', '블루트 베네 안하벤'], ['体の外に張った守りが、ふれたものをむしばむ', 'A defense spread outside the body that eats away at whatever touches it', '展開於體外的防禦會侵蝕觸碰到的一切', '몸 밖에 펼친 방어가 닿은 것을 좀먹는다'], { k: 'aura', L: 2, R: 9, D: 5, G: 1, v: 'calm', sty: 'x_kuro' }),
+    t(['霊子兵装', 'Spirit Weapon', '靈子兵裝', '영자병장'], ['霊子の大剣', 'Spirit Broadsword', '靈子大劍', '영자의 대검'], ['霊子でつくった大剣で、まとめて断ちわる', 'Cleaves them all with a broadsword made of spirit particles', '以靈子形成的大劍一併斬斷', '영자로 만든 대검으로 한꺼번에 가른다'], { k: 'inst', L: 9, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_kuro' }),
+  ], [], ['ユーハバッハ']),
+  c('ユーグラム・ハッシュヴァルト', 'ゆーぐらむはっしゅゔぁると', ['Jugram Haschwalth', '尤格拉姆・哈斯沃德', '유그람 하슈발트'], 'bleach', 'yellow', 99, ['世界調和', 'The Balance', '世界調和', '세계조화'], [
+    t(['聖文字', 'Schrift', '聖文字', '슈리프트'], ['世界調和', 'The Balance', '世界調和', '세계조화'], ['自分にふりかかる不運を、相手の幸運にぶつけてつり合わせる', "Balances the misfortune that befalls him against the foe's good fortune", '將降臨自身的不幸與對手的幸運相抵以取得平衡', '자신에게 닥친 불운을 상대의 행운에 부딪쳐 균형을 맞춘다'], { k: 'aura', L: 1, R: 8, D: 5, G: 1, v: 'calm', sty: 'x_excalibur' }),
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['星十字騎士団長の剣', "The Sternritter Grandmaster's Sword", '星十字騎士團長之劍', '성십자기사단장의 검'], ['身代わりの盾と長剣で、すきなく斬りふせる', 'Cuts down without an opening, with a long sword and a shield that takes his wounds', '以替身之盾與長劍毫無破綻地斬倒對手', '대신 받아 주는 방패와 장검으로 빈틈없이 베어 넘긴다'], { k: 'multi', N: 10, R: 30, v: 'arcs', sty: 'x_excalibur' }),
+  ], ['ユーグラム・ハッシュバルト']),
 ];
 
 // ---------- 名前で引く ----------
