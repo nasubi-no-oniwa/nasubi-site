@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11271850';
+import { EXTRA } from './i18n.js?v=11271905';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -53,6 +53,15 @@ export const OT_STY = {
   x_jao: { kind: 'flame', c: '#2a0a3a', c2: '#b040ff', shape: 'ember', fl: 'f_pillar' },
   x_counter: { kind: 'ribbon', c: '#59e0c0', c2: '#ffffff', shape: 'spark', fl: 'f_crescent' },
   x_kogetsu: { kind: 'moon', c: '#7fd0ff', c2: '#f0faff', shape: 'crescent', fl: 'f_crescent' },
+  x_yoru: { kind: 'moon', c: '#0e2a1c', c2: '#62ffb0', shape: 'crescent', fl: 'f_crescent' },
+  x_haoshoku: { kind: 'bolt', c: '#b0122a', c2: '#ff9aa8', shape: 'spark', fl: 'f_pillar' },
+  x_gravity: { kind: 'rock', c: '#7a4cff', c2: '#e0d0ff', shape: 'rock', fl: 'f_quake' },
+  x_kitsune: { kind: 'flame', c: '#ff7a1e', c2: '#fff0c0', shape: 'ember', fl: 'f_cross' },
+  x_odm: { kind: 'wind', c: '#b8e0c0', c2: '#ffffff', shape: 'streak', fl: 'f_cross' },
+  x_rika: { kind: 'bolt', c: '#e6f0ff', c2: '#ff9ad8', shape: 'spark', fl: 'f_pillar' },
+  x_intetsu: { kind: 'bolt', c: '#4a6cff', c2: '#e0e8ff', shape: 'spark', fl: 'f_fang' },
+  x_ubw: { kind: 'flame', c: '#ff5a2a', c2: '#ffe9c0', shape: 'ember', fl: 'f_fang' },
+  x_tsubame: { kind: 'wind', c: '#b48cff', c2: '#f4eaff', shape: 'streak', fl: 'f_cross' },
 };
 
 // 作品
@@ -72,6 +81,9 @@ export const WORKS = {
   yuhaku: ['幽☆遊☆白書', 'Yu Yu Hakusho', '幽遊白書', '유유백서'],
   nanatsu: ['七つの大罪', 'The Seven Deadly Sins', '七大罪', '일곱 개의 대죄'],
   wtrigger: ['ワールドトリガー', 'World Trigger', '境界觸發者', '월드 트리거'],
+  aot: ['進撃の巨人', 'Attack on Titan', '進擊的巨人', '진격의 거인'],
+  jjk: ['呪術廻戦', 'Jujutsu Kaisen', '咒術迴戰', '주술회전'],
+  rakudai: ['落第騎士の英雄譚', 'Chivalry of a Failed Knight', '落第騎士英雄譚', '낙제 기사의 영웅담'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -368,6 +380,67 @@ export const OTHERS = [
     t(['オプション', 'Option Trigger', '選配觸發器', '옵션 트리거'], ['グラスホッパー', 'Grasshopper', '蚱蜢', '그래스호퍼'], ['踏むと跳ねる板を出し、ひと息に飛びこんで斬る', 'Sets a springboard, leaps in at once, and cuts', '放出踩了會彈起的板子，一口氣躍入斬擊', '밟으면 튀는 판을 꺼내 단숨에 뛰어들어 벤다'], { k: 'inst', L: 0, R: 40, I: .6, v: 'dash', a: 'iai', sty: 'x_kogetsu' }),
     t(['オプション', 'Option Trigger', '選配觸發器', '옵션 트리거'], ['シールド', 'Shield', '護盾', '실드'], ['トリオンの盾を張って攻めを防ぐ', 'Raises a shield of Trion to block attacks', '展開觸力護盾擋下攻擊', '트리온의 방패를 펼쳐 공격을 막는다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_kogetsu' }),
   ]),
+  // ---------- 5回目：ONE PIECE・進撃の巨人・呪術廻戦・落第騎士の英雄譚・Fate ----------
+  c('ジュラキュール・ミホーク', 'じゅらきゅーるみほーく', ['Dracule Mihawk', '喬拉可爾・密佛格', '쥬라큘 미호크'], 'onepiece', 'black', 100, ['黒刀「夜」', 'Black Blade "Yoru"', '黑刀「夜」', '흑도 「요루」'], [
+    t(['小刀', 'Small Knife', '小刀', '소도'], ['小刀のひと突き', 'A Thrust of the Small Knife', '小刀一刺', '소도의 한 번 찌르기'], ['首にさげた小さなナイフ。それだけで三刀流を受け流す', 'The tiny knife worn at his neck. That alone turns aside the Three Sword Style', '掛在頸上的小刀。光憑它就能擋開三刀流', '목에 건 작은 칼. 그것만으로 삼도류를 받아 흘린다'], { k: 'inst', L: 0, R: 12, v: 'thrust', sty: 'x_yoru' }),
+    t(['黒刀「夜」', 'Black Blade "Yoru"', '黑刀「夜」', '흑도 「요루」'], ['飛ぶ斬撃', 'Flying Slash', '飛行的斬擊', '날아가는 참격'], ['軽いひと振りが、はるか先の船まで両断する', 'A light swing cleaves a ship far in the distance', '輕輕一揮，連遠方的船都一刀兩斷', '가벼운 한 번의 휘두름이 저 멀리 배까지 양단한다'], { k: 'inst', L: 1, R: 60, O: 1, v: 'arcH', sty: 'x_yoru' }),
+    t(['黒刀「夜」', 'Black Blade "Yoru"', '黑刀「夜」', '흑도 「요루」'], ['世界最強の斬撃', "The World's Strongest Slash", '世界最強的斬擊', '세계 최강의 참격'], ['氷の山さえ両断する、世界一の大剣豪のひと太刀', 'One stroke from the world\'s greatest swordsman, cleaving even a mountain of ice', '連冰山都能一刀兩斷，世界第一大劍豪的一刀', '얼음 산마저 양단하는, 세계 제일 대검호의 한 칼'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_yoru' }),
+  ], ['ジュラキュールミホーク']),
+  c('シャンクス', '', ['Shanks', '傑克', '샹크스'], 'onepiece', 'red', 100, ['愛刀「グリフォン」', 'Saber "Gryphon"', '愛刀「獅鷲」', '애도 「그리폰」'], [
+    t(['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['にらむだけで、まわりのものが動けなくなる', 'A single glare leaves everything around unable to move', '只要一瞪，周圍的一切就動彈不得', '노려보는 것만으로 주위의 것들이 움직이지 못하게 된다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_haoshoku' }),
+    t(['見聞色の覇気', 'Observation Haki', '見聞色霸氣', '견문색 패기'], ['見聞殺し', 'Observation Killing', '見聞殺', '견문 죽이기'], ['相手の先読みを封じ、攻めをすべて空振りさせる', 'Shuts down the foe\'s foresight so every attack misses', '封住對手的預知，使所有攻擊落空', '상대의 앞을 읽는 힘을 봉해 공격을 모두 헛치게 한다'], { k: 'aura', L: 1, R: 8, D: 4, G: 1, v: 'calm', sty: 'x_haoshoku' }),
+    t(['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['神避', 'Divine Departure', '神避', '신피'], ['覇王色をまとった斬撃。海賊王ロジャーと同じ技', "A slash cloaked in Conqueror's Haki, the same technique as the Pirate King Roger", '纏繞霸王色的斬擊。與海賊王羅傑相同的招式', '패왕색을 두른 참격. 해적왕 로저와 같은 기술'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_haoshoku' }),
+  ], [], ['シャンクス']),
+  c('藤虎', 'ふじとら', ['Fujitora', '藤虎', '후지토라'], 'onepiece', 'purple', 99, ['ズシズシの実と仕込み杖', 'Zushi Zushi no Mi & Cane Sword', '重重果實與手杖刀', '즈시즈시 열매와 지팡이 검'], [
+    t(['重力刀', 'Gravity Blade', '重力刀', '중력도'], ['猛虎', 'Raging Tiger', '猛虎', '맹호'], ['重力を横向きにかけ、前のものをすべて吹き飛ばす', 'Turns gravity sideways and blows away everything ahead', '將重力轉為橫向，把前方的一切吹飛', '중력을 옆으로 걸어 앞의 모든 것을 날려 버린다'], { k: 'inst', L: 9, R: 45, O: 1, v: 'storm', sty: 'x_gravity' }),
+    t(['重力', 'Gravity', '重力', '중력'], ['地獄旅', 'Journey to Hell', '地獄旅', '지옥 여행'], ['重力で、まわりを地面ごと押しつぶす', 'Crushes everything around, ground and all, with gravity', '以重力將周圍連同地面一起壓垮', '중력으로 주위를 땅째 짓눌러 버린다'], { k: 'aura', L: 2, R: 9, D: 4, O: 1, v: 'calm', sty: 'x_gravity' }),
+    t(['重力', 'Gravity', '重力', '중력'], ['隕石', 'Meteorite', '隕石', '운석'], ['空の上から隕石を引きずり落とす', 'Drags meteorites down from above the sky', '從天外把隕石拖落下來', '하늘 위에서 운석을 끌어 내린다'], { k: 'rain', D: 5, R: 44, O: 1, v: 'rainfall', sty: 'x_gravity' }),
+  ], ['Issho'], ['イッショウ']),
+  c('錦えもん', 'きんえもん', ["Kin'emon", '錦衛門', '킨에몬'], 'onepiece', 'orange', 93, ['狐火流', 'Foxfire Style', '狐火流', '호화류'], [
+    t(['狐火流', 'Foxfire Style', '狐火流', '호화류'], ['焔裂き', 'Flame Cleaver', '焰裂', '불꽃 가르기'], ['炎そのものを斬り裂いて、道を開く', 'Cuts fire itself apart to open a path', '將火焰本身斬開，開出道路', '불꽃 자체를 베어 갈라 길을 연다'], { k: 'aura', L: 1, R: 8, D: 4, G: 1, v: 'vortex', sty: 'x_kitsune' }),
+    t(['狐火流', 'Foxfire Style', '狐火流', '호화류'], ['火柳一閃', 'Karyu Issen', '火柳一閃', '화류일섬'], ['炎をまとった刀で、爆発ごと斬る', 'Cuts through explosions with a blade wreathed in flame', '以纏繞火焰的刀連同爆炸一起斬斷', '불꽃을 두른 칼로 폭발째 벤다'], { k: 'inst', L: 1, R: 30, O: 1, I: .5, v: 'arcH', a: 'iai', sty: 'x_kitsune' }),
+  ], ['錦衛門', 'Kinemon']),
+  // ---------- 進撃の巨人 ----------
+  c('リヴァイ・アッカーマン', 'りゔぁいあっかーまん', ['Levi Ackerman', '里維・阿卡曼', '리바이 아커만'], 'aot', 'green', 100, ['立体機動と超硬質ブレード', 'ODM Gear & Ultrahard Steel Blades', '立體機動與超硬質刀刃', '입체기동과 초경질 블레이드'], [
+    t(['立体機動', 'ODM Gear', '立體機動', '입체기동'], ['うなじ削ぎ', 'Nape Slice', '削後頸', '목덜미 베기'], ['ワイヤーで飛びこみ、急所をそぎ落とす', 'Swings in on wires and slices off the vital spot', '以鋼索飛入，削下要害', '와이어로 뛰어들어 급소를 도려낸다'], { k: 'inst', L: 0, R: 40, I: .5, v: 'dash', a: 'iai', sty: 'x_odm' }),
+    t(['立体機動', 'ODM Gear', '立體機動', '입체기동'], ['回転斬り', 'Spinning Slash', '迴旋斬', '회전 베기'], ['体ごと回転しながら、続けざまに斬りきざむ', 'Spins his whole body and cuts again and again', '整個身體旋轉著接連切割', '온몸으로 회전하며 잇달아 썰어 낸다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_odm' }),
+    t(['雷槍', 'Thunder Spear', '雷槍', '뇌창'], ['雷槍', 'Thunder Spear', '雷槍', '뇌창'], ['刺さってから爆発する槍を撃ちこむ', 'Fires a spear that explodes after it sticks', '射出刺入後才爆炸的槍', '꽂힌 뒤에 폭발하는 창을 쏜다'], { k: 'inst', L: 1, R: 50, O: 1, v: 'storm', sty: 'x_bazooka' }),
+    t(['アッカーマン', 'Ackerman', '阿卡曼', '아커만'], ['人類最強', "Humanity's Strongest", '人類最強', '인류 최강'], ['目で追えない速さで、まとめて斬り伏せる', 'Cuts them all down faster than the eye can follow', '以肉眼追不上的速度一併斬倒', '눈으로 좇을 수 없는 속도로 한꺼번에 베어 넘긴다'], { k: 'multi', N: 14, R: 40, v: 'arcs', sty: 'x_odm' }),
+  ], ['リバイ・アッカーマン']),
+  c('ミカサ・アッカーマン', 'みかさあっかーまん', ['Mikasa Ackerman', '米卡莎・阿卡曼', '미카사 아커만'], 'aot', 'red', 98, ['立体機動と超硬質ブレード', 'ODM Gear & Ultrahard Steel Blades', '立體機動與超硬質刀刃', '입체기동과 초경질 블레이드'], [
+    t(['立体機動', 'ODM Gear', '立體機動', '입체기동'], ['うなじ削ぎ', 'Nape Slice', '削後頸', '목덜미 베기'], ['ワイヤーで飛びこみ、急所をそぎ落とす', 'Swings in on wires and slices off the vital spot', '以鋼索飛入，削下要害', '와이어로 뛰어들어 급소를 도려낸다'], { k: 'inst', L: 0, R: 36, I: .5, v: 'dash', a: 'iai', sty: 'x_odm' }),
+    t(['アッカーマン', 'Ackerman', '阿卡曼', '아커만'], ['覚醒した力', 'Awakened Power', '覺醒的力量', '각성한 힘'], ['自分の体を完全に支配し、ためらいなく斬りすすむ', 'In complete control of her body, she cuts forward without hesitation', '完全支配自己的身體，毫不猶豫地一路斬擊', '자신의 몸을 완전히 지배해 망설임 없이 베어 나아간다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_odm' }),
+    t(['雷槍', 'Thunder Spear', '雷槍', '뇌창'], ['雷槍', 'Thunder Spear', '雷槍', '뇌창'], ['刺さってから爆発する槍を撃ちこむ', 'Fires a spear that explodes after it sticks', '射出刺入後才爆炸的槍', '꽂힌 뒤에 폭발하는 창을 쏜다'], { k: 'inst', L: 1, R: 50, O: 1, v: 'storm', sty: 'x_bazooka' }),
+  ]),
+  // ---------- 呪術廻戦 ----------
+  c('乙骨憂太', 'おっこつゆうた', ['Yuta Okkotsu', '乙骨憂太', '옷코츠 유타'], 'jjk', 'white', 100, ['刀と特級過呪怨霊「リカ」', 'Katana & Special Grade Cursed Spirit "Rika"', '刀與特級過咒怨靈「里香」', '칼과 특급 과주원령 「리카」'], [
+    t(['呪力', 'Cursed Energy', '咒力', '주력'], ['呪力をこめた刀', 'Cursed-Energy Blade', '注入咒力的刀', '주력을 담은 칼'], ['底なしの呪力を刀に流して斬る', 'Cuts with bottomless cursed energy poured into the blade', '將深不見底的咒力注入刀中斬擊', '바닥없는 주력을 칼에 흘려 벤다'], { k: 'inst', L: 1, R: 20, O: 1, v: 'arcH', sty: 'x_rika' }),
+    t(['術式', 'Cursed Technique', '術式', '술식'], ['模倣', 'Copy', '模仿', '모방'], ['ほかの術師の術式をまねる。呪言「動くな」', 'Copies another sorcerer\'s technique. Cursed Speech: "Don\'t move"', '模仿其他術師的術式。咒言「不准動」', '다른 술사의 술식을 흉내 낸다. 주언 "움직이지 마"'], { k: 'slow', D: 5, S: .3, v: 'eye', sty: 'x_rika' }),
+    t(['リカ', 'Rika', '里香', '리카'], ['完全顕現', 'Full Manifestation', '完全顯現', '완전 현현'], ['リカを呼び出し、近づくものをともに叩きつぶす', 'Summons Rika, and together they crush whatever comes near', '喚出里香，一同擊潰靠近的一切', '리카를 불러내 다가오는 것을 함께 때려 부순다'], { k: 'aura', L: 2, R: 9, D: 5, O: 1, v: 'vortex', sty: 'x_rika' }),
+    t(['領域展開', 'Domain Expansion', '領域展開', '영역전개'], ['真贋相愛', 'Authentic Mutual Love', '真贗相愛', '진안상애'], ['数えきれない刀がならぶ領域。刀ごとに、まねた術式が宿る', 'A domain lined with countless swords, each holding a copied technique', '排列著無數把刀的領域。每把刀都寄宿著模仿來的術式', '셀 수 없는 칼이 늘어선 영역. 칼마다 흉내 낸 술식이 깃든다'], { k: 'rain', D: 6, R: 44, O: 1, v: 'rainfall', sty: 'x_rika' }),
+  ]),
+  // ---------- 落第騎士の英雄譚 ----------
+  c('黒鉄一輝', 'くろがねいっき', ['Ikki Kurogane', '黑鐵一輝', '쿠로가네 잇키'], 'rakudai', 'black', 96, ['固有霊装「陰鉄」', 'Device: Intetsu', '固有靈裝「陰鐵」', '고유영장 「인테츠」'], [
+    t(['伐刀絶技', 'Noble Art', '伐刀絕技', '벌도절기'], ['一刀修羅', 'Itto Shura', '一刀修羅', '일도수라'], ['持てる力のすべてを、1分間で使いきる', 'Burns through every bit of his power in a single minute', '將所有力量在一分鐘內用盡', '가진 힘의 전부를 1분 동안 다 써 버린다'], { k: 'flow', L: 1, D: 6, v: 'dragon', sty: 'x_intetsu' }),
+    t(['第一秘剣', 'First Secret Sword', '第一秘劍', '제1비검'], ['犀撃', 'Saigeki', '犀擊', '서격'], ['全身の力を切っ先に集めた、突進の突き', 'A charging thrust with the whole body\'s power gathered at the tip', '將全身之力集中於刀尖的突進突刺', '온몸의 힘을 칼끝에 모은 돌진 찌르기'], { k: 'inst', L: 0, R: 45, O: 1, v: 'thrust', sty: 'x_intetsu' }),
+    t(['第三秘剣', 'Third Secret Sword', '第三秘劍', '제3비검'], ['円', 'Madoka', '圓', '마도카'], ['受けた力を回転で流し、そのまま相手に返す', 'Turns the force he receives through a spin and sends it straight back', '以旋轉卸開承受的力量，直接奉還對手', '받은 힘을 회전으로 흘려 그대로 상대에게 되돌린다'], { k: 'aura', L: 1, R: 7, D: 3.5, G: 1, v: 'spin', sty: 'x_intetsu' }),
+    t(['第四秘剣', 'Fourth Secret Sword', '第四秘劍', '제4비검'], ['蜃気狼', 'Shinkiro', '蜃氣狼', '신기루'], ['緩急で残像を残し、相手の目をあざむく', 'Leaves afterimages with shifts of pace to deceive the eye', '以緩急留下殘像，欺騙對手的眼睛', '완급으로 잔상을 남겨 상대의 눈을 속인다'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_intetsu' }),
+    t(['第七秘剣', 'Seventh Secret Sword', '第七秘劍', '제7비검'], ['雷光', 'Raiko', '雷光', '뇌광'], ['目に映らない速さの一閃', 'A flash too fast for the eye to register', '肉眼無法捕捉的一閃', '눈에 비치지 않는 속도의 일섬'], { k: 'inst', L: 1, R: 36, I: .5, v: 'bolt', a: 'iai', sty: 'x_intetsu' }),
+    t(['伐刀絶技', 'Noble Art', '伐刀絕技', '벌도절기'], ['一刀羅刹', 'Itto Rasetsu', '一刀羅剎', '일도나찰'], ['すべての力を、たった1秒に凝縮したひと太刀', 'One stroke with all his power condensed into a single second', '將所有力量凝縮於僅僅一秒的一刀', '모든 힘을 단 1초에 응축한 한 칼'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', sty: 'x_intetsu' }),
+  ]),
+  // ---------- Fate ----------
+  c('衛宮士郎', 'えみやしろう', ['Shirou Emiya', '衛宮士郎', '에미야 시로'], 'fate', 'red', 93, ['投影魔術', 'Projection Magecraft', '投影魔術', '투영 마술'], [
+    t(['投影', 'Projection', '投影', '투영'], ['干将・莫耶', 'Kanshou & Bakuya', '干將・莫邪', '간장·막야'], ['白と黒の夫婦剣で斬りむすぶ', 'Fights with the married pair of white and black swords', '以黑白夫婦劍交鋒', '희고 검은 부부검으로 맞붙는다'], { k: 'multi', N: 6, R: 22, v: 'arcs', sty: 'x_ubw' }),
+    t(['投影', 'Projection', '投影', '투영'], ['鶴翼三連', 'Crane Wing Three Realm', '鶴翼三連', '학익삼련'], ['投げた双剣が引き合い、三方から同時に斬る', 'The thrown twin swords attract each other and cut from three sides at once', '擲出的雙劍互相吸引，從三方同時斬擊', '던진 쌍검이 서로 끌어당겨 세 방향에서 동시에 벤다'], { k: 'inst', L: 2, R: 26, v: 'claws', sty: 'x_ubw' }),
+    t(['投影', 'Projection', '投影', '투영'], ['壊れた幻想', 'Broken Phantasm', '幻想崩壞', '브로큰 판타즘'], ['投影した剣そのものを爆発させる', 'Detonates the projected sword itself', '將投影出的劍本身引爆', '투영한 검 자체를 폭발시킨다'], { k: 'inst', L: 1, R: 36, O: 1, v: 'storm', sty: 'x_ubw' }),
+    t(['投影', 'Projection', '投影', '투영'], ['熾天覆う七つの円環', 'Rho Aias', '熾天覆七重圓環', '로 아이아스'], ['花びらのような七枚の盾で身を守る', 'Shields himself with seven petal-like layers', '以七片花瓣般的盾保護自身', '꽃잎 같은 일곱 장의 방패로 몸을 지킨다'], { k: 'aura', L: 1, R: 7, D: 5, G: 1, v: 'calm', sty: 'x_ubw' }),
+    t(['固有結界', 'Reality Marble', '固有結界', '고유결계'], ['無限の剣製', 'Unlimited Blade Works', '無限劍製', '무한의 검제'], ['剣が無限に突き立つ丘から、剣の雨を降らせる', 'Rains swords from a hill where blades stand without end', '從無數劍矗立的山丘降下劍雨', '검이 무한히 꽂힌 언덕에서 검의 비를 내린다'], { k: 'rain', D: 6, R: 44, O: 1, v: 'rainfall', sty: 'x_ubw' }),
+  ]),
+  c('佐々木小次郎', 'ささきこじろう', ['Kojiro Sasaki', '佐佐木小次郎', '사사키 코지로'], 'fate', 'purple', 98, ['物干し竿', 'Monohoshizao', '曬衣竿', '모노호시자오'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['宗和の心得', 'Knowledge of the Sowa', '宗和的心得', '종화의 심득'], ['何度見せても見切られない太刀筋', 'Swordplay that cannot be read no matter how many times it is seen', '無論看過幾次都看不穿的刀路', '몇 번을 보여도 간파당하지 않는 칼솜씨'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_tsubame' }),
+    t(['スキル', 'Skill', '技能', '스킬'], ['透化', 'Vitrify', '透化', '투화'], ['明鏡止水の心で、あらゆる攻めを受け流す', 'With a mind like still water, turns aside every attack', '以明鏡止水之心，卸開一切攻擊', '명경지수의 마음으로 모든 공격을 받아 흘린다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_tsubame' }),
+    t(['秘剣', 'Secret Sword', '秘劍', '비검'], ['燕返し', 'Swallow Reversal', '燕返', '제비 베기'], ['三つの太刀筋が、まったく同時に相手を囲む', 'Three sword paths surround the foe at exactly the same instant', '三道刀路完全同時包圍對手', '세 줄기 칼길이 완전히 동시에 상대를 에워싼다'], { k: 'inst', L: 2, R: 24, O: 1, I: .6, v: 'claws', sty: 'x_tsubame' }),
+  ], ['佐佐木小次郎']),
 ];
 
 // ---------- 名前で引く ----------
