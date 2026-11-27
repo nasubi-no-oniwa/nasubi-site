@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11271905';
+import { EXTRA } from './i18n.js?v=11271920';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -62,6 +62,12 @@ export const OT_STY = {
   x_intetsu: { kind: 'bolt', c: '#4a6cff', c2: '#e0e8ff', shape: 'spark', fl: 'f_fang' },
   x_ubw: { kind: 'flame', c: '#ff5a2a', c2: '#ffe9c0', shape: 'ember', fl: 'f_fang' },
   x_tsubame: { kind: 'wind', c: '#b48cff', c2: '#f4eaff', shape: 'streak', fl: 'f_cross' },
+  x_sakanade: { kind: 'mist', c: '#ffd24a', c2: '#ffe9f4', shape: 'spark', fl: 'k_dream' },
+  x_tenken: { kind: 'rock', c: '#a39686', c2: '#fff0d0', shape: 'rock', fl: 'f_quake' },
+  x_suzume: { kind: 'bolt', c: '#ffd21e', c2: '#fff8c8', shape: 'spark', fl: 'f_fang' },
+  x_hyun: { kind: 'bolt', c: '#f4f8ff', c2: '#ffe9a0', shape: 'spark', fl: 'f_crescent' },
+  x_trunks: { kind: 'bolt', c: '#ffe14a', c2: '#7fd0ff', shape: 'spark', fl: 'f_crescent' },
+  x_kiri: { kind: 'mist', c: '#bfe0ee', c2: '#ffffff', shape: 'puff', fl: 'k_dream' },
 };
 
 // 作品
@@ -84,6 +90,7 @@ export const WORKS = {
   aot: ['進撃の巨人', 'Attack on Titan', '進擊的巨人', '진격의 거인'],
   jjk: ['呪術廻戦', 'Jujutsu Kaisen', '咒術迴戰', '주술회전'],
   rakudai: ['落第騎士の英雄譚', 'Chivalry of a Failed Knight', '落第騎士英雄譚', '낙제 기사의 영웅담'],
+  dragonball: ['ドラゴンボール', 'Dragon Ball', '七龍珠', '드래곤볼'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -441,6 +448,65 @@ export const OTHERS = [
     t(['スキル', 'Skill', '技能', '스킬'], ['透化', 'Vitrify', '透化', '투화'], ['明鏡止水の心で、あらゆる攻めを受け流す', 'With a mind like still water, turns aside every attack', '以明鏡止水之心，卸開一切攻擊', '명경지수의 마음으로 모든 공격을 받아 흘린다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_tsubame' }),
     t(['秘剣', 'Secret Sword', '秘劍', '비검'], ['燕返し', 'Swallow Reversal', '燕返', '제비 베기'], ['三つの太刀筋が、まったく同時に相手を囲む', 'Three sword paths surround the foe at exactly the same instant', '三道刀路完全同時包圍對手', '세 줄기 칼길이 완전히 동시에 상대를 에워싼다'], { k: 'inst', L: 2, R: 24, O: 1, I: .6, v: 'claws', sty: 'x_tsubame' }),
   ], ['佐佐木小次郎']),
+  // ---------- 6回目：BLEACH・REBORN・ダイの大冒険・ドラゴンボール・Fate・NARUTO ----------
+  c('卯ノ花烈', 'うのはなれつ', ['Retsu Unohana', '卯之花烈', '우노하나 레츠'], 'bleach', 'red', 99, ['斬魄刀「肉雫唼」', 'Zanpakuto: Minazuki', '斬魄刀「肉雫唼」', '참백도 「미나즈키」'], [
+    t(SHIKAI, ['肉雫唼', 'Minazuki', '肉雫唼', '미나즈키'], ['巨大なエイが傷ついた者を呑みこみ、癒やす', 'A gigantic ray swallows the wounded and heals them', '巨大的魟魚吞下傷者並加以治癒', '거대한 가오리가 다친 자를 삼켜 치유한다'], { k: 'inst', L: 0, R: 10, H: 60, v: 'rain', sty: 'x_beni' }),
+    t(['異名', 'Alias', '異名', '이명'], ['八千流', 'Yachiru', '八千流', '야치루'], ['あらゆる流派をきわめた、初代剣八の剣', 'The sword of the first Kenpachi, who mastered every school', '精通所有流派的初代劍八之劍', '모든 유파를 통달한 초대 켄파치의 검'], { k: 'multi', N: 12, R: 36, v: 'arcs', sty: 'x_beni' }),
+    t(BANKAI, ['皆尽', 'Minazuki', '皆盡', '개진'], ['血のような液があたりを満たす。斬っては癒やし、また斬る', 'A blood-like liquid fills the area. She cuts, heals, and cuts again', '血一般的液體充滿四周。斬了又治，治了再斬', '피 같은 액체가 주위를 채운다. 베고는 치유하고 다시 벤다'], { k: 'flow', L: 1, D: 6, v: 'dragon', sty: 'x_beni' }),
+  ], ['卯之花烈']),
+  c('平子真子', 'ひらこしんじ', ['Shinji Hirako', '平子真子', '히라코 신지'], 'bleach', 'yellow', 95, ['斬魄刀「逆撫」', 'Zanpakuto: Sakanade', '斬魄刀「逆撫」', '참백도 「사카나데」'], [
+    t(SHIKAI, ['逆撫', 'Sakanade', '逆撫', '사카나데'], ['上下・左右・前後を逆さまに感じさせて惑わす', 'Makes up and down, left and right, front and back all feel reversed', '使上下、左右、前後的感覺全部顛倒', '위아래·좌우·앞뒤를 거꾸로 느끼게 해 현혹한다'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_sakanade' }),
+    t(['虚化', 'Hollowfication', '虛化', '호로화'], ['虚閃', 'Cero', '虛閃', '세로'], ['仮面をつけ、破壊の光線を放つ', 'Dons the mask and fires a beam of destruction', '戴上面具，放出破壞的光線', '가면을 쓰고 파괴의 광선을 쏜다'], { k: 'inst', L: 1, R: 50, O: 1, v: 'thrust', sty: 'x_beni' }),
+    t(BANKAI, ['逆様邪八方塞', 'Sakashima Yokoshima Happofusagari', '逆樣邪八方塞', '역양사팔방색'], ['敵と味方の見分けを逆さまにし、同士討ちさせる', 'Reverses the sense of friend and foe so they strike each other', '顛倒敵我的辨識，使其自相殘殺', '적과 아군의 구분을 뒤집어 서로 치게 한다'], { k: 'aura', L: 9, R: 10, D: 5, v: 'calm', sty: 'x_sakanade' }),
+  ]),
+  c('狛村左陣', 'こまむらさじん', ['Sajin Komamura', '狛村左陣', '코마무라 사진'], 'bleach', 'gray', 95, ['斬魄刀「天譴」', 'Zanpakuto: Tenken', '斬魄刀「天譴」', '참백도 「천견」'], [
+    t(SHIKAI, ['天譴', 'Tenken', '天譴', '천견'], ['巨人の腕と刀が現れ、同じ動きで斬る', "A giant's arm and sword appear and cut with the same motion", '巨人的手臂與刀出現，以相同動作斬擊', '거인의 팔과 칼이 나타나 같은 움직임으로 벤다'], { k: 'inst', L: 2, R: 30, O: 1, v: 'fall', sty: 'x_tenken' }),
+    t(BANKAI, ['黒縄天譴明王', 'Kokujo Tengen Myo-o', '黑繩天譴明王', '흑승천견명왕'], ['巨大な鎧武者が、同じ動きで叩き斬る', 'A colossal armored warrior strikes with the same motion', '巨大的鎧甲武者以相同動作劈斬', '거대한 갑옷 무사가 같은 움직임으로 내리친다'], { k: 'inst', L: 9, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_tenken' }),
+    t(BANKAI, ['断鎧縄衣', 'Dangai Joe', '斷鎧繩衣', '단개승의'], ['鎧を脱いだ明王は、いくら斬られても倒れない', 'With its armor shed, the Myo-o does not fall no matter how it is cut', '脫去鎧甲的明王，無論被斬多少次都不會倒下', '갑옷을 벗은 명왕은 아무리 베여도 쓰러지지 않는다'], { k: 'flow', L: 2, D: 6, O: 1, v: 'dragon', sty: 'x_tenken' }),
+  ]),
+  c('砕蜂', 'そいふぉん', ['Soi Fon', '碎蜂', '소이퐁'], 'bleach', 'yellow', 96, ['斬魄刀「雀蜂」', 'Zanpakuto: Suzumebachi', '斬魄刀「雀蜂」', '참백도 「스즈메바치」'], [
+    t(SHIKAI, ['弐撃決殺', 'Death in Two Steps', '貳擊決殺', '이격결살'], ['同じ場所を二度刺せば、かならず倒れる', 'Stab the same spot twice and the foe is certain to fall', '同一處刺中兩次，對手必定倒下', '같은 곳을 두 번 찌르면 반드시 쓰러진다'], { k: 'multi', N: 8, R: 26, v: 'arcs', sty: 'x_suzume' }),
+    t(['瞬閧', 'Shunko', '瞬閧', '순홍'], ['瞬閧', 'Shunko', '瞬閧', '순홍'], ['風の鬼道を手足にまとう、高等の白打', 'An advanced hand-to-hand art that wraps wind kido around the limbs', '將風之鬼道纏繞於手腳的高等白打', '바람의 귀도를 손발에 두르는 고등 백타'], { k: 'aura', L: 1, R: 7, D: 4, v: 'vortex', sty: 'x_suzume' }),
+    t(BANKAI, ['雀蜂雷公鞭', 'Jakuho Raikoben', '雀蜂雷公鞭', '작봉뇌공편'], ['巨大な針を撃ち出し、大爆発させる', 'Fires a gigantic stinger that sets off a massive explosion', '射出巨大的針，引發大爆炸', '거대한 침을 쏘아 대폭발을 일으킨다'], { k: 'inst', L: 9, R: 60, O: 1, I: .8, v: 'mega', sty: 'x_bazooka' }),
+  ], ['ソイフォン']),
+  // ---------- REBORN! ----------
+  c('スペルビ・スクアーロ', 'すぺるびすくあーろ', ['Superbi Squalo', '斯貝爾比・斯庫瓦羅', '스페르비 스쿠알로'], 'reborn', 'blue', 96, ['剣帝を倒した剣', 'The Sword That Beat the Sword Emperor', '擊敗劍帝之劍', '검제를 쓰러뜨린 검'], [
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['鮫の牙', 'Zanna di Squalo', '鮫之牙', '상어의 이빨'], ['目にもとまらない連続の突き', 'A string of thrusts too fast to see', '快得看不見的連續突刺', '눈에도 보이지 않는 연속 찌르기'], { k: 'multi', N: 10, R: 28, v: 'arcs', sty: 'x_shigure' }),
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['鮫衝撃', 'Attacco di Squalo', '鮫衝擊', '상어 충격'], ['強い衝撃を伝えて、相手の体をしびれさせる', 'Sends a heavy shock through the foe that numbs the body', '傳遞強烈衝擊，使對手身體麻痺', '강한 충격을 전해 상대의 몸을 마비시킨다'], { k: 'slow', D: 4, S: .4, v: 'eye', sty: 'x_shigure' }),
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['鮫特攻', 'Scontro di Squalo', '鮫特攻', '상어 특공'], ['剣を振りまわしながら突進し、えぐり抜く', 'Charges while whirling the sword and gouges straight through', '一邊揮舞劍一邊突進，剜穿而過', '검을 휘두르며 돌진해 도려내며 지나간다'], { k: 'inst', L: 1, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_shigure' }),
+  ]),
+  // ---------- ダイの大冒険 ----------
+  c('ヒュンケル', '', ['Hyunckel', '修凱爾', '흉켈'], 'dai', 'white', 96, ['アバン流刀殺法と光の闘気', 'Avan Style & Aura of Light', '阿邦流刀殺法與光之鬥氣', '아방류 도살법과 빛의 투기'], [
+    t(['必殺技', 'Finishing Move', '必殺技', '필살기'], ['ブラッディースクライド', 'Bloody Scryde', '血腥螺旋突', '블러디 스크라이드'], ['剣を高速で回転させながら突きだす', 'Thrusts while spinning the sword at high speed', '一邊高速旋轉劍一邊刺出', '검을 고속으로 회전시키며 찌른다'], { k: 'inst', L: 0, R: 50, O: 1, v: 'thrust', sty: 'x_hyun' }),
+    t(['アバン流刀殺法', 'Avan-Style', '阿邦流刀殺法', '아방류 도살법'], ['海波斬', 'Wave Slash', '海波斬', '해파참'], ['速さで、炎も水も斬り裂く', 'Cuts through fire and water with sheer speed', '以速度斬開火焰與水', '속도로 불꽃도 물도 베어 가른다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_hyun' }),
+    t(['暗黒闘気', 'Dark Aura', '暗黑鬥氣', '암흑 투기'], ['闘魔傀儡掌', 'Toma Kugutsusho', '鬥魔傀儡掌', '투마괴뢰장'], ['暗黒闘気の糸で相手をあやつり、動きを封じる', 'Controls the foe with threads of dark aura and seals their movement', '以暗黑鬥氣之絲操縱對手，封住行動', '암흑 투기의 실로 상대를 조종해 움직임을 봉한다'], { k: 'slow', D: 5, S: .3, v: 'eye', sty: 'x_hyun' }),
+    t(['光の闘気', 'Aura of Light', '光之鬥氣', '빛의 투기'], ['グランドクルス', 'Grand Cross', '十字聖擊', '그랜드 크루스'], ['十字にかまえた武器から、命がけの光の闘気を放つ', 'Releases a life-risking aura of light from a weapon held in a cross', '從架成十字的武器放出賭上性命的光之鬥氣', '십자로 겨눈 무기에서 목숨을 건 빛의 투기를 쏜다'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', sty: 'x_hyun' }),
+  ], [], ['ヒュンケル']),
+  // ---------- ドラゴンボール ----------
+  c('トランクス', '', ['Trunks', '特南克斯', '트랭크스'], 'dragonball', 'purple', 97, ['剣', 'Sword', '劍', '검'], [
+    t(['剣', 'Sword', '劍', '검'], ['シャイニングソードアタック', 'Shining Sword Attack', '閃光劍擊', '샤이닝 소드 어택'], ['一瞬で細かく斬りきざみ、気功波で消しとばす', 'Dices the foe in an instant, then wipes out the pieces with a ki blast', '一瞬間細細切碎，再以氣功波消滅', '한순간에 잘게 썰고 기공파로 날려 버린다'], { k: 'multi', N: 12, R: 30, v: 'arcs', sty: 'x_trunks' }),
+    t(['気功波', 'Ki Blast', '氣功波', '기공파'], ['バーニングアタック', 'Burning Attack', '燃燒攻擊', '버닝 어택'], ['腕をすばやく動かしてから、気の弾を撃つ', 'Whips his arms through rapid motions, then fires a ball of ki', '快速擺動雙臂後射出氣彈', '팔을 빠르게 움직인 뒤 기의 탄을 쏜다'], { k: 'inst', L: 1, R: 45, O: 1, v: 'thrust', sty: 'x_trunks' }),
+    t(['気功波', 'Ki Blast', '氣功波', '기공파'], ['ヒートドームアタック', 'Heat Dome Attack', '熱圓頂攻擊', '히트 돔 어택'], ['まわりを気のドームでおおい、真上へ撃ちあげる', 'Covers the area in a dome of ki and blasts it straight up', '以氣之圓頂覆蓋四周，朝正上方擊出', '주위를 기의 돔으로 덮고 바로 위로 쏘아 올린다'], { k: 'aura', L: 2, R: 9, D: 4, O: 1, v: 'vortex', sty: 'x_trunks' }),
+    t(['剣', 'Sword', '劍', '검'], ['希望の剣', 'Sword of Hope', '希望之劍', '희망의 검'], ['みんなの気を集めた光の剣で両断する', "Cleaves with a blade of light gathered from everyone's ki", '以匯聚眾人之氣的光之劍一刀兩斷', '모두의 기를 모은 빛의 검으로 양단한다'], { k: 'inst', L: 9, R: 65, O: 1, I: 1, v: 'mega', sty: 'x_trunks' }),
+  ], [], ['トランクス']),
+  // ---------- Fate ----------
+  c('ギルガメッシュ', '', ['Gilgamesh', '吉爾伽美什', '길가메시'], 'fate', 'yellow', 100, ['王の財宝', 'Gate of Babylon', '王之財寶', '왕의 재보'], [
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['王の財宝', 'Gate of Babylon', '王之財寶', '왕의 재보'], ['宝物庫の扉を開き、数えきれない宝具を撃ち出す', 'Opens the gates of his treasury and fires countless Noble Phantasms', '開啟寶庫之門，射出數不清的寶具', '보물고의 문을 열어 셀 수 없는 보구를 쏘아 낸다'], { k: 'rain', D: 5, R: 44, O: 1, v: 'rainfall', sty: 'x_excalibur' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['天の鎖', 'Enkidu: Chains of Heaven', '天之鎖', '하늘의 사슬'], ['神に近いものほど固くしばる鎖', 'Chains that bind tighter the closer the target is to the gods', '越接近神的存在就綁得越緊的鎖鏈', '신에 가까운 자일수록 단단히 묶는 사슬'], { k: 'slow', D: 6, S: .25, v: 'eye', sty: 'x_excalibur' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['天地乖離す開闢の星', 'Enuma Elish', '天地乖離開闢之星', '천지를 가르는 개벽의 별'], ['乖離剣エアで、世界ごと斬り裂く', 'Cuts apart the world itself with Ea, the Sword of Rupture', '以乖離劍Ea連同世界一起斬裂', '괴리검 에아로 세계째 베어 가른다'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_haoshoku' }),
+  ], [], ['ギルガメッシュ']),
+  c('沖田総司', 'おきたそうじ', ['Soji Okita', '沖田總司', '오키타 소지'], 'fate', 'sakura', 98, ['天然理心流', 'Tennen Rishin Style', '天然理心流', '천연이심류'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['縮地', 'Shukuchi', '縮地', '축지'], ['一瞬で間合いをつめる歩法で、斬りぬける', 'Cuts through using footwork that closes the distance in an instant', '以一瞬間拉近距離的步法斬穿而過', '한순간에 거리를 좁히는 보법으로 베고 지나간다'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_okita' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['誠の旗', 'Flag of Sincerity', '誠之旗', '성(誠)의 깃발'], ['新選組の隊士たちを呼び出し、ともに斬りこむ', 'Summons the men of the Shinsengumi to charge in together', '喚出新選組的隊士們一同斬入', '신선조 대원들을 불러내 함께 베어 들어간다'], { k: 'multi', N: 12, R: 36, v: 'arcs', sty: 'x_okita' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['無明三段突き', 'Mumyo Sandanzuki', '無明三段突', '무명삼단찌르기'], ['まったく同時に放たれる三つの突き。防ぐことはできない', 'Three thrusts delivered at exactly the same instant. They cannot be blocked', '完全同時刺出的三段突刺。無法防禦', '완전히 동시에 나가는 세 번의 찌르기. 막을 수 없다'], { k: 'inst', L: 0, R: 40, O: 1, I: .6, v: 'thrust', sty: 'x_okita' }),
+  ]),
+  // ---------- NARUTO ----------
+  c('桃地再不斬', 'ももちざぶざ', ['Zabuza Momochi', '桃地再不斬', '모모치 자부자'], 'naruto', 'white', 92, ['首斬り包丁', "Executioner's Blade", '斬首大刀', '참수대도'], [
+    t(['忍術', 'Ninjutsu', '忍術', '인술'], ['霧隠れの術', 'Hidden Mist Jutsu', '霧隱之術', '안개 은신술'], ['濃い霧で姿を隠し、相手の目をうばう', 'Hides in thick mist and robs the foe of sight', '以濃霧隱藏身影，奪去對手的視線', '짙은 안개로 모습을 숨겨 상대의 눈을 빼앗는다'], { k: 'slow', D: 6, S: .4, v: 'eye', sty: 'x_kiri' }),
+    t(['暗殺術', 'Assassination Art', '暗殺術', '암살술'], ['無音殺人術', 'Silent Killing', '無聲殺人術', '무음 살인술'], ['音だけをたよりに、霧の中から斬る', 'Cuts from within the mist, guided by sound alone', '只憑聲音，從霧中斬擊', '소리만을 의지해 안개 속에서 벤다'], { k: 'multi', N: 8, R: 30, v: 'arcs', sty: 'x_kiri' }),
+    t(['水遁', 'Water Release', '水遁', '수둔'], ['水龍弾の術', 'Water Dragon Jutsu', '水龍彈之術', '수룡탄술'], ['水の龍を放って押し流す', 'Unleashes a dragon of water that sweeps everything away', '放出水龍沖走一切', '물의 용을 풀어 휩쓸어 버린다'], { k: 'flow', L: 1, D: 4.5, v: 'dragon', sty: 'x_shigure' }),
+    t(['首斬り包丁', "Executioner's Blade", '斬首大刀', '참수대도'], ['首斬り', 'Beheading', '斬首', '참수'], ['大刀のひと振りで両断する', 'Cleaves in two with one swing of the great blade', '大刀一揮，一刀兩斷', '대도의 한 번 휘두름으로 양단한다'], { k: 'inst', L: 2, R: 16, O: 1, v: 'arcH', sty: 'x_kiri' }),
+  ]),
 ];
 
 // ---------- 名前で引く ----------
