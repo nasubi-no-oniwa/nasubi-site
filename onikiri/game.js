@@ -1,12 +1,13 @@
-import { THREE, GLTFLoader } from './lib.js?v=11271700';
-import { COLORS, CHARS, ORDER } from './data.js?v=11271700';
-import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11271700';
-import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11271700';
-import { makeFx, STY } from './fx.js?v=11271700';
-import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11271700';
-import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd , genNameL } from './oni.js?v=11271700';
-import { locW, descL, nameL, oniNameL } from './i18n.js?v=11271700';
-Object.assign(STY, ONI_STY); COLORS.oni = { hex: '#b3122a', name: { ja: '鬼', en: 'Demon', zh: '鬼', ko: '귀신' }, kokyu: { ja: '血鬼術', en: 'Blood Demon Art', zh: '血鬼術', ko: '혈귀술' } };
+import { THREE, GLTFLoader } from './lib.js?v=11271730';
+import { COLORS, CHARS, ORDER } from './data.js?v=11271730';
+import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11271730';
+import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11271730';
+import { makeFx, STY } from './fx.js?v=11271730';
+import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11271730';
+import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd , genNameL } from './oni.js?v=11271730';
+import { locW, descL, nameL, oniNameL } from './i18n.js?v=11271730';
+import { OT_STY, ETC, otherOf, otherByName, otName, otSch, otWork } from './others.js?v=11271730';
+Object.assign(STY, ONI_STY, OT_STY); COLORS.etc = ETC; COLORS.oni = { hex: '#b3122a', name: { ja: '鬼', en: 'Demon', zh: '鬼', ko: '귀신' }, kokyu: { ja: '血鬼術', en: 'Blood Demon Art', zh: '血鬼術', ko: '혈귀술' } };
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -58,7 +59,7 @@ const TX = {
     rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」은(는) 귀신${R.oni.as && R.oni.as !== R.name ? '(' + esc(oniNameL(R.oni.as, L)) + ')' : ''}<br>혈귀술: <b>${esc(wz)}</b><br>쓰러뜨린 대원 <b>${k}</b>명`, postO: (R, d, k, wz) => `「${R.name}」은(는) 귀신이 되었다.\n혈귀술 「${wz}」(으)로 ${d.toLocaleString()}m를 달려 대원을 ${k}명 쓰러뜨렸다.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '이름 하나당 1건(그 이름으로 가장 멀리 달린 기록)・상위 100', loading: '불러오는 중…', rkErr: '불러올 수 없었습니다', rkEmpty: '아직 기록이 없습니다', nogl: '이 기기에서는 3D를 표시할 수 없었습니다', capCol: (c, k) => `${c}　${k}`,
     akaS: '혁도', cardO: as => '귀신' + (as ? '・' + as : '') + '・혈귀술', sepW: ', ' },
 };
-function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || [])[1]; if (TX[q]) return q; const s = ls.get('onikiri_lang', null); if (TX[s]) return s; const n = (navigator.language || 'ja').toLowerCase(); return n.startsWith('ja') ? 'ja' : n.startsWith('zh') ? 'zh' : n.startsWith('ko') ? 'ko' : 'en'; }
+function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || [])[1]; if (TX[q]) return q; const s = ls.get('onikiri_lang', null) || ls.get('katana_lang', null); if (TX[s]) return s; const n = (navigator.language || 'ja').toLowerCase(); return n.startsWith('ja') ? 'ja' : n.startsWith('zh') ? 'zh' : n.startsWith('ko') ? 'ko' : 'en'; }
 let L = pickLang(), T = TX[L];
 const cl = k => (COLORS[k].name[L] || COLORS[k].name.en), kk = k => (COLORS[k].kokyu[L] || COLORS[k].kokyu.en);
 // 技の言葉：lw=技1つをいまの言葉に、trWz=記録に残っている日本語の技名（「、」区切り）をいまの言葉に
@@ -84,6 +85,7 @@ ONI_TITLES.forEach(([al, nm]) => { const c = CHARS.find(c => c.n[0] === nm); if 
 const POOL = ORDER.map(k => [k, COLORS[k].w]);
 function judge(name) {
   const n = norm(name); const r1 = hash(n, 0x6b61), r2 = hash(n, 0x7461);
+  const o = otherOf(name); if (o) return { key: o.k, den: o.den, n, aka: false, stab: false, ch: o.n[0], ot: o }; // 別作品の剣士（フルネームのときだけ）
   const c = CHMAP.get(charKey(name)); if (c) return { key: c.k, den: c.den, n, aka: !!c.aka, stab: !!c.stab, ch: c.n[0] };
   let key = null, x = r1 * 100; for (const [k, w] of POOL) { if (x < w) { key = k; break; } x -= w; } key = key || 'none';
   let den;
@@ -94,9 +96,10 @@ function judge(name) {
   return { key, den, n };
 }
 // 使える型（キャラは作中の設定、それ以外は才能％で下から。端数は切り上げ）
+const wzOf = r => (r.ot ? r.ot.wz : WAZA[r.key]); // その人の技の表（別作品の剣士は、その人だけの技）
 function usable(R) {
-  const W = WAZA[R.key]; if (!W) return [];
-  const all = W.map((_, i) => i);
+  const W = wzOf(R); if (!W) return [];
+  const all = W.map((_, i) => i); if (R.ot) return all;
   if (R.ch) { const cw = CHAR_WAZA[R.ch]; if (cw === 'all') return all; if (cw) return cw; return all.slice(0, Math.min(CHAR_CAP[R.ch] || W.length, unlocked(W.length, R.den))); }
   return all.slice(0, unlocked(W.length, R.den));
 }
@@ -212,7 +215,7 @@ function mkKishi() { // 隊士：体（色は頂点）＋羽織（1体ごとに�
 }
 // 敵の鬼（Blender で作った鬼。自分が鬼になったときと同じ姿。頸を斬ると頭が飛ぶ）。読みこみが終わるまでは前の鬼を出す
 let OLO = null, OM = null;
-new GLTFLoader().load('models/oni_lo.glb?v=11271700', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
+new GLTFLoader().load('models/oni_lo.glb?v=11271730', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
 function mkOni2() {
   OM = OM || { body: vtoon(), glow: new THREE.MeshBasicMaterial({ vertexColors: true }) }; const g = new THREE.Group(), body = new THREE.Group(), head = new THREE.Group(), K = OLO; g.add(body, head);
   body.add(withOut(K.body.geometry, OM.body)); if (K.marks) body.add(new THREE.Mesh(K.marks.geometry, OM.glow));
@@ -248,11 +251,11 @@ const costOf = r => Math.max(1.5, 15 * (1 - r.den / 100)) * (r.akaDone ? .9 : 1)
 let ONIMODE = false;
 function newRun() {
   clearEnts(); ONIMODE = !!R.oni && !!KISHI; $('shL').textContent = R.oni ? T.regen : T.sharp; const den = R.den, cost = costOf(R);
-  G = { t: 0, dist: 0, speed: 13, lane: 2, x: 0, max: Math.round(70 + 30 * den / 100), cost, sharp: 0, gauge: 0, kills: 0, over: 0, inv: 0, fx: null, slowT: 0, slowS: 1, hit: 0, lastCut: -9, next: 12, safe: 2, shake: 0, pend: [], sel: 0, wz: SEL.map(i => WAZA[R.key][i]), used: {}, why: '', cutN: 0, pt: 0 };
+  G = { t: 0, dist: 0, speed: 13, lane: 2, x: 0, max: Math.round(70 + 30 * den / 100), cost, sharp: 0, gauge: 0, kills: 0, over: 0, inv: 0, fx: null, slowT: 0, slowS: 1, hit: 0, lastCut: -9, next: 12, safe: 2, shake: 0, pend: [], sel: 0, wz: SEL.map(i => wzOf(R)[i]), used: {}, why: '', cutN: 0, pt: 0 };
   G.sharp = G.max; for (let z = -48; z > -124; z -= 19) spawnRow(z); G.next = 12; hudWaza(); $('hud').hidden = false; $('wzBtns').hidden = !G.wz.length; $('wzB').hidden = G.wz.length < 2; RIG.setLoop(null); setLook(1); ST = 'run'; hudStep(true); BGM.start(); G.snapT = .7; G.snapP = 0; G.snapBest = 0; snapHas = false;
   const hn = ls.get('onikiri_hint', 0); if (hn < 3) { ls.set('onikiri_hint', hn + 1); const h = $('hint'); h.hidden = false; gsap.killTweensOf(h); gsap.fromTo(h, { opacity: 0 }, { opacity: 1, duration: .25 }); gsap.to(h, { opacity: 0, duration: .5, delay: 3.2, onComplete: () => { h.hidden = true; } }); } else $('hint').hidden = true;
 }
-const KEY = () => { if (R && R.oni) { const w = G && G.wz && G.wz[G.sel]; return (w && STY[w[3].sty] && w[3].sty) || 'oni'; } return R && STY[R.key] ? R.key : 'none'; };
+const KEY = () => { const w = G && G.wz && G.wz[G.sel], st = w && w[3].sty; if (st && STY[st] && R && (R.oni || R.ot)) return st; if (R && R.oni) return 'oni'; return R && STY[R.key] ? R.key : 'none'; };
 function auraCol() { if (!R || R.key === 'none') return new THREE.Color(0x9aa0aa); const c = new THREE.Color(STY[R.key].c); if (R.akaDone) c.lerp(new THREE.Color(0xff2a14), .6); return c; }
 const hexOf = () => '#' + auraCol().getHexString();
 function setLook(aura) {
@@ -309,9 +312,16 @@ function castFx(p) {
 }
 // 血鬼術ごとの演出（見た目の種類ごとに、氷柱・棘・衝撃波・爆ぜる血・糸の網などを足す）
 function flair(p, K, light) {
-  if (!R.oni) return; const S = STY[K], x = G.x, Rr = p.R || 12, all = p.L >= 9 || p.k === 'rain' || p.k === 'slow', Wd = (all ? 5 : 2 * (p.L || 0) + 1) * LW, cx = all ? 0 : x, st = p.sty, q = light ? .5 : 1;
+  if (!p.sty) return; const S = STY[K], x = G.x, Rr = p.R || 12, all = p.L >= 9 || p.k === 'rain' || p.k === 'slow', Wd = (all ? 5 : 2 * (p.L || 0) + 1) * LW, cx = all ? 0 : x, st = S.fl || p.sty, q = light ? .5 : 1;
   const zs = n => { const m = Math.max(2, Math.round(n * q)); return Array.from({ length: m }, (_, i) => -2 - (Rr - 2) * (i + .5) / m); }, rx = () => cx + rnd(-Wd, Wd) * .5;
-  if (st === 'k_ice' || st === 'k_lotus') { zs(6).forEach(z => { for (const s of [-1, 1]) FX.vbeam(K, cx + s * (Wd / 2 + .2) + rnd(-.3, .3), z, rnd(2.5, 5), .5, rnd(.7, 1.2), { a: .9 }); }); if (!light) FX.arcFlat(K, cx, -Rr * .5, Wd + 3, 1.6, { grow: .3, a: .5, y: .06 }); FX.burst(K, cx, 2.5, -Rr * .4, 30 * q, { sp: 5, w: Wd, g: 6, life: 1.4 }); }
+  // 別作品の技の演出
+  if (st === 'f_crescent') { const n = light ? 1 : (all ? 3 : 2); for (let i = 0; i < n; i++) FX.arcVert(K, cx + (i - (n - 1) / 2) * Wd * .32, -2 - i, 5 + i, .8, { vz: -Rr * 1.5, y: 2.1, a: .95 }); if (!light) { FX.ring(S.c2, x, -1, 1.2, .5, { grow: 10 }); FX.glow(S.c, cx, 2, -Rr * .4, 9, .5, { a: .45 }); G.shake = Math.max(G.shake, .5); } FX.burst(K, cx, 1.6, -Rr * .4, 18 * q, { sp: 9, fwd: 8, w: Wd, life: 1 }); }
+  else if (st === 'f_petal') { for (let i = 0; i < 16 * q; i++) FX.arcVert(K, rx(), -rnd(1, Math.max(8, Rr)), rnd(.7, 1.6), rnd(.6, 1.2), { rz: rnd(0, 6.28), spin: rnd(-9, 9), y: rnd(.6, 3) }); FX.burst(K, cx, 2.4, -Rr * .45, 46 * q, { sp: 5, w: Wd + 2, g: 1.5, life: 2 }); if (!light) { FX.glow(S.c, cx, 1.6, -Rr * .4, 10, .9, { a: .3 }); FX.arcFlat(K, cx, -Rr * .5, Wd + 3, 1.4, { grow: .4, a: .45, y: .06 }); } }
+  else if (st === 'f_pillar') { zs(5).forEach(z => { for (const sd of [-1, 1]) FX.vbeam(K, cx + sd * (Wd / 2 + .3) + rnd(-.4, .4), z, rnd(5, 9), .9, rnd(.6, 1), { a: .9, vy: 2 }); FX.burst(K, rx(), .4, z, 10, { sp: 6, g: -6, life: 1.1 }); }); if (!light) { flash(S.c, .3); FX.glow(S.c2, cx, 1.5, -Rr * .4, 11, .6, { a: .4 }); G.shake = Math.max(G.shake, .55); } }
+  else if (st === 'f_cross') { const n = light ? 1 : 2; for (let i = 0; i < n; i++) for (const sd of [-1, 1]) FX.arcFlat(K, cx, -2.5 - i * 1.5, Wd + 3, .6, { rz: sd * .7, vz: -Rr * 1.3, a: .9, y: 1.1 + i * .3 }); FX.burst(K, cx, 1.2, -3, 16 * q, { sp: 10, fwd: 10, w: Wd, life: .8 }); if (!light) G.shake = Math.max(G.shake, .4); }
+  else if (st === 'f_fang') { for (let i = 0; i < 9 * q; i++) FX.beam(K, cx + rnd(-Wd, Wd) * .3, -rnd(0, 2), -rnd(Rr * .7, Rr), .22, rnd(.25, .5)); for (let i = 0; i < 3; i++) FX.ring(i % 2 ? S.c2 : S.c, cx, -2 - i * (Rr / 3.5), .7 + i * .25, .4 + i * .1, { grow: 7 }); if (!light) G.shake = Math.max(G.shake, .45); }
+  else if (st === 'f_quake') { zs(4).forEach(z => { const bx = rx(); FX.vbeam(K, bx, z, rnd(2, 4), 1, .5, { vy: 4 }); FX.burst(K, bx, .5, z, 12, { sp: 9, g: 16, life: .9 }); }); if (!light) { FX.ring(S.c, x, -1.5, 1.5, .6, { grow: 12 }); flash(S.c2, .22); G.shake = Math.max(G.shake, .85); } }
+  else if (st === 'k_ice' || st === 'k_lotus') { zs(6).forEach(z => { for (const s of [-1, 1]) FX.vbeam(K, cx + s * (Wd / 2 + .2) + rnd(-.3, .3), z, rnd(2.5, 5), .5, rnd(.7, 1.2), { a: .9 }); }); if (!light) FX.arcFlat(K, cx, -Rr * .5, Wd + 3, 1.6, { grow: .3, a: .5, y: .06 }); FX.burst(K, cx, 2.5, -Rr * .4, 30 * q, { sp: 5, w: Wd, g: 6, life: 1.4 }); }
   else if (st === 'k_thorn') { for (let i = 0; i < 16 * q; i++) FX.arcVert(K, rx(), -rnd(2, Rr), rnd(2.5, 5), rnd(.4, .8), { rz: rnd(0, 6.28), y: rnd(.6, 2.2) }); G.shake = Math.max(G.shake, .5 * q); }
   else if (st === 'k_akaza') { for (let i = 0; i < 3; i++) FX.ring(i % 2 ? S.c2 : S.c, x, -1.5 - i * (Rr / 4), 1 + i * .4, .5 + i * .12, { grow: 9 }); FX.burst(K, x, 1.2, -2, 24 * q, { sp: 12, fwd: 6 }); G.shake = Math.max(G.shake, .45 * q); }
   else if (st === 'k_baku') { zs(5).forEach(z => { const bx = rx(); FX.glow(S.c, bx, 1.2, z, rnd(4, 7), .5); FX.burst(K, bx, 1, z, 14, { sp: 9, life: .9 }); }); if (!light) flash(S.c, .4); G.shake = Math.max(G.shake, .6 * q); }
@@ -340,7 +350,7 @@ function useWaza() {
   if (ST !== 'run' || G.over || !G.wz.length || G.gauge < 100 || G.fx || RIG.playing()) return;
   const w = G.wz[G.sel], p = w[3], col = hexOf(), a = actOf(p);
   G.gauge = 0; G.used[artName(w)] = 1; sfx('waza'); FX.trail.key(KEY()); flash(col, .2); if (TIPN < 3) ls.set('onikiri_tip', ++TIPN); reqSnap(2, p.k === 'inst' ? (ACTHIT[a] || .2) + .13 : .55);
-  const el = $('wz'), wl = lw(w); el.innerHTML = R.oni ? `<small>${esc(wl[0])}</small>${esc(wl[1])}` : `<small>${esc(kk(R.key))}</small>${esc(wl[0])}　${esc(wl[1])}`; el.classList.toggle('lat', L === 'en'); el.classList.toggle('oni', !!R.oni); if (R.oni) { gsap.fromTo('#tint', { opacity: .5 }, { opacity: 0, duration: .9 }); if (p.ring) { for (let i = 0; i < 6; i++) FX.arcFlat(KEY(), G.x, -1, 6.5, p.D, { rz: i * 1.047, follow: 1, hold: 1, spin: .5, y: .08, a: .8 }); FX.ring(STY[KEY()].c2, G.x, -1, 3.2, p.D, { follow: 1, hold: 1 }); FX.ring(STY[KEY()].c, G.x, -1, 1.6, p.D, { follow: 1, hold: 1 }); } } gsap.killTweensOf(el); gsap.fromTo(el, { opacity: 0, y: 8 }, { opacity: .62, y: 0, duration: .18 }); gsap.to(el, { opacity: 0, duration: .5, delay: 1.0 });
+  const el = $('wz'), wl = lw(w); el.innerHTML = R.oni ? `<small>${esc(wl[0])}</small>${esc(wl[1])}` : `<small>${esc(R.ot ? R.kk : kk(R.key))}</small>${R.ot && wl[0] === R.kk ? '' : esc(wl[0]) + '　'}${esc(wl[1])}`; { const n = wlen(el.textContent) - wlen(el.firstChild.textContent); el.style.fontSize = L === 'en' || R.oni ? '' : n > 17 ? '15px' : n > 12 ? '18px' : ''; } el.classList.toggle('lat', L === 'en'); el.classList.toggle('oni', !!R.oni); if (R.oni) { gsap.fromTo('#tint', { opacity: .5 }, { opacity: 0, duration: .9 }); if (p.ring) { for (let i = 0; i < 6; i++) FX.arcFlat(KEY(), G.x, -1, 6.5, p.D, { rz: i * 1.047, follow: 1, hold: 1, spin: .5, y: .08, a: .8 }); FX.ring(STY[KEY()].c2, G.x, -1, 3.2, p.D, { follow: 1, hold: 1 }); FX.ring(STY[KEY()].c, G.x, -1, 1.6, p.D, { follow: 1, hold: 1 }); } } gsap.killTweensOf(el); gsap.fromTo(el, { opacity: 0, y: 8 }, { opacity: .62, y: 0, duration: .18 }); gsap.to(el, { opacity: 0, duration: .5, delay: 1.0 });
   if (p.H) G.sharp = Math.min(G.max, G.sharp + p.H);
   if (p.k === 'inst') { const hit = RIG.play(a) || .1; G.hit = hit + .14; G.inv = Math.max(G.inv, hit + (p.I || .45)); FX.trail.on(hit + .45); G.pend.push({ t: hit, f: () => { zoneKill(p.L, p.R, p.O); castFx(p); } }); }
   else { const D = p.k === 'multi' ? p.N * .1 + .15 : p.D; G.hit = .3; G.fx = { p, t: 0, D, tick: 0, n: 0 }; if (a) RIG.setLoop(a); FX.trail.on(D); if (p.k === 'slow') { G.slowT = p.D; G.slowS = p.S; } auraFx(p); }
@@ -355,7 +365,7 @@ function runStep(dt) {
   for (let i = G.pend.length - 1; i >= 0; i--) { const k = G.pend[i]; k.t -= dt; if (k.t <= 0) { G.pend.splice(i, 1); k.f(); } }
   // 続く型
   const F = G.fx; let immune = G.inv > 0, ghost = false, brk = false;
-  if (F && R.oni) { F.fl = (F.fl == null ? .6 : F.fl) - dt; if (F.fl <= 0) { F.fl = .6; flair(F.p, KEY(), true); } }
+  if (F && F.p && F.p.sty) { F.fl = (F.fl == null ? .6 : F.fl) - dt; if (F.fl <= 0) { F.fl = .6; flair(F.p, KEY(), true); } }
   if (G.inv > 0) G.inv -= dt;
   if (F) {
     F.t += dt; F.tick -= dt; const p = F.p, K = KEY();
@@ -446,14 +456,14 @@ function move(d) { if (ST !== 'run' || G.over) return; if (G.fx && G.fx.p.k === 
 addEventListener('keydown', e => { if (ST !== 'run') return; if (e.key === 'ArrowLeft' || e.key === 'a') move(-1); else if (e.key === 'ArrowRight' || e.key === 'd') move(1); else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); useWaza(); } else if (e.key === 'ArrowUp' || e.key === 'Shift' || e.key === 'w') swapWaza(); });
 
 // ---------- 握る（前作「色変わりの刀」の場面をそのまま使う） ----------
-function prep(name) { R = judge(name); R.name = name; R.akaDone = false; if (R.key === 'nezuko' || oniHas(name)) return setOni(R); R.kk = kk(R.key); R.forms = usable(R); R.slots = R.den >= 100 && R.forms.length >= 2 ? 2 : (R.forms.length ? 1 : 0); return R; }
+function prep(name) { R = judge(name); R.name = name; R.akaDone = false; if (R.key === 'nezuko' || oniHas(name)) return setOni(R); R.kk = R.ot ? otSch(R.ot, L) : kk(R.key); R.forms = usable(R); R.slots = R.den >= 100 && R.forms.length >= 2 ? 2 : (R.forms.length ? 1 : 0); return R; }
 // 鬼：原作の鬼は原作の血鬼術、鬼になった人は名前で決まる血鬼術。体の強さ（再生力）も名前で決まる
-function setOni(R) { const o = oniInfo(R.name, R.ch); R.oni = o; R.was = R.key; R.key = 'oni'; R.den = o.power; R.akaDone = false; WAZA.oni = o.arts; R.kk = kk('oni'); R.forms = o.arts.map((_, i) => i); R.slots = Math.min(o.carry, o.arts.length); loadModels(); return R; }
+function setOni(R) { const o = oniInfo(R.name, R.ch); R.oni = o; R.ot = null; R.was = R.key; R.key = 'oni'; R.den = o.power; R.akaDone = false; WAZA.oni = o.arts; R.kk = kk('oni'); R.forms = o.arts.map((_, i) => i); R.slots = Math.min(o.carry, o.arts.length); loadModels(); return R; }
 gripInvite(r => r.oni ? null : humanOf(r.name, r.ch) ? 'hum' : r.key === 'none' ? 'none' : r.den >= 90 ? 'tal' : null);
 const killsT = n => (R && R.oni ? T.killsO(n) : T.kills(n)), artName = w => (R && R.oni ? w[1] : w[0] + ' ' + w[1]), descT = p => (L !== 'ja' ? descL(p, L, !!(R && R.oni)) : R && R.oni ? desc(p).replace(/鬼/g, '隊士').replace(/切れ味/g, '再生力').replace(/斬撃/g, '血鬼術').replace(/(\d)体/g, '$1人').replace(/一気に斬る/g, '一気になぎ払う').replace(/斬り続ける/g, '倒し続ける').replace(/斬り進む/g, '倒し進む').replace(/を斬る/g, 'を倒す') : desc(p));
 // 鬼と隊士のモデル（Blender で作ったもの）。鬼で遊ぶときだけ読みこむ
 let MODELS = null, KISHI = null;
-function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11271700', res, undefined, rej));
+function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11271730', res, undefined, rej));
   MODELS = Promise.all([one('oni'), one('kishi')]).then(([o, k]) => { RIG.setOniModel(o); const g = {}; k.scene.traverse(n => { if (n.isMesh) g[n.name] = n; }); KISHI = g; return true; }).catch(e => { MODELS = null; throw e; }); return MODELS; }
 function grip() {
   const name = $('nm').value.trim(); if (!name) { $('nmNote').textContent = T.needName; $('nmNote').classList.add('err'); gsap.fromTo('#nm', { x: -8 }, { x: 0, duration: .4, ease: 'elastic.out(1,.3)' }); return; }
@@ -463,14 +473,14 @@ gripOnDone(r => { if (r !== R) return; if (R.becameOni) { R.becameOni = false; o
 
 // ---------- 技を選ぶ ----------
 function openPick() {
-  ST = 'pick'; clearEnts(); RIG.setLoop('idle'); setLook(1); $('hud').hidden = true; $('title').hidden = true; const W = WAZA[R.key] || [], C = COLORS[R.key], un = R.forms;
+  ST = 'pick'; clearEnts(); RIG.setLoop('idle'); setLook(1); $('hud').hidden = true; $('title').hidden = true; const W = wzOf(R) || [], C = COLORS[R.key], un = R.forms;
   $('pkWho').innerHTML = (R.oni ? T.whoOni : T.who)(R.name); const pc = $('pkCol'); pc.textContent = cl(R.key) + '　' + R.kk; pc.style.background = R.key === 'none' ? '#b9bec4' : C.hex; pc.style.color = new THREE.Color(R.key === 'none' ? '#b9bec4' : C.hex).getHSL({}).l > .55 ? '#14131c' : '#fff';
   const cost = costOf(R), mx = 70 + 30 * R.den / 100;
   if (R.oni) $('pkInfo').innerHTML = [R.oni.as && R.oni.as !== R.name ? T.oniAs(oniNameL(R.oni.as, L)) : '', R.oni.tier >= 0 ? T.oniTier((TIER[L] || TIER.en)[R.oni.tier]) : '', `${T.regen}：${T.regenInfo(cost, mx)}`].filter(Boolean).join('<br>');
-  else $('pkInfo').innerHTML = `${T.den} <b style="color:#fff">${R.den}%</b>${R.akaDone ? '<span class="aka">' + T.aka + '</span>' : ''}<br>${T.sharp}：${T.sharpInfo(cost, mx)}${R.akaDone && cost >= .2 ? '（' + T.akaInfo + '）' : ''}`;
+  else $('pkInfo').innerHTML = (R.ot ? `<span style="opacity:.8">${esc(otWork(R.ot, L))}${L === 'ja' ? '' : '｜' + esc(otName(R.ot, L))}</span><br>` : '') + `${T.den} <b style="color:#fff">${R.den}%</b>${R.akaDone ? '<span class="aka">' + T.aka + '</span>' : ''}<br>${T.sharp}：${T.sharpInfo(cost, mx)}${R.akaDone && cost >= .2 ? '（' + T.akaInfo + '）' : ''}`;
   const saved = ls.get('onikiri_sel', {})[R.n]; SEL = (Array.isArray(saved) ? saved.filter(i => un.includes(i)) : []).slice(0, R.slots); for (let i = un.length - 1; i >= 0 && SEL.length < R.slots; i--) if (!SEL.includes(un[i])) SEL.push(un[i]);
   $('pkT').textContent = R.oni ? (R.slots === 2 ? T.pickO2(un.length) : T.pickO1(un.length)) : !un.length ? T.noWaza : (R.slots === 2 ? T.pick2(un.length) : T.pick1(un.length));
-  const box = $('pkList'); box.innerHTML = W.map((w, i) => { const ok = un.includes(i), wl = lw(w); return `<button class="wl${ok ? '' : ' lock'}" data-i="${i}"${ok ? '' : ' disabled'}>${ok ? '' : `<em>${R.ch ? '—' : T.lockAt(needDen(i, W.length))}</em>`}<b>${R.oni ? '' : esc(wl[0]) + '　'}${esc(wl[1])}</b>${R.oni ? `<small style="opacity:.75">${esc(wl[0])}｜${esc(wl[2])}</small>` : ''}<small>${esc(descT(w[3]))}</small></button>`; }).join('');
+  const box = $('pkList'); box.innerHTML = W.map((w, i) => { const ok = un.includes(i), wl = lw(w); return `<button class="wl${ok ? '' : ' lock'}" data-i="${i}"${ok ? '' : ' disabled'}>${ok ? '' : `<em>${R.ch ? '—' : T.lockAt(needDen(i, W.length))}</em>`}<b>${R.oni ? '' : esc(wl[0]) + '　'}${esc(wl[1])}</b>${R.oni ? `<small style="opacity:.75">${esc(wl[0])}｜${esc(wl[2])}</small>` : R.ot ? `<small style="opacity:.75">${esc(wl[2])}</small>` : ''}<small>${esc(descT(w[3]))}</small></button>`; }).join('');
   const paint = () => box.querySelectorAll('.wl').forEach(b => b.classList.toggle('on', SEL.includes(+b.dataset.i)));
   box.querySelectorAll('.wl:not(.lock)').forEach(b => b.onclick = () => { const i = +b.dataset.i; if (SEL.includes(i)) { if (R.slots === 2 && SEL.length === 2) SEL = SEL.filter(v => v !== i); } else { SEL.push(i); while (SEL.length > R.slots) SEL.shift(); } paint(); sfx('move'); });
   paint(); $('pkHow').innerHTML = (R.oni ? T.howO : T.how) + (R.slots === 2 ? '<br>' + T.how2 : ''); $('pick').hidden = false; $('pick').scrollTop = 0;
@@ -552,30 +562,30 @@ const dayKey = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10
 function hkey(s) { const a = Math.floor(hash(s, 0x51ed) * 4294967296), b = Math.floor(hash(s, 0x9e37) * 4294967296); return (a.toString(36) + b.toString(36)).padStart(10, '0').slice(0, 14); }
 const nameKey = r => hkey(r.ch ? 'c:' + r.ch : 'n:' + r.n);
 async function submit(d, k, wz) {
-  if (DEV || d < 30) return; if (R.oni) return submitOni(d, k, wz); const h = nameKey(R), day = dayKey(), sent = ls.get('onikiri_best2', {}), rec = { n: (R.ch || R.name).slice(0, 16), d, k: R.key, t: R.den, c: k, w: String(wz).slice(0, 60), a: R.akaDone ? 1 : 0, ts: { '.sv': 'timestamp' } };
+  if (DEV || d < 30) return; if (R.oni) return submitOni(d, k, wz); if (R.ot) return submitOni(d, k, wz, 'etc'); const h = nameKey(R), day = dayKey(), sent = ls.get('onikiri_best2', {}), rec = { n: (R.ch || R.name).slice(0, 16), d, k: R.key, t: R.den, c: k, w: String(wz).slice(0, 60), a: R.akaDone ? 1 : 0, ts: { '.sv': 'timestamp' } };
   const doAll = d > (sent[h] || 0), doD = d > (sent[day + h] || 0); if (!doAll && !doD) return; const a = await auth(), q = '?auth=' + encodeURIComponent(a.token), o = { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) };
   // いまの記録より伸びていないときは、サーバーが書きこみを受けつけない（ほかの人が同じ名前でもっと走っているとき）
   if (doAll) { try { await fx(DBU('n/' + h) + q, o); await fx(DBU('k/' + R.key + '/' + h) + q, o); } catch (e) { } sent[h] = d; }
   if (doD) { try { await fx(DBU('t/' + day + '/' + h) + q, o); } catch (e) { } for (const x of Object.keys(sent)) if (/^20\d{6}/.test(x) && !x.startsWith(day)) delete sent[x]; sent[day + h] = d; }
   ls.set('onikiri_best2', sent);
 }
-async function submitOni(d, k, wz) { // 鬼の記録は「鬼」のランキングにだけ載る（名前1つにつき1件）
-  const h = nameKey(R), sent = ls.get('onikiri_best2', {}), key = 'o' + h; if (d <= (sent[key] || 0)) return;
-  const a = await auth(), rec = { n: (R.ch || R.name).slice(0, 16), d, k: 'oni', t: R.den, c: k, w: String(wz).slice(0, 60), a: 0, ts: { '.sv': 'timestamp' } };
-  try { await fx(DBU('k/oni/' + h) + '?auth=' + encodeURIComponent(a.token), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) }); } catch (e) { } sent[key] = d; ls.set('onikiri_best2', sent);
+async function submitOni(d, k, wz, kind) { // 鬼の記録は「鬼」、別作品の剣士の記録は「その他」のランキングにだけ載る（名前1つにつき1件）
+  const K = kind || 'oni', h = nameKey(R), sent = ls.get('onikiri_best2', {}), key = (K === 'oni' ? 'o' : 'e') + h; if (d <= (sent[key] || 0)) return;
+  const a = await auth(), rec = { n: (R.ch || R.name).slice(0, 16), d, k: K, t: R.den, c: k, w: String(wz).slice(0, 60), a: 0, ts: { '.sv': 'timestamp' } };
+  try { await fx(DBU('k/' + K + '/' + h) + '?auth=' + encodeURIComponent(a.token), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) }); } catch (e) { } sent[key] = d; ls.set('onikiri_best2', sent);
 }
 let rkFrom = 'title', rkTab = 'all';
 async function openRank(from) {
   rkFrom = from; $('title').hidden = true; $('result').hidden = true; $('rank').hidden = false; $('rank').scrollTop = 0;
   const ks = ORDER.filter(x => WAZA[x]), short = x => (COLORS[x].kokyu[L] || COLORS[x].kokyu.en).replace(/の呼吸$| Breathing$|之呼吸$|의 호흡$/, '');
   $('rkTabs').innerHTML = [['all', T.rkAll], ['today', T.rkToday]].map(t => `<button data-t="${t[0]}" class="${t[0] === rkTab ? 'on' : ''}">${esc(t[1])}</button>`).join('');
-  $('rkK').innerHTML = ks.map(x => `<button data-t="${x}" class="${x === rkTab ? 'on' : ''}"><i style="background:${COLORS[x].hex}"></i>${esc(short(x))}</button>`).join('') + `<button data-t="none" class="${rkTab === 'none' ? 'on' : ''}"><i style="background:#b9bec4"></i>${esc(T.rkNone)}</button><button data-t="oni" class="${rkTab === 'oni' ? 'on' : ''}"><i style="background:#c8142c"></i>${esc(T.rkOni)}</button>`; // 才能なしだけ・鬼だけのランキング
+  $('rkK').innerHTML = ks.map(x => `<button data-t="${x}" class="${x === rkTab ? 'on' : ''}"><i style="background:${COLORS[x].hex}"></i>${esc(short(x))}</button>`).join('') + `<button data-t="none" class="${rkTab === 'none' ? 'on' : ''}"><i style="background:#b9bec4"></i>${esc(T.rkNone)}</button><button data-t="oni" class="${rkTab === 'oni' ? 'on' : ''}"><i style="background:#c8142c"></i>${esc(T.rkOni)}</button><button data-t="etc" class="${rkTab === 'etc' ? 'on' : ''}"><i style="background:${ETC.hex}"></i>${esc(ETC.name[L] || ETC.name.en)}</button>`; // 才能なしだけ・鬼だけのランキング
   document.querySelectorAll('#rkTabs button,#rkK button').forEach(b => b.onclick = () => { rkTab = b.dataset.t; openRank(rkFrom); });
   const box = $('rkBox'), tab = rkTab; box.innerHTML = '<p class="note">' + T.loading + '</p>';
   try { const r = await fx(DBU(tab === 'all' ? 'n' : tab === 'today' ? 't/' + dayKey() : 'k/' + tab) + '?orderBy=%22d%22&limitToLast=100'); if (!r.ok) throw 0; const j = (await r.json()) || {}; const me = R ? nameKey(R) : '';
     const rows = Object.entries(j).map(([u, v]) => Object.assign({ u }, v)).filter(v => v && typeof v.d === 'number').sort((a, b) => b.d - a.d).slice(0, 100);
     if ($('rank').hidden || tab !== rkTab) return; if (!rows.length) { box.innerHTML = '<p class="note">' + T.rkEmpty + '</p>'; return; }
-    box.innerHTML = '<table class="rk">' + rows.map((v, i) => { const C = COLORS[v.k] || COLORS.none; return `<tr${v.u === me ? ' class="me"' : ''}><td class="n">${i + 1}</td><td>${esc(v.n || '')}${v.a ? '<span class="aka">' + T.akaS + '</span>' : ''}<small><i style="background:${C.hex}"></i>${esc(C.kokyu[L] || C.kokyu.en)}${v.k === 'oni' ? '' : '・' + T.den + (+v.t || 0) + '%'}${v.w ? '・' + esc(trWz(String(v.w))) : ''}</small></td><td class="d">${(+v.d).toLocaleString()}m<small>${(v.k === 'oni' ? T.killsO : T.kills)(+v.c || 0)}</small></td></tr>`; }).join('') + '</table>';
+    box.innerHTML = '<table class="rk">' + rows.map((v, i) => { const o = v.k === 'etc' ? otherByName(v.n) : null, C = o ? { hex: COLORS[o.k].hex, kokyu: { [L]: otWork(o, L) + '・' + otSch(o, L) } } : COLORS[v.k] || COLORS.none; return `<tr${v.u === me ? ' class="me"' : ''}><td class="n">${i + 1}</td><td>${esc(o ? otName(o, L) : v.n || '')}${v.a ? '<span class="aka">' + T.akaS + '</span>' : ''}<small><i style="background:${C.hex}"></i>${esc(C.kokyu[L] || C.kokyu.en)}${v.k === 'oni' ? '' : '・' + T.den + (+v.t || 0) + '%'}${v.w ? '・' + esc(trWz(String(v.w))) : ''}</small></td><td class="d">${(+v.d).toLocaleString()}m<small>${(v.k === 'oni' ? T.killsO : T.kills)(+v.c || 0)}</small></td></tr>`; }).join('') + '</table>';
   } catch (e) { if (tab === rkTab) box.innerHTML = '<p class="note err">' + T.rkErr + '</p>'; }
 }
 $('rkBtn').onclick = () => openRank('title'); $('rkBtn2').onclick = () => openRank('result');
@@ -593,6 +603,6 @@ applyLang(); gripSnd(SND); $('nm').value = ls.get('onikiri_name', '') || ''; $('
 if (DEV) { window.__oni = n => { prep(n); if (!R.oni) setOni(R); return loadModels().then(() => { openPick(); return R.oni.arts.map(a => a[1]); }); }; window.__G = () => ({ ST, G, R, SEL, LAST, QL, ENT: ENT.length, FXL: FX.count() }); window.__spawnT = (t, lane, z) => spawn(t, lane, z); window.__bgm = BGM; window.__lg = laneGlow; }
 if (DEV) window.__cast = (key, i) => { R.key = key; R.kk = kk(key); setLook(1); G.wz = [WAZA[key][i]]; G.sel = 0; G.gauge = 100; G.fx = null; G.over = 0; G.sharp = G.max; G.inv = 9; RIG.setLoop(null); useWaza(); return WAZA[key][i][1]; };
 if (DEV) window.__castO = i => { G.wz = [WAZA.oni[i]]; G.sel = 0; G.gauge = 100; G.fx = null; G.over = 0; G.sharp = G.max; G.inv = 9; RIG.setLoop(null); hudWaza(); useWaza(); return WAZA.oni[i][1]; };
-if (DEV) window.__pk = n => { prep(n); openPick(); return R.key; }; if (DEV) window.__W = WAZA; if (DEV) window.__spawn = (lane, z, hard) => spawn('oni', lane, z, hard);
+if (DEV) window.__pk = n => { prep(n); openPick(); return R.key; }; if (DEV) window.__castW = i => { G.wz = [wzOf(R)[i]]; G.sel = 0; G.gauge = 100; G.fx = null; G.over = 0; G.sharp = G.max; G.inv = 9; RIG.setLoop(null); hudWaza(); useWaza(); return G.wz[0][1]; }; if (DEV) window.__W = WAZA; if (DEV) window.__spawn = (lane, z, hard) => spawn('oni', lane, z, hard);
 if (DEV) { window.__E = ENT; let fk = 0; window.__tick = () => { if (!fk) { fk = performance.now(); try { gsap.ticker.remove(gsap.updateRoot); } catch (e) { } } fk += 1000 / 30; window.__ticking = 1; try { gsap.updateRoot(fk / 1000); frame(fk); } finally { window.__ticking = 0; } }; window.__judge = n => { const r = judge(n); return [r.key, r.den, usable(r).length]; }; }
 requestAnimationFrame(frame);

@@ -1,7 +1,7 @@
 // 「色変わりの刀」の握る場面をそのまま移したもの（刀の3D・長押しで色づく・赫刀・伝令の烏）。katana/game.js から機械的に切り出している
-import { THREE, RoomEnvironment } from './lib.js?v=11271700';
-import { COLORS, ORDER, CHARS } from './data.js?v=11271700';
-import { oniInvite, oniText } from './oni.js?v=11271700';
+import { THREE, RoomEnvironment } from './lib.js?v=11271730';
+import { COLORS, ORDER, CHARS } from './data.js?v=11271730';
+import { oniInvite, oniText } from './oni.js?v=11271730';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -318,7 +318,7 @@ function proceed() {
   if (!REV) return; const R = REV.R; REV = null; ST = 'grip'; gsap.killTweensOf('#cap'); gsap.to('#cap', { opacity: 0, duration: .25 }); shake = 0; humStop(); holding = false; $('hold').classList.remove('on');
   const C = COLORS[R.oni ? 'nezuko' : R.key];
   document.documentElement.style.setProperty('--tint', R.key === 'none' ? '#8a8f96' : (R.key === 'white' ? '#9aa3ad' : C.hex));
-  const say = R.key === 'none' ? T.crowNone(R.name) : T.crow(R.name, C.name[L], kokyu(R.key));
+  const say = R.key === 'none' ? T.crowNone(R.name) : T.crow(R.name, C.name[L], R.ot ? R.kk : kokyu(R.key));
   const go = () => crow(say).then(() => { busy = false; ST = 'done'; DONE(R); });
   // 才能のある人・ない人・鬼になる前の名前には、ここで「鬼にならないか」と誘いが来る
   const kind = INV(R); if (!kind) { go(); return; }

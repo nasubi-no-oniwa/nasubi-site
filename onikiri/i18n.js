@@ -1,6 +1,6 @@
 // 技の言葉（英語・中国語（繁体字）・韓国語）。日本語は waza.js / oni.js に書いてあるものがそのまま出る。
 // 公式の訳がある技はそれに合わせ、ないものは意味が通る訳にしてある。並びは waza.js と同じ。
-import { WAZA } from './waza.js?v=11271700';
+import { WAZA } from './waza.js?v=11271730';
 
 // ---------- 呼吸の型：[技名, 原作の動き] ----------
 export const WN = {
@@ -157,8 +157,8 @@ const REV = {}; for (const k of Object.keys(WAZA)) WAZA[k].forEach((w, i) => { R
 // 技1つを、その言葉で [見出し, 技名, 原作の動き] にして返す（ほかの作品の技は w[4] に訳を持たせる）
 export function locW(w, lang) {
   if (!w || lang === 'ja') return w; let t = null;
-  if (w[4] && w[4][lang]) t = w[4][lang]; else if (EXTRA[w[1]] && EXTRA[w[1]][lang]) t = EXTRA[w[1]][lang]; else if (AN[w[1]]) t = AN[w[1]][lang]; else if (REV[w[1]] && WN[lang] && WN[lang][REV[w[1]][0]]) t = WN[lang][REV[w[1]][0]][REV[w[1]][1]];
-  return [labelL(w[0], lang), t ? t[0] : w[1], t ? t[1] : w[2]];
+  if (w[4] && w[4][lang]) t = w[4][lang]; else if (AN[w[1]]) t = AN[w[1]][lang]; else if (REV[w[1]] && WN[lang] && WN[lang][REV[w[1]][0]]) t = WN[lang][REV[w[1]][0]][REV[w[1]][1]];
+  return [t && t[2] ? t[2] : labelL(w[0], lang), t ? t[0] : w[1], t ? t[1] : w[2]];
 }
 // ---------- ゲーム内の効果の説明 ----------
 const DL = {
@@ -177,9 +177,10 @@ export function descL(p, lang, oni) {
   return s;
 }
 // 日本語の技名（「壱ノ型 水面斬り」「蓮葉氷」など）を、その言葉の技名にする。知らない名前は null
-export const EXTRA = {}; // ほかの作品の技：日本語の技名 → { en:[技名, 説明], … }（あとから足す）
+export const EXTRA = {}; // 別作品の技：「見出し 技名」（日本語）→ { en:[技名, 説明, 見出し], … }（others.js が入れる）
 export function nameL(s, lang) {
-  if (lang === 'ja') return s; const one = n => (EXTRA[n] && EXTRA[n][lang] ? EXTRA[n][lang][0] : AN[n] ? AN[n][lang][0] : REV[n] && WN[lang] ? WN[lang][REV[n][0]][REV[n][1]][0] : null);
+  if (lang === 'ja') return s; const x = EXTRA[s] && EXTRA[s][lang]; if (x) return (x[2] ? x[2] + (lang === 'en' ? ': ' : ' ') : '') + x[0];
+  const one = n => (AN[n] ? AN[n][lang][0] : REV[n] && WN[lang] ? WN[lang][REV[n][0]][REV[n][1]][0] : null);
   const d = one(s); if (d) return d; const sp = s.indexOf(' '); if (sp < 0) return null; const t = one(s.slice(sp + 1)); return t ? labelL(s.slice(0, sp), lang) + (lang === 'en' ? ': ' : ' ') + t : null;
 }
 

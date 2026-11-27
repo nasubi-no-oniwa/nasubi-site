@@ -1,7 +1,8 @@
 import { THREE, RoomEnvironment } from './lib.js?v=11241806';
 import { COLORS, ORDER, CHARS } from './data.js?v=11241806';
-import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11271700';
-import { locW, oniNameL } from '../onikiri/i18n.js?v=11271700';
+import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11271730';
+import { locW, oniNameL } from '../onikiri/i18n.js?v=11271730';
+import { otherOf, otSch, otWord } from '../onikiri/others.js?v=11271730';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -85,10 +86,11 @@ const CHMAP = new Map();
 CHARS.forEach(c => { const n = c.n, v = n.slice(); if (n.length >= 4 && n[0].endsWith(n[2]) && n[1].endsWith(n[3])) { const s = n[0].slice(0, -n[2].length), sy = n[1].slice(0, -n[3].length); if (s && sy) v.push(s + n[3], sy + n[2]); } v.forEach(x => { const k = charKey(x); if (!CHMAP.has(k)) CHMAP.set(k, c); }); });
 ONI_TITLES.forEach(([al, nm]) => { const c = CHARS.find(c => c.n[0] === nm); if (c) { const k = charKey(al); if (!CHMAP.has(k)) CHMAP.set(k, c); } }); // 「上弦の参」→ 猗窩座 など
 // 鬼にする：原作の鬼と、この端末で鬼になった名前。刀は握れず、血鬼術が決まる
-function makeOni(R) { R.oni = oniInfo(R.name, R.cn); R.key = 'nezuko'; R.den = 0; R.rank = 'oni'; R.word = undefined; R.aka = false; R.akaDone = false; return R; }
+function makeOni(R) { R.oni = oniInfo(R.name, R.cn); R.ot = null; R.key = 'nezuko'; R.den = 0; R.rank = 'oni'; R.word = undefined; R.aka = false; R.akaDone = false; return R; }
 const POOL = ORDER.map(k => [k, COLORS[k].w]);
 function judge(name) {
   const n = norm(name); const r1 = hash(n, 0x6b61), r2 = hash(n, 0x7461);
+  const o = otherOf(name); if (o) return { key: o.k, den: o.den, n, aka: false, stab: false, ch: true, cn: o.n[0], ot: o }; // 別作品の剣士（フルネームのときだけ）
   const c = CHMAP.get(charKey(name)); if (c) return { key: c.k, den: c.den, n, rank: c.rank, aka: !!c.aka, word: c.word, stab: !!c.stab, ch: true, cn: c.n[0] };
   let key = null, x = r1 * 100; for (const [k, w] of POOL) { if (x < w) { key = k; break; } x -= w; } key = key || 'none';
   let den;
@@ -105,8 +107,8 @@ function rankOf(R) {
   if (R.key === 'nezuko') return T.sp.oni; if (R.key === 'none') return T.kan[9];
   if (R.den >= 99) return T.sp.hashira; return T.kan[Math.min(9, Math.floor((100 - R.den) / 10))];
 }
-const kokyu = k => { const C = COLORS[k]; return C.kokyu[L] + (C.from ? T.from(COLORS[C.from].kokyu[L]) : ''); };
-const wordOf = R => R.word ? T.words[R.word] : COLORS[R.key].word[L];
+const kokyu = (k, R) => { if (R && R.ot) return otSch(R.ot, L); const C = COLORS[k]; return C.kokyu[L] + (C.from ? T.from(COLORS[C.from].kokyu[L]) : ''); };
+const wordOf = R => R.ot ? otWord(R.ot, L) : R.word ? T.words[R.word] : COLORS[R.key].word[L];
 
 // ---------- 音 ----------
 let AC = null, SND = ls.get('katana_snd', true);
@@ -334,7 +336,7 @@ function proceed() {
   if (!REV) return; const R = REV.R; REV = null; ST = 'grip'; gsap.killTweensOf('#cap'); gsap.to('#cap', { opacity: 0, duration: .25 }); shake = 0; humStop(); holding = false; $('hold').classList.remove('on');
   const C = COLORS[R.key];
   document.documentElement.style.setProperty('--tint', R.key === 'none' ? '#8a8f96' : (R.key === 'white' ? '#9aa3ad' : C.hex));
-  const say = R.key === 'none' ? T.crowNone(R.name) : T.crow(R.name, C.name[L], kokyu(R.key));
+  const say = R.key === 'none' ? T.crowNone(R.name) : T.crow(R.name, C.name[L], kokyu(R.key, R));
   const go = () => crow(say).then(() => { setPose('top', .9).call(() => { busy = false; showResult(); }); });
   // 才能のある人（90%以上）・ない人・鬼になる前の名前には、ここで「鬼にならないか」と誘いが来る
   const kind = humanOf(R.name, R.cn) ? 'hum' : R.key === 'none' ? 'none' : R.den >= 90 ? 'tal' : null; if (!kind) { go(); return; }
@@ -453,7 +455,7 @@ function fillResult(R) {
   document.documentElement.style.setProperty('--tint', R.key === 'none' ? '#b9bec4' : C.hex);
   $('rWho').innerHTML = T.who(R.name);
   col.textContent = C.name[L]; col.style.background = C.hex; const lum = new THREE.Color(C.hex).getHSL({}).l; col.style.color = lum > .6 ? '#14131c' : '#fff';
-  $('rSch').textContent = kokyu(R.key); $('rRank').innerHTML = esc(T.kyu + '：' + rankOf(R)) + (R.akaDone ? ' <span class="aka">' + esc(T.aka) + '</span>' : '');
+  $('rSch').textContent = kokyu(R.key, R); $('rRank').innerHTML = esc(T.kyu + '：' + rankOf(R)) + (R.akaDone ? ' <span class="aka">' + esc(T.aka) + '</span>' : '');
   $('rDenL').textContent = T.den; $('rDenV').textContent = R.den + '%'; $('rDen').hidden = $('rBar').parentNode.hidden = R.key === 'nezuko';
   $('rWord').textContent = wordOf(R); $('rFan').textContent = T.fan; $('oniBtn').hidden = false; $('oniBtn').textContent = R.oni ? T.oniGo : T.oni;
   const ra = $('rArt'); ra.hidden = !R.oni; if (R.oni) { const o = R.oni, a = o.arts.map(w => locW(w, L)), sep = L === 'en' || L === 'ko' ? ': ' : '：'; ra.innerHTML = `<small>${esc(T.artL)}${o.as && o.as !== R.name ? '　' + esc(T.oniAs(oniNameL(o.as, L))) : ''}</small><b>${a.slice(0, 4).map(w => esc(w[1])).join('<br>')}${a.length > 4 ? '<i>' + esc(T.more(a.length - 4)) + '</i>' : ''}</b>${o.canon ? '' : `<p>${esc(a[0][2])}</p><em>${esc(T.tierL)}${sep}${esc((TIER[L] || TIER.en)[o.tier])}</em>`}`; if (R.becameOni) { $('rWho').innerHTML = T.whoOni(R.name); } }
@@ -474,7 +476,7 @@ function showResult() {
   gsap.fromTo('#rBar', { width: '0%' }, { width: R.den + '%', duration: 1.1, delay: .3, ease: 'power2.out' });
   gsap.fromTo('#rCol', { scale: .6, opacity: 0 }, { scale: 1, opacity: 1, duration: .6, delay: .1, ease: 'back.out(2)' });
   R.card = makeCard(R);
-  POST = R.key === 'none' ? T.postNone(R.name) : R.oni ? T.postOni(R.name, R.oni.arts.slice(0, 3).map(w => locW(w, L)[1]).join(L === 'en' ? ' / ' : '・') + (R.oni.arts.length > 3 ? T.more(R.oni.arts.length - 3) : ''), !!R.becameOni || !R.oni.canon) : R.key === 'nezuko' ? T.postNez(R.name) : T.post(R.name, COLORS[R.key].name[L], kokyu(R.key), rankOf(R), R.den); if (R.akaDone) POST = POST.replace('#色変わりの刀', T.akaPost + '\n#色変わりの刀');
+  POST = R.key === 'none' ? T.postNone(R.name) : R.oni ? T.postOni(R.name, R.oni.arts.slice(0, 3).map(w => locW(w, L)[1]).join(L === 'en' ? ' / ' : '・') + (R.oni.arts.length > 3 ? T.more(R.oni.arts.length - 3) : ''), !!R.becameOni || !R.oni.canon) : R.key === 'nezuko' ? T.postNez(R.name) : T.post(R.name, COLORS[R.key].name[L], kokyu(R.key, R), rankOf(R), R.den); if (R.akaDone) POST = POST.replace('#色変わりの刀', T.akaPost + '\n#色変わりの刀');
   count(R).catch(() => { }).then(loadCounts).then(shareLine).catch(() => { });
 }
 $('startBtn').onclick = grip;
@@ -542,7 +544,7 @@ async function makeCard(R) {
   const cn = C.name[L]; fit(cn, 96, 800, W - 260); const tw = Math.min(W - 180, x.measureText(cn).width + 140);
   x.shadowColor = R.key === 'none' ? '#b9bec4' : C.hex; x.shadowBlur = 40; x.fillStyle = R.key === 'none' ? '#b9bec4' : C.hex; x.fillRect(W / 2 - tw / 2, 560, tw, 150); x.shadowBlur = 0; x.strokeStyle = '#ffffff55'; x.lineWidth = 2; x.strokeRect(W / 2 - tw / 2, 560, tw, 150);
   x.fillStyle = new THREE.Color(R.key === 'none' ? '#b9bec4' : C.hex).getHSL({}).l > .6 ? '#14131c' : '#ffffff'; x.fillText(cn, W / 2, 668);
-  x.fillStyle = '#f2ead6'; fit(kokyu(R.key), 52, 800, W - 160); x.fillText(kokyu(R.key), W / 2, 790);
+  x.fillStyle = '#f2ead6'; fit(kokyu(R.key, R), 52, 800, W - 160); x.fillText(kokyu(R.key, R), W / 2, 790);
   x.fillStyle = '#c9a14a'; const rk = T.kyu + '：' + rankOf(R); fit(rk, 38, 700, W - 160); x.fillText(rk, W / 2, 850);
   let y = 900;
   if (R.akaDone) { x.fillStyle = '#ff5a3a'; fit('◆ ' + T.aka + ' ◆', 32, 700, W - 160); x.fillText('◆ ' + T.aka + ' ◆', W / 2, y); y += 40; }
