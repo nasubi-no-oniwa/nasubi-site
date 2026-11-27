@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11271920';
+import { EXTRA } from './i18n.js?v=11271935';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -68,6 +68,14 @@ export const OT_STY = {
   x_hyun: { kind: 'bolt', c: '#f4f8ff', c2: '#ffe9a0', shape: 'spark', fl: 'f_crescent' },
   x_trunks: { kind: 'bolt', c: '#ffe14a', c2: '#7fd0ff', shape: 'spark', fl: 'f_crescent' },
   x_kiri: { kind: 'mist', c: '#bfe0ee', c2: '#ffffff', shape: 'puff', fl: 'k_dream' },
+  x_murasame: { kind: 'moon', c: '#a00820', c2: '#ff5a70', shape: 'crescent', fl: 'f_crescent' },
+  x_reid: { kind: 'sun', c: '#ff5030', c2: '#fff0c0', shape: 'spark', fl: 'f_pillar' },
+  x_ariel: { kind: 'wind', c: '#8fe8b0', c2: '#ffffff', shape: 'streak', fl: 'f_cross' },
+  x_bugi: { kind: 'bolt', c: '#6fb0ff', c2: '#ffffff', shape: 'spark', fl: 'f_cross' },
+  x_mugen: { kind: 'bolt', c: '#5a7cff', c2: '#e0f0ff', shape: 'spark', fl: 'f_fang' },
+  x_nanasen: { kind: 'wind', c: '#c0c8ff', c2: '#ffffff', shape: 'streak', fl: 'f_cross' },
+  x_shana: { kind: 'flame', c: '#ff3a14', c2: '#ffd24a', shape: 'ember', fl: 'f_pillar' },
+  x_hakuba: { kind: 'wind', c: '#f0f6ff', c2: '#ffd0ea', shape: 'streak', fl: 'f_cross' },
 };
 
 // 作品
@@ -91,6 +99,13 @@ export const WORKS = {
   jjk: ['呪術廻戦', 'Jujutsu Kaisen', '咒術迴戰', '주술회전'],
   rakudai: ['落第騎士の英雄譚', 'Chivalry of a Failed Knight', '落第騎士英雄譚', '낙제 기사의 영웅담'],
   dragonball: ['ドラゴンボール', 'Dragon Ball', '七龍珠', '드래곤볼'],
+  akame: ['アカメが斬る！', 'Akame ga Kill!', '斬！赤紅之瞳', '아카메가 벤다!'],
+  rezero: ['Re:ゼロから始める異世界生活', 'Re:ZERO -Starting Life in Another World-', 'Re:從零開始的異世界生活', 'Re: 제로부터 시작하는 이세계 생활'],
+  danmachi: ['ダンジョンに出会いを求めるのは間違っているだろうか', 'Is It Wrong to Try to Pick Up Girls in a Dungeon?', '在地下城尋求邂逅是否搞錯了什麼', '던전에서 만남을 추구하면 안 되는 걸까'],
+  overlord: ['オーバーロード', 'Overlord', 'OVERLORD', '오버로드'],
+  dgray: ['D.Gray-man', 'D.Gray-man', 'D.Gray-man 驅魔少年', '디 그레이맨'],
+  toaru: ['とある魔術の禁書目録', 'A Certain Magical Index', '魔法禁書目錄', '어떤 마술의 금서목록'],
+  shana: ['灼眼のシャナ', 'Shakugan no Shana', '灼眼的夏娜', '작안의 샤나'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -507,6 +522,62 @@ export const OTHERS = [
     t(['水遁', 'Water Release', '水遁', '수둔'], ['水龍弾の術', 'Water Dragon Jutsu', '水龍彈之術', '수룡탄술'], ['水の龍を放って押し流す', 'Unleashes a dragon of water that sweeps everything away', '放出水龍沖走一切', '물의 용을 풀어 휩쓸어 버린다'], { k: 'flow', L: 1, D: 4.5, v: 'dragon', sty: 'x_shigure' }),
     t(['首斬り包丁', "Executioner's Blade", '斬首大刀', '참수대도'], ['首斬り', 'Beheading', '斬首', '참수'], ['大刀のひと振りで両断する', 'Cleaves in two with one swing of the great blade', '大刀一揮，一刀兩斷', '대도의 한 번 휘두름으로 양단한다'], { k: 'inst', L: 2, R: 16, O: 1, v: 'arcH', sty: 'x_kiri' }),
   ]),
+  // ---------- 7回目：アカメが斬る！・リゼロ・ダンまち・オーバーロード・D.Gray-man・とある・灼眼のシャナ・ONE PIECE ----------
+  c('アカメ', '', ['Akame', '赤瞳', '아카메'], 'akame', 'red', 97, ['帝具「一斬必殺 村雨」', 'Teigu: One-Cut Killer Murasame', '帝具「一斬必殺 村雨」', '제구 「일참필살 무라사메」'], [
+    t(['帝具', 'Teigu', '帝具', '제구'], ['一斬必殺', 'One-Cut Killer', '一斬必殺', '일참필살'], ['かすり傷ひとつで、呪いの毒が心臓を止める', 'A single scratch, and the cursed poison stops the heart', '只要一道擦傷，詛咒之毒就會讓心臟停止', '스친 상처 하나로 저주의 독이 심장을 멈춘다'], { k: 'multi', N: 10, R: 30, v: 'arcs', sty: 'x_murasame' }),
+    t(['暗殺剣', "Assassin's Blade", '暗殺劍', '암살검'], ['葬る', 'Eliminate', '葬送', '처단'], ['「葬る」のひと言とともに、一瞬で斬りぬける', 'With the single word "eliminate," she cuts through in an instant', '隨著一句「葬送」，瞬間斬穿而過', '"처단한다"는 한마디와 함께 한순간에 베고 지나간다'], { k: 'inst', L: 1, R: 36, I: .5, v: 'dash', a: 'iai', sty: 'x_murasame' }),
+    t(['奥の手', 'Trump Card', '王牌', '비장의 수'], ['役小角', 'Ennoozuno', '役小角', '엔노오즈노'], ['自分を村雨で斬り、呪いを力に変える', 'Cuts herself with Murasame and turns the curse into power', '以村雨斬傷自己，將詛咒化為力量', '자신을 무라사메로 베어 저주를 힘으로 바꾼다'], { k: 'flow', L: 2, D: 6, v: 'dragon', sty: 'x_murasame' }),
+  ], [], ['アカメ']),
+  c('ラインハルト・ヴァン・アストレア', 'らいんはるとゔぁんあすとれあ', ['Reinhard van Astrea', '萊因哈魯特・范・阿斯特雷亞', '라인하르트 반 아스트레아'], 'rezero', 'red', 100, ['剣聖', 'Sword Saint', '劍聖', '검성'], [
+    t(['加護', 'Divine Protection', '加護', '가호'], ['剣聖の加護', 'Divine Protection of the Sword Saint', '劍聖的加護', '검성의 가호'], ['剣の才のすべてを受けつぐ加護', 'A blessing that passes down every talent for the sword', '繼承一切劍術才能的加護', '검의 재능 전부를 물려받는 가호'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_reid' }),
+    t(['加護', 'Divine Protection', '加護', '가호'], ['矢避けの加護', 'Divine Protection of Arrow Evasion', '避箭的加護', '화살 피하기의 가호'], ['飛んでくるものは、すべて当たらない', 'Nothing that flies at him ever hits', '飛來的東西全都打不中', '날아오는 것은 모두 맞지 않는다'], { k: 'aura', L: 1, R: 7, D: 5, G: 1, v: 'calm', sty: 'x_reid' }),
+    t(['龍剣', 'Dragon Sword', '龍劍', '용검'], ['龍剣レイド', 'Dragon Sword Reid', '龍劍雷德', '용검 레이드'], ['抜くべき相手の前でしか抜けない剣。ひと振りで空が割れる', 'A sword that can only be drawn before a worthy foe. One swing splits the sky', '只有在值得拔劍的對手面前才拔得出的劍。一揮便劈開天空', '뽑아야 할 상대 앞에서만 뽑히는 검. 한 번 휘두르면 하늘이 갈라진다'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_reid' }),
+  ], ['ラインハルト・バン・アストレア']),
+  c('アイズ・ヴァレンシュタイン', 'あいずゔぁれんしゅたいん', ['Ais Wallenstein', '艾絲・華倫斯坦', '아이즈 발렌슈타인'], 'danmachi', 'green', 98, ['剣姫', 'Sword Princess', '劍姬', '검희'], [
+    t(['魔法', 'Magic', '魔法', '마법'], ['エアリエル', 'Airiel', '風靈疾走', '에어리얼'], ['「目覚めよ」のひと声で風をまとい、速さと斬れ味を上げる', 'At the word "Awaken," she cloaks herself in wind, raising her speed and edge', '一聲「覺醒吧」便身纏疾風，提升速度與鋒利度', '"깨어나라" 한마디에 바람을 둘러 속도와 예리함을 높인다'], { k: 'aura', L: 1, R: 8, D: 5, v: 'vortex', sty: 'x_ariel' }),
+    t(['スキル', 'Skill', '技能', '스킬'], ['復讐姫', 'Avenger', '復仇姬', '어벤저'], ['怪物への憎しみが、力を大きく引き上げる', 'Her hatred of monsters greatly raises her power', '對怪物的憎恨大幅提升力量', '괴물에 대한 증오가 힘을 크게 끌어올린다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_ariel' }),
+    t(['魔法', 'Magic', '魔法', '마법'], ['リル・ラファーガ', 'Lil Rafaga', '風靈突擊', '릴 라파가'], ['風をまとって飛びこむ、神風の突き', 'A thrust like a divine wind, diving in cloaked in gales', '身纏疾風衝入的神風突刺', '바람을 두르고 뛰어드는 신풍의 찌르기'], { k: 'inst', L: 1, R: 60, O: 1, I: .8, v: 'mega', sty: 'x_ariel' }),
+  ], ['アイズ・バレンシュタイン']),
+  c('ブレイン・アングラウス', 'ぶれいんあんぐらうす', ['Brain Unglaus', '布萊恩・安格勞斯', '브레인 앙글라우스'], 'overlord', 'blue', 90, ['武技', 'Martial Arts', '武技', '무투기'], [
+    t(['武技', 'Martial Art', '武技', '무투기'], ['領域', 'Field', '領域', '영역'], ['半径3メートルの中のすべてを感じとる', 'Senses everything within a radius of three meters', '感知半徑三公尺內的一切', '반경 3미터 안의 모든 것을 감지한다'], { k: 'aura', L: 1, R: 7, D: 4, v: 'calm', sty: 'x_bugi' }),
+    t(['武技', 'Martial Art', '武技', '무투기'], ['神閃', 'God Flash', '神閃', '신섬'], ['目に映らない速さの居合い', 'A quick-draw too fast for the eye to register', '肉眼無法捕捉的居合', '눈에 비치지 않는 속도의 발도술'], { k: 'inst', L: 0, R: 30, I: .5, v: 'bolt', a: 'iai', sty: 'x_bugi' }),
+    t(['秘剣', 'Secret Sword', '秘劍', '비검'], ['虎落笛', 'Mogari-bue', '虎落笛', '호락적'], ['領域で急所をとらえ、神閃で斬る', 'Finds the vital spot with Field and cuts it with God Flash', '以領域捕捉要害，以神閃斬擊', '영역으로 급소를 포착하고 신섬으로 벤다'], { k: 'inst', L: 1, R: 20, O: 1, v: 'arcH', sty: 'x_bugi' }),
+    t(['武技', 'Martial Art', '武技', '무투기'], ['四光連斬', 'Fourfold Slash of Light', '四光連斬', '사광연참'], ['一度に四つの斬撃を放つ', 'Fires four slashes at once', '一次放出四道斬擊', '한 번에 네 줄기 참격을 날린다'], { k: 'multi', N: 4, R: 24, v: 'arcs', sty: 'x_bugi' }),
+    t(['秘剣', 'Secret Sword', '秘劍', '비검'], ['爪切り', 'Nail Clipper', '爪切', '손톱깎이'], ['吸血鬼の爪を斬るためだけに、みがきぬいたひと太刀', 'A stroke honed for one purpose: to cut a vampire\'s nail', '只為斬斷吸血鬼的指甲而千錘百鍊的一刀', '흡혈귀의 손톱을 베기 위해서만 갈고닦은 한 칼'], { k: 'inst', L: 0, R: 16, O: 1, v: 'arcDown', sty: 'x_bugi' }),
+  ]),
+  c('ガゼフ・ストロノーフ', 'がぜふすとろのーふ', ['Gazef Stronoff', '葛傑夫・史托羅諾夫', '가제프 스트로노프'], 'overlord', 'orange', 92, ['王国戦士長', 'Warrior Captain of the Kingdom', '王國戰士長', '왕국 전사장'], [
+    t(['武技', 'Martial Art', '武技', '무투기'], ['六光連斬', 'Sixfold Slash of Light', '六光連斬', '육광연참'], ['一度に六つの斬撃を放つ', 'Fires six slashes at once', '一次放出六道斬擊', '한 번에 여섯 줄기 참격을 날린다'], { k: 'multi', N: 6, R: 26, v: 'arcs', sty: 'x_bugi' }),
+    t(['武技', 'Martial Art', '武技', '무투기'], ['即応反射', 'Instant Counter', '即應反射', '즉응반사'], ['くずれた体勢を一瞬で立てなおし、すぐに斬り返す', 'Recovers his stance in an instant and cuts right back', '瞬間重整崩壞的姿勢，立刻反斬', '무너진 자세를 한순간에 바로잡고 곧바로 되받아 벤다'], { k: 'aura', L: 1, R: 7, D: 3.5, v: 'spin', sty: 'x_bugi' }),
+    t(['武技', 'Martial Art', '武技', '무투기'], ['流水加速', 'Flow Acceleration', '流水加速', '유수가속'], ['神経を加速させ、流れるように動く', 'Accelerates his nerves and moves like flowing water', '加速神經，如流水般行動', '신경을 가속시켜 흐르듯 움직인다'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_bugi' }),
+    t(['王国の秘宝', 'Treasure of the Kingdom', '王國秘寶', '왕국의 비보'], ['剃刀の刃', 'Razor Edge', '剃刀之刃', '레이저 에지'], ['どんな鎧もバターのように斬る剣', 'A sword that cuts any armor like butter', '切任何鎧甲都像切奶油一樣的劍', '어떤 갑옷도 버터처럼 베는 검'], { k: 'inst', L: 1, R: 30, O: 1, v: 'arcH', sty: 'x_bugi' }),
+  ]),
+  c('神田ユウ', 'かんだゆう', ['Yu Kanda', '神田優', '칸다 유우'], 'dgray', 'blue', 95, ['対アクマ武器「六幻」', 'Anti-Akuma Weapon: Mugen', '對惡魔武器「六幻」', '대 악마 무기 「무겐」'], [
+    t(['災厄招来', 'Calling Forth Misfortune', '災厄招來', '재액초래'], ['界蟲「一幻」', 'Netherworld Insects: First Illusion', '界蟲「一幻」', '계충 「일환」'], ['刀から冥界の蟲を放ち、食いちぎらせる', 'Releases insects of the netherworld from the blade to tear the foe apart', '從刀中放出冥界之蟲撕咬對手', '칼에서 명계의 벌레를 풀어 물어뜯게 한다'], { k: 'inst', L: 1, R: 45, v: 'thrust', sty: 'x_mugen' }),
+    t(['六幻', 'Mugen', '六幻', '무겐'], ['二幻刀', 'Double Illusion Blades', '二幻刀', '이환도'], ['鞘を二本目の刀に変え、二刀で斬る', 'Turns the sheath into a second sword and cuts with both', '將刀鞘化為第二把刀，以雙刀斬擊', '칼집을 두 번째 칼로 바꿔 쌍검으로 벤다'], { k: 'multi', N: 8, R: 26, v: 'arcs', sty: 'x_mugen' }),
+    t(['二幻', 'Second Illusion', '二幻', '이환'], ['八花螳蜋', 'Eight Flower Mantis', '八花螳螂', '팔화당랑'], ['花びらのような八つの斬撃を、同時に放つ', 'Fires eight petal-like slashes all at once', '同時放出如花瓣般的八道斬擊', '꽃잎 같은 여덟 줄기 참격을 동시에 날린다'], { k: 'inst', L: 2, R: 24, v: 'claws', sty: 'x_mugen' }),
+    t(['禁忌', 'Forbidden', '禁忌', '금기'], ['三幻式', 'Third Illusion Style', '三幻式', '삼환식'], ['命を刀に食わせて、力を大きく引き上げる', 'Feeds his own life to the sword to raise his power greatly', '讓刀吞噬自己的生命，大幅提升力量', '목숨을 칼에 먹여 힘을 크게 끌어올린다'], { k: 'flow', L: 1, D: 5.5, v: 'dragon', sty: 'x_mugen' }),
+  ], ['神田優']),
+  c('神裂火織', 'かんざきかおり', ['Kaori Kanzaki', '神裂火織', '칸자키 카오리'], 'toaru', 'bluepurple', 98, ['七天七刀', 'Shichiten Shichito', '七天七刀', '칠천칠도'], [
+    t(['鋼糸', 'Steel Wires', '鋼絲', '강사'], ['七閃', 'Seven Flashes', '七閃', '칠섬'], ['抜刀に見せかけて、七本の鋼の糸で斬りきざむ', 'Feigns a sword draw and slices with seven steel wires', '佯裝拔刀，實則以七條鋼絲切割', '발도처럼 보이게 하고 일곱 가닥의 강철 실로 썰어 낸다'], { k: 'inst', L: 2, R: 30, v: 'claws', sty: 'x_nanasen' }),
+    t(['聖人', 'Saint', '聖人', '성인'], ['聖人の力', 'Power of a Saint', '聖人之力', '성인의 힘'], ['音より速く動き、まとめて斬り伏せる', 'Moves faster than sound and cuts them all down', '以超越音速行動，一併斬倒', '소리보다 빠르게 움직여 한꺼번에 베어 넘긴다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_nanasen' }),
+    t(['抜刀術', 'Sword Draw', '拔刀術', '발도술'], ['唯閃', 'Single Flash', '唯閃', '유섬'], ['聖人の力を一瞬だけ解き放つ、本気の抜刀', 'A true sword draw that unleashes the power of a saint for one instant', '只在一瞬間解放聖人之力的全力拔刀', '성인의 힘을 한순간만 풀어 놓는 진심의 발도'], { k: 'inst', L: 1, R: 55, O: 1, I: .8, v: 'mega', a: 'iai', sty: 'x_nanasen' }),
+  ]),
+  c('シャナ', '', ['Shana', '夏娜', '샤나'], 'shana', 'red', 96, ['大太刀「贄殿遮那」', 'Odachi: Nietono no Shana', '大太刀「贄殿遮那」', '대태도 「니에토노노 샤나」'], [
+    t(['自在法', 'Unrestricted Spell', '自在法', '자재법'], ['紅蓮の双翼', 'Crimson Wings', '紅蓮雙翼', '홍련의 쌍익'], ['炎の翼で飛びながら斬りすすむ', 'Flies on wings of flame, cutting as she goes', '以火焰之翼飛行並一路斬擊', '불꽃의 날개로 날며 베어 나아간다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_shana' }),
+    t(['自在法', 'Unrestricted Spell', '自在法', '자재법'], ['飛焔', 'Hien', '飛焰', '비염'], ['刀から炎を撃ち出す', 'Fires flames from the sword', '從刀中射出火焰', '칼에서 불꽃을 쏘아 낸다'], { k: 'inst', L: 1, R: 45, v: 'thrust', sty: 'x_shana' }),
+    t(['自在法', 'Unrestricted Spell', '自在法', '자재법'], ['真紅', 'Shinku', '真紅', '진홍'], ['炎でできた巨大な腕を呼び出し、叩きつぶす', 'Summons a gigantic arm of flame and crushes the foe', '喚出火焰形成的巨大手臂擊潰對手', '불꽃으로 된 거대한 팔을 불러내 때려 부순다'], { k: 'inst', L: 2, R: 26, O: 1, v: 'fall', sty: 'x_shana' }),
+    t(['自在法', 'Unrestricted Spell', '自在法', '자재법'], ['審判', 'Shinpan', '審判', '심판'], ['炎の目で、まわりの力の流れを見切る', 'Reads the flow of power all around with an eye of flame', '以火焰之眼看穿周圍力量的流向', '불꽃의 눈으로 주위의 힘의 흐름을 간파한다'], { k: 'slow', D: 5, S: .35, v: 'eye', sty: 'x_shana' }),
+    t(['自在法', 'Unrestricted Spell', '自在法', '자재법'], ['断罪', 'Danzai', '斷罪', '단죄'], ['刀から伸ばした巨大な炎の刃で両断する', 'Cleaves with a gigantic blade of flame extended from the sword', '以從刀延伸出的巨大火焰之刃一刀兩斷', '칼에서 뻗은 거대한 불꽃의 칼날로 양단한다'], { k: 'inst', L: 9, R: 60, O: 1, I: .8, v: 'mega', sty: 'x_shana' }),
+  ], [], ['シャナ']),
+  c('たしぎ', '', ['Tashigi', '達絲琪', '타시기'], 'onepiece', 'blue', 88, ['愛刀「時雨」', 'Shigure', '愛刀「時雨」', '애도 「시구레」'], [
+    t(ITTO, ['斬時雨', 'Kiri Shigure', '斬時雨', '참시우'], ['するどく踏みこんで斬る', 'Steps in sharply and cuts', '銳利地踏進並斬擊', '날카롭게 파고들어 벤다'], { k: 'inst', L: 1, R: 20, v: 'arcH', sty: 'x_shigure' }),
+    t(['六式', 'Rokushiki', '六式', '육식'], ['剃', 'Soru', '剃', '소루'], ['目に見えない速さで間合いをつめる', 'Closes the distance too fast to see', '以肉眼看不見的速度拉近距離', '눈에 보이지 않는 속도로 거리를 좁힌다'], { k: 'flow', L: 0, D: 3, v: 'ribbon', sty: 'x_shigure' }),
+  ], [], ['たしぎ', 'タシギ']),
+  c('キャベンディッシュ', '', ['Cavendish', '卡文迪許', '캐번디시'], 'onepiece', 'white', 94, ['名刀「デュランダル」', 'Durandal', '名刀「迪朗達爾」', '명도 「듀랜달」'], [
+    t(['美剣', 'Beautiful Sword', '美劍', '미검'], ['斬・星屑王子', 'Zan Saint-Exupéry', '斬・星屑王子', '참·성설왕자'], ['白馬に乗ったまま、すれ違いざまに斬る', 'Cuts while riding past on his white horse', '騎著白馬擦身而過時斬擊', '백마를 탄 채 스쳐 지나가며 벤다'], { k: 'inst', L: 1, R: 36, I: .5, v: 'dash', a: 'iai', sty: 'x_hakuba' }),
+    t(['美剣', 'Beautiful Sword', '美劍', '미검'], ['円卓', 'Round Table', '圓桌', '원탁'], ['まわりを円く斬りはらう', 'Sweeps a circle all around', '將四周斬成圓形', '주위를 둥글게 베어 낸다'], { k: 'aura', L: 2, R: 8, D: 3, v: 'spin', sty: 'x_hakuba' }),
+    t(['ハクバ', 'Hakuba', '白馬', '하쿠바'], ['美剣 青い鳥', 'Blue Bird', '美劍 青鳥', '미검 파랑새'], ['眠ると現れる別の人格。誰にも見えない速さで斬りまわる', 'The other self that appears when he sleeps, cutting faster than anyone can see', '入睡後出現的另一個人格。以誰也看不見的速度四處斬擊', '잠들면 나타나는 다른 인격. 누구에게도 보이지 않는 속도로 베고 다닌다'], { k: 'flow', L: 2, D: 6, v: 'dragon', sty: 'x_hakuba' }),
+  ], [], ['キャベンディッシュ']),
 ];
 
 // ---------- 名前で引く ----------
