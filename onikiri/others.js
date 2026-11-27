@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11271935';
+import { EXTRA } from './i18n.js?v=11272005';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -578,6 +578,50 @@ export const OTHERS = [
     t(['美剣', 'Beautiful Sword', '美劍', '미검'], ['円卓', 'Round Table', '圓桌', '원탁'], ['まわりを円く斬りはらう', 'Sweeps a circle all around', '將四周斬成圓形', '주위를 둥글게 베어 낸다'], { k: 'aura', L: 2, R: 8, D: 3, v: 'spin', sty: 'x_hakuba' }),
     t(['ハクバ', 'Hakuba', '白馬', '하쿠바'], ['美剣 青い鳥', 'Blue Bird', '美劍 青鳥', '미검 파랑새'], ['眠ると現れる別の人格。誰にも見えない速さで斬りまわる', 'The other self that appears when he sleeps, cutting faster than anyone can see', '入睡後出現的另一個人格。以誰也看不見的速度四處斬擊', '잠들면 나타나는 다른 인격. 누구에게도 보이지 않는 속도로 베고 다닌다'], { k: 'flow', L: 2, D: 6, v: 'dragon', sty: 'x_hakuba' }),
   ], [], ['キャベンディッシュ']),
+  // ---------- 8回目：BLEACH ----------
+  c('檜佐木修兵', 'ひさぎしゅうへい', ['Shuhei Hisagi', '檜佐木修兵', '히사기 슈헤이'], 'bleach', 'green', 90, ['斬魄刀「風死」', 'Zanpakuto: Kazeshini', '斬魄刀「風死」', '참백도 「카제시니」'], [
+    t(SHIKAI, ['風死', 'Kazeshini', '風死', '카제시니'], ['鎖でつないだ二枚の鎌を投げ、回して斬る', 'Throws and whirls two scythes linked by a chain', '擲出並旋轉以鎖鏈相連的兩把鐮刀斬擊', '사슬로 이은 두 자루의 낫을 던지고 돌려 벤다'], { k: 'multi', N: 8, R: 30, v: 'arcs', sty: 'x_santoryu' }),
+    t(BANKAI, ['風死絞縄', 'Fushi no Kojo', '風死絞繩', '풍사교승'], ['鎖でたがいを結び、霊圧が尽きるまで死なせない', 'Binds both fighters with chains; neither can die until their spirit energy runs out', '以鎖鏈將彼此相連，靈壓耗盡之前都死不了', '사슬로 서로를 묶어 영압이 다할 때까지 죽지 못하게 한다'], { k: 'aura', L: 2, R: 9, D: 6, v: 'calm', sty: 'x_santoryu' }),
+  ]),
+  c('吉良イヅル', 'きらいづる', ['Izuru Kira', '吉良伊鶴', '키라 이즈루'], 'bleach', 'gray', 88, ['斬魄刀「侘助」', 'Zanpakuto: Wabisuke', '斬魄刀「侘助」', '참백도 「와비스케」'], [
+    t(SHIKAI, ['侘助', 'Wabisuke', '侘助', '와비스케'], ['斬ったものの重さを倍にする。相手は重さに耐えかねて頭をたれる', 'Doubles the weight of whatever it cuts until the foe bows under the load', '使被斬之物的重量加倍，對手不堪重負而低頭', '벤 것의 무게를 배로 만든다. 상대는 무게를 못 이겨 고개를 숙인다'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_tenken' }),
+    t(['解号', 'Release Call', '解號', '해호'], ['面を上げろ', 'Raise Your Head', '抬起頭來', '고개를 들어라'], ['斬るたびに倍、また倍。七度斬れば動けない', 'Double with every cut, and double again. Seven cuts and the foe cannot move', '每斬一次就加倍，再加倍。斬七次便動彈不得', '벨 때마다 배, 또 배. 일곱 번 베면 움직이지 못한다'], { k: 'multi', N: 7, R: 26, v: 'arcs', sty: 'x_tenken' }),
+  ], ['吉良伊鶴']),
+  c('東仙要', 'とうせんかなめ', ['Kaname Tosen', '東仙要', '토센 카나메'], 'bleach', 'orange', 93, ['斬魄刀「清虫」', 'Zanpakuto: Suzumushi', '斬魄刀「清蟲」', '참백도 「스즈무시」'], [
+    t(SHIKAI, ['清虫', 'Suzumushi', '清蟲', '스즈무시'], ['高い音をひびかせ、聞いたものを気絶させる', 'Rings out a high tone that knocks out all who hear it', '響起高亢的聲音，使聽見的人昏厥', '높은 소리를 울려 들은 자를 기절시킨다'], { k: 'slow', D: 5, S: .3, v: 'eye', sty: 'x_kaze' }),
+    t(SHIKAI, ['清虫弐式・紅飛蝗', 'Suzumushi Nishiki: Benihiko', '清蟲貳式・紅飛蝗', '스즈무시 2식·홍비황'], ['数えきれない刃を雨のように降らせる', 'Rains down countless blades', '讓數不清的刀刃如雨般降下', '셀 수 없는 칼날을 비처럼 내린다'], { k: 'rain', D: 4, R: 36, v: 'rainfall', sty: 'x_kaze' }),
+    t(BANKAI, ['清虫終式・閻魔蟋蟀', 'Suzumushi Tsuishiki: Enma Korogi', '清蟲終式・閻魔蟋蟀', '스즈무시 종식·염마실솔'], ['黒い球の中で、目も耳も鼻も霊圧を感じる力もうばう', 'Inside a black dome, takes away sight, hearing, smell, and the sense of spirit energy', '在黑色球體中奪去視覺、聽覺、嗅覺與感知靈壓的能力', '검은 구 안에서 눈도 귀도 코도 영압을 느끼는 힘도 빼앗는다'], { k: 'aura', L: 9, R: 10, D: 6, v: 'calm', sty: 'x_hitsugi' }),
+  ]),
+  c('浮竹十四郎', 'うきたけじゅうしろう', ['Jushiro Ukitake', '浮竹十四郎', '우키타케 쥬시로'], 'bleach', 'white', 97, ['斬魄刀「双魚理」', 'Zanpakuto: Sogyo no Kotowari', '斬魄刀「雙魚理」', '참백도 「소교노코토와리」'], [
+    t(SHIKAI, ['双魚理', 'Sogyo no Kotowari', '雙魚理', '소교노코토와리'], ['片方の刀で相手の技を吸いこみ、もう片方から撃ち返す', "Absorbs the foe's attack with one blade and fires it back from the other", '以一把刀吸收對手的招式，再從另一把射回去', '한쪽 칼로 상대의 기술을 빨아들여 다른 쪽에서 되쏜다'], { k: 'aura', L: 1, R: 8, D: 5, G: 1, v: 'calm', sty: 'x_counter' }),
+    t(ZANJUTSU, ['二刀の連撃', 'Dual-Blade Combo', '雙刀連擊', '쌍검 연격'], ['ひもでつないだ二刀で、とぎれなく斬りこむ', 'Cuts in without pause with two blades joined by a cord', '以繩索相連的雙刀不間斷地斬入', '끈으로 이은 두 칼로 끊임없이 베어 들어간다'], { k: 'multi', N: 8, R: 26, v: 'arcs', sty: 'x_counter' }),
+  ]),
+  c('黒崎一心', 'くろさきいっしん', ['Isshin Kurosaki', '黑崎一心', '쿠로사키 잇신'], 'bleach', 'red', 98, ['斬魄刀「剡月」', 'Zanpakuto: Engetsu', '斬魄刀「剡月」', '참백도 「염월」'], [
+    t(SHIKAI, ['剡月', 'Engetsu', '剡月', '염월'], ['血をふきかけた刀身に炎をともす', 'Lights the blade aflame with a spray of his own blood', '在噴上鮮血的刀身點燃火焰', '피를 뿜은 칼날에 불꽃을 붙인다'], { k: 'aura', L: 1, R: 8, D: 4, v: 'vortex', sty: 'x_ryujin' }),
+    t(SHIKAI, ['月牙天衝', 'Getsuga Tensho', '月牙天衝', '월아천충'], ['息子に受けつがれた、三日月の斬撃', 'The crescent slash that was passed on to his son', '傳承給兒子的新月斬擊', '아들에게 이어진 초승달의 참격'], { k: 'inst', L: 1, R: 44, O: 1, v: 'arcH', sty: 'x_beni' }),
+    t(['体術', 'Hand-to-Hand', '體術', '체술'], ['鬼デコ', 'Demon Flick', '鬼彈額', '귀신 딱밤'], ['デコピンひとつで相手を吹き飛ばす', 'Sends the foe flying with a single flick to the forehead', '只用一記彈額頭就把對手彈飛', '딱밤 하나로 상대를 날려 버린다'], { k: 'inst', L: 0, R: 20, O: 1, v: 'thrust', sty: 'x_beni' }),
+  ]),
+  c('斑目一角', 'まだらめいっかく', ['Ikkaku Madarame', '斑目一角', '마다라메 잇카쿠'], 'bleach', 'red', 92, ['斬魄刀「鬼灯丸」', 'Zanpakuto: Hozukimaru', '斬魄刀「鬼燈丸」', '참백도 「호오즈키마루」'], [
+    t(SHIKAI, ['鬼灯丸', 'Hozukimaru', '鬼燈丸', '호오즈키마루'], ['「延びろ」で槍に、「裂けろ」で三節棍に変わる', '"Extend" makes it a spear; "split" makes it a three-section staff', '「延伸吧」變成槍，「裂開吧」變成三節棍', '"늘어나라"에 창으로, "갈라져라"에 삼절곤으로 변한다'], { k: 'multi', N: 6, R: 28, v: 'arcs', sty: 'x_zabi' }),
+    t(BANKAI, ['龍紋鬼灯丸', 'Ryumon Hozukimaru', '龍紋鬼燈丸', '용문 호오즈키마루'], ['斬り合うほど龍の紋が赤くそまり、力が上がる', 'The more it fights, the redder the dragon crest glows and the stronger it gets', '越是交鋒，龍紋越是染紅，力量隨之上升', '싸울수록 용의 문양이 붉게 물들며 힘이 오른다'], { k: 'flow', L: 1, D: 6, grow: 1, v: 'dragon', sty: 'x_zabi' }),
+  ]),
+  c('綾瀬川弓親', 'あやせがわゆみちか', ['Yumichika Ayasegawa', '綾瀨川弓親', '아야세가와 유미치카'], 'bleach', 'fuji', 88, ['斬魄刀「藤孔雀」', 'Zanpakuto: Fuji Kujaku', '斬魄刀「藤孔雀」', '참백도 「후지쿠자쿠」'], [
+    t(SHIKAI, ['藤孔雀', 'Fuji Kujaku', '藤孔雀', '후지쿠자쿠'], ['四枚に分かれた刃で斬る', 'Cuts with a blade split into four', '以分成四片的刀刃斬擊', '네 갈래로 나뉜 칼날로 벤다'], { k: 'inst', L: 1, R: 16, v: 'claws', sty: 'x_tsubame' }),
+    t(SHIKAI, ['瑠璃色孔雀', "Ruri'iro Kujaku", '瑠璃色孔雀', '루리이로쿠자쿠'], ['光のつるが相手の霊力を吸いあげ、花を咲かせる', "Vines of light drain the foe's spirit energy and burst into bloom", '光之藤蔓吸取對手的靈力並綻放花朵', '빛의 덩굴이 상대의 영력을 빨아올려 꽃을 피운다'], { k: 'inst', L: 2, R: 24, H: 50, v: 'rain', sty: 'x_tsubame' }),
+  ]),
+  c('松本乱菊', 'まつもとらんぎく', ['Rangiku Matsumoto', '松本亂菊', '마츠모토 란기쿠'], 'bleach', 'orange', 90, ['斬魄刀「灰猫」', 'Zanpakuto: Haineko', '斬魄刀「灰貓」', '참백도 「하이네코」'], [
+    t(SHIKAI, ['灰猫', 'Haineko', '灰貓', '하이네코'], ['刀身を灰に変える。灰がふれたところが斬れる', 'Turns the blade to ash, and wherever the ash touches is cut', '將刀身化為灰。灰碰到的地方就會被斬', '칼날을 재로 바꾼다. 재가 닿은 곳이 베인다'], { k: 'aura', L: 2, R: 9, D: 5, v: 'vortex', sty: 'x_kiri' }),
+    t(SHIKAI, ['猫輪舞', 'Neko Rinbu', '貓輪舞', '고양이 윤무'], ['灰の竜巻で相手を包み、斬りきざむ', 'Wraps the foe in a tornado of ash and cuts them to pieces', '以灰之龍捲包住對手並切碎', '재의 회오리로 상대를 감싸 썰어 낸다'], { k: 'rain', D: 4, R: 30, v: 'rainfall', sty: 'x_kiri' }),
+  ]),
+  c('雛森桃', 'ひなもりもも', ['Momo Hinamori', '雛森桃', '히나모리 모모'], 'bleach', 'pink', 85, ['斬魄刀「飛梅」', 'Zanpakuto: Tobiume', '斬魄刀「飛梅」', '참백도 「토비우메」'], [
+    t(SHIKAI, ['飛梅', 'Tobiume', '飛梅', '토비우메'], ['刀身から火の玉を撃ち出す', 'Fires balls of flame from the blade', '從刀身射出火球', '칼날에서 불덩이를 쏘아 낸다'], { k: 'inst', L: 1, R: 36, O: 1, v: 'storm', sty: 'x_homura' }),
+    t(['鬼道', 'Kido', '鬼道', '귀도'], ['鬼道の網', 'Kido Net', '鬼道之網', '귀도의 그물'], ['見えない鬼道の網を張り、まとめて爆発させる', 'Lays an unseen net of kido and detonates it all at once', '張開看不見的鬼道之網，一併引爆', '보이지 않는 귀도의 그물을 쳐서 한꺼번에 폭발시킨다'], { k: 'inst', L: 9, R: 30, O: 1, v: 'storm', sty: 'x_homura' }),
+  ]),
+  c('涅マユリ', 'くろつちまゆり', ['Mayuri Kurotsuchi', '涅繭利', '쿠로츠치 마유리'], 'bleach', 'purple', 97, ['斬魄刀「疋殺地蔵」', 'Zanpakuto: Ashisogi Jizo', '斬魄刀「疋殺地藏」', '참백도 「아시소기 지조」'], [
+    t(SHIKAI, ['疋殺地蔵', 'Ashisogi Jizo', '疋殺地藏', '아시소기 지조'], ['斬られた手足だけが、しびれて動かなくなる', 'Only the limbs it cuts go numb and stop moving', '只有被斬到的手腳會麻痺而無法動彈', '베인 손발만 마비되어 움직이지 않게 된다'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_kyoka' }),
+    t(BANKAI, ['金色疋殺地蔵', 'Konjiki Ashisogi Jizo', '金色疋殺地藏', '금색 아시소기 지조'], ['巨大な赤子の像が毒をまき、刃をはやして突進する', 'A giant infant-like figure spreads poison and charges with blades bared', '巨大的嬰兒像散播毒氣，並長出刀刃突進', '거대한 아기의 상이 독을 뿌리고 칼날을 돋워 돌진한다'], { k: 'flow', L: 2, D: 6, O: 1, v: 'dragon', sty: 'x_kyoka' }),
+    t(BANKAI, ['金色疋殺地蔵・魔胎伏印症体', 'Konjiki Ashisogi Jizo: Matai Fukuin Shotai', '金色疋殺地藏・魔胎伏印症體', '금색 아시소기 지조·마태복인증체'], ['戦う相手に合わせて、その場で作りなおした卍解', 'A bankai rebuilt on the spot to suit the foe in front of it', '配合交戰對手當場重新改造的卍解', '싸우는 상대에 맞춰 그 자리에서 다시 만든 만해'], { k: 'inst', L: 9, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_kyoka' }),
+  ]),
 ];
 
 // ---------- 名前で引く ----------

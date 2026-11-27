@@ -2,8 +2,8 @@
 // ・原作の鬼：原作どおりの血鬼術（名前・動き）
 // ・鬼になった人：名前で決まる、このゲームだけの血鬼術
 // ・鬼になったことは、その端末にだけ覚える（ランキングの剣士の記録は消さない）
-import { WAZA } from './waza.js?v=11271935';
-import { genArt, TIERL } from './i18n.js?v=11271935';
+import { WAZA } from './waza.js?v=11272005';
+import { genArt, TIERL } from './i18n.js?v=11272005';
 
 // ---------- 見た目（色と形）----------
 export const ONI_STY = {
