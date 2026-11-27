@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11271730';
+import { EXTRA } from './i18n.js?v=11271745';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -18,6 +18,17 @@ export const OT_STY = {
   x_hiten: { kind: 'wind', c: '#e0322a', c2: '#ffe9d6', shape: 'streak', fl: 'f_cross' },
   x_gatotsu: { kind: 'claw', c: '#3d6fd8', c2: '#e2efff', shape: 'streak', fl: 'f_fang' },
   x_homura: { kind: 'flame', c: '#ff6a00', c2: '#ffe45a', shape: 'ember', fl: 'f_pillar' },
+  x_shinso: { kind: 'bolt', c: '#dfe8f6', c2: '#ffffff', shape: 'spark', fl: 'f_fang' },
+  x_beni: { kind: 'moon', c: '#e0102a', c2: '#ffc0c8', shape: 'crescent', fl: 'f_crescent' },
+  x_katen: { kind: 'ribbon', c: '#ff6fae', c2: '#ffe0ee', shape: 'petal', fl: 'f_petal' },
+  x_zabi: { kind: 'snake', c: '#e63a2a', c2: '#ffe0c8', shape: 'spark', fl: 'f_fang' },
+  x_kyoka: { kind: 'mist', c: '#8a5cff', c2: '#f0e8ff', shape: 'spark', fl: 'k_dream' },
+  x_hitsugi: { kind: 'rock', c: '#2a1640', c2: '#b06cff', shape: 'rock', fl: 'f_pillar' },
+  x_soul: { kind: 'mist', c: '#a8f0e0', c2: '#ffffff', shape: 'puff', fl: 'k_ice' },
+  x_room: { kind: 'wave', c: '#35b8ff', c2: '#e6f8ff', shape: 'spark', fl: 'f_cross' },
+  x_oden: { kind: 'moon', c: '#7a2bd6', c2: '#ffd6ff', shape: 'crescent', fl: 'f_cross' },
+  x_shuku: { kind: 'wind', c: '#e8f4ff', c2: '#ffffff', shape: 'streak', fl: 'f_fang' },
+  x_kodachi: { kind: 'snake', c: '#5b6cf0', c2: '#dfe4ff', shape: 'streak', fl: 'f_cross' },
 };
 
 // 作品
@@ -111,11 +122,82 @@ export const OTHERS = [
     t(HIKEN, ['弐の秘剣・紅蓮腕', 'Second Secret Sword: Guren Kaina', '貳之秘劍・紅蓮腕', '제2비검·홍련완'], ['手甲の火薬に火をつけ、つかんだ相手ごと爆発させる', 'Lights the gunpowder in his gauntlet and blows up whoever he has grabbed', '點燃手甲中的火藥，連同抓住的對手一起引爆', '수갑의 화약에 불을 붙여 붙잡은 상대째 폭발시킨다'], { k: 'inst', L: 1, R: 12, O: 1, v: 'storm', sty: 'x_homura' }),
     t(HIKEN, ['終の秘剣・火産霊神', 'Final Secret Sword: Kaguzuchi', '終之秘劍・火產靈神', '최종비검·화산령신'], ['刀身すべてを燃やし、炎の竜巻を起こす', 'Sets the whole blade ablaze and raises a tornado of fire', '點燃整把刀身，掀起火焰龍捲', '칼날 전체를 불태워 불꽃의 회오리를 일으킨다'], { k: 'aura', L: 2, R: 10, D: 5.5, O: 1, v: 'vortex', sty: 'x_homura' }),
   ], ['志志雄真実']),
+  // ---------- 2回目：BLEACH・ONE PIECE・るろうに剣心 ----------
+  c('市丸ギン', 'いちまるぎん', ['Gin Ichimaru', '市丸銀', '이치마루 긴'], 'bleach', 'white', 97, ['斬魄刀「神鎗」', 'Zanpakuto: Shinso', '斬魄刀「神槍」', '참백도 「신창」'], [
+    t(SHIKAI, ['神鎗', 'Shinso', '神槍', '신창'], ['「射殺せ」のひと声で、刀身が一瞬で伸びて貫く', 'At the words "shoot to kill," the blade extends in an instant and pierces', '一聲「射殺他」，刀身瞬間伸長貫穿', '"쏴 죽여라" 한마디에 칼날이 순식간에 늘어나 꿰뚫는다'], { k: 'inst', L: 0, R: 60, v: 'thrust', sty: 'x_shinso' }),
+    t(BANKAI, ['神殺鎗', 'Kamishini no Yari', '神殺槍', '신살창'], ['音よりも速く伸び縮みする刃で貫く', 'Pierces with a blade that extends and contracts faster than sound', '以比聲音更快伸縮的刀刃貫穿', '소리보다 빠르게 늘었다 줄어드는 칼날로 꿰뚫는다'], { k: 'inst', L: 0, R: 70, O: 1, I: .6, v: 'thrust', sty: 'x_shinso' }),
+    t(BANKAI, ['無踏', 'Buto', '無踏', '무답'], ['胸の前に構え、最速の伸びで撃ちぬく', 'Held at the chest, then fired at its fastest extension', '架於胸前，以最快的伸長擊穿', '가슴 앞에 겨누고 가장 빠른 신장으로 꿰뚫는다'], { k: 'inst', L: 0, R: 50, I: .5, v: 'bolt', a: 'iai', sty: 'x_shinso' }),
+    t(BANKAI, ['無踏連刃', 'Buto Renjin', '無踏連刃', '무답연인'], ['伸び縮みをくり返し、続けざまに貫く', 'Extends and contracts over and over, piercing in rapid succession', '反覆伸縮，接連貫穿', '늘었다 줄기를 되풀이하며 잇달아 꿰뚫는다'], { k: 'multi', N: 10, R: 50, v: 'arcs', sty: 'x_shinso' }),
+    t(BANKAI, ['殺せ「神殺鎗」', 'Kill, Kamishini no Yari', '殺吧「神殺槍」', '죽여라 「신살창」'], ['相手の中に残した刃のかけらの毒で、内側から溶かす', 'A shard of the blade left inside the foe dissolves them from within with its poison', '以留在對手體內的刀刃碎片之毒，由內部溶解', '상대의 몸속에 남긴 칼날 조각의 독으로 안에서부터 녹인다'], { k: 'inst', L: 1, R: 30, O: 1, v: 'storm', sty: 'x_shinso' }),
+  ]),
+  c('浦原喜助', 'うらはらきすけ', ['Kisuke Urahara', '浦原喜助', '우라하라 키스케'], 'bleach', 'red', 99, ['斬魄刀「紅姫」', 'Zanpakuto: Benihime', '斬魄刀「紅姬」', '참백도 「홍희」'], [
+    t(SHIKAI, ['啼け「紅姫」', 'Sing, Benihime', '啼吧「紅姬」', '울어라 「홍희」'], ['紅い斬撃を飛ばす', 'Fires a crimson slash', '放出紅色的斬擊', '붉은 참격을 날린다'], { k: 'inst', L: 1, R: 36, v: 'arcH', sty: 'x_beni' }),
+    t(SHIKAI, ['血霞の盾', 'Chikasumi no Tate', '血霞之盾', '혈하의 방패'], ['血の色の盾を張って攻めを防ぐ', 'Raises a blood-colored shield that blocks attacks', '展開血色之盾擋下攻擊', '핏빛 방패를 펼쳐 공격을 막는다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_beni' }),
+    t(SHIKAI, ['剃刀紅姫', 'Kamisori Benihime', '剃刀紅姬', '면도날 홍희'], ['かみそりのように鋭い紅の刃を飛ばす', 'Fires a crimson blade as sharp as a razor', '放出如剃刀般銳利的紅刃', '면도날처럼 날카로운 붉은 칼날을 날린다'], { k: 'inst', L: 0, R: 50, v: 'thrust', sty: 'x_beni' }),
+    t(SHIKAI, ['縛り紅姫', 'Shibari Benihime', '縛紅姬', '속박의 홍희'], ['黒い網を広げて相手を縛りつける', 'Spreads a black net that binds the foe', '展開黑網束縛對手', '검은 그물을 펼쳐 상대를 묶는다'], { k: 'slow', D: 5, S: .35, v: 'eye', sty: 'x_beni' }),
+    t(SHIKAI, ['火遊紅姫 数珠繋', 'Hiasobi Benihime, Juzutsunagi', '火遊紅姬 數珠繫', '불장난 홍희 염주 잇기'], ['網を伝って、数珠つなぎに爆発させる', 'Sets off a chain of explosions along the net like prayer beads', '沿著網子如念珠般連鎖引爆', '그물을 타고 염주처럼 줄줄이 폭발시킨다'], { k: 'multi', N: 12, R: 36, v: 'arcs', sty: 'x_beni' }),
+    t(BANKAI, ['観音開紅姫改メ', 'Kannonbiraki Benihime Aratame', '觀音開紅姬改', '관음개 홍희 개'], ['触れたものを切り開き、造り変える', 'Cuts open whatever it touches and remakes it', '切開觸及之物並加以改造', '닿은 것을 갈라 열어 다시 만든다'], { k: 'aura', L: 9, R: 9, D: 6, O: 1, G: 1, v: 'calm', sty: 'x_beni' }),
+  ]),
+  c('京楽春水', 'きょうらくしゅんすい', ['Shunsui Kyoraku', '京樂春水', '쿄라쿠 슌스이'], 'bleach', 'pink', 99, ['斬魄刀「花天狂骨」', 'Zanpakuto: Katen Kyokotsu', '斬魄刀「花天狂骨」', '참백도 「화천광골」'], [
+    t(SHIKAI, ['不精独楽', 'Bushogoma', '不精獨樂', '게으른 팽이'], ['風の渦を巻き起こす', 'Whips up a vortex of wind', '捲起風之漩渦', '바람의 소용돌이를 일으킨다'], { k: 'aura', L: 1, R: 7, D: 3, v: 'vortex', sty: 'x_katen' }),
+    t(SHIKAI, ['嶄鬼', 'Takaoni', '嶄鬼', '참귀'], ['高いところにいる方が勝つ遊び。上から叩き斬る', 'A game where whoever is higher wins. Strikes down from above', '位置高的一方獲勝的遊戲。由上往下劈斬', '높은 곳에 있는 쪽이 이기는 놀이. 위에서 내리친다'], { k: 'inst', L: 1, R: 16, O: 1, v: 'fall', sty: 'x_katen' }),
+    t(SHIKAI, ['影鬼', 'Kageoni', '影鬼', '그림자 술래'], ['影にもぐり、踏まれた影から斬る', 'Sinks into shadows and cuts from the shadow that was stepped on', '潛入影中，從被踩到的影子斬擊', '그림자에 숨어들어 밟힌 그림자에서 벤다'], { k: 'multi', N: 7, R: 30, v: 'arcs', sty: 'x_katen' }),
+    t(SHIKAI, ['艶鬼', 'Irooni', '艷鬼', '색깔 술래'], ['口にした色のものだけが斬れる遊び', 'A game where only things of the color you name can be cut', '只有說出口的顏色才能斬到的遊戲', '입에 올린 색의 것만 벨 수 있는 놀이'], { k: 'inst', L: 2, R: 24, v: 'arcH', sty: 'x_katen' }),
+    t(BANKAI, ['花天狂骨枯松心中', 'Katen Kyokotsu: Karamatsu Shinju', '花天狂骨枯松心中', '화천광골 고송심중'], ['まわりを暗く冷たい絶望で包みこむ', 'Wraps everything around in dark, cold despair', '以陰暗冰冷的絕望籠罩四周', '주위를 어둡고 차가운 절망으로 감싼다'], { k: 'slow', D: 7, S: .3, v: 'eye', sty: 'x_katen' }),
+    t(BANKAI, ['〆の段・糸切鋏血染喉', 'Shime no Dan: Itokiribasami Chizome no Nodobue', '終段・絲切鋏血染喉', '마무리 단·실 가위 피에 물든 목'], ['相手の喉に糸を巻き、ひと息に断つ', 'Winds a thread around the throat and severs it in one breath', '以絲線纏住對手的咽喉，一口氣切斷', '상대의 목에 실을 감아 단숨에 끊는다'], { k: 'inst', L: 9, R: 50, O: 1, I: 1, v: 'mega', sty: 'x_katen' }),
+  ]),
+  c('阿散井恋次', 'あばらいれんじ', ['Renji Abarai', '阿散井戀次', '아바라이 렌지'], 'bleach', 'red', 94, ['斬魄刀「蛇尾丸」', 'Zanpakuto: Zabimaru', '斬魄刀「蛇尾丸」', '참백도 「사미환」'], [
+    t(SHIKAI, ['蛇尾丸', 'Zabimaru', '蛇尾丸', '사미환'], ['節に分かれた刃が、鞭のように伸びてうねる', 'The segmented blade extends and whips like a lash', '分成數節的刀刃如鞭子般伸長甩動', '마디로 나뉜 칼날이 채찍처럼 늘어나 굽이친다'], { k: 'multi', N: 6, R: 30, v: 'arcs', sty: 'x_zabi' }),
+    t(BANKAI, ['狒狒王蛇尾丸', 'Hihio Zabimaru', '狒狒王蛇尾丸', '비비왕 사미환'], ['巨大な骨の大蛇をあやつって暴れさせる', 'Commands a gigantic skeletal serpent to rampage', '操縱巨大的骨蛇肆虐', '거대한 뼈의 뱀을 조종해 날뛰게 한다'], { k: 'flow', L: 1, D: 5, v: 'dragon', sty: 'x_zabi' }),
+    t(BANKAI, ['狒牙絶咬', 'Higa Zekko', '狒牙絕咬', '비아절교'], ['ばらけた刃の節を、四方から突き立てる', 'Drives the scattered blade segments in from every side', '將散開的刀節從四面八方刺入', '흩어진 칼날 마디를 사방에서 꽂는다'], { k: 'rain', D: 3, R: 30, v: 'rainfall', sty: 'x_zabi' }),
+    t(BANKAI, ['狒骨大砲', 'Hikotsu Taiho', '狒骨大砲', '비골대포'], ['大蛇の口から霊圧の砲撃を放つ', 'Fires a blast of spirit energy from the serpent\'s mouth', '從大蛇口中放出靈壓砲擊', '뱀의 입에서 영압의 포격을 쏜다'], { k: 'inst', L: 1, R: 60, O: 1, v: 'mega', sty: 'x_zabi' }),
+    t(['真の卍解', 'True Bankai', '真正的卍解', '진정한 만해'], ['双王蛇尾丸・蛇牙鉄炮', 'So-o Zabimaru: Zaga Teppo', '雙王蛇尾丸・蛇牙鐵砲', '쌍왕 사미환·사아철포'], ['炎の牙で噛みつき、そのまま焼きつくす', 'Bites down with fangs of flame and burns the foe to nothing', '以火焰之牙咬住，直接燒盡', '불꽃의 송곳니로 물고 그대로 모조리 태운다'], { k: 'inst', L: 2, R: 40, O: 1, I: .8, v: 'claws', sty: 'x_zabi' }),
+  ]),
+  c('藍染惣右介', 'あいぜんそうすけ', ['Sosuke Aizen', '藍染惣右介', '아이젠 소스케'], 'bleach', 'purple', 100, ['斬魄刀「鏡花水月」', 'Zanpakuto: Kyoka Suigetsu', '斬魄刀「鏡花水月」', '참백도 「경화수월」'], [
+    t(SHIKAI, ['鏡花水月', 'Kyoka Suigetsu', '鏡花水月', '경화수월'], ['解放を一度でも見た者の五感を支配する、完全催眠', 'Complete hypnosis: controls all five senses of anyone who has seen its release even once', '完全催眠：支配所有見過其解放之人的五感', '완전최면. 해방을 한 번이라도 본 자의 오감을 지배한다'], { k: 'slow', D: 7, S: .25, v: 'eye', sty: 'x_kyoka' }),
+    t(ZANJUTSU, ['一太刀', 'A Single Stroke', '一刀', '한 칼'], ['気づいたときには、もう斬られている', 'By the time you notice, you have already been cut', '察覺到的時候，已經被斬了', '알아차렸을 때는 이미 베여 있다'], { k: 'multi', N: 10, R: 36, v: 'arcs', sty: 'x_kyoka' }),
+    t(['破道の九十', 'Hado #90', '破道之九十', '파도의 90'], ['黒棺', 'Kurohitsugi', '黑棺', '흑관'], ['黒い箱に閉じこめ、無数の刃で貫く', 'Seals the foe in a black box and runs them through with countless blades', '關入黑色箱中，以無數刀刃貫穿', '검은 상자에 가두고 무수한 칼날로 꿰뚫는다'], { k: 'inst', L: 9, R: 40, O: 1, v: 'storm', sty: 'x_hitsugi' }),
+    t(['破道の九十九', 'Hado #99', '破道之九十九', '파도의 99'], ['五龍転滅', 'Goryu Tenmetsu', '五龍轉滅', '오룡전멸'], ['大地を割って、霊圧の龍を呼び出す', 'Splits the earth and summons dragons of spirit energy', '撕裂大地，喚出靈壓之龍', '대지를 갈라 영압의 용을 불러낸다'], { k: 'rain', D: 5, R: 40, O: 1, v: 'rainfall', sty: 'x_hitsugi' }),
+  ]),
+  c('ブルック', 'ぶるっく', ['Brook', '布魯克', '브룩'], 'onepiece', 'white', 90, ['魂の喪剣', 'Soul Solid', '魂之喪劍', '혼의 상검'], [
+    t(['仕込み杖', 'Cane Sword', '手杖劍', '지팡이 검'], ['鼻唄三丁 矢筈斬り', 'Hanauta Sancho: Yahazu Giri', '鼻歌三丁 矢筈斬', '콧노래 세 가락 화살깃 베기'], ['斬られたことに気づかせない、すれ違いざまの居合い', 'A passing quick-draw so fast the foe does not notice being cut', '擦身而過的居合，讓人察覺不到已被斬', '베였다는 것조차 모르게 하는, 스쳐 지나가는 발도술'], { k: 'inst', L: 0, R: 34, I: .5, v: 'bolt', a: 'iai', sty: 'x_soul' }),
+    t(['仕込み杖', 'Cane Sword', '手杖劍', '지팡이 검'], ['革命舞曲 ボンナバン', 'Gavotte Bond en Avant', '革命舞曲 向前躍進', '가보트 본 아방'], ['一直線に飛びこむ突き', 'A thrust that leaps straight in', '筆直躍進的突刺', '일직선으로 뛰어드는 찌르기'], { k: 'inst', L: 0, R: 45, v: 'thrust', sty: 'x_soul' }),
+    t(['仕込み杖', 'Cane Sword', '手杖劍', '지팡이 검'], ['夜明歌 クー・ドロア', 'Aubade Coup Droit', '晨歌 直擊', '오바드 쿠 드루아'], ['突きの衝撃だけを遠くへ飛ばす', 'Sends just the shock of the thrust flying far ahead', '只將突刺的衝擊送向遠處', '찌르기의 충격만을 멀리 날린다'], { k: 'inst', L: 0, R: 55, v: 'thrust', sty: 'x_soul' }),
+    t(['魂の喪剣', 'Soul Solid', '魂之喪劍', '혼의 상검'], ['魂の喪剣', 'Soul Solid', '魂之喪劍', '혼의 상검'], ['黄泉の国の冷気を刃にまとわせる', 'Cloaks the blade in the chill of the underworld', '讓刀刃纏上黃泉之國的寒氣', '황천의 냉기를 칼날에 두른다'], { k: 'aura', L: 1, R: 7, D: 4, v: 'spin', sty: 'x_soul' }),
+    t(['魂の喪剣', 'Soul Solid', '魂之喪劍', '혼의 상검'], ['掠り唄 吹雪斬り', 'Kasuriuta: Fubuki Giri', '掠歌 吹雪斬', '스침 노래 눈보라 베기'], ['すれ違いざまに斬り、傷口から凍らせる', 'Cuts while passing, and the wound freezes over', '擦身而過時斬擊，從傷口開始凍結', '스쳐 지나가며 베고, 상처부터 얼린다'], { k: 'multi', N: 7, R: 30, v: 'arcs', sty: 'x_soul' }),
+  ]),
+  c('トラファルガー・ロー', 'とらふぁるがーろー', ['Trafalgar Law', '特拉法爾加・羅', '트라팔가 로'], 'onepiece', 'blue', 97, ['オペオペの実と妖刀「鬼哭」', 'Ope Ope no Mi & Kikoku', '手術果實與妖刀「鬼哭」', '수술수술 열매와 요도 「귀곡」'], [
+    t(['オペオペの実', 'Ope Ope no Mi', '手術果實', '수술수술 열매'], ['ROOM', 'ROOM', 'ROOM', 'ROOM'], ['青い球の空間を広げ、中のものを自在に切りきざむ', 'Spreads a blue sphere and freely cuts up whatever is inside', '展開藍色球形空間，隨意切割其中之物', '푸른 구의 공간을 펼쳐 그 안의 것을 자유자재로 썬다'], { k: 'aura', L: 2, R: 10, D: 5, v: 'calm', sty: 'x_room' }),
+    t(['オペオペの実', 'Ope Ope no Mi', '手術果實', '수술수술 열매'], ['シャンブルズ', 'Shambles', '屠宰場', '섐블즈'], ['ROOMの中のものの場所を入れかえ、次々に斬る', 'Swaps the positions of things inside the ROOM and cuts one after another', '交換ROOM內物體的位置，接連斬擊', 'ROOM 안의 것들의 위치를 바꿔 가며 잇달아 벤다'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_room' }),
+    t(['オペオペの実', 'Ope Ope no Mi', '手術果實', '수술수술 열매'], ['ラジオナイフ', 'Radio Knife', '放射刀', '라디오 나이프'], ['電気をまとった刃で、くっつけられないように切りはなす', 'Cuts with an electrified blade so the pieces cannot be rejoined', '以帶電的刀刃切開，使其無法再接合', '전기를 두른 칼날로 다시 붙지 못하게 잘라 낸다'], { k: 'multi', N: 6, R: 24, v: 'arcs', sty: 'x_room' }),
+    t(['オペオペの実', 'Ope Ope no Mi', '手術果實', '수술수술 열매'], ['注射ショット', 'Injection Shot', '注射槍', '인젝션 샷'], ['刀を銃のように突き出して撃ちぬく', 'Thrusts the sword forward like a gunshot', '將刀如槍一般刺出擊穿', '칼을 총처럼 내질러 꿰뚫는다'], { k: 'inst', L: 0, R: 50, v: 'thrust', sty: 'x_room' }),
+    t(['オペオペの実', 'Ope Ope no Mi', '手術果實', '수술수술 열매'], ['ガンマナイフ', 'Gamma Knife', '伽瑪刀', '감마 나이프'], ['外は傷つけず、体の内側だけを壊す', 'Leaves the outside unharmed and destroys only the inside of the body', '不傷外表，只破壞身體內部', '겉은 다치게 하지 않고 몸속만 부순다'], { k: 'inst', L: 0, R: 14, O: 1, v: 'arcDown', sty: 'x_room' }),
+    t(['覚醒', 'Awakening', '覺醒', '각성'], ['穿刺波', 'Puncture Wille', '穿刺波', '펑처 빌레'], ['刀から衝撃波を伸ばし、どこまでも貫く', 'Extends a shock wave from the sword that pierces without end', '從刀延伸出衝擊波，無止境地貫穿', '칼에서 충격파를 뻗어 어디까지고 꿰뚫는다'], { k: 'inst', L: 1, R: 70, O: 1, I: .8, v: 'mega', sty: 'x_room' }),
+  ], ['トラファルガー・D・ワーテル・ロー']),
+  c('光月おでん', 'こうづきおでん', ['Kozuki Oden', '光月御田', '코즈키 오뎅'], 'onepiece', 'purple', 100, ['おでん二刀流', 'Oden Two Sword Style', '御田二刀流', '오뎅 이도류'], [
+    t(['おでん二刀流', 'Oden Two Sword Style', '御田二刀流', '오뎅 이도류'], ['銃・擬鬼', 'Gun Modoki', '銃・擬鬼', '건 모도키'], ['二刀をそろえて撃ちこむ、突進の斬撃', 'A charging slash that drives both swords in together', '雙刀併攏擊出的突進斬擊', '두 칼을 모아 꽂는 돌진의 참격'], { k: 'inst', L: 1, R: 50, O: 1, v: 'thrust', sty: 'x_oden' }),
+    t(['おでん二刀流', 'Oden Two Sword Style', '御田二刀流', '오뎅 이도류'], ['桃源白滝', 'Togen Shirataki', '桃源白瀧', '도원백롱'], ['二刀を重ねて、横へ大きく薙ぐ', 'Layers both swords and sweeps wide to the side', '雙刀重疊，大幅橫掃', '두 칼을 겹쳐 옆으로 크게 휩쓴다'], { k: 'inst', L: 2, R: 24, v: 'arcH', sty: 'x_oden' }),
+    t(['おでん二刀流', 'Oden Two Sword Style', '御田二刀流', '오뎅 이도류'], ['桃源十拳', 'Togen Totsuka', '桃源十拳', '도원십권'], ['カイドウにただ一つの傷を残した、十字の斬撃', 'The cross-shaped slash that left Kaido his only scar', '在凱多身上留下唯一傷痕的十字斬擊', '카이도에게 단 하나의 흉터를 남긴 십자 참격'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', sty: 'x_oden' }),
+  ], ['こうずきおでん']),
+  c('瀬田宗次郎', 'せたそうじろう', ['Sojiro Seta', '瀨田宗次郎', '세타 소지로'], 'kenshin', 'white', 98, ['縮地', 'Shukuchi', '縮地', '축지'], [
+    t(['縮地', 'Shukuchi', '縮地', '축지'], ['三歩手前', 'Three Steps Short', '三步之前', '세 걸음 전'], ['まだ本気ではない。それでも目で追えない', 'Not serious yet. Still too fast for the eye to follow', '還沒有認真。即使如此肉眼也追不上', '아직 진심이 아니다. 그래도 눈으로 좇을 수 없다'], { k: 'flow', L: 0, D: 3, v: 'ribbon', sty: 'x_shuku' }),
+    t(['縮地', 'Shukuchi', '縮地', '축지'], ['一歩手前', 'One Step Short', '一步之前', '한 걸음 전'], ['壁も天井も足場にして、四方から斬る', 'Uses walls and ceiling as footholds and cuts from every side', '以牆壁與天花板為踏板，從四面八方斬擊', '벽도 천장도 발판으로 삼아 사방에서 벤다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_shuku' }),
+    t(['縮地', 'Shukuchi', '縮地', '축지'], ['縮地', 'Shukuchi', '縮地', '축지'], ['姿が消え、地を蹴る音だけが残る', 'His form vanishes; only the sound of feet striking the ground remains', '身影消失，只留下蹬地的聲音', '모습이 사라지고 땅을 차는 소리만 남는다'], { k: 'flow', L: 2, D: 6, O: 1, v: 'dragon', sty: 'x_shuku' }),
+    t(OUGI, ['瞬天殺', 'Shuntensatsu', '瞬天殺', '순천살'], ['縮地から抜刀術へつなぐ、痛みを感じる間もない一撃', 'Shukuchi into a sword draw: a blow that leaves no time to feel pain', '由縮地接拔刀術，連痛都來不及感覺的一擊', '축지에서 발도술로 잇는, 아픔을 느낄 틈도 없는 일격'], { k: 'inst', L: 1, R: 60, O: 1, I: 1, v: 'mega', a: 'iai', sty: 'x_shuku' }),
+  ]),
+  c('四乃森蒼紫', 'しのもりあおし', ['Aoshi Shinomori', '四乃森蒼紫', '시노모리 아오시'], 'kenshin', 'bluepurple', 96, ['御庭番式小太刀二刀流', 'Oniwaban Twin Kodachi Style', '御庭番式小太刀二刀流', '오니와반식 소태도 이도류'], [
+    t(['御庭番式', 'Oniwaban Style', '御庭番式', '오니와반식'], ['流水の動き', 'Ryusui no Ugoki', '流水之動', '유수의 움직임'], ['緩急をつけたゆるやかな動きで、相手の目を惑わす', 'Slow, flowing movement with shifts of pace that deceives the eye', '以緩急有致的流暢動作迷惑對手的眼睛', '완급을 준 느긋한 움직임으로 상대의 눈을 현혹한다'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_kodachi' }),
+    t(['小太刀二刀流', 'Twin Kodachi Style', '小太刀二刀流', '소태도 이도류'], ['陰陽交叉', 'Onmyo Kosa', '陰陽交叉', '음양교차'], ['一刀の峰をもう一刀で打ち、押し斬る', 'Strikes the back of one blade with the other to force the cut through', '以另一刀敲擊刀背，強行壓斬', '한 칼의 등을 다른 칼로 쳐서 눌러 벤다'], { k: 'inst', L: 0, R: 14, O: 1, v: 'arcDown', sty: 'x_kodachi' }),
+    t(['小太刀二刀流', 'Twin Kodachi Style', '小太刀二刀流', '소태도 이도류'], ['陰陽撥止', 'Onmyo Hasshi', '陰陽撥止', '음양발지'], ['二刀を重ねて投げ、一本目の影に二本目を隠す', 'Throws both blades stacked, hiding the second in the shadow of the first', '將雙刀重疊擲出，把第二把藏在第一把的影子裡', '두 칼을 겹쳐 던져 첫 번째의 그림자에 두 번째를 숨긴다'], { k: 'inst', L: 0, R: 45, v: 'thrust', sty: 'x_kodachi' }),
+    t(['小太刀二刀流', 'Twin Kodachi Style', '小太刀二刀流', '소태도 이도류'], ['呉鉤十字', 'Goko Juji', '吳鉤十字', '오구십자'], ['二刀を交差させ、はさみのように斬る', 'Crosses both blades and cuts like a pair of shears', '雙刀交叉，如剪刀般斬擊', '두 칼을 교차시켜 가위처럼 벤다'], { k: 'inst', L: 1, R: 16, v: 'claws', sty: 'x_kodachi' }),
+    t(['小太刀二刀流', 'Twin Kodachi Style', '小太刀二刀流', '소태도 이도류'], ['回天剣舞', 'Kaiten Kenbu', '迴天劍舞', '회천검무'], ['流水の動きから、回りながらの三連撃', 'From the flowing movement, three spinning strikes in a row', '由流水之動接旋轉的三連擊', '유수의 움직임에서 돌면서 3연격'], { k: 'multi', N: 3, R: 20, v: 'arcs', sty: 'x_kodachi' }),
+    t(['小太刀二刀流', 'Twin Kodachi Style', '小太刀二刀流', '소태도 이도류'], ['回天剣舞・六連', 'Kaiten Kenbu Rokuren', '迴天劍舞・六連', '회천검무·육련'], ['二刀で左右から打ちこむ、六連撃', 'Six consecutive strikes driven in from both sides with two blades', '以雙刀從左右打入的六連擊', '두 칼로 좌우에서 꽂는 6연격'], { k: 'multi', N: 12, R: 34, v: 'arcs', sty: 'x_kodachi' }),
+  ]),
 ];
 
 // ---------- 名前で引く ----------
 // 同じ人として扱う字（旧字・異体字）。登録した名前にも、入力された名前にも同じ直しをかける
-const VAR = { '齋': '斎', '斉': '斎', '齊': '斎', '劍': '剣', '劔': '剣', '剱': '剣', '國': '国', '眞': '真', '實': '実', '澤': '沢', '邊': '辺', '邉': '辺', '髙': '高', '﨑': '崎', '龍': '竜', '瀧': '滝', '櫻': '桜', '條': '条', '廣': '広', '濱': '浜', '嶋': '島', '嶌': '島', '惠': '恵', '藏': '蔵', '壽': '寿', '彌': '弥', '禮': '礼', '靜': '静', '曉': '暁' };
+const VAR = { '齋': '斎', '斉': '斎', '齊': '斎', '劍': '剣', '劔': '剣', '剱': '剣', '國': '国', '眞': '真', '實': '実', '澤': '沢', '邊': '辺', '邉': '辺', '髙': '高', '﨑': '崎', '龍': '竜', '瀧': '滝', '櫻': '桜', '條': '条', '廣': '広', '濱': '浜', '嶋': '島', '嶌': '島', '惠': '恵', '藏': '蔵', '壽': '寿', '彌': '弥', '禮': '礼', '靜': '静', '曉': '暁', '樂': '楽', '戀': '恋', '瀨': '瀬', '姬': '姫', '黑': '黒', '德': '徳', '榮': '栄', '圓': '円', '兒': '児', '將': '将', '豐': '豊', '淺': '浅', '傳': '伝', '櫻': '桜', '鐵': '鉄', '燈': '灯', '彈': '弾', '發': '発', '續': '続', '學': '学', '氣': '気', '靈': '霊', '龜': '亀', '萬': '万', '與': '与', '禪': '禅', '眞': '真' };
 export const okey = s => String(s).normalize('NFKC').replace(/[\s　・･=＝\-‐—.,、。「」『』'’]/g, '').toLowerCase().replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60)).replace(/[︀-️]/g, '').replace(/[^\u0000-\u007f]/g, ch => VAR[ch] || ch);
 const OMAP = new Map();
 for (const o of OTHERS) {
