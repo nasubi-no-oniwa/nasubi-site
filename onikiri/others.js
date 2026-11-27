@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11280656';
+import { EXTRA } from './i18n.js?v=11280702';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -149,6 +149,9 @@ export const WORKS = {
   kr_zio: ['仮面ライダージオウ', 'Kamen Rider Zi-O', '假面騎士時王', '가면라이더 지오'],
   kr_zeroone: ['仮面ライダーゼロワン', 'Kamen Rider Zero-One', '假面騎士01', '가면라이더 제로원'],
   kr_geats: ['仮面ライダーギーツ', 'Kamen Rider Geats', '假面騎士Geats', '가면라이더 기츠'],
+  shinken: ['侍戦隊シンケンジャー', 'Samurai Sentai Shinkenger', '侍戰隊真劍者', '사무라이전대 신켄저'],
+  donbro: ['暴太郎戦隊ドンブラザーズ', 'Avataro Sentai Donbrothers', '暴太郎戰隊DON桃樂隊', '아바타로전대 돈브라더즈'],
+  kingoh: ['王様戦隊キングオージャー', 'Ohsama Sentai King-Ohger', '王樣戰隊KING-OHGER', '왕님전대 킹오저'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -1404,6 +1407,48 @@ export const OTHERS = [
     t(['ブジンソード', 'Bujin Sword', 'Bujin Sword', '부진 소드'], ['ブジンソードストライク', 'Bujin Sword Strike', 'Bujin Sword打擊', '부진 소드 스트라이크'], ['黒い刀を抜きはなち、一閃する', 'Draws the black katana and cuts in a single flash', '拔出黑刀一閃而過', '검은 칼을 뽑아 일섬한다'], { k: 'inst', L: 1, R: 36, v: 'arcH', a: 'iai', sty: 'x_yami' }),
     t(['ブジンソード', 'Bujin Sword', 'Bujin Sword', '부진 소드'], ['ブジンソードビクトリー', 'Bujin Sword Victory', 'Bujin Sword勝利', '부진 소드 빅토리'], ['闇をまとった大きな一太刀', 'One great stroke wrapped in darkness', '纏繞黑暗的巨大一刀', '어둠을 두른 커다란 한칼'], { k: 'inst', L: 2, R: 44, v: 'mega', sty: 'x_kuro' }),
   ], ['仮面ライダータイクーン']),
+  // ---------- 25回目：スーパー戦隊の剣士（シンケンジャーほか） ----------
+  c('志葉丈瑠', 'しばたける', ['Takeru Shiba', '志葉丈瑠', '시바 타케루'], 'shinken', 'red', 96, ['烈火大斬刀', 'Rekka Daizanto', '烈火大斬刀', '열화대참도'], [
+    t(MOJI, ['火炎の舞', 'Kaen no Mai', '火炎之舞', '화염의 춤'], ['「火」のモヂカラをこめて斬る', 'Cuts with the Mojikara of Fire', '灌注「火」之文字力而斬', '「火」의 모지카라를 담아 벤다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_homura' }),
+    t(['烈火大斬刀', 'Rekka Daizanto', '烈火大斬刀', '열화대참도'], ['百火繚乱', 'Hyakka Ryoran', '百火繚亂', '백화요란'], ['身の丈ほどの大刀で、炎ごとなぎ払う', 'Sweeps them aside, flames and all, with a blade as tall as he is', '以等身大刀連同火焰一併橫掃', '키만 한 대도로 불꽃째 휩쓴다'], { k: 'inst', L: 2, R: 34, v: 'arcH', sty: 'x_ryujin' }),
+    t(['スーパーシンケンレッド', 'Super Shinken Red', '超級真劍紅', '슈퍼 신켄 레드'], ['真・火炎の舞', 'Shin Kaen no Mai', '真・火炎之舞', '진・화염의 춤'], ['陣羽織をまとい、さらに大きな炎で斬る', 'Dons the battle coat and cuts with a far greater flame', '披上陣羽織，以更巨大的火焰斬擊', '진바오리를 두르고 더욱 큰 불꽃으로 벤다'], { k: 'inst', L: 2, R: 44, v: 'mega', sty: 'x_ryujin' }),
+  ], ['シンケンレッド']),
+  c('池波流ノ介', 'いけなみりゅうのすけ', ['Ryunosuke Ikenami', '池波流之介', '이케나미 류노스케'], 'shinken', 'blue', 90, ['ウォーターアロー', 'Water Arrow', 'Water Arrow', '워터 애로'], [
+    t(MOJI, ['水流の舞', 'Suiryu no Mai', '水流之舞', '수류의 춤'], ['「水」のモヂカラで、流れるように斬る', 'Cuts in a flowing line with the Mojikara of Water', '以「水」之文字力如流水般斬擊', '「水」의 모지카라로 흐르듯 벤다'], { k: 'multi', N: 7, R: 24, v: 'arcs', sty: 'x_shigure' }),
+    t(['ウォーターアロー', 'Water Arrow', 'Water Arrow', '워터 애로'], ['明鏡止水', 'Meikyo Shisui', '明鏡止水', '명경지수'], ['心をしずめ、水の矢を放つ', 'Stills his mind and looses arrows of water', '靜心凝神，射出水之箭', '마음을 가라앉히고 물의 화살을 쏜다'], { k: 'rain', D: 5, R: 40, O: 1, v: 'rainfall', sty: 'x_shigure' }),
+  ], ['シンケンブルー', '池波流之介', '池波流の介']),
+  c('白石茉子', 'しらいしまこ', ['Mako Shiraishi', '白石茉子', '시라이시 마코'], 'shinken', 'pink', 88, ['ヘブンファン', 'Heaven Fan', 'Heaven Fan', '헤븐 팬'], [
+    t(MOJI, ['天空の舞', 'Tenku no Mai', '天空之舞', '천공의 춤'], ['「天」のモヂカラで、舞うように斬りあげる', 'Cuts upward like a dance with the Mojikara of Heaven', '以「天」之文字力如舞蹈般向上斬', '「天」의 모지카라로 춤추듯 올려 벤다'], { k: 'inst', L: 1, R: 28, v: 'arcUp', sty: 'x_kaze' }),
+    t(['ヘブンファン', 'Heaven Fan', 'Heaven Fan', '헤븐 팬'], ['迫力満天', 'Hakuryoku Manten', '迫力滿天', '박력만천'], ['大きな扇で、つむじ風をおこす', 'Whips up a whirlwind with her great fan', '以大扇捲起旋風', '커다란 부채로 회오리바람을 일으킨다'], { k: 'inst', L: 2, R: 30, v: 'vortex', sty: 'x_katen' }),
+  ], ['シンケンピンク']),
+  c('谷千明', 'たにちあき', ['Chiaki Tani', '谷千明', '타니 치아키'], 'shinken', 'green', 86, ['ウッドスピア', 'Wood Spear', 'Wood Spear', '우드 스피어'], [
+    t(MOJI, ['木枯らしの舞', 'Kogarashi no Mai', '木枯之舞', '찬바람의 춤'], ['「木」のモヂカラで、木の葉を散らして斬る', 'Cuts in a scatter of leaves with the Mojikara of Wood', '以「木」之文字力散落木葉而斬', '「木」의 모지카라로 나뭇잎을 흩날리며 벤다'], { k: 'multi', N: 6, R: 24, v: 'arcs', sty: 'x_santoryu' }),
+    t(['ウッドスピア', 'Wood Spear', 'Wood Spear', '우드 스피어'], ['大木晩成', 'Taiboku Bansei', '大木晚成', '대목만성'], ['長くのびる槍で、まっすぐ突く', 'Thrusts straight out with a spear that stretches far', '以伸長的長槍筆直刺出', '길게 뻗는 창으로 곧게 찌른다'], { k: 'inst', L: 1, R: 34, v: 'thrust', sty: 'x_santoryu' }),
+  ], ['シンケングリーン']),
+  c('花織ことは', 'はなおりことは', ['Kotoha Hanaori', '花織琴葉', '하나오리 코토하'], 'shinken', 'yellow', 86, ['ランドスライサー', 'Land Slicer', 'Land Slicer', '랜드 슬라이서'], [
+    t(MOJI, ['土煙の舞', 'Tsuchikemuri no Mai', '土煙之舞', '흙먼지의 춤'], ['「土」のモヂカラで、土けむりをあげて斬る', 'Cuts in a cloud of dust with the Mojikara of Earth', '以「土」之文字力揚起塵土而斬', '「土」의 모지카라로 흙먼지를 일으키며 벤다'], { k: 'inst', L: 1, R: 28, v: 'arcH', sty: 'x_gravity' }),
+    t(['ランドスライサー', 'Land Slicer', 'Land Slicer', '랜드 슬라이서'], ['奮闘土力', 'Funto Doryoku', '奮鬥土力', '분투토력'], ['大きな手裏剣を投げ、まとめて斬る', 'Throws her great shuriken and cuts them all', '擲出大型手裏劍一併斬斷', '커다란 수리검을 던져 한꺼번에 벤다'], { k: 'inst', L: 2, R: 30, v: 'spin', sty: 'x_trunks' }),
+  ], ['シンケンイエロー', '花織琴葉']),
+  c('梅盛源太', 'うめもりげんた', ['Genta Umemori', '梅盛源太', '우메모리 겐타'], 'shinken', 'orange', 88, ['サカナマル', 'Sakanamaru', '魚丸', '사카나마루'], [
+    t(['サカナマル', 'Sakanamaru', '魚丸', '사카나마루'], ['百枚おろし', 'Hyakumai Oroshi', '百枚切', '백 장 뜨기'], ['寿司屋の居合で、一瞬に百回おろす', 'With a sushi chef\'s iai, he fillets them a hundred times in an instant', '以壽司師傅的居合，瞬間切上百刀', '초밥집의 발도로 순식간에 백 번 포를 뜬다'], { k: 'multi', N: 10, R: 26, v: 'arcs', sty: 'x_excalibur' }),
+    t(['サカナマル', 'Sakanamaru', '魚丸', '사카나마루'], ['千枚おろし', 'Senmai Oroshi', '千枚切', '천 장 뜨기'], ['さらに速く、千回おろす', 'Faster still, he fillets them a thousand times', '以更快的速度切上千刀', '더욱 빠르게 천 번 포를 뜬다'], { k: 'multi', N: 14, R: 32, v: 'arcs', sty: 'x_excalibur' }),
+  ], ['シンケンゴールド']),
+  c('志葉薫', 'しばかおる', ['Kaoru Shiba', '志葉薰', '시바 카오루'], 'shinken', 'red', 94, ['烈火大斬刀', 'Rekka Daizanto', '烈火大斬刀', '열화대참도'], [
+    t(MOJI, ['火炎の舞', 'Kaen no Mai', '火炎之舞', '화염의 춤'], ['「火」のモヂカラをこめて斬る', 'Cuts with the Mojikara of Fire', '灌注「火」之文字力而斬', '「火」의 모지카라를 담아 벤다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_homura' }),
+    t(['志葉家のモヂカラ', 'Mojikara of the Shiba Clan', '志葉家的文字力', '시바 가문의 모지카라'], ['封印の文字', 'Sealing Character', '封印之文字', '봉인의 문자'], ['志葉家だけに伝わる文字で、敵をしばる', 'Binds the enemy with the character handed down only in the Shiba clan', '以唯有志葉家傳承的文字束縛敵人', '시바 가문에만 전해지는 문자로 적을 묶는다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_homura' }),
+  ], ['志葉薰', '姫シンケンレッド']),
+  c('腑破十臓', 'ふわじゅうぞう', ['Juzo Fuwa', '腑破十臟', '후와 쥬조'], 'shinken', 'gray', 95, ['裏正', 'Uramasa', '裏正', '우라마사'], [
+    t(['裏正', 'Uramasa', '裏正', '우라마사'], ['裏正の一太刀', 'Stroke of Uramasa', '裏正一刀', '우라마사의 한칼'], ['人斬りの妖刀で、ためらいなく斬る', 'Cuts without hesitation with the cursed blade of a manslayer', '以人斬妖刀毫不猶豫地斬下', '사람 베는 요도로 망설임 없이 벤다'], { k: 'inst', L: 1, R: 32, v: 'arcH', a: 'iai', sty: 'x_murasame' }),
+    t(['外道の剣', 'Blade of the Gedou', '外道之劍', '외도의 검'], ['果てなき斬り合い', 'Endless Duel', '無盡的廝殺', '끝없는 칼부림'], ['斬り合いだけを求めて、刃を重ねつづける', 'Seeking nothing but the duel, he keeps laying blade on blade', '只求廝殺，不斷交疊刀刃', '칼부림만을 바라며 칼날을 계속 겹친다'], { k: 'multi', N: 10, R: 30, v: 'arcs', sty: 'x_murasame' }),
+  ], ['腑破十蔵', '腑破十臟']),
+  c('桃井タロウ', 'ももいたろう', ['Taro Momoi', '桃井太郎', '모모이 타로'], 'donbro', 'red', 98, ['ザングラソード', 'Zanglassword', '太陽眼鏡劍', '장글라소드'], [
+    t(['ザングラソード', 'Zanglassword', '太陽眼鏡劍', '장글라소드'], ['快桃乱麻', 'Kaito Ranma', '快桃亂麻', '쾌도난마'], ['高らかに笑い、一太刀で斬りすてる', 'Laughs out loud and cuts them down in a single stroke', '放聲大笑，一刀斬下', '호탕하게 웃으며 한칼에 베어 버린다'], { k: 'inst', L: 1, R: 32, v: 'arcH', sty: 'x_senbon' }),
+    t(['必殺奥義', 'Finishing Secret Art', '必殺奧義', '필살오의'], ['桃代無敵アバター乱舞', 'Momoyo Muteki Avatar Ranbu', '桃代無敵阿凡達亂舞', '모모요 무적 아바타 난무'], ['お供とともに、祭りのように斬りまくる', 'Cuts wildly alongside his companions, like a festival', '與夥伴一同如祭典般亂斬', '동료들과 함께 축제처럼 마구 벤다'], { k: 'multi', N: 12, R: 36, v: 'arcs', sty: 'x_senbon' }),
+  ], ['ドンモモタロウ', '桃井太郎']),
+  c('ギラ・ハスティー', 'ぎらはすてぃー', ['Gira Husty', '基拉・哈斯蒂', '기라 하스티'], 'kingoh', 'red', 95, ['オージャカリバー', 'Ohger Calibur', 'Ohger Calibur', '오저 칼리버'], [
+    t(['オージャカリバー', 'Ohger Calibur', 'Ohger Calibur', '오저 칼리버'], ['ロードフィニッシュ', 'Lord Finish', '領主終結', '로드 피니시'], ['王の剣で、まっすぐ斬りぬける', 'Cuts straight through with the sword of a king', '以王者之劍筆直斬過', '왕의 검으로 곧게 베어 나간다'], { k: 'inst', L: 1, R: 32, v: 'arcH', sty: 'x_hiten' }),
+    t(['オージャカリバー', 'Ohger Calibur', 'Ohger Calibur', '오저 칼리버'], ['オージャフィニッシュ', 'Ohger Finish', 'Ohger終結', '오저 피니시'], ['邪悪の王を名乗り、全力の一太刀を放つ', 'Names himself the king of evil and looses a stroke with all his might', '自稱邪惡之王，放出全力一刀', '사악한 왕을 자처하며 전력의 한칼을 날린다'], { k: 'inst', L: 2, R: 42, v: 'mega', sty: 'x_haoshoku' }),
+  ], ['クワガタオージャー', 'ギラ・ハスティ'], ['ギラ']),
 ];
 
 // ---------- 名前で引く ----------
