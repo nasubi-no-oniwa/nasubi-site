@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272055';
+import { EXTRA } from './i18n.js?v=11272105';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -113,6 +113,10 @@ export const WORKS = {
   tensura: ['転生したらスライムだった件', 'That Time I Got Reincarnated as a Slime', '關於我轉生變成史萊姆這檔事', '전생했더니 슬라임이었던 건에 대하여'],
   mushoku: ['無職転生', 'Mushoku Tensei: Jobless Reincarnation', '無職轉生', '무직전생'],
   opm: ['ワンパンマン', 'One-Punch Man', '一拳超人', '원펀맨'],
+  berserk: ['ベルセルク', 'Berserk', '烙印勇士', '베르세르크'],
+  hxh: ['HUNTER×HUNTER', 'Hunter × Hunter', 'HUNTER×HUNTER 獵人', '헌터×헌터'],
+  jojo: ['ジョジョの奇妙な冒険', "JoJo's Bizarre Adventure", 'JoJo的奇妙冒險', '죠죠의 기묘한 모험'],
+  fma: ['鋼の錬金術師', 'Fullmetal Alchemist', '鋼之鍊金術師', '강철의 연금술사'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -859,6 +863,57 @@ export const OTHERS = [
     t(['サイドエフェクト', 'Side Effect', '副作用', '사이드 이펙트'], ['未来視', 'Foresight', '未來視', '미래시'], ['目の前の人の、少し先の未来が見える', 'Sees a short way into the future of whoever is in front of him', '能看見眼前之人不久後的未來', '눈앞에 있는 사람의 조금 앞의 미래가 보인다'], { k: 'slow', D: 6, S: .35, v: 'eye', sty: 'x_kogetsu' }),
     t(['トリガー', 'Trigger', '觸發器', '트리거'], ['エスクード', 'Escudo', '盾牌', '에스쿠도'], ['地面から盾を生やして身を守る', 'Raises shields out of the ground for cover', '從地面長出盾牌保護自身', '땅에서 방패를 돋워 몸을 지킨다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_kogetsu' }),
     t(['風刃', 'Fujin', '風刃', '후진'], ['風刃', 'Fujin', '風刃', '후진'], ['見える範囲のどこへでも、物を伝って斬撃を走らせる', 'Sends slashes running along surfaces to anywhere in sight', '讓斬擊沿著物體奔向視線所及的任何地方', '보이는 범위 어디로든 물체를 타고 참격을 달리게 한다'], { k: 'multi', N: 11, R: 45, v: 'arcs', sty: 'x_kogetsu' }),
+  ]),
+  // ---------- 14回目：犬夜叉・ダイの大冒険・ベルセルク・HUNTER×HUNTER・ジョジョ・鋼の錬金術師 ----------
+  c('蛮骨', 'ばんこつ', ['Bankotsu', '蠻骨', '반코츠'], 'inuyasha', 'red', 94, ['大鉾「蛮竜」', 'Great Halberd: Banryu', '大鉾「蠻龍」', '대모 「반류」'], [
+    t(['蛮竜', 'Banryu', '蠻龍', '반류'], ['蛮竜閃', 'Dragon Hammer', '蠻龍閃', '만룡섬'], ['蛮竜を振り、妖気の斬撃を飛ばす', 'Swings Banryu and fires a slash of demonic energy', '揮動蠻龍，放出妖氣斬擊', '반류를 휘둘러 요기의 참격을 날린다'], { k: 'inst', L: 1, R: 40, O: 1, v: 'arcH', sty: 'x_tessaiga' }),
+    t(['蛮竜', 'Banryu', '蠻龍', '반류'], ['竜雷閃', 'Dragon Thunder', '龍雷閃', '용뢰섬'], ['空に雷雲を呼び、雷を落とす', 'Calls thunderclouds overhead and brings down lightning', '喚來雷雲降下落雷', '하늘에 뇌운을 불러 번개를 떨어뜨린다'], { k: 'rain', D: 4, R: 40, O: 1, v: 'rainfall', sty: 'x_tessaiga' }),
+  ]),
+  c('蛇骨', 'じゃこつ', ['Jakotsu', '蛇骨', '자코츠'], 'inuyasha', 'bluepurple', 88, ['蛇骨刀', 'Jakotsuto', '蛇骨刀', '사골도'], [
+    t(['蛇骨刀', 'Jakotsuto', '蛇骨刀', '사골도'], ['蛇骨刀', 'Jakotsuto', '蛇骨刀', '사골도'], ['何枚もの刃がつながり、蛇のようにうねって斬る', 'Many linked blades writhe like a snake as they cut', '數片相連的刀刃如蛇般蜿蜒斬擊', '여러 장의 칼날이 이어져 뱀처럼 굽이치며 벤다'], { k: 'multi', N: 9, R: 36, v: 'arcs', sty: 'x_zabi' }),
+    t(['七人隊', 'Band of Seven', '七人隊', '칠인대'], ['切り込み隊長', 'Vanguard Captain', '突擊隊長', '돌격대장'], ['先頭に立って、楽しそうに斬りこむ', 'Takes the lead and cuts in with glee', '站在最前頭，興高采烈地斬入', '선두에 서서 즐거운 듯 베어 들어간다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_zabi' }),
+  ]),
+  c('バラン', '', ['Baran', '巴蘭', '바란'], 'dai', 'yellow', 100, ['真魔剛竜剣', 'True Demon Dragon Sword', '真魔剛龍劍', '진마강룡검'], [
+    t(['竜闘気', 'Dragonic Aura', '龍鬥氣', '용투기'], ['竜闘気', 'Dragonic Aura', '龍鬥氣', '용투기'], ['全身をおおう、鋼よりかたい闘気', 'An aura harder than steel that covers the whole body', '覆蓋全身、比鋼鐵還硬的鬥氣', '온몸을 덮는, 강철보다 단단한 투기'], { k: 'aura', L: 1, R: 7, D: 5, G: 1, v: 'calm', sty: 'x_strash' }),
+    t(['魔法剣', 'Magic Sword', '魔法劍', '마법검'], ['ギガブレイク', 'Giga Break', '終極爆破斬', '기가 브레이크'], ['最強の雷を剣に落とし、そのまま斬りつける', 'Calls the mightiest lightning onto the sword and strikes with it', '將最強的雷電降於劍上，直接斬下', '최강의 번개를 검에 떨어뜨려 그대로 벤다'], { k: 'inst', L: 1, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_strash' }),
+    t(['竜魔人', 'Dragonoid', '龍魔人', '용마인'], ['ドルオーラ', 'Doruora', '龍鬥氣砲', '도르오라'], ['竜の口の形に合わせた両手から、闘気の砲撃を放つ', 'Fires a cannon blast of aura from hands joined in the shape of a dragon\'s mouth', '從合成龍口形狀的雙手放出鬥氣砲擊', '용의 입 모양으로 모은 두 손에서 투기의 포격을 쏜다'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_strash' }),
+  ], [], ['バラン']),
+  c('アバン＝デ＝ジニュアール3世', 'あばんでじにゅあーるさんせい', ['Avan de Zinuar III', '阿邦・德・吉紐爾三世', '아방 데 지뉴아르 3세'], 'dai', 'blue', 97, ['アバン流刀殺法', 'Avan-Style Sword Technique', '阿邦流刀殺法', '아방류 도살법'], [
+    t(['アバン流刀殺法', 'Avan-Style', '阿邦流刀殺法', '아방류 도살법'], ['空裂斬', 'Air Slash', '空裂斬', '공렬참'], ['目に見えない邪悪を、光の闘気で斬る', 'Cuts unseen evil with an aura of light', '以光之鬥氣斬斷肉眼看不見的邪惡', '눈에 보이지 않는 사악함을 빛의 투기로 벤다'], { k: 'inst', L: 0, R: 45, v: 'thrust', sty: 'x_hyun' }),
+    t(['奥義', 'Secret Technique', '奧義', '오의'], ['無刀陣', 'Mutojin', '無刀陣', '무도진'], ['武器を手ばなして闘気を消し、相手の最大の技にカウンターを合わせる', "Lets go of his weapon, erases his aura, and counters the foe's greatest attack", '放下武器、消去鬥氣，對準對手最強的招式反擊', '무기를 놓고 투기를 지워 상대의 최대 기술에 카운터를 맞춘다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_hyun' }),
+    t(['必殺技', 'Finishing Move', '必殺技', '필살기'], ['アバンストラッシュ', 'Avan Strash', '阿邦斯特拉修', '아방 스트랏슈'], ['三つの技を一つにした、勇者の家庭教師の必殺技', 'The finishing move of the hero\'s tutor, combining three techniques into one', '將三招合而為一的勇者家庭教師必殺技', '세 가지 기술을 하나로 합친, 용사의 가정교사의 필살기'], { k: 'inst', L: 1, R: 50, O: 1, I: .6, v: 'thrust', sty: 'x_hyun' }),
+  ], ['アバン・デ・ジニュアール3世', 'アバン＝デ＝ジニュアール三世'], ['アバン先生']),
+  // ---------- ベルセルク ----------
+  c('ガッツ', '', ['Guts', '格斯', '가츠'], 'berserk', 'black', 100, ['大剣「ドラゴンころし」', 'Great Sword: Dragonslayer', '大劍「斬龍劍」', '대검 「드래곤 슬레이어」'], [
+    t(['ドラゴンころし', 'Dragonslayer', '斬龍劍', '드래곤 슬레이어'], ['鉄塊のひと振り', 'A Swing of the Iron Slab', '鐵塊的一揮', '쇳덩이의 한 번 휘두르기'], ['大きく、ぶ厚く、重い鉄のかたまりで、まとめて叩き斬る', 'Cuts them all down with a huge, thick, heavy slab of iron', '以巨大、厚重的鐵塊一併劈斬', '크고 두껍고 무거운 쇳덩이로 한꺼번에 내리친다'], { k: 'inst', L: 2, R: 20, O: 1, v: 'arcH', sty: 'x_kuro' }),
+    t(['義手', 'Prosthetic Arm', '義手', '의수'], ['大砲', 'Arm Cannon', '義手大砲', '대포'], ['左の義手にしこんだ大砲を撃つ', 'Fires the cannon built into his left prosthetic arm', '發射裝在左手義肢裡的大砲', '왼쪽 의수에 장치한 대포를 쏜다'], { k: 'inst', L: 1, R: 40, O: 1, v: 'storm', sty: 'x_bazooka' }),
+    t(['狂戦士の甲冑', 'Berserker Armor', '狂戰士甲冑', '광전사의 갑주'], ['狂戦士', 'Berserker', '狂戰士', '광전사'], ['痛みを忘れ、止まらずに斬りつづける', 'Forgets all pain and keeps cutting without stopping', '忘卻痛楚，毫不停歇地持續斬擊', '아픔을 잊고 멈추지 않고 계속 벤다'], { k: 'flow', L: 2, D: 6, O: 1, v: 'dragon', sty: 'x_kuro' }),
+  ], [], ['ガッツ']),
+  c('グリフィス', '', ['Griffith', '格里菲斯', '그리피스'], 'berserk', 'white', 99, ['鷹の団 団長', 'Leader of the Band of the Hawk', '鷹之團 團長', '매의 단 단장'], [
+    t(['サーベル', 'Saber', '軍刀', '사브르'], ['白い鷹', 'The White Hawk', '白鷹', '하얀 매'], ['細い剣で、相手のすきを正確につらぬく', 'Pierces the foe\'s opening precisely with a slender blade', '以細劍精準地刺穿對手的破綻', '가는 검으로 상대의 빈틈을 정확히 꿰뚫는다'], { k: 'inst', L: 0, R: 40, I: .5, v: 'thrust', sty: 'x_rapier' }),
+    t(['異名', 'Alias', '異名', '이명'], ['光の鷹', 'The Hawk of Light', '光之鷹', '빛의 매'], ['戦場をかけぬけ、ふれるものをすべて斬りふせる', 'Races across the battlefield and cuts down all in his path', '馳騁戰場，斬倒觸及的一切', '전장을 달려 닿는 것을 모두 베어 넘긴다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_rapier' }),
+  ], [], ['グリフィス']),
+  // ---------- HUNTER×HUNTER ----------
+  c('ノブナガ＝ハザマ', 'のぶながはざま', ['Nobunaga Hazama', '信長・哈查馬', '노부나가 하자마'], 'hxh', 'ainezu', 92, ['居合と円', 'Iai & En', '居合與圓', '거합과 엔'], [
+    t(['念', 'Nen', '念', '넨'], ['円', 'En', '圓', '엔'], ['半径4メートルの中に入ったものを、すべて感じとる', 'Senses everything that enters a radius of four meters', '感知進入半徑四公尺內的一切', '반경 4미터 안에 들어온 것을 모두 감지한다'], { k: 'aura', L: 1, R: 7, D: 4, v: 'calm', sty: 'x_bugi' }),
+    t(['居合', 'Iai', '居合', '거합'], ['居合', 'Iai', '居合', '거합'], ['間合いに入ったものを、抜く手も見せずに斬る', 'Cuts whatever enters his range without even showing the draw', '進入攻擊範圍者，連拔刀的動作都看不見就被斬', '간격에 들어온 것을 뽑는 손도 보이지 않게 벤다'], { k: 'inst', L: 1, R: 16, O: 1, I: .5, v: 'bolt', a: 'iai', sty: 'x_bugi' }),
+  ], ['ノブナガ・ハザマ']),
+  c('フェイタン', '', ['Feitan', '飛坦', '페이탄'], 'hxh', 'black', 95, ['仕込み刀', 'Hidden Blade', '藏刀', '숨긴 칼'], [
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['残像の剣', 'Afterimage Blade', '殘像之劍', '잔상의 검'], ['残像がのこる速さで斬りまわる', 'Cuts so fast he leaves afterimages', '以留下殘像的速度四處斬擊', '잔상이 남는 속도로 베고 다닌다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_kuro' }),
+    t(['念能力', 'Nen Ability', '念能力', '넨 능력'], ['許されざる者', 'Pain Packer', '不可饒恕者', '페인 패커'], ['受けた痛みを力に変える鎧をまとう', 'Dons armor that turns the pain he takes into power', '披上將所受痛楚轉化為力量的鎧甲', '받은 아픔을 힘으로 바꾸는 갑옷을 두른다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_ryujin' }),
+    t(['念能力', 'Nen Ability', '念能力', '넨 능력'], ['太陽に灼かれて', 'Rising Sun', '灼熱的太陽', '라이징 선'], ['ためた痛みを小さな太陽に変えて、あたりを焼く', 'Turns his stored pain into a small sun that scorches the area', '將累積的痛楚化為小太陽，燒灼四周', '모은 아픔을 작은 태양으로 바꿔 주위를 태운다'], { k: 'inst', L: 9, R: 45, O: 1, I: .8, v: 'storm', sty: 'x_ryujin' }),
+  ], [], ['フェイタン']),
+  // ---------- ジョジョ ----------
+  c('ジャン＝ピエール・ポルナレフ', 'じゃんぴえーるぽるなれふ', ['Jean Pierre Polnareff', '尚・皮耶爾・波魯那雷夫', '장 피에르 폴나레프'], 'jojo', 'white', 95, ['銀の戦車', 'Silver Chariot', '銀色戰車', '실버 채리엇'], [
+    t(['スタンド', 'Stand', '替身', '스탠드'], ['針串刺しの刑', 'Hora Rush', '針刺之刑', '바늘 꼬치의 형'], ['目に見えない速さの、連続の突き', 'A flurry of thrusts too fast to see', '快得看不見的連續突刺', '눈에 보이지 않는 속도의 연속 찌르기'], { k: 'multi', N: 12, R: 28, v: 'arcs', sty: 'x_shinso' }),
+    t(['スタンド', 'Stand', '替身', '스탠드'], ['甲冑を脱ぐ', 'Armor Off', '卸下甲冑', '갑주 벗기'], ['甲冑をぬぎすて、残像が見えるほど速くなる', 'Sheds its armor and becomes fast enough to leave afterimages', '脫去甲冑，速度快到能看見殘像', '갑주를 벗어 던지고 잔상이 보일 만큼 빨라진다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_shinso' }),
+    t(['スタンド', 'Stand', '替身', '스탠드'], ['剣針飛ばし', 'Blade Shot', '射出劍針', '검침 날리기'], ['剣の刃そのものを撃ち出す、とっておきの一手', 'Fires the sword blade itself: his last trick', '將劍刃本身射出的最後一招', '검의 칼날 자체를 쏘아 내는 비장의 한 수'], { k: 'inst', L: 0, R: 50, O: 1, v: 'thrust', sty: 'x_shinso' }),
+  ], ['ジャン・ピエール・ポルナレフ', 'J・P・ポルナレフ'], ['ポルナレフ']),
+  // ---------- 鋼の錬金術師 ----------
+  c('キング・ブラッドレイ', 'きんぐぶらっどれい', ['King Bradley', '金・布拉德雷', '킹 브래드레이'], 'fma', 'black', 99, ['最強の眼', 'The Ultimate Eye', '最強之眼', '최강의 눈'], [
+    t(['最強の眼', 'Ultimate Eye', '最強之眼', '최강의 눈'], ['最強の眼', 'The Ultimate Eye', '最強之眼', '최강의 눈'], ['弾の通る道まで見切る眼', 'An eye that reads even the paths of bullets', '連子彈的軌跡都能看穿的眼睛', '총알이 지나갈 길까지 간파하는 눈'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_shinsen' }),
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['五本の剣', 'Five Swords', '五把劍', '다섯 자루의 검'], ['腰の五本の剣を次々に抜き、戦車さえ斬る', 'Draws the five swords at his waist one after another and cuts down even a tank', '接連拔出腰間的五把劍，連戰車都能斬斷', '허리의 다섯 자루 검을 잇달아 뽑아 전차마저 벤다'], { k: 'multi', N: 10, R: 34, v: 'arcs', sty: 'x_shinsen' }),
+    t(['異名', 'Alias', '異名', '이명'], ['憤怒のラース', 'Wrath', '憤怒的拉斯', '분노의 라스'], ['老いを感じさせない速さで、斬りぬける', 'Cuts through with a speed that shows no sign of age', '以不顯老態的速度斬穿而過', '늙음을 느낄 수 없는 속도로 베고 지나간다'], { k: 'flow', L: 1, D: 5, O: 1, v: 'ribbon', sty: 'x_shinsen' }),
   ]),
 ];
 
