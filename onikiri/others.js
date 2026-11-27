@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272150';
+import { EXTRA } from './i18n.js?v=11272200';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -124,6 +124,8 @@ export const WORKS = {
   sakurawars: ['サクラ大戦', 'Sakura Wars', '櫻花大戰', '사쿠라 대전'],
   madoka: ['魔法少女まどか☆マギカ', 'Puella Magi Madoka Magica', '魔法少女小圓', '마법소녀 마도카☆마기카'],
   sailormoon: ['美少女戦士セーラームーン', 'Sailor Moon', '美少女戰士', '미소녀 전사 세일러 문'],
+  csm: ['チェンソーマン', 'Chainsaw Man', '鏈鋸人', '체인소 맨'],
+  mha: ['僕のヒーローアカデミア', 'My Hero Academia', '我的英雄學院', '나의 히어로 아카데미아'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -1103,6 +1105,56 @@ export const OTHERS = [
     t(['霊気', 'Spirit Energy', '靈氣', '영기'], ['のびる霊剣', 'Extending Spirit Sword', '伸長的靈劍', '늘어나는 영검'], ['霊剣を長くのばして、遠くの相手を突く', 'Extends the Spirit Sword to stab a distant foe', '將靈劍伸長刺向遠處的對手', '영검을 길게 늘여 멀리 있는 상대를 찌른다'], { k: 'inst', L: 0, R: 45, v: 'thrust', sty: 'x_tessaiga' }),
     t(['霊気', 'Spirit Energy', '靈氣', '영기'], ['次元刀', 'Dimension Sword', '次元刀', '차원도'], ['空間そのものを斬り裂く', 'Cuts through space itself', '將空間本身斬裂', '공간 자체를 베어 가른다'], { k: 'inst', L: 9, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_tessaiga' }),
   ]),
+  // ---------- 19回目：呪術廻戦・チェンソーマン・ヒロアカ・ワンパンマン・進撃の巨人 ----------
+  c('禪院真希', 'ぜんいんまき', ['Maki Zenin', '禪院真希', '젠인 마키'], 'jjk', 'green', 98, ['呪具', 'Cursed Tools', '咒具', '주구'], [
+    t(['呪具', 'Cursed Tool', '咒具', '주구'], ['游雲', 'Playful Cloud', '游雲', '유운'], ['三節棍の特級呪具。使い手の力が、そのまま威力になる', "A special grade three-section staff whose power is simply its wielder's strength", '三節棍形的特級咒具。使用者的力量直接化為威力', '삼절곤 형태의 특급 주구. 쓰는 자의 힘이 그대로 위력이 된다'], { k: 'multi', N: 8, R: 28, v: 'arcs', sty: 'x_odm' }),
+    t(['呪具', 'Cursed Tool', '咒具', '주구'], ['釈魂刀', 'Split Soul Katana', '釋魂刀', '석혼도'], ['かたさを無視して、魂ごと斬る', 'Ignores hardness and cuts the soul itself', '無視硬度，連同靈魂一起斬斷', '단단함을 무시하고 혼째 벤다'], { k: 'inst', L: 1, R: 24, O: 1, v: 'arcH', sty: 'x_odm' }),
+    t(['呪具', 'Cursed Tool', '咒具', '주구'], ['竜骨', 'Dragon-Bone', '龍骨', '용골'], ['受けた力を刀にため、背から噴き出して加速する', 'Stores the force it receives and vents it from the back of the blade to accelerate', '將承受的力量蓄於刀中，從刀背噴出加速', '받은 힘을 칼에 모아 등에서 뿜어 가속한다'], { k: 'inst', L: 1, R: 40, O: 1, I: .5, v: 'dash', a: 'iai', sty: 'x_odm' }),
+  ], ['禅院真希']),
+  c('伏黒甚爾', 'ふしぐろとうじ', ['Toji Fushiguro', '伏黑甚爾', '후시구로 토지'], 'jjk', 'black', 100, ['天与呪縛と呪具', 'Heavenly Restriction & Cursed Tools', '天與咒縛與咒具', '천여주박과 주구'], [
+    t(['異名', 'Alias', '異名', '이명'], ['術師殺し', 'Sorcerer Killer', '術師殺手', '술사 살해자'], ['呪力がまったくない体で、気づかれずに近づいて斬る', 'With a body of zero cursed energy, closes in unnoticed and cuts', '以完全沒有咒力的身體，在不被察覺下逼近斬擊', '주력이 전혀 없는 몸으로 들키지 않고 다가가 벤다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_kuro' }),
+    t(['呪具', 'Cursed Tool', '咒具', '주구'], ['天逆鉾', 'Inverted Spear of Heaven', '天逆鉾', '천역모'], ['はたらいている術式を、むりやり打ち消す', 'Forcibly cancels any technique in effect', '強制解除發動中的術式', '발동 중인 술식을 강제로 지운다'], { k: 'aura', L: 1, R: 8, D: 5, G: 1, v: 'calm', sty: 'x_kuro' }),
+    t(['呪具', 'Cursed Tool', '咒具', '주구'], ['釈魂刀', 'Split Soul Katana', '釋魂刀', '석혼도'], ['かたさを無視して、魂ごと斬る', 'Ignores hardness and cuts the soul itself', '無視硬度，連同靈魂一起斬斷', '단단함을 무시하고 혼째 벤다'], { k: 'inst', L: 1, R: 24, O: 1, v: 'arcH', sty: 'x_kuro' }),
+  ], ['禪院甚爾', '禅院甚爾']),
+  c('三輪霞', 'みわかすみ', ['Kasumi Miwa', '三輪霞', '미와 카스미'], 'jjk', 'blue', 78, ['シン・陰流', 'New Shadow Style', '新・陰流', '신·음류'], [
+    t(['シン・陰流', 'New Shadow Style', '新・陰流', '신·음류'], ['簡易領域', 'Simple Domain', '簡易領域', '간이영역'], ['半径2.21メートルに入ったものを、自動でむかえうつ', 'Automatically intercepts anything that enters a radius of 2.21 meters', '自動迎擊進入半徑2.21公尺內的一切', '반경 2.21미터에 들어온 것을 자동으로 맞받아친다'], { k: 'aura', L: 1, R: 6, D: 4, v: 'calm', sty: 'x_getsuga' }),
+    t(['シン・陰流', 'New Shadow Style', '新・陰流', '신·음류'], ['抜刀', 'Batto', '拔刀', '발도'], ['呪力で刀身をさやの中で加速させる、最速の居合い', 'The fastest quick-draw, accelerating the blade inside the scabbard with cursed energy', '以咒力讓刀身在鞘中加速的最快居合', '주력으로 칼날을 칼집 안에서 가속시키는 가장 빠른 발도'], { k: 'inst', L: 1, R: 18, I: .5, v: 'bolt', a: 'iai', sty: 'x_getsuga' }),
+  ]),
+  c('日下部篤也', 'くさかべあつや', ['Atsuya Kusakabe', '日下部篤也', '쿠사카베 아츠야'], 'jjk', 'ainezu', 96, ['シン・陰流', 'New Shadow Style', '新・陰流', '신·음류'], [
+    t(['シン・陰流', 'New Shadow Style', '新・陰流', '신·음류'], ['簡易領域', 'Simple Domain', '簡易領域', '간이영역'], ['術式を持たない一級術師がきわめた、守りの領域', 'A defensive domain perfected by a first grade sorcerer with no technique of his own', '沒有術式的一級術師所精通的防守領域', '술식이 없는 1급 술사가 통달한 방어의 영역'], { k: 'aura', L: 1, R: 7, D: 5, G: 1, v: 'calm', sty: 'x_bugi' }),
+    t(['シン・陰流', 'New Shadow Style', '新・陰流', '신·음류'], ['居合「夕月」', 'Iai: Evening Moon', '居合「夕月」', '거합 「저녁달」'], ['領域に入ったものを、抜きうちに斬る', 'Cuts down whatever enters the domain with a draw-strike', '拔刀斬擊進入領域的一切', '영역에 들어온 것을 뽑자마자 벤다'], { k: 'inst', L: 1, R: 20, O: 1, I: .5, v: 'bolt', a: 'iai', sty: 'x_bugi' }),
+  ]),
+  // ---------- チェンソーマン ----------
+  c('サムライソード', '', ['Samurai Sword', '武士刀', '사무라이 소드'], 'csm', 'red', 90, ['刀の悪魔', 'Katana Devil', '刀之惡魔', '칼의 악마'], [
+    t(['刀の悪魔', 'Katana Devil', '刀之惡魔', '칼의 악마'], ['変身', 'Transformation', '變身', '변신'], ['左手を引きぬくと、頭と両腕が刀になる', 'Pulls off his left hand, and his head and both arms become blades', '拔下左手後，頭與雙臂都化為刀', '왼손을 뽑으면 머리와 양팔이 칼이 된다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_murasame' }),
+    t(['刀の悪魔', 'Katana Devil', '刀之惡魔', '칼의 악마'], ['居合', 'Iai', '居合', '거합'], ['目に見えない速さで、すれ違いざまにまとめて斬る', 'Cuts them all in passing, faster than the eye can see', '以肉眼看不見的速度擦身而過時一併斬擊', '눈에 보이지 않는 속도로 스쳐 지나가며 한꺼번에 벤다'], { k: 'inst', L: 1, R: 45, O: 1, I: .6, v: 'dash', a: 'iai', sty: 'x_murasame' }),
+  ], [], ['サムライソード']),
+  c('早川アキ', 'はやかわあき', ['Aki Hayakawa', '早川秋', '하야카와 아키'], 'csm', 'blue', 88, ['悪魔との契約', 'Devil Contracts', '與惡魔的契約', '악마와의 계약'], [
+    t(['契約', 'Contract', '契約', '계약'], ['未来の悪魔', 'Future Devil', '未來惡魔', '미래의 악마'], ['数秒先の未来が見える', 'Sees a few seconds into the future', '能看見數秒後的未來', '몇 초 앞의 미래가 보인다'], { k: 'slow', D: 5, S: .4, v: 'eye', sty: 'x_meido' }),
+    t(['契約', 'Contract', '契約', '계약'], ['呪いの悪魔', 'Curse Devil', '詛咒惡魔', '저주의 악마'], ['釘の刀で三度刺すと、呪いが相手をにぎりつぶす', 'Stab three times with the nail sword and the curse crushes the foe', '以釘劍刺中三次，詛咒便會捏碎對手', '못의 칼로 세 번 찌르면 저주가 상대를 쥐어 터뜨린다'], { k: 'multi', N: 3, R: 24, v: 'arcs', sty: 'x_meido' }),
+    t(['契約', 'Contract', '契約', '계약'], ['狐の悪魔「コン」', 'Fox Devil: "Kon"', '狐之惡魔「狐」', '여우의 악마 「콘」'], ['巨大な狐の頭を呼びだして、かみつかせる', 'Summons the head of a gigantic fox to bite down', '喚出巨大的狐狸頭咬住對手', '거대한 여우의 머리를 불러내 물게 한다'], { k: 'inst', L: 2, R: 20, O: 1, v: 'fall', sty: 'x_tessaiga' }),
+  ], ['早川秋']),
+  // ---------- 僕のヒーローアカデミア ----------
+  c('ステイン', '', ['Stain', '史坦因', '스테인'], 'mha', 'red', 92, ['ヒーロー殺し', 'Hero Killer', '英雄殺手', '히어로 킬러'], [
+    t(['個性', 'Quirk', '個性', '개성'], ['凝血', 'Bloodcurdle', '凝血', '응혈'], ['相手の血をなめて、体の自由をうばう', "Licks the foe's blood and takes away their freedom to move", '舔舐對手的血，奪去其身體的自由', '상대의 피를 핥아 몸의 자유를 빼앗는다'], { k: 'slow', D: 5, S: .25, v: 'eye', sty: 'x_murasame' }),
+    t(['刀とナイフ', 'Katana & Knives', '刀與小刀', '칼과 나이프'], ['粛清', 'Purge', '肅清', '숙청'], ['刃こぼれした刀とナイフで、次々に斬りつける', 'Cuts one foe after another with a chipped katana and knives', '以崩口的刀與小刀接連斬擊', '이가 빠진 칼과 나이프로 잇달아 벤다'], { k: 'multi', N: 9, R: 30, v: 'arcs', sty: 'x_murasame' }),
+  ], ['赤黒血染', 'あかぐろちぞめ'], ['ステイン']),
+  // ---------- ワンパンマン ----------
+  c('音速のソニック', 'おんそくのそにっく', ["Speed-o'-Sound Sonic", '音速索尼克', '음속의 소닉'], 'opm', 'purple', 93, ['忍者の里の刀', 'Blade of the Ninja Village', '忍者村之刀', '닌자 마을의 칼'], [
+    t(['忍術', 'Ninjutsu', '忍術', '인술'], ['風刃脚', 'Wind Blade Kick', '風刃腳', '풍인각'], ['かまいたちを起こす蹴り', 'A kick that raises a cutting wind', '掀起鐮鼬的踢擊', '낫바람을 일으키는 발차기'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_tsubame' }),
+    t(['忍術', 'Ninjutsu', '忍術', '인술'], ['爆裂手裏剣', 'Exploding Shuriken', '爆裂手裡劍', '폭렬 수리검'], ['当たると爆発する手裏剣を、まとめて投げる', 'Throws a volley of shuriken that explode on impact', '一次擲出多枚命中就會爆炸的手裡劍', '맞으면 폭발하는 수리검을 한꺼번에 던진다'], { k: 'rain', D: 3, R: 36, O: 1, v: 'rainfall', sty: 'x_bazooka' }),
+    t(['忍術', 'Ninjutsu', '忍術', '인술'], ['十影葬', 'Ten Shadows Burial', '十影葬', '십영장'], ['残像で十人にふえて、いっせいに斬る', 'Multiplies into ten afterimages and cuts all at once', '以殘像化為十人一齊斬擊', '잔상으로 열 명으로 늘어나 일제히 벤다'], { k: 'multi', N: 10, R: 34, v: 'arcs', sty: 'x_tsubame' }),
+  ], ['Speed-o-Sound Sonic']),
+  c('閃光のフラッシュ', 'せんこうのふらっしゅ', ['Flashy Flash', '閃光的佛萊士', '섬광의 플래시'], 'opm', 'yellow', 97, ['瞬殺丸', 'Instakill', '瞬殺丸', '순살환'], [
+    t(['必殺', 'Killer Move', '必殺', '필살'], ['流影脚', 'Flowing Shadow Feet', '流影腳', '유영각'], ['残像をのこす足運びで、斬りぬける', 'Cuts through with footwork that leaves afterimages', '以留下殘像的步法斬穿而過', '잔상을 남기는 발놀림으로 베고 지나간다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_suzume' }),
+    t(['必殺', 'Killer Move', '必殺', '필살'], ['閃光斬', 'Flashy Slash', '閃光斬', '섬광참'], ['光のような速さの、連続の斬撃', 'A string of slashes as fast as light', '如光一般迅速的連續斬擊', '빛 같은 속도의 연속 참격'], { k: 'multi', N: 12, R: 30, v: 'arcs', sty: 'x_suzume' }),
+  ]),
+  // ---------- 進撃の巨人 ----------
+  c('エレン・イェーガー', 'えれんいぇーがー', ['Eren Yeager', '艾連・葉卡', '에렌 예거'], 'aot', 'green', 92, ['立体機動と巨人の力', 'ODM Gear & the Power of the Titans', '立體機動與巨人之力', '입체기동과 거인의 힘'], [
+    t(['立体機動', 'ODM Gear', '立體機動', '입체기동'], ['うなじ削ぎ', 'Nape Slice', '削後頸', '목덜미 베기'], ['ワイヤーで飛びこみ、急所をそぎ落とす', 'Swings in on wires and slices off the vital spot', '以鋼索飛入，削下要害', '와이어로 뛰어들어 급소를 도려낸다'], { k: 'inst', L: 0, R: 36, I: .5, v: 'dash', a: 'iai', sty: 'x_odm' }),
+    t(['巨人の力', 'Power of the Titans', '巨人之力', '거인의 힘'], ['硬質化', 'Hardening', '硬質化', '경질화'], ['体をかたい結晶でおおって、攻めをはじく', 'Covers his body in hard crystal that turns attacks aside', '以堅硬的結晶覆蓋身體，彈開攻擊', '몸을 단단한 결정으로 덮어 공격을 튕겨 낸다'], { k: 'aura', L: 1, R: 7, D: 4.5, G: 1, v: 'calm', sty: 'x_odm' }),
+    t(['巨人の力', 'Power of the Titans', '巨人之力', '거인의 힘'], ['進撃の巨人', 'Attack Titan', '進擊的巨人', '진격의 거인'], ['巨人になって、まとめて叩きつぶしながら進む', 'Becomes a Titan and advances, crushing everything in his way', '化為巨人，一路擊潰一切前進', '거인이 되어 한꺼번에 때려 부수며 나아간다'], { k: 'flow', L: 2, D: 6, O: 1, v: 'dragon', sty: 'x_bazooka' }),
+  ], ['エレン・イエーガー']),
 ];
 
 // ---------- 名前で引く ----------
