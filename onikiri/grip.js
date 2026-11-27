@@ -1,6 +1,7 @@
 // 「色変わりの刀」の握る場面をそのまま移したもの（刀の3D・長押しで色づく・赫刀・伝令の烏）。katana/game.js から機械的に切り出している
-import { THREE, RoomEnvironment } from './lib.js?v=11261250';
-import { COLORS, ORDER, CHARS } from './data.js?v=11261250';
+import { THREE, RoomEnvironment } from './lib.js?v=11271300';
+import { COLORS, ORDER, CHARS } from './data.js?v=11271300';
+import { oniInvite, oniText } from './oni.js?v=11271300';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -88,11 +89,11 @@ function judge(name) {
 const KAN = '甲乙丙丁戊己庚辛壬癸';
 function rankOf(R) {
   if (R.rank) return T.sp[R.rank] || T.kan[KAN.indexOf(R.rank)] || R.rank;
-  if (R.key === 'nezuko') return T.sp.oni; if (R.key === 'none') return T.kan[9];
+  if ((R.key === 'nezuko' || R.oni)) return T.sp.oni; if (R.key === 'none') return T.kan[9];
   if (R.den >= 99) return T.sp.hashira; return T.kan[Math.min(9, Math.floor((100 - R.den) / 10))];
 }
 const kokyu = k => { const C = COLORS[k]; return C.kokyu[L] + (C.from ? T.from(COLORS[C.from].kokyu[L]) : ''); };
-const wordOf = R => R.word ? T.words[R.word] : COLORS[R.key].word[L];
+const wordOf = R => R.word ? T.words[R.word] : COLORS[R.oni ? 'nezuko' : R.key].word[L];
 // ---------- 音 ----------
 let AC = null, SND = true;
 export function gripSnd(v) { SND = v; if (!v) humStop(); }
@@ -255,10 +256,10 @@ function cap(t, hold) { const c = $('cap'); c.textContent = t; gsap.killTweensOf
 let DONE = () => { };
 export function gripOnDone(f) { DONE = f; }
 export function gripStart(R) {
-  if (busy) return; busy = true; LAST = R; const C = COLORS[R.key];
+  if (busy) return; busy = true; LAST = R; const C = COLORS[R.oni ? 'nezuko' : R.key];
   ac(); sfx('draw'); $('title').hidden = true; ST = 'grip';
   U.uProg.value = 0; U.uGlow.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0;
-  const tint = new THREE.Color(R.key === 'none' || R.key === 'nezuko' ? '#d7dbe0' : C.hex); U.uTint.value.copy(tint); bgMat.uniforms.uTint.value.copy(tint);
+  const tint = new THREE.Color(R.key === 'none' || (R.key === 'nezuko' || R.oni) ? '#d7dbe0' : C.hex); U.uTint.value.copy(tint); bgMat.uniforms.uTint.value.copy(tint);
   const amt = R.key === 'none' ? .0 : R.key === 'black' ? 1 : (.55 + .45 * R.den / 100);
   const tl = gsap.timeline();
   tl.to(katana.rotation, { y: 0, x: 0, duration: .9, ease: 'power3.inOut' }, 0); tl.add(setPose('stand', .9), 0);
@@ -270,7 +271,7 @@ const HOLD_T = 2.4;
 function holdUI(on) { const h = $('hold'); h.hidden = !on; if (on) { $('holdT').textContent = T.capHold; gsap.fromTo(h, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .35 }); } }
 function press(v) { if (!((ST === 'hold' && HOLD) || (ST === 'reveal' && REV))) { holding = false; return; } holding = v; if (v) { ac(); humOn(); } else humStop(); $('hold').classList.toggle('on', v); }
 function holdStep(dt) {
-  const H = HOLD, R = H.R, nez = R.key === 'nezuko';
+  const H = HOLD, R = H.R, nez = (R.key === 'nezuko' || R.oni);
   if (holding) H.p = Math.min(1, H.p + dt / (nez ? 1.6 : HOLD_T)); else H.p = Math.max(0, H.p - dt / 1.1);
   const p = H.p; $('holdRing').style.setProperty('--p', (p * 100).toFixed(1));
   humSet(p); shake = holding ? (nez ? .03 + .14 * p : .04 * p * p) : 0;
@@ -279,8 +280,8 @@ function holdStep(dt) {
   if (p >= 1) { HOLD = null; ST = 'grip'; holdUI(false); humStop(); emitAt = -1; shake = 0; finish(R); }
 }
 function finish(R) {
-  const C = COLORS[R.key];
-  if (R.key === 'nezuko') {
+  const C = COLORS[R.oni ? 'nezuko' : R.key];
+  if ((R.key === 'nezuko' || R.oni)) {
     sfx('thud'); sfx('zap'); flash('#ff3048'); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3048') }); cap(T.capNez);
     const tl = gsap.timeline();
     tl.to(katana.rotation, { z: '+=' + (Math.PI * 1.5), duration: .7, ease: 'power2.out' });
@@ -315,10 +316,28 @@ function ignite(R) {
 }
 function proceed() {
   if (!REV) return; const R = REV.R; REV = null; ST = 'grip'; gsap.killTweensOf('#cap'); gsap.to('#cap', { opacity: 0, duration: .25 }); shake = 0; humStop(); holding = false; $('hold').classList.remove('on');
-  const C = COLORS[R.key];
+  const C = COLORS[R.oni ? 'nezuko' : R.key];
   document.documentElement.style.setProperty('--tint', R.key === 'none' ? '#8a8f96' : (R.key === 'white' ? '#9aa3ad' : C.hex));
   const say = R.key === 'none' ? T.crowNone(R.name) : T.crow(R.name, C.name[L], kokyu(R.key));
-  crow(say).then(() => { busy = false; ST = 'done'; DONE(R); });
+  const go = () => crow(say).then(() => { busy = false; ST = 'done'; DONE(R); });
+  // 才能のある人・ない人・鬼になる前の名前には、ここで「鬼にならないか」と誘いが来る
+  const kind = INV(R); if (!kind) { go(); return; }
+  setTimeout(() => oniInvite(L, kind).then(yes => { if (!yes) { go(); return; } R.becameOni = true; turnOni(R).then(() => { busy = false; ST = 'done'; DONE(R); }); }), 500);
+}
+let INV = () => null;
+export function gripInvite(f) { INV = f; }
+// 鬼になる演出：刀が手からこぼれ落ち、画面が血の色にそまる
+function turnOni(R) {
+  return new Promise(res => {
+    sfx('thud'); sfx('zap'); flash('#ff1030'); shake = .12; cap(oniText(L).done(R.name), 2.2);
+    fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 9, palette: ramp('#ff1030') }); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 60, seed: 21, palette: ramp('#5a0010') });
+    gsap.to(U.uTint.value, { r: .55, g: .02, b: .06, duration: .5 }); gsap.to(U.uAura, { value: 2.2, duration: .3 }); gsap.to(bgMat.uniforms.uTint.value, { r: .7, g: .03, b: .08, duration: .6 }); gsap.to(bgMat.uniforms.uMix, { value: 1, duration: .6 });
+    const tl = gsap.timeline();
+    tl.to({}, { duration: .7, onUpdate() { shake = .12 * (1 - this.progress()); } });
+    tl.to(katana.rotation, { z: '+=' + (Math.PI * 1.5), duration: .8, ease: 'power2.in' }); tl.to(katana.position, { y: -VH * .95, duration: .8, ease: 'power2.in' }, '<');
+    tl.call(() => { sfx('thud'); flash('#ff1030'); shake = 0; }, null, '+=.05');
+    tl.call(() => { katana.position.y = VH; setPose('top', .01); res(); }, null, '+=.9');
+  });
 }
 
 // ---------- 伝令の烏 ----------

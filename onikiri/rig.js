@@ -1,5 +1,5 @@
 // 剣士（全員同じモデル。関節つき・アニメ風の塗りと輪郭線）と、型ごとの動き
-import { THREE } from './lib.js?v=11261250';
+import { THREE } from './lib.js?v=11271300';
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function toonMap() { const d = new Uint8Array([70, 70, 70, 255, 150, 150, 150, 255, 215, 215, 215, 255, 255, 255, 255, 255]); const t = new THREE.DataTexture(d, 4, 1, THREE.RGBAFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; }
 const GM = toonMap();
@@ -7,6 +7,11 @@ export const OUT = new THREE.MeshBasicMaterial({ color: 0x05050a, side: THREE.Ba
 export const toon = (c, o) => new THREE.MeshToonMaterial(Object.assign({ color: c, gradientMap: GM }, o || {}));
 // 輪郭線つきの部品
 export function part(geo, mat, ol) { const m = new THREE.Mesh(geo, mat); if (ol !== 0) { const o = new THREE.Mesh(geo, OUT); o.scale.setScalar(ol || 1.09); m.add(o); } return m; }
+// Blender で作ったモデル用：色は頂点に入っている。輪郭線は面の向きに少しふくらませて描く
+export const OUTN = new THREE.MeshBasicMaterial({ color: 0x05050a, side: THREE.BackSide });
+OUTN.onBeforeCompile = s => { s.vertexShader = s.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\ntransformed += normalize(normal) * 0.013;'); };
+export const vtoon = c => toon(c == null ? 0xffffff : c, { vertexColors: true });
+export const withOut = (geo, mat) => { const m = new THREE.Mesh(geo, mat); m.add(new THREE.Mesh(geo, OUTN)); return m; };
 export function makeRig(glowTex) {
   const root = new THREE.Group(), rig = new THREE.Group(); root.add(rig);
   const black = toon(0x1b1b24), beige = toon(0xd9d2bf), skin = toon(0xf0c8a4), hairM = toon(0x241a1e), white = toon(0xf2f0ea), gold = toon(0xc9a14a), wood = toon(0x2a1d16);
@@ -52,6 +57,11 @@ export function makeRig(glowTex) {
   const bg = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, fog: false })); bg.scale.set(.5, 1.6, 1); bg.position.y = .72; J.kat.add(bg);
   // さや（左の腰）
   const saya = part(new THREE.CylinderGeometry(.03, .024, .95, 8), wood, 1.2); saya.position.set(-.2, .0, .2); saya.rotation.set(1.05, 0, .2); J.hips.add(saya);
+  // 鬼の姿（Blender のモデルを関節に取りつける）。look(true) で剣士の部品をかくして鬼にする
+  const humanParts = []; root.traverse(o => { if (o.isMesh || o.isSprite) humanParts.push(o); }); const oniParts = []; let oniOn = false;
+  const JOINT = { hips: 'hips', thighR: 'hipR', thighL: 'hipL', shinR: 'kneeR', shinL: 'kneeL', torso: 'torso', torso_glow: 'torso', head: 'head', head_glow: 'head', upperR: 'shR', upperL: 'shL', foreR: 'elR', foreL: 'elL' };
+  function setOniModel(gltf) { if (oniParts.length) return; const VT = vtoon(), GL = new THREE.MeshBasicMaterial({ vertexColors: true }); gltf.scene.traverse(o => { if (!o.isMesh || !JOINT[o.name]) return; const glow = /_glow$/.test(o.name), m = glow ? new THREE.Mesh(o.geometry, GL) : withOut(o.geometry, VT); m.visible = oniOn; J[JOINT[o.name]].add(m); oniParts.push(m); }); }
+  function look(oni) { oniOn = !!oni && oniParts.length > 0; humanParts.forEach(o => { o.visible = !oniOn; }); oniParts.forEach(o => { o.visible = oniOn; }); rig.scale.setScalar(oniOn ? 1.14 : 1); }
   const P = {}; let ph = 0, act = null, actT = 0, actW = 0, tailA = 0, loop = null;
   const BASE = { by: 0, bz: 0, brx: 0, bry: 0, brz: 0, trx: 0, ty: 0, trz: 0, hrx: 0, sRx: 0, sRz: 0, eR: 0, ba: 2.4, sLx: 0, sLz: 0, eL: 0, hLx: 0, kL: 0, hRx: 0, kR: 0 };
   // 動き（u は 0→1）。k: [[時刻, 姿勢], …]
@@ -86,7 +96,7 @@ export function makeRig(glowTex) {
   };
   function kf(keys, u) { let i = 0; while (i < keys.length - 2 && u > keys[i + 1][0]) i++; const a = keys[i], b = keys[i + 1]; let k = clamp((u - a[0]) / (b[0] - a[0] || 1), 0, 1); k = k * k * (3 - 2 * k); const o = {}; for (const key in b[1]) { const va = a[1][key]; o[key] = va === undefined ? b[1][key] : va + (b[1][key] - va) * k; } for (const key in a[1]) if (!(key in o)) o[key] = a[1][key]; return o; }
   const A = {
-    root, J, bladeM, haoriM, bladeGlow: bg.material,
+    root, J, bladeM, haoriM, bladeGlow: bg.material, setOniModel, look, isOni: () => oniOn,
     play(id) { const a = ACT[id]; if (!a) return 0; act = a; actT = 0; return a.hit; }, playing: () => !!act, setLoop(id) { if ((id || null) !== loop) { loop = id || null; actT = 0; actW = 0; } }, loop: () => loop,
     // run: 走っているか、sp: 脚の速さ、dt
     step(dt, run, sp) {

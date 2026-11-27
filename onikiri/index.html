@@ -114,6 +114,7 @@ table.st tr.me td{background:#c9a14a22}
 #wzB{left:0;top:0;width:60px;height:60px;z-index:1;opacity:.75}#wzB b{width:50px;height:50px;font-size:9.5px}
 .wzc.full{box-shadow:0 0 22px var(--tint),0 0 0 2px #fff}.wzc.full b{color:#fff}
 #wzKey{position:absolute;right:0;bottom:-16px;width:88px;text-align:center;font-size:10px;color:#fff9}
+#wz.oni{color:#ffd8d0;text-shadow:0 0 18px #ff1030,0 0 6px #ff1030,0 2px 4px #000;font-size:1.25em}#wz.oni small{color:#ff8a8a;letter-spacing:.5em}
 #hint{position:absolute;left:0;right:0;top:36%;display:flex;flex-wrap:wrap;pointer-events:none}#hintS{flex:0 0 100%;margin:14px 0 0;text-align:center;color:#fff;font-weight:800;font-size:14px;letter-spacing:.06em;text-shadow:0 2px 8px #000,0 0 3px #000}#hint div{flex:1;text-align:center;color:#fff;text-shadow:0 2px 8px #000,0 0 3px #000;font-weight:800;font-size:15px;letter-spacing:.08em}#hint b{display:block;font-size:54px;line-height:1.1;opacity:.9;animation:hb .7s ease-in-out infinite}
 #wzTip{position:absolute;right:calc(env(safe-area-inset-right,0px) + 14px);bottom:calc(env(safe-area-inset-bottom,0px) + 112px);width:88px;text-align:center;color:#fff;font-weight:800;font-size:14px;text-shadow:0 0 8px var(--tint),0 2px 4px #000;animation:hb .5s ease-in-out infinite}
 .wl{display:block;width:100%;text-align:left;border:1px solid #4a4458;border-radius:4px;padding:9px 10px;margin:6px 0;background:#ffffff08;font-size:13px;line-height:1.5;color:#cfc6b3}
@@ -185,8 +186,8 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 <!-- nasubi-next: 結果画面に「次のゲーム」を出す（右にスライドするか押すと、おすすめの画面。中身は nasubi-no-oniwa.github.io/next/next.js で全作品共通） -->
 <script>window.NSB_NEXT={"g": "onikiri", "r": [{"a": "#result .card", "v": "#result"}], "ad": 1};</script>
 <script src="https://nasubi-no-oniwa.github.io/next/next.js" defer></script>
-<script src="gsap.min.js?v=11261250"></script>
-<script src="pfx.js?v=11261250"></script>
+<script src="gsap.min.js?v=11271300"></script>
+<script src="pfx.js?v=11271300"></script>
 </head>
 <body>
 <canvas id="gl"></canvas>
@@ -260,6 +261,6 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
   </div>
 </div>
 
-<script type="module" src="game.js?v=11261250"></script>
+<script type="module" src="game.js?v=11271300"></script>
 </body>
 </html>

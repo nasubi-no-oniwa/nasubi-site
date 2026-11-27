@@ -1,5 +1,6 @@
 import { THREE, RoomEnvironment } from './lib.js?v=11241806';
 import { COLORS, ORDER, CHARS } from './data.js?v=11241806';
+import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11271300';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -10,7 +11,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 
 // ---------- ことば ----------
 const TX = {
-  ja: { oni: 'この刀で鬼を斬りに行く', lang: '日本語', ttl: '色変わりの刀', h1: '<small>いろがわりのかたな</small>色変わりの刀', lead: '名前を入れて、日輪刀を握れ。<br>刀身の色で、呼吸の適性と才能がわかる。', ph: '名前を入れる', start: '日輪刀を握る', needName: '名前を入れてください', sndOn: '🔊 音あり', sndOff: '🔇 音なし', stats: 'みんなの刀の色', again: 'ほかの名前で握る', img: '画像にする', x: '𝕏 に投稿', back: 'もどる',
+  ja: { oni: 'この刀で鬼を斬りに行く', oniGo: '鬼として暴れに行く', artL: '血鬼術', tierL: '強さ', oniAs: n => `鬼としての名：${n}`, more: n => ` ほか${n}`, whoOni: n => `「<b>${esc(n)}</b>」は鬼になった。もう`, postOni: (n, a, self) => (self ? `「${n}」は鬼になった。` : `「${n}」は鬼なので、日輪刀を握れなかった。`) + `\n血鬼術「${a}」\n#色変わりの刀 #ブラウザゲーム`, lang: '日本語', ttl: '色変わりの刀', h1: '<small>いろがわりのかたな</small>色変わりの刀', lead: '名前を入れて、日輪刀を握れ。<br>刀身の色で、呼吸の適性と才能がわかる。', ph: '名前を入れる', start: '日輪刀を握る', needName: '名前を入れてください', sndOn: '🔊 音あり', sndOff: '🔇 音なし', stats: 'みんなの刀の色', again: 'ほかの名前で握る', img: '画像にする', x: '𝕏 に投稿', back: 'もどる',
     who: n => `「<b>${esc(n)}</b>」の日輪刀は`, den: '才能（色の濃さ）', ranks: ['ほぼ無色', '才能うすめ', '並', '一人前', '秀才', '天賦の才'], rNone: '才能なし', rNez: '鬼',
     odds: p => `出やすさ：約${p}%`, share: (p, n) => `みんなの結果：この色は全体の <b>${p}%</b>（${n}人中）`, shareWait: 'みんなの結果：集計中…', shareErr: 'みんなの結果：いまは読みこめません',
     stNote: n => `これまでに ${n} 人が刀を握った`, stEmpty: 'まだ誰も握っていません', loading: '読みこみ中…', mine: '← あなた',
@@ -23,7 +24,7 @@ const TX = {
     crow: (n, c, k) => `カァー！「${n}」ノ日輪刀ハ<b>${c}</b>！${k}ノ適性アリ！`, crowNone: n => `カァー！「${n}」ノ日輪刀、色ガ変ワラナイ！`, crowOni: n => `カァー！鬼ダ！「${n}」ハ鬼ダ！`,
     akaCap: '赫く灼けた', tapNext: 'タップで結果へ', aka: '握りしめた日輪刀が、赫く灼けた', akaPost: '日輪刀が赫く灼けた。', cut: '頸を斬った', stab: '突き刺した。藤の花の毒が回る', cutNo: '頸が硬い…斬れない', fan: '※非公式のファン診断です', keepHold: 'そのまま握りしめると…？',
     xCopied: '画像をコピーしました。Xの投稿欄に貼りつけ（Ctrl+V）すると画像がつきます', xSaved: '画像を保存しました。Xの投稿に、保存した画像を追加してください', nogl: 'この端末では3Dを表示できませんでした', cardTag: '刀身の色で、才能がわかる' },
-  en: { oni: 'Slay demons with this blade', lang: 'English', ttl: 'The Color-Changing Blade', h1: '<small>IROGAWARI NO KATANA</small>Color Blade', lead: 'Enter a name. Grip the Nichirin Blade.<br>Its color reveals your Breathing and talent.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', stats: "Everyone's blades", again: 'Try another name', img: 'Save image', x: 'Post on 𝕏', back: 'Back',
+  en: { oni: 'Slay demons with this blade', oniGo: 'Go rampage as a demon', artL: 'Blood Demon Art', tierL: 'Strength', oniAs: n => `Demon name: ${n}`, more: n => ` +${n}`, whoOni: n => `<b>${esc(n)}</b> became a demon. The blade`, postOni: (n, a, self) => (self ? `${n} became a demon.` : `"${n}" is a demon and couldn't hold the blade.`) + `\nBlood Demon Art: ${a}\n#色変わりの刀 #ブラウザゲーム`, lang: 'English', ttl: 'The Color-Changing Blade', h1: '<small>IROGAWARI NO KATANA</small>Color Blade', lead: 'Enter a name. Grip the Nichirin Blade.<br>Its color reveals your Breathing and talent.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', stats: "Everyone's blades", again: 'Try another name', img: 'Save image', x: 'Post on 𝕏', back: 'Back',
     who: n => `<b>${esc(n)}</b>'s Nichirin Blade turned`, den: 'Talent (color depth)', ranks: ['Barely tinted', 'Faint talent', 'Average', 'Capable', 'Gifted', 'Born genius'], rNone: 'No talent', rNez: 'Demon',
     odds: p => `Odds: about ${p}%`, share: (p, n) => `Everyone: <b>${p}%</b> got this color (of ${n})`, shareWait: 'Everyone: counting…', shareErr: "Everyone: can't load right now",
     stNote: n => `${n} people have gripped the blade`, stEmpty: 'Nobody yet', loading: 'Loading…', mine: '← you',
@@ -36,7 +37,7 @@ const TX = {
     crow: (n, c, k) => `CAW! ${n}'s blade is <b>${c}</b>! ${k}!`, crowNone: n => `CAW! ${n}'s blade didn't change color!`, crowOni: n => `CAW! A demon! ${n} is a demon!`,
     akaCap: 'Burning red', tapNext: 'Tap to see the result', aka: 'Gripped hard, the blade burned crimson', akaPost: 'The blade burned crimson.', cut: 'Head severed', stab: 'Stabbed. The wisteria poison spreads', cutNo: "Too hard… can't cut it", fan: '* Unofficial fan quiz', keepHold: 'Keep holding…?',
     xCopied: 'Image copied. Paste it (Ctrl+V) into your post to attach it', xSaved: 'Image saved. Add the saved image to your post', nogl: "This device can't show 3D", cardTag: 'The blade color reveals your talent' },
-  zh: { oni: '用這把刀去斬鬼', lang: '繁體中文', ttl: '變色之刀', h1: '<small>變色之刀</small>變色之刀', lead: '輸入名字，握住日輪刀。<br>刀身的顏色揭曉呼吸的適性與才能。', ph: '輸入名字', start: '握刀', needName: '請輸入名字', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', stats: '大家的刀色', again: '換個名字握', img: '存成圖片', x: '發到 𝕏', back: '返回',
+  zh: { oni: '用這把刀去斬鬼', oniGo: '以鬼的身分去大鬧', artL: '血鬼術', tierL: '強度', oniAs: n => `作為鬼的名字：${n}`, more: n => ` 等${n}`, whoOni: n => `「<b>${esc(n)}</b>」成為了鬼。再也`, postOni: (n, a, self) => (self ? `「${n}」成為了鬼。` : `「${n}」是鬼，握不住日輪刀。`) + `\n血鬼術「${a}」\n#色変わりの刀 #ブラウザゲーム`, lang: '繁體中文', ttl: '變色之刀', h1: '<small>變色之刀</small>變色之刀', lead: '輸入名字，握住日輪刀。<br>刀身的顏色揭曉呼吸的適性與才能。', ph: '輸入名字', start: '握刀', needName: '請輸入名字', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', stats: '大家的刀色', again: '換個名字握', img: '存成圖片', x: '發到 𝕏', back: '返回',
     who: n => `「<b>${esc(n)}</b>」的日輪刀變成了`, den: '才能（顏色深淺）', ranks: ['幾乎無色', '才能稀薄', '普通', '獨當一面', '秀才', '天賦異稟'], rNone: '沒有才能', rNez: '鬼',
     odds: p => `出現機率：約${p}%`, share: (p, n) => `大家的結果：這個顏色佔 <b>${p}%</b>（共${n}人）`, shareWait: '大家的結果：統計中…', shareErr: '大家的結果：目前無法讀取',
     stNote: n => `已經有 ${n} 人握過刀`, stEmpty: '還沒有人握過', loading: '讀取中…', mine: '← 你',
@@ -49,7 +50,7 @@ const TX = {
     crow: (n, c, k) => `嘎——！「${n}」的日輪刀是<b>${c}</b>！有${k}的適性！`, crowNone: n => `嘎——！「${n}」的日輪刀沒有變色！`, crowOni: n => `嘎——！是鬼！「${n}」是鬼！`,
     akaCap: '赫紅灼燒', tapNext: '點一下看結果', aka: '緊握的日輪刀，燒得赫紅', akaPost: '日輪刀燒得赫紅。', cut: '斬下了頸', stab: '刺穿了。紫藤花之毒蔓延開來', cutNo: '頸太硬了…斬不斷', fan: '※非官方的粉絲診斷', keepHold: '就這樣繼續握緊…？',
     xCopied: '已複製圖片。在 X 的貼文欄貼上（Ctrl+V）即可附上圖片', xSaved: '已儲存圖片。請在 X 貼文中加入儲存的圖片', nogl: '這台裝置無法顯示 3D', cardTag: '刀身的顏色揭曉你的才能' },
-  ko: { oni: '이 칼로 귀신을 베러 간다', lang: '한국어', ttl: '색이 변하는 칼', h1: '<small>이로가와리노 카타나</small>색이 변하는 칼', lead: '이름을 넣고 일륜도를 쥐어라.<br>칼날의 색으로 호흡의 적성과 재능을 알 수 있다.', ph: '이름 입력', start: '칼을 쥔다', needName: '이름을 입력해 주세요', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', stats: '모두의 칼 색', again: '다른 이름으로 쥐기', img: '이미지로 저장', x: '𝕏 에 올리기', back: '돌아가기',
+  ko: { oni: '이 칼로 귀신을 베러 간다', oniGo: '귀신으로 날뛰러 간다', artL: '혈귀술', tierL: '강함', oniAs: n => `귀신으로서의 이름: ${n}`, more: n => ` 외 ${n}`, whoOni: n => `「<b>${esc(n)}</b>」은(는) 귀신이 되었다. 이제`, postOni: (n, a, self) => (self ? `「${n}」은(는) 귀신이 되었다.` : `「${n}」은(는) 귀신이라 칼을 쥘 수 없었다.`) + `\n혈귀술「${a}」\n#色変わりの刀 #ブラウザゲーム`, lang: '한국어', ttl: '색이 변하는 칼', h1: '<small>이로가와리노 카타나</small>색이 변하는 칼', lead: '이름을 넣고 일륜도를 쥐어라.<br>칼날의 색으로 호흡의 적성과 재능을 알 수 있다.', ph: '이름 입력', start: '칼을 쥔다', needName: '이름을 입력해 주세요', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', stats: '모두의 칼 색', again: '다른 이름으로 쥐기', img: '이미지로 저장', x: '𝕏 에 올리기', back: '돌아가기',
     who: n => `「<b>${esc(n)}</b>」의 일륜도는`, den: '재능（색의 농도）', ranks: ['거의 무색', '재능 옅음', '보통', '제 몫', '수재', '천부적 재능'], rNone: '재능 없음', rNez: '귀신',
     odds: p => `나올 확률: 약 ${p}%`, share: (p, n) => `모두의 결과: 이 색은 전체의 <b>${p}%</b>（${n}명 중）`, shareWait: '모두의 결과: 집계 중…', shareErr: '모두의 결과: 지금은 불러올 수 없음',
     stNote: n => `지금까지 ${n}명이 칼을 쥐었다`, stEmpty: '아직 아무도 없음', loading: '불러오는 중…', mine: '← 당신',
@@ -81,10 +82,13 @@ function hash(s, seed) { let h = (2166136261 ^ seed) >>> 0; for (const ch of s) 
 const charKey = s => norm(s).replace(/[\uFE00-\uFE0F]/g, '').replace(/竃/g, '竈').replace(/祢/g, '禰').replace(/髓/g, '髄').replace(/を/g, 'お');
 const CHMAP = new Map();
 CHARS.forEach(c => { const n = c.n, v = n.slice(); if (n.length >= 4 && n[0].endsWith(n[2]) && n[1].endsWith(n[3])) { const s = n[0].slice(0, -n[2].length), sy = n[1].slice(0, -n[3].length); if (s && sy) v.push(s + n[3], sy + n[2]); } v.forEach(x => { const k = charKey(x); if (!CHMAP.has(k)) CHMAP.set(k, c); }); });
+ONI_TITLES.forEach(([al, nm]) => { const c = CHARS.find(c => c.n[0] === nm); if (c) { const k = charKey(al); if (!CHMAP.has(k)) CHMAP.set(k, c); } }); // 「上弦の参」→ 猗窩座 など
+// 鬼にする：原作の鬼と、この端末で鬼になった名前。刀は握れず、血鬼術が決まる
+function makeOni(R) { R.oni = oniInfo(R.name, R.cn); R.key = 'nezuko'; R.den = 0; R.rank = 'oni'; R.word = undefined; R.aka = false; R.akaDone = false; return R; }
 const POOL = ORDER.map(k => [k, COLORS[k].w]);
 function judge(name) {
   const n = norm(name); const r1 = hash(n, 0x6b61), r2 = hash(n, 0x7461);
-  const c = CHMAP.get(charKey(name)); if (c) return { key: c.k, den: c.den, n, rank: c.rank, aka: !!c.aka, word: c.word, stab: !!c.stab, ch: true };
+  const c = CHMAP.get(charKey(name)); if (c) return { key: c.k, den: c.den, n, rank: c.rank, aka: !!c.aka, word: c.word, stab: !!c.stab, ch: true, cn: c.n[0] };
   let key = null, x = r1 * 100; for (const [k, w] of POOL) { if (x < w) { key = k; break; } x -= w; } key = key || 'none';
   let den;
   if (key === 'none') den = Math.floor(r2 * 6); // 変わらない：ほんの少しだけ
@@ -267,7 +271,7 @@ function grip() {
   if (busy) return; const name = $('nm').value.trim();
   if (!name) { $('nmNote').textContent = T.needName; $('nmNote').className = 'note g err'; gsap.fromTo('#nm', { x: -8 }, { x: 0, duration: .4, ease: 'elastic.out(1,.3)' }); return; }
   busy = true; ls.set('katana_name', name); $('nmNote').textContent = '';
-  const R = judge(name); R.name = name; LAST = R; const C = COLORS[R.key];
+  const R = judge(name); R.name = name; if (R.key === 'nezuko' || oniHas(name)) makeOni(R); LAST = R; const C = COLORS[R.key];
   ac(); sfx('draw'); $('title').hidden = true; ST = 'grip';
   U.uProg.value = 0; U.uGlow.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0;
   const tint = new THREE.Color(R.key === 'none' || R.key === 'nezuko' ? '#d7dbe0' : C.hex); U.uTint.value.copy(tint); bgMat.uniforms.uTint.value.copy(tint);
@@ -330,7 +334,23 @@ function proceed() {
   const C = COLORS[R.key];
   document.documentElement.style.setProperty('--tint', R.key === 'none' ? '#8a8f96' : (R.key === 'white' ? '#9aa3ad' : C.hex));
   const say = R.key === 'none' ? T.crowNone(R.name) : T.crow(R.name, C.name[L], kokyu(R.key));
-  crow(say).then(() => { setPose('top', .9).call(() => { busy = false; showResult(); }); });
+  const go = () => crow(say).then(() => { setPose('top', .9).call(() => { busy = false; showResult(); }); });
+  // 才能のある人（90%以上）・ない人・鬼になる前の名前には、ここで「鬼にならないか」と誘いが来る
+  const kind = humanOf(R.name, R.cn) ? 'hum' : R.key === 'none' ? 'none' : R.den >= 90 ? 'tal' : null; if (!kind) { go(); return; }
+  setTimeout(() => oniInvite(L, kind).then(yes => { if (!yes) { go(); return; } oniAdd(R.name); makeOni(R); R.becameOni = true; try { if (typeof gtag === 'function') gtag('event', 'become_oni', { game: 'katana' }); } catch (e) { } turnOni(R).then(() => { busy = false; showResult(); }); }), 500);
+}
+// 鬼になる演出：刀が手からこぼれ落ち、画面が血の色にそまる
+function turnOni(R) {
+  return new Promise(res => {
+    sfx('thud'); sfx('zap'); flash('#ff1030'); shake = .12; cap(oniText(L).done(R.name), 2.2);
+    fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 9, palette: ramp('#ff1030') }); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 60, seed: 21, palette: ramp('#5a0010') });
+    gsap.to(U.uTint.value, { r: .55, g: .02, b: .06, duration: .5 }); gsap.to(U.uAura, { value: 2.2, duration: .3 }); gsap.to(bgMat.uniforms.uTint.value, { r: .7, g: .03, b: .08, duration: .6 }); gsap.to(bgMat.uniforms.uMix, { value: 1, duration: .6 });
+    const tl = gsap.timeline();
+    tl.to({}, { duration: .7, onUpdate() { shake = .12 * (1 - this.progress()); } });
+    tl.to(katana.rotation, { z: '+=' + (Math.PI * 1.5), duration: .8, ease: 'power2.in' }); tl.to(katana.position, { y: -VH * .95, duration: .8, ease: 'power2.in' }, '<');
+    tl.call(() => { sfx('thud'); flash('#ff1030'); shake = 0; }, null, '+=.05');
+    tl.call(() => { katana.position.y = VH; setPose('top', .01); res(); }, null, '+=.9');
+  });
 }
 
 // ---------- 伝令の烏 ----------
@@ -434,7 +454,8 @@ function fillResult(R) {
   col.textContent = C.name[L]; col.style.background = C.hex; const lum = new THREE.Color(C.hex).getHSL({}).l; col.style.color = lum > .6 ? '#14131c' : '#fff';
   $('rSch').textContent = kokyu(R.key); $('rRank').innerHTML = esc(T.kyu + '：' + rankOf(R)) + (R.akaDone ? ' <span class="aka">' + esc(T.aka) + '</span>' : '');
   $('rDenL').textContent = T.den; $('rDenV').textContent = R.den + '%'; $('rDen').hidden = $('rBar').parentNode.hidden = R.key === 'nezuko';
-  $('rWord').textContent = wordOf(R); $('rFan').textContent = T.fan; $('oniBtn').hidden = R.key === 'nezuko';
+  $('rWord').textContent = wordOf(R); $('rFan').textContent = T.fan; $('oniBtn').hidden = false; $('oniBtn').textContent = R.oni ? T.oniGo : T.oni;
+  const ra = $('rArt'); ra.hidden = !R.oni; if (R.oni) { const o = R.oni, a = o.arts, ja = L === 'ja' || L === 'zh'; ra.innerHTML = `<small>${esc(T.artL)}${o.as && o.as !== R.name ? '　' + esc(T.oniAs(o.as)) : ''}</small><b>${a.slice(0, 4).map(w => esc(w[1])).join('<br>')}${a.length > 4 ? '<i>' + esc(T.more(a.length - 4)) + '</i>' : ''}</b>${o.canon ? '' : `<p>${esc(ja ? a[0][2] : o.en)}</p><em>${esc(T.tierL)}：${esc((TIER[L] || (ja ? TIER.ja : TIER.en))[o.tier])}</em>`}`; if (R.becameOni) { $('rWho').innerHTML = T.whoOni(R.name); } }
   shareLine();
 }
 let COUNTS = null, countErr = false;
@@ -452,12 +473,12 @@ function showResult() {
   gsap.fromTo('#rBar', { width: '0%' }, { width: R.den + '%', duration: 1.1, delay: .3, ease: 'power2.out' });
   gsap.fromTo('#rCol', { scale: .6, opacity: 0 }, { scale: 1, opacity: 1, duration: .6, delay: .1, ease: 'back.out(2)' });
   R.card = makeCard(R);
-  POST = R.key === 'none' ? T.postNone(R.name) : R.key === 'nezuko' ? T.postNez(R.name) : T.post(R.name, COLORS[R.key].name[L], kokyu(R.key), rankOf(R), R.den); if (R.akaDone) POST = POST.replace('#色変わりの刀', T.akaPost + '\n#色変わりの刀');
+  POST = R.key === 'none' ? T.postNone(R.name) : R.oni ? T.postOni(R.name, R.oni.arts.slice(0, 3).map(w => w[1]).join('・') + (R.oni.arts.length > 3 ? T.more(R.oni.arts.length - 3) : ''), !!R.becameOni || !R.oni.canon) : R.key === 'nezuko' ? T.postNez(R.name) : T.post(R.name, COLORS[R.key].name[L], kokyu(R.key), rankOf(R), R.den); if (R.akaDone) POST = POST.replace('#色変わりの刀', T.akaPost + '\n#色変わりの刀');
   count(R).catch(() => { }).then(loadCounts).then(shareLine).catch(() => { });
 }
 $('startBtn').onclick = grip;
 // 続編「無限鬼斬」へ：握る場面をとばして、技を選ぶところへ直行する（名前は同じサイトの中で受けわたす）
-$('oniBtn').onclick = () => { const R = LAST; if (!R) return; ls.set('onikiri_go', { n: R.name, a: R.akaDone ? 1 : 0, t: Date.now() }); try { if (typeof gtag === 'function') gtag('event', 'to_onikiri', { game: 'katana' }); } catch (e) { } location.href = '../onikiri/?go=1'; };
+$('oniBtn').onclick = () => { const R = LAST; if (!R) return; ls.set('onikiri_go', { n: R.name, a: R.akaDone ? 1 : 0, o: R.oni ? 1 : 0, t: Date.now() }); try { if (typeof gtag === 'function') gtag('event', 'to_onikiri', { game: 'katana' }); } catch (e) { } location.href = '../onikiri/?go=1'; };
 $('nm').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('nm').blur(); grip(); } });
 $('again').onclick = () => { $('result').hidden = true; ST = 'title'; U.uProg.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0; $('title').hidden = false; $('title').scrollTop = 0; const n = $('nm'); n.value = ''; setTimeout(() => { try { n.focus(); } catch (e) { } }, 50); };
 
@@ -527,7 +548,7 @@ async function makeCard(R) {
   if (R.key !== 'nezuko') {
     const bw = 640; x.fillStyle = '#1b1a24'; x.fillRect(W / 2 - bw / 2, y, bw, 18); x.fillStyle = R.key === 'none' ? '#b9bec4' : C.hex; x.fillRect(W / 2 - bw / 2, y, bw * R.den / 100, 18);
     x.fillStyle = '#cfc6b3'; x.font = F(30, 600); x.fillText(T.den + '  ' + R.den + '%', W / 2, y + 62); y += 130;
-  } else y += 40;
+  } else { y += 40; if (R.oni) { const an = R.oni.arts.slice(0, 2).map(w => w[1]).join('・') + (R.oni.arts.length > 2 ? T.more(R.oni.arts.length - 2) : ''); x.fillStyle = '#ff8a8a'; x.font = F(30, 700); x.fillText(T.artL, W / 2, y); x.fillStyle = '#ffffff'; x.shadowColor = '#ff1030'; x.shadowBlur = 26; fit(an, 60, 900, W - 160); x.fillText(an, W / 2, y + 76); x.shadowBlur = 0; y += 150; } }
   x.fillStyle = '#f2ead6'; x.font = F(40, 600); wrap(wordOf(R), W - 180).slice(0, 3).forEach((l, i) => x.fillText(l, W / 2, y + i * 58));
   x.fillStyle = '#6d6680'; x.font = F(24, 600); x.fillText(T.fan, W / 2, H - 150);
   x.fillStyle = '#c9a14a'; x.font = F(48); x.fillText(T.ttl, W / 2, H - 92); x.fillStyle = '#9a93a8'; x.font = '600 28px ui-monospace,Menlo,monospace'; x.fillText('nasubi-no-oniwa.com/katana', W / 2, H - 52);

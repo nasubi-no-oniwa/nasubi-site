@@ -92,6 +92,7 @@ table.st tr.me td{background:#c9a14a22}
 #slash{position:fixed;z-index:7;width:min(70vw,320px);height:6px;margin-left:calc(min(70vw,320px) / -2);margin-top:-3px;background:linear-gradient(90deg,#0000,#fff,#fff,#0000);box-shadow:0 0 18px #fff,0 0 40px #fff8;transform:rotate(-14deg);transform-origin:50% 50%;pointer-events:none}
 .aka{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:3px;background:#b31a0a;color:#fff;font-size:12px;letter-spacing:.06em;box-shadow:0 0 12px #ff3a14}
 #rFan,#tFan{font-size:11px;color:#6d6680;margin-top:8px}
+#rArt{margin:14px auto 4px;padding:14px 12px;border:1px solid #ff3a4a88;border-radius:8px;background:linear-gradient(#3a0410cc,#16060acc);box-shadow:0 0 22px #ff103044 inset;text-align:center}#rArt small{display:block;color:#ff9a9a;letter-spacing:.3em;font-size:12px;margin-bottom:6px}#rArt b{display:block;color:#fff;font-size:24px;line-height:1.5;letter-spacing:.08em;text-shadow:0 0 14px #ff1030}#rArt b i{font-style:normal;font-size:14px;color:#ffb0b0}#rArt p{margin:8px 0 4px;color:#e6cfc8;font-size:14px;line-height:1.7}#rArt em{font-style:normal;color:#ffb46a;font-size:13px;letter-spacing:.1em}
 </style>
 <!-- nasubi-track: 結果画面とXへの投稿の回数を記録（ゲームの動きには影響しない） -->
 <script>(function(){try{var G="katana",IDS=["result"];
@@ -174,6 +175,7 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
     <div class="bar"><i id="rBar"></i></div>
     <div id="rDen" class="g"><span id="rDenL"></span><span id="rDenV"></span></div>
     <div id="rWord"></div>
+    <div id="rArt" hidden></div>
     <div id="rShare" class="g"></div>
     <div class="row2 g"><button class="sub" id="imgBtn"></button><button class="sub" id="xBtn"></button></div>
     <button class="big" id="oniBtn" style="background:linear-gradient(#e0523a,#a8201a);color:#fff;box-shadow:0 5px 0 #5a100c,0 10px 22px #0008;letter-spacing:.12em;text-indent:.12em;font-size:18px"></button>
@@ -192,6 +194,6 @@ if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
   </div>
 </div>
 
-<script type="module" src="game.js?v=11260110"></script>
+<script type="module" src="game.js?v=11271300"></script>
 </body>
 </html>
