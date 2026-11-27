@@ -1,12 +1,12 @@
-import { THREE, GLTFLoader } from './lib.js?v=11271745';
-import { COLORS, CHARS, ORDER } from './data.js?v=11271745';
-import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11271745';
-import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11271745';
-import { makeFx, STY } from './fx.js?v=11271745';
-import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11271745';
-import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd , genNameL } from './oni.js?v=11271745';
-import { locW, descL, nameL, oniNameL } from './i18n.js?v=11271745';
-import { OT_STY, ETC, otherOf, otherByName, otName, otSch, otWork } from './others.js?v=11271745';
+import { THREE, GLTFLoader } from './lib.js?v=11271800';
+import { COLORS, CHARS, ORDER } from './data.js?v=11271800';
+import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11271800';
+import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11271800';
+import { makeFx, STY } from './fx.js?v=11271800';
+import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11271800';
+import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd , genNameL } from './oni.js?v=11271800';
+import { locW, descL, nameL, oniNameL } from './i18n.js?v=11271800';
+import { OT_STY, ETC, otherOf, otherByName, otName, otSch, otWork } from './others.js?v=11271800';
 Object.assign(STY, ONI_STY, OT_STY); COLORS.etc = ETC; COLORS.oni = { hex: '#b3122a', name: { ja: '鬼', en: 'Demon', zh: '鬼', ko: '귀신' }, kokyu: { ja: '血鬼術', en: 'Blood Demon Art', zh: '血鬼術', ko: '혈귀술' } };
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
@@ -27,6 +27,7 @@ const TX = {
     post: (R, d, k) => `「${R.name}」の日輪刀（${R.kk}・才能${R.den}%${R.akaDone ? '・赫刀' : ''}）で ${d.toLocaleString()}m 走り、鬼を${k}体斬った。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: '全体', rkToday: '今日', rkNone: '才能なし', rkOni: '鬼', howO: '・画面の左側／右側をタップ、または指を横にスライドでレーン移動（PCは ← →）<br>・隊士のレーンに入ると倒す。そのたびに斬られて再生力が減り、斬られずにいると戻る<br>・再生力がないまま隊士に当たるか、障害物に当たると終わり<br>・オーラのある隊士は手ごわい。倒すと10人分の再生力を一気に失う<br>・赤い小瓶（稀血）を拾うと再生力が戻る<br>・右下の丸がたまったら押して血鬼術（PCはスペース）', regen: '再生力', killsO: n => `隊士 ${n}人`, whoOni: n => `「<b>${esc(n)}</b>」は、鬼`, oniAs: n => `鬼としての名：<b style="color:#fff">${esc(n)}</b>`, oniTier: t => `血鬼術の強さ：<b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `隊士に${Math.max(1, Math.floor(m / c))}回斬られるまで耐える（斬られずにいると戻る）`, pickO1: n => n > 1 ? `血鬼術を1つ選ぶ（${n}個）` : 'この鬼の血鬼術', pickO2: n => `血鬼術を2つ選ぶ（${n}個）`, whyO: { dull: '再生が追いつかず、頸を斬られた', obs: '障害物に足を取られ、頸を斬られた' }, loadM: '鬼の体を作っています…',
     rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」は、鬼${R.oni.as && R.oni.as !== R.name ? '（' + esc(oniNameL(R.oni.as, L)) + '）' : ''}<br>血鬼術：<b>${esc(wz)}</b><br>倒した隊士 <b>${k}</b>人`, postO: (R, d, k, wz) => `「${R.name}」は鬼になった。\n血鬼術「${wz}」で ${d.toLocaleString()}m 走り、隊士を${k}人倒した。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '名前1つにつき1件（その名前でいちばん走った記録）・上位100', loading: '読みこみ中…', rkErr: '読みこめませんでした', rkEmpty: 'まだ記録がありません', nogl: 'この端末では3Dを表示できませんでした', capCol: (c, k) => `${c}　${k}`,
+    tr: 'トレーニング場', trZone: v => '当たり判定：' + (v ? '表示' : '非表示'), trMove: v => '動き：' + (v ? '走る' : '止まる'), trHelpRun: '走りながら技を出す。タップ／スライドでレーン移動', trHelpStop: '止まって技を出す。画面をなぞると360度まわせる（2本指で近づく・はなれる）。タップでレーン移動', trBusy: '技が終わってから',
     akaS: '赫刀', cardO: as => '鬼' + (as ? '・' + as : '') + '・血鬼術', sepW: '、' },
   en: { lang: 'English', ttl: 'MUGEN ONIKIRI', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: 'Your name decides your Nichirin Blade.<br>Run, slash demons, and mind the chipping edge.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', rank: 'Ranking', prev: 'See your blade color',
     hold: 'Hold to grip', keep: 'Keep holding…?', aka: 'The blade burns crimson', isOni: "You're a demon. The blade won't let you hold it", who: n => `<b>${esc(n)}</b>'s Nichirin Blade`, den: 'Talent', sharpInfo: (c, m) => c < .2 ? 'Never chips' : `Chips out after ${Math.max(1, Math.floor(m / c))} demons`, akaInfo: 'Crimson blade: chips slower',
@@ -37,6 +38,7 @@ const TX = {
     post: (R, d, k) => `"${R.name}"'s Nichirin Blade (${R.kk}, talent ${R.den}%${R.akaDone ? ', crimson' : ''}) ran ${d.toLocaleString()}m and slew ${k} demons.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: 'All', rkToday: 'Today', rkNone: 'No talent', rkOni: 'Demons', howO: '・Tap the left / right side, or slide your finger sideways, to change lanes (PC: ← →)<br>・Enter a slayer\'s lane to take them down. Each one cuts you and drains regeneration; it recovers when you are not cut<br>・Hitting a slayer with no regeneration left, or any obstacle, ends the run<br>・Slayers with an aura are tough: taking one down costs 10 slayers\' worth of regeneration<br>・Red vials (rare blood) restore regeneration<br>・When the circle fills, press it for your Blood Demon Art (PC: Space)', regen: 'Regeneration', killsO: n => `${n} slayers`, whoOni: n => `<b>${esc(n)}</b> is a demon`, oniAs: n => `Demon name: <b style="color:#fff">${esc(n)}</b>`, oniTier: t => `Art strength: <b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `Survives ${Math.max(1, Math.floor(m / c))} cuts from slayers (recovers when not cut)`, pickO1: n => n > 1 ? `Choose 1 art (${n})` : "This demon's art", pickO2: n => `Choose 2 arts (${n})`, whyO: { dull: 'Regeneration could not keep up', obs: 'Tripped on an obstacle and was beheaded' }, loadM: 'Shaping the demon…',
     rInfoO: (R, k, wz) => `<b>${esc(R.name)}</b> is a demon${R.oni.as && R.oni.as !== R.name ? ' (' + esc(oniNameL(R.oni.as, L)) + ')' : ''}<br>Blood Demon Art: <b>${esc(wz)}</b><br>Slayers defeated: <b>${k}</b>`, postO: (R, d, k, wz) => `${R.name} became a demon.\nRan ${d.toLocaleString()}m with the Blood Demon Art "${wz}" and defeated ${k} slayers.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: 'One entry per name (its best run). Top 100', loading: 'Loading…', rkErr: 'Could not load', rkEmpty: 'No records yet', nogl: "This device can't show 3D", capCol: (c, k) => `${c}  ${k}`,
+    tr: 'Training Ground', trZone: v => 'Hit area: ' + (v ? 'shown' : 'hidden'), trMove: v => 'Mode: ' + (v ? 'running' : 'standing'), trHelpRun: 'Use techniques while running. Tap / slide to change lanes', trHelpStop: 'Use techniques while standing. Drag to rotate 360° (pinch to zoom). Tap to change lanes', trBusy: 'Wait until the technique ends',
     akaS: 'Crimson', cardO: as => 'Demon' + (as ? ' · ' + as : '') + ' · Blood Demon Art', sepW: ', ' },
   zh: { lang: '繁體中文', ttl: '無限鬼斬', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: '以名字決定的日輪刀，邊跑邊斬鬼。<br>斬得越多刀刃越鈍。你能跑多遠？', ph: '輸入名字', start: '握住日輪刀', needName: '請輸入名字', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', rank: '排行榜', prev: '看看刀的顏色（前作）',
     hold: '長按握住', keep: '就這樣繼續緊握的話…？', aka: '燒成了赫紅', isOni: '因為是鬼，握不住日輪刀', who: n => `「<b>${esc(n)}</b>」的日輪刀`, den: '才能', sharpInfo: (c, m) => c < .2 ? '不會捲刃' : `斬${Math.max(1, Math.floor(m / c))}隻鬼就會捲刃`, akaInfo: '赫刀：不容易捲刃',
@@ -47,6 +49,7 @@ const TX = {
     post: (R, d, k) => `用「${R.name}」的日輪刀（${R.kk}・才能${R.den}%${R.akaDone ? '・赫刀' : ''}）跑了 ${d.toLocaleString()}m，斬了${k}隻鬼。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: '全體', rkToday: '今天', rkNone: '沒有才能', rkOni: '鬼', howO: '・點擊畫面左側／右側，或手指橫向滑動來換跑道（電腦為 ← →）<br>・進入隊士所在的跑道就會打倒對方。每次都會被砍而減少再生力，沒被砍的時候會恢復<br>・在沒有再生力的狀態下撞到隊士，或撞到障礙物就結束<br>・有氣場的隊士很難纏，打倒會一口氣失去10人份的再生力<br>・撿到紅色小瓶（稀血）就能恢復再生力<br>・右下的圓圈集滿後按下就能使出血鬼術（電腦為空白鍵）', regen: '再生力', killsO: n => `隊士 ${n}人`, whoOni: n => `「<b>${esc(n)}</b>」是鬼`, oniAs: n => `作為鬼的名字：<b style="color:#fff">${esc(n)}</b>`, oniTier: t => `血鬼術的強度：<b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `能承受隊士${Math.max(1, Math.floor(m / c))}次斬擊（沒被砍的時候會恢復）`, pickO1: n => n > 1 ? `選1個血鬼術（${n}個）` : '這隻鬼的血鬼術', pickO2: n => `選2個血鬼術（${n}個）`, whyO: { dull: '再生跟不上，被斬下了頸項', obs: '被障礙物絆住，被斬下了頸項' }, loadM: '正在製作鬼的身體…',
     rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」是鬼${R.oni.as && R.oni.as !== R.name ? '（' + esc(oniNameL(R.oni.as, L)) + '）' : ''}<br>血鬼術：<b>${esc(wz)}</b><br>打倒的隊士 <b>${k}</b>人`, postO: (R, d, k, wz) => `「${R.name}」成為了鬼。\n以血鬼術「${wz}」跑了 ${d.toLocaleString()}m，打倒了${k}名隊士。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '每個名字1筆（該名字跑得最遠的紀錄）・前100名', loading: '讀取中…', rkErr: '無法讀取', rkEmpty: '還沒有紀錄', nogl: '這台裝置無法顯示3D', capCol: (c, k) => `${c}　${k}`,
+    tr: '訓練場', trZone: v => '攻擊判定：' + (v ? '顯示' : '隱藏'), trMove: v => '動作：' + (v ? '奔跑' : '靜止'), trHelpRun: '邊跑邊使出招式。點擊／滑動來換跑道', trHelpStop: '站著使出招式。滑動畫面可旋轉360度（雙指縮放）。點擊來換跑道', trBusy: '請等招式結束',
     akaS: '赫刀', cardO: as => '鬼' + (as ? '・' + as : '') + '・血鬼術', sepW: '、' },
   ko: { lang: '한국어', ttl: '무한 귀신 베기', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: '이름으로 정해지는 일륜도로 귀신을 베며 달려라.<br>벨수록 칼날이 무뎌진다. 어디까지 갈 수 있을까.', ph: '이름을 입력', start: '일륜도를 쥔다', needName: '이름을 입력해 주세요', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', rank: '랭킹', prev: '칼의 색 보기(전작)',
     hold: '길게 눌러 쥐기', keep: '그대로 꽉 쥐고 있으면…?', aka: '붉게 달아올랐다', isOni: '귀신이라 일륜도를 쥘 수 없었다', who: n => `「<b>${esc(n)}</b>」의 일륜도`, den: '재능', sharpInfo: (c, m) => c < .2 ? '이가 빠지지 않는다' : `귀신을 ${Math.max(1, Math.floor(m / c))}마리 베면 이가 빠진다`, akaInfo: '혁도: 이가 잘 빠지지 않는다',
@@ -57,6 +60,7 @@ const TX = {
     post: (R, d, k) => `「${R.name}」의 일륜도(${R.kk}・재능 ${R.den}%${R.akaDone ? '・혁도' : ''})로 ${d.toLocaleString()}m를 달려 귀신을 ${k}마리 벴다.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: '전체', rkToday: '오늘', rkNone: '재능 없음', rkOni: '귀신', howO: '・화면 왼쪽/오른쪽을 탭하거나 손가락을 옆으로 밀어 레인 이동(PC는 ← →)<br>・대원이 있는 레인에 들어가면 쓰러뜨린다. 그때마다 베여서 재생력이 줄고, 베이지 않으면 회복된다<br>・재생력이 없는 채로 대원에 부딪히거나 장애물에 부딪히면 끝<br>・오라가 있는 대원은 만만치 않다. 쓰러뜨리면 10명분의 재생력을 한 번에 잃는다<br>・붉은 작은 병(희귀혈)을 주우면 재생력이 회복된다<br>・오른쪽 아래 원이 차면 눌러서 혈귀술(PC는 스페이스)', regen: '재생력', killsO: n => `대원 ${n}명`, whoOni: n => `「<b>${esc(n)}</b>」은(는) 귀신`, oniAs: n => `귀신으로서의 이름: <b style="color:#fff">${esc(n)}</b>`, oniTier: t => `혈귀술의 강함: <b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `대원에게 ${Math.max(1, Math.floor(m / c))}번 베일 때까지 버틴다(베이지 않으면 회복된다)`, pickO1: n => n > 1 ? `혈귀술을 1개 고른다(${n}개)` : '이 귀신의 혈귀술', pickO2: n => `혈귀술을 2개 고른다(${n}개)`, whyO: { dull: '재생이 따라가지 못해 목이 베였다', obs: '장애물에 발이 걸려 목이 베였다' }, loadM: '귀신의 몸을 만드는 중…',
     rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」은(는) 귀신${R.oni.as && R.oni.as !== R.name ? '(' + esc(oniNameL(R.oni.as, L)) + ')' : ''}<br>혈귀술: <b>${esc(wz)}</b><br>쓰러뜨린 대원 <b>${k}</b>명`, postO: (R, d, k, wz) => `「${R.name}」은(는) 귀신이 되었다.\n혈귀술 「${wz}」(으)로 ${d.toLocaleString()}m를 달려 대원을 ${k}명 쓰러뜨렸다.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '이름 하나당 1건(그 이름으로 가장 멀리 달린 기록)・상위 100', loading: '불러오는 중…', rkErr: '불러올 수 없었습니다', rkEmpty: '아직 기록이 없습니다', nogl: '이 기기에서는 3D를 표시할 수 없었습니다', capCol: (c, k) => `${c}　${k}`,
+    tr: '훈련장', trZone: v => '타격 판정: ' + (v ? '표시' : '숨김'), trMove: v => '움직임: ' + (v ? '달리기' : '멈춤'), trHelpRun: '달리면서 기술을 쓴다. 탭/슬라이드로 레인 이동', trHelpStop: '멈춰서 기술을 쓴다. 화면을 문지르면 360도 돌릴 수 있다(두 손가락으로 확대·축소). 탭으로 레인 이동', trBusy: '기술이 끝난 뒤에',
     akaS: '혁도', cardO: as => '귀신' + (as ? '・' + as : '') + '・혈귀술', sepW: ', ' },
 };
 function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || [])[1]; if (TX[q]) return q; const s = ls.get('onikiri_lang', null) || ls.get('katana_lang', null); if (TX[s]) return s; const n = (navigator.language || 'ja').toLowerCase(); return n.startsWith('ja') ? 'ja' : n.startsWith('zh') ? 'zh' : n.startsWith('ko') ? 'ko' : 'en'; }
@@ -67,7 +71,7 @@ const lw = w => locW(w, L), trArt = s => (L === 'ja' ? s : nameL(s, L) || genNam
 function applyLang() {
   T = TX[L]; gripLang(L); document.documentElement.lang = L === 'zh' ? 'zh-Hant' : L; document.title = T.ttl;
   $('tH1').innerHTML = T.h1; $('tLead').innerHTML = T.lead; $('nm').placeholder = T.ph; $('startBtn').textContent = T.start; $('rkBtn').textContent = T.rank; $('rkBtn2').textContent = T.rank; $('prevBtn').textContent = T.prev;
-  $('goBtn').textContent = T.go; $('pkBack').textContent = T.back; $('shL').textContent = T.sharp; $('again').textContent = T.again; $('repick').textContent = T.repick; $('rename').textContent = T.rename; $('xBtn').textContent = T.x; $('imgBtn').textContent = T.img; $('hintL').textContent = T.hintL; $('hintR').textContent = T.hintR; $('hintS').textContent = T.hintS; $('wzTip').textContent = T.wzTip; $('rkT').textContent = T.rank; $('rkNote').textContent = T.rkNote; $('rkBack').textContent = T.back;
+  $('goBtn').textContent = T.go; $('trBtn').textContent = T.tr; $('trT').textContent = T.tr; $('trExit').textContent = T.back; $('pkBack').textContent = T.back; $('shL').textContent = T.sharp; $('again').textContent = T.again; $('repick').textContent = T.repick; $('rename').textContent = T.rename; $('xBtn').textContent = T.x; $('imgBtn').textContent = T.img; $('hintL').textContent = T.hintL; $('hintR').textContent = T.hintR; $('hintS').textContent = T.hintS; $('wzTip').textContent = T.wzTip; $('rkT').textContent = T.rank; $('rkNote').textContent = T.rkNote; $('rkBack').textContent = T.back;
   $('tFan').textContent = T.fan; $('rFan').textContent = T.fan; sndLabel();
   $('langs').innerHTML = Object.keys(TX).map(k => `<button data-l="${k}" class="${k === L ? 'on' : ''}">${TX[k].lang}</button>`).join('');
   $('langs').querySelectorAll('button').forEach(b => b.onclick = () => { L = b.dataset.l; ls.set('onikiri_lang', L); applyLang(); });
@@ -215,7 +219,7 @@ function mkKishi() { // 隊士：体（色は頂点）＋羽織（1体ごとに�
 }
 // 敵の鬼（Blender で作った鬼。自分が鬼になったときと同じ姿。頸を斬ると頭が飛ぶ）。読みこみが終わるまでは前の鬼を出す
 let OLO = null, OM = null;
-new GLTFLoader().load('models/oni_lo.glb?v=11271745', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
+new GLTFLoader().load('models/oni_lo.glb?v=11271800', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
 function mkOni2() {
   OM = OM || { body: vtoon(), glow: new THREE.MeshBasicMaterial({ vertexColors: true }) }; const g = new THREE.Group(), body = new THREE.Group(), head = new THREE.Group(), K = OLO; g.add(body, head);
   body.add(withOut(K.body.geometry, OM.body)); if (K.marks) body.add(new THREE.Mesh(K.marks.geometry, OM.glow));
@@ -248,12 +252,12 @@ let ST = 'load', R = null, G = { x: 0, speed: 0, lane: 2 }, SEL = [], BEST = ls.
 // 1体斬るごとの刃こぼれ：才能がないほど早い（0%で約4体）。才能が高いとほとんど減らないが、少しは減る。赫刀は1割だけ減りにくい
 // オーラのある固い鬼は、10体分の切れ味を一気に失う（最高速になってから出る）
 const costOf = r => Math.max(1.5, 15 * (1 - r.den / 100)) * (r.akaDone ? .9 : 1), HARD = 10;
-let ONIMODE = false;
+let ONIMODE = false, TR = null; // TR＝トレーニング場にいるあいだの状態
 function newRun() {
   clearEnts(); ONIMODE = !!R.oni && !!KISHI; $('shL').textContent = R.oni ? T.regen : T.sharp; const den = R.den, cost = costOf(R);
   G = { t: 0, dist: 0, speed: 13, lane: 2, x: 0, max: Math.round(70 + 30 * den / 100), cost, sharp: 0, gauge: 0, kills: 0, over: 0, inv: 0, fx: null, slowT: 0, slowS: 1, hit: 0, lastCut: -9, next: 12, safe: 2, shake: 0, pend: [], sel: 0, wz: SEL.map(i => wzOf(R)[i]), used: {}, why: '', cutN: 0, pt: 0 };
-  G.sharp = G.max; for (let z = -48; z > -124; z -= 19) spawnRow(z); G.next = 12; hudWaza(); $('hud').hidden = false; $('wzBtns').hidden = !G.wz.length; $('wzB').hidden = G.wz.length < 2; RIG.setLoop(null); setLook(1); ST = 'run'; hudStep(true); BGM.start(); G.snapT = .7; G.snapP = 0; G.snapBest = 0; snapHas = false;
-  const hn = ls.get('onikiri_hint', 0); if (hn < 3) { ls.set('onikiri_hint', hn + 1); const h = $('hint'); h.hidden = false; gsap.killTweensOf(h); gsap.fromTo(h, { opacity: 0 }, { opacity: 1, duration: .25 }); gsap.to(h, { opacity: 0, duration: .5, delay: 3.2, onComplete: () => { h.hidden = true; } }); } else $('hint').hidden = true;
+  G.sharp = G.max; if (TR) { G.gauge = 100; trEnts(); } else for (let z = -48; z > -124; z -= 19) spawnRow(z); G.next = 12; $('hud').classList.toggle('tr', !!TR); $('trBar').hidden = !TR; hudWaza(); $('hud').hidden = false; $('wzBtns').hidden = !G.wz.length; $('wzB').hidden = G.wz.length < 2; RIG.setLoop(null); setLook(1); ST = 'run'; hudStep(true); BGM.start(); G.snapT = .7; G.snapP = 0; G.snapBest = 0; snapHas = false;
+  const hn = TR ? 9 : ls.get('onikiri_hint', 0); if (hn < 3) { ls.set('onikiri_hint', hn + 1); const h = $('hint'); h.hidden = false; gsap.killTweensOf(h); gsap.fromTo(h, { opacity: 0 }, { opacity: 1, duration: .25 }); gsap.to(h, { opacity: 0, duration: .5, delay: 3.2, onComplete: () => { h.hidden = true; } }); } else $('hint').hidden = true;
 }
 const KEY = () => { const w = G && G.wz && G.wz[G.sel], st = w && w[3].sty; if (st && STY[st] && R && (R.oni || R.ot)) return st; if (R && R.oni) return 'oni'; return R && STY[R.key] ? R.key : 'none'; };
 function auraCol() { if (!R || R.key === 'none') return new THREE.Color(0x9aa0aa); const c = new THREE.Color(STY[R.key].c); if (R.akaDone) c.lerp(new THREE.Color(0xff2a14), .6); return c; }
@@ -288,7 +292,7 @@ function kill(e, free, quiet) {
 function smash(e) { if (e.dead) return; e.dead = .001; e.vx = rnd(-5, 5); e.vy = 6; FX.glow('#ffd9a0', e.m.position.x, .8, e.z, 3, .2, { world: 1 }); FX.burst('gray', e.m.position.x, .7, e.z, 8, { sp: 8 }); sfx('thud'); }
 function inZone(e, Lw, Rr, zNear) { return e.z <= (zNear == null ? 1 : zNear) && e.z >= -Rr && (Lw >= 9 || Math.abs(e.lane - G.lane) <= Lw); }
 function zoneKill(Lw, Rr, O, zNear) { let n = 0; for (const e of ENT) { if (e.dead || !inZone(e, Lw, Rr, zNear)) continue; if (e.type === 'oni') { kill(e, true, n > 2); n++; } else if (e.type === 'obs' && O) smash(e); } return n; }
-function die(why) { if (G.over || (DEV && window.__god)) return; G.over = .001; G.why = why; G.shake = .9; G.fx = null; RIG.setLoop('down'); FX.dragon.stop(); BGM.stop(); sfx('thud'); sfx('clang'); flash('#ff2a2a', .6); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 90, seed: 9, palette: ramp('#ff3048') }); }
+function die(why) { if (G.over || TR || (DEV && window.__god)) return; G.over = .001; G.why = why; G.shake = .9; G.fx = null; RIG.setLoop('down'); FX.dragon.stop(); BGM.stop(); sfx('thud'); sfx('clang'); flash('#ff2a2a', .6); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 90, seed: 9, palette: ramp('#ff3048') }); }
 // 型ごとの動き（原作の動きに合わせる）
 function actOf(p) { if (p.a) return p.a; const v = p.v; if (p.k === 'inst') return v === 'wheel' ? 'flipV' : v === 'arcUp' ? 'rise' : (v === 'arcDown' || v === 'fall') ? 'smash' : v === 'thrust' ? 'thrust' : (v === 'bolt' || v === 'dash' || v === 'mega') ? 'iai' : (v === 'claws' || v === 'storm') ? 'slashH2' : 'slashH'; if (p.k === 'multi') return 'multi'; if (p.k === 'aura') return v === 'calm' ? 'calm' : v === 'dashAura' ? 'charge' : 'spin'; if (p.k === 'flow') return v === 'dragon' ? 'dragon' : 'flow'; if (p.k === 'rain') return 'raise'; return p.v === 'eye' && p.S > .45 ? 'sense' : null; }
 // 一撃の型のエフェクト
@@ -352,16 +356,17 @@ function useWaza() {
   G.gauge = 0; G.used[artName(w)] = 1; sfx('waza'); FX.trail.key(KEY()); flash(col, .2); if (TIPN < 3) ls.set('onikiri_tip', ++TIPN); reqSnap(2, p.k === 'inst' ? (ACTHIT[a] || .2) + .13 : .55);
   const el = $('wz'), wl = lw(w); el.innerHTML = R.oni ? `<small>${esc(wl[0])}</small>${esc(wl[1])}` : `<small>${esc(R.ot ? R.kk : kk(R.key))}</small>${R.ot && wl[0] === R.kk ? '' : esc(wl[0]) + '　'}${esc(wl[1])}`; { const n = wlen(el.textContent) - wlen(el.firstChild.textContent); el.style.fontSize = L === 'en' || R.oni ? '' : n > 17 ? '15px' : n > 12 ? '18px' : ''; } el.classList.toggle('lat', L === 'en'); el.classList.toggle('oni', !!R.oni); if (R.oni) { gsap.fromTo('#tint', { opacity: .5 }, { opacity: 0, duration: .9 }); if (p.ring) { for (let i = 0; i < 6; i++) FX.arcFlat(KEY(), G.x, -1, 6.5, p.D, { rz: i * 1.047, follow: 1, hold: 1, spin: .5, y: .08, a: .8 }); FX.ring(STY[KEY()].c2, G.x, -1, 3.2, p.D, { follow: 1, hold: 1 }); FX.ring(STY[KEY()].c, G.x, -1, 1.6, p.D, { follow: 1, hold: 1 }); } } gsap.killTweensOf(el); gsap.fromTo(el, { opacity: 0, y: 8 }, { opacity: .62, y: 0, duration: .18 }); gsap.to(el, { opacity: 0, duration: .5, delay: 1.0 });
   if (p.H) G.sharp = Math.min(G.max, G.sharp + p.H);
-  if (p.k === 'inst') { const hit = RIG.play(a) || .1; G.hit = hit + .14; G.inv = Math.max(G.inv, hit + (p.I || .45)); FX.trail.on(hit + .45); G.pend.push({ t: hit, f: () => { zoneKill(p.L, p.R, p.O); castFx(p); } }); }
+  if (p.k === 'inst') { const hit = RIG.play(a) || .1; if (TR) TR.lock = hit + .55; G.hit = hit + .14; G.inv = Math.max(G.inv, hit + (p.I || .45)); FX.trail.on(hit + .45); G.pend.push({ t: hit, f: () => { zoneKill(p.L, p.R, p.O); castFx(p); } }); }
   else { const D = p.k === 'multi' ? p.N * .1 + .15 : p.D; G.hit = .3; G.fx = { p, t: 0, D, tick: 0, n: 0 }; if (a) RIG.setLoop(a); FX.trail.on(D); if (p.k === 'slow') { G.slowT = p.D; G.slowS = p.S; } auraFx(p); }
 }
 function runStep(dt) {
   if (G.over) { G.over += dt; if (G.over > 1.1) showResult(); return 0; }
   if (G.hit > 0) G.hit -= dt; if (G.slowT > 0) G.slowT -= dt;
   const ts = (G.hit > 0 ? .3 : 1) * (G.slowT > 0 ? G.slowS : 1), wdt = dt * ts;
-  G.t += wdt; G.speed = 13 + 17 * Math.min(1, G.dist / 1800); const mv = G.speed * wdt; G.dist += mv;
+  G.t += wdt; G.speed = TR ? (TR.move ? 13 : 0) : 13 + 17 * Math.min(1, G.dist / 1800); const mv = G.speed * wdt; if (!TR) G.dist += mv;
   const p1 = Math.min(1, G.dist / 1800), gap = G.dist < 1800 ? 18 - 8 * p1 : Math.max(7, 10 - (G.dist - 1800) / 1500);
-  G.next -= mv; while (G.next <= 0) { spawnRow(); G.next += gap; }
+  G.next -= mv; while (G.next <= 0) { if (TR) { trRow(-128); G.next += 9; } else { spawnRow(); G.next += gap; } }
+  if (TR) trStep(dt);
   for (let i = G.pend.length - 1; i >= 0; i--) { const k = G.pend[i]; k.t -= dt; if (k.t <= 0) { G.pend.splice(i, 1); k.f(); } }
   // 続く型
   const F = G.fx; let immune = G.inv > 0, ghost = false, brk = false;
@@ -387,7 +392,7 @@ function runStep(dt) {
     if (e.type === 'oni') { e.m.position.y = Math.abs(Math.sin(G.t * 9 + e.ph)) * .12; e.m.rotation.z = Math.sin(G.t * 9 + e.ph) * .07; if (e.hard) { const k = 1 + Math.sin(G.t * 11 + e.ph) * .12, u = e.m.userData; u.au.scale.set(3.0 * k, 3.8 * k, 1); u.au2.scale.set(1.7 / k, 2.6 * k, 1); } } else if (e.type === 'stone') { e.m.rotation.y += dt * 3; e.m.position.y = Math.sin(G.t * 4 + e.ph) * .12; }
     if (e.z > -.75 && e.z < .85 && e.lane === pl) {
       if (e.type === 'stone') { e.dead = .3; e.vx = 0; e.vy = 3; G.sharp = Math.min(G.max, G.sharp + 40); sfx('stone'); FX.glow('#cfe0ff', G.x, 1, 0, 3.5, .35, { follow: 1 }); FX.ring('#cfe0ff', G.x, 0, 1, .4, { grow: 5, follow: 1 }); }
-      else if (e.type === 'oni') { if (immune) kill(e, true); else { const need = e.hard ? G.cost * HARD : G.cost; if (G.sharp >= need) { G.sharp -= need; G.lastCut = G.t; kill(e); RIG.play(G.cutN++ % 2 ? 'cutB' : 'cutA'); FX.trail.on(.3); } else die('dull'); } }
+      else if (e.type === 'oni') { if (immune) kill(e, true); else { const need = TR ? 0 : e.hard ? G.cost * HARD : G.cost; if (G.sharp >= need) { G.sharp -= need; G.lastCut = G.t; kill(e); RIG.play(G.cutN++ % 2 ? 'cutB' : 'cutA'); FX.trail.on(.3); } else die('dull'); } }
       else { if (brk) smash(e); else if (ghost) { } else die('obs'); }
     }
     if (e.z > 12) { e.m.visible = false; FREE[e.pk || e.type].push(e.m); ENT.splice(i, 1); }
@@ -403,7 +408,7 @@ function frame(now) {
   renderer.toneMapping = THREE.NoToneMapping;
   let mv = 0; if (ST === 'run') mv = runStep(dt); else mv = 4 * dt;
   roadTex.offset.y += mv / 8; for (const s of SCEN) { s.m.position.z += mv; if (s.m.position.z > 16) s.m.position.z -= s.span; }
-  const inRun = ST === 'run', run = inRun && !G.over && RIG.loop() !== 'calm', slow = inRun && (G.hit > 0 ? .3 : 1) * (G.slowT > 0 ? Math.max(.6, G.slowS) : 1);
+  const inRun = ST === 'run', still = !!TR && !TR.move, run = inRun && !G.over && RIG.loop() !== 'calm' && !still, slow = inRun && (G.hit > 0 ? .3 : 1) * (G.slowT > 0 ? Math.max(.6, G.slowS) : 1);
   WREF.x = inRun ? G.x : 0; RIG.root.position.x = WREF.x; laneGlow.position.x = inRun ? lx(G.lane) : 0; laneGlow.material.opacity += ((inRun && !G.over ? .42 : 0) - laneGlow.material.opacity) * Math.min(1, dt * 8); RIG.root.rotation.z = inRun ? clamp((lx(G.lane) - G.x) * -.3, -.35, .35) : 0;
   RIG.step(dt * (inRun ? slow || 1 : 1), run, run ? 13 + G.speed * .25 : 3);
   RIG.root.updateMatrixWorld(true); RIG.J.kat.localToWorld(V1.set(0, .18, 0)); RIG.J.kat.localToWorld(V2.set(0, 1.34, 0)); FX.trail.step(dt, V1, V2); FX.dragon.step(dt);
@@ -411,12 +416,14 @@ function frame(now) {
   const pulse = .85 + .15 * Math.sin(tAll * 5); P.aura.scale.set(3.0 * pulse, 4.0 * pulse, 1);
   FX.step(dt, mv);
   if (inRun) { G.shake = Math.max(0, G.shake - dt * 1.8); hudStep(); }
-  const sh = inRun ? G.shake : 0, cx = inRun ? G.x * .35 : 0; camera.position.set(CAM.x + cx + (Math.random() - .5) * sh, CAM.y + (Math.random() - .5) * sh, CAM.z); camera.lookAt(cx, 1.1, -10);
+  const sh = inRun ? G.shake : 0, cx = inRun ? G.x * .35 : 0; if (inRun && still) { const cp = Math.cos(TR.pit), r = TR.rad; camera.position.set(G.x + Math.sin(TR.ang) * cp * r + (Math.random() - .5) * sh, 1.1 + Math.sin(TR.pit) * r + (Math.random() - .5) * sh, -4 + Math.cos(TR.ang) * cp * r); camera.lookAt(G.x, 1.1, -4); } // トレーニング場で止まっているときは、まわりを回って見られる
+  else { camera.position.set(CAM.x + cx + (Math.random() - .5) * sh, CAM.y + (Math.random() - .5) * sh, CAM.z); camera.lookAt(cx, 1.1, -10); }
+  zoneStep();
   renderer.render(scene, camera);
   if (inRun && G.snapT > 0) { G.snapT -= dt; if (G.snapT <= 0) { doSnap(); G.snapBest = G.snapP; } }
-  if (inRun && !G.over) BGM.tick(Math.min(1, G.dist / 1800));
+  if (inRun && !G.over) BGM.tick(TR ? 0 : Math.min(1, G.dist / 1800));
   // 重い端末では自動で軽くする（2回つづけて40コマ/秒を下まわったら1段さげる）
-  if (inRun && !G.over && !DEV && raw < .2) { qT += raw; if (++qN >= 100) { if (qT / qN > 1 / 40) { if (++qBad >= 2 && QL < 2) { QL++; qBad = 0; ls.set('onikiri_q', QL); applyQ(); } } else qBad = 0; qT = qN = 0; } }
+  if (inRun && !G.over && !DEV && !TR && raw < .2) { qT += raw; if (++qN >= 100) { if (qT / qN > 1 / 40) { if (++qBad >= 2 && QL < 2) { QL++; qBad = 0; ls.set('onikiri_q', QL); applyQ(); } } else qBad = 0; qT = qN = 0; } }
 }
 let QL = ls.get('onikiri_q', 0), qT = 0, qN = 0, qBad = 0; const DPR = Math.min(2, window.devicePixelRatio || 1);
 function applyQ() { renderer.setPixelRatio(QL === 0 ? DPR : QL === 1 ? Math.min(DPR, 1.5) : 1); renderer.setSize(innerWidth, innerHeight, false); OUT.visible = OUTN.visible = QL < 1; FX.q = QL >= 2 ? .5 : 1; P.pm.visible = QL < 2; }
@@ -433,7 +440,7 @@ function hudStep(force) {
 let TIPN = ls.get('onikiri_tip', 0); const ACTHIT = { slashH: .2, slashH2: .16, flipV: .2, rise: .22, smash: .44, thrust: .2, iai: .4 };
 // 結果の画像に使う一枚：型を出した瞬間（なければ鬼を斬った瞬間）の画面を写しておく
 const SNAP = document.createElement('canvas'); SNAP.width = 1080; SNAP.height = 810; let snapHas = false;
-function reqSnap(pri, delay) { if (ST === 'run' && pri >= (G.snapBest || 0) && pri >= (G.snapT > 0 ? G.snapP : 0)) { G.snapT = delay; G.snapP = pri; } }
+function reqSnap(pri, delay) { if (ST === 'run' && !TR && pri >= (G.snapBest || 0) && pri >= (G.snapT > 0 ? G.snapP : 0)) { G.snapT = delay; G.snapP = pri; } }
 function doSnap() { try { const c = renderer.domElement, cw = c.width, ch = c.height; let sw = Math.min(cw, ch * 1.2), sh = sw * .75; if (sh > ch) { sh = ch; sw = sh / .75; } SNAP.getContext('2d').drawImage(c, (cw - sw) / 2, clamp(ch * .5 - sh / 2, 0, ch - sh), sw, sh, 0, 0, 1080, 810); snapHas = true; } catch (e) { } }
 const wzShort = w0 => { const w = lw(w0); let n = w[1];
   if (L !== 'ja') { if (w0[1][0] === '（') return w[0]; for (const c of [' - ', ': ', ', ']) if (wlen(n) > 12 && n.includes(c)) n = n.slice(n.lastIndexOf(c) + c.length); if (R && R.oni && L !== 'en') for (const c of [' ', '・', '·']) if (n.length > 7 && n.includes(c)) n = n.slice(n.lastIndexOf(c) + 1); return n; }
@@ -442,19 +449,64 @@ const wzShort = w0 => { const w = lw(w0); let n = w[1];
 const wlen = s => { let n = 0; for (const c of s) n += c.charCodeAt(0) < 0x2000 ? .52 : 1; return n; };
 function hudWaza() { if (!G.wz.length) return; const set = (id, t, sz) => { const b = $(id).firstChild, n = wlen(t); b.textContent = t; b.style.wordBreak = L === 'en' ? 'normal' : ''; b.style.fontSize = sz(n); };
   set('wzA', wzShort(G.wz[G.sel]), n => n > 16 ? '8.5px' : n > 11 ? '9.5px' : n > 7 ? '10.5px' : n > 5 ? '12px' : ''); if (G.wz.length > 1) set('wzB', wzShort(G.wz[1 - G.sel]), n => n > 12 ? '6.5px' : n > 8 ? '7.5px' : n > 5 ? '9px' : ''); }
-function swapWaza() { if (ST !== 'run' || G.wz.length < 2 || G.fx) return; G.sel = 1 - G.sel; hudWaza(); sfx('move'); gsap.fromTo('#wzA', { scale: .8 }, { scale: 1, duration: .15 }); }
+function swapWaza() { if (ST !== 'run' || TR || G.wz.length < 2 || G.fx) return; G.sel = 1 - G.sel; hudWaza(); sfx('move'); gsap.fromTo('#wzA', { scale: .8 }, { scale: 1, duration: .15 }); }
 function move(d) { if (ST !== 'run' || G.over) return; if (G.fx && G.fx.p.k === 'flow') return; const l = clamp(G.lane + d, 0, 4); if (l !== G.lane) { G.lane = l; sfx('move'); } }
 // 移動：タップ（左半分・右半分）でも、指を横にスライドでも動ける。スライドは指を動かした分だけレーンを移る
-{ const gl = $('gl'), PT = new Map(), stepW = () => clamp(innerWidth * .14, 34, 70);
-  gl.addEventListener('pointerdown', e => { if (ST !== 'run') return; e.preventDefault(); PT.set(e.pointerId, { x: e.clientX, x0: e.clientX, slid: false }); try { gl.setPointerCapture(e.pointerId); } catch (_) { } });
-  gl.addEventListener('pointermove', e => { const p = PT.get(e.pointerId); if (!p || ST !== 'run') return; const S = stepW(); for (let i = 0; i < 4; i++) { const dx = e.clientX - p.x, thr = p.slid ? S : S * .6; if (Math.abs(dx) < thr) break; const d = dx > 0 ? 1 : -1, l = G.lane; move(d); p.slid = true; p.x = G.lane === l ? e.clientX : p.x + d * thr; } });
-  const end = e => { const p = PT.get(e.pointerId); if (!p) return; PT.delete(e.pointerId); if (!p.slid && e.type === 'pointerup' && ST === 'run') move(p.x0 < innerWidth / 2 ? -1 : 1); };
-  gl.addEventListener('pointerup', end); gl.addEventListener('pointercancel', end); }
+{ const gl = $('gl'), PT = new Map(), stepW = () => clamp(innerWidth * .14, 34, 70), orbit = () => ST === 'run' && TR && !TR.move; let pin = 0;
+  gl.addEventListener('pointerdown', e => { if (ST !== 'run') return; e.preventDefault(); PT.set(e.pointerId, { x: e.clientX, y: e.clientY, x0: e.clientX, slid: false }); pin = 0; try { gl.setPointerCapture(e.pointerId); } catch (_) { } });
+  gl.addEventListener('pointermove', e => { const p = PT.get(e.pointerId); if (!p || ST !== 'run') return;
+    if (orbit()) { // 止まっているとき：なぞると回る、2本指で近づく・はなれる
+      if (PT.size >= 2) { const dx0 = e.clientX - p.x, dy0 = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY; p.slid = true; const a = [...PT.values()], d = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y); if (pin) TR.rad = clamp(TR.rad * pin / Math.max(20, d), 5, 45); pin = d; for (const q of a) q.slid = true; return; }
+      const dx = e.clientX - p.x, dy = e.clientY - p.y; if (!p.slid && Math.hypot(e.clientX - p.x0, dy) < 8) return; p.slid = true; p.x = e.clientX; p.y = e.clientY; TR.ang -= dx * .009; TR.pit = clamp(TR.pit + dy * .006, .06, 1.45); return; }
+    const S = stepW(); for (let i = 0; i < 4; i++) { const dx = e.clientX - p.x, thr = p.slid ? S : S * .6; if (Math.abs(dx) < thr) break; const d = dx > 0 ? 1 : -1, l = G.lane; move(d); p.slid = true; p.x = G.lane === l ? e.clientX : p.x + d * thr; } });
+  const end = e => { const p = PT.get(e.pointerId); if (!p) return; PT.delete(e.pointerId); pin = 0; if (!p.slid && e.type === 'pointerup' && ST === 'run') move(p.x0 < innerWidth / 2 ? -1 : 1); };
+  gl.addEventListener('pointerup', end); gl.addEventListener('pointercancel', end);
+  gl.addEventListener('wheel', e => { if (orbit()) { e.preventDefault(); TR.rad = clamp(TR.rad * (e.deltaY > 0 ? 1.1 : .9), 5, 45); } }, { passive: false }); }
 { let sx = 0, sy = 0, tg = null; const b = $('wzBtns');
   b.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); sx = e.clientX; sy = e.clientY; tg = e.target.closest('.wzc'); try { b.setPointerCapture(e.pointerId); } catch (_) { } });
   b.addEventListener('pointerup', e => { const dx = e.clientX - sx, dy = e.clientY - sy; if (Math.hypot(dx, dy) > 22 || (tg && tg.id === 'wzB')) swapWaza(); else useWaza(); tg = null; }); }
 addEventListener('keydown', e => { if (ST !== 'run') return; if (e.key === 'ArrowLeft' || e.key === 'a') move(-1); else if (e.key === 'ArrowRight' || e.key === 'd') move(1); else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); useWaza(); } else if (e.key === 'ArrowUp' || e.key === 'Shift' || e.key === 'w') swapWaza(); });
 
+// ---------- トレーニング場 ----------
+// 入れた名前のキャラのまま、技を何回でも試せる。走りながら／止まって（止まっているときは360度まわして見られる）。当たり判定の表示つき
+const trBusy = () => !!(G.fx || G.pend.length || TR.lock > 0); // 技が出ているあいだ（ふつうに斬る動きは数えない）
+const trCell = (k, l) => ((k === 2 && (l === 0 || l === 4)) || (k === 6 && (l === 1 || l === 3)) ? 'obs' : 'oni'); // 的のならび（障害物も少し置く）
+function trRow(z) { TR.n = (TR.n || 0) + 1; const ob = TR.n % 4 === 0 ? (TR.n % 8 === 0 ? [0, 4] : [1, 3]) : []; for (let l = 0; l < 5; l++) spawn(ob.includes(l) ? 'obs' : 'oni', l, z, TR.n % 5 === 0 && l === 2); }
+function trFill() { for (let k = 0; k < 9; k++) { const z = -6 - 8 * k; for (let l = 0; l < 5; l++) { if (ENT.some(e => e.lane === l && Math.abs(e.z - z) < 1)) continue; spawn(trCell(k, l), l, z, k === 4 && l === 2); } } }
+function trEnts() { for (const e of ENT) { e.m.visible = false; FREE[e.pk || e.type].push(e.m); } ENT.length = 0; TR.re = 0; TR.n = 0; for (const sc of SCEN) sc.m.visible = TR.move; /* 止まって見るときは、まわりの建物をどかす */ if (TR.move) { for (let z = -22; z > -124; z -= 9) trRow(z); G.next = 9; } else trFill(); }
+function trStep(dt) {
+  if (TR.lock > 0) TR.lock -= dt; G.sharp = G.max; const busy = trBusy(); if (!busy) G.gauge = 100;
+  if (!TR.move) { if (busy) TR.re = 0; else { TR.re += dt; if (TR.re > .8) { TR.re = 0; trFill(); } } } // 止まっているとき：技が終わったら的を補充
+  if (busy !== TR.busy) { TR.busy = busy; for (const id of ['trPrev', 'trNext', 'trMove']) $(id).disabled = busy; }
+}
+function trPaint() {
+  const w = G.wz[0], wl = lw(w), nm = $('trName'); $('trBar').classList.toggle('lat', L === 'en'); nm.children[0].textContent = (R.oni || (R.ot && wl[0] === R.kk) ? '' : wl[0] + '　') + wl[1]; nm.children[1].textContent = descT(w[3]); nm.children[2].textContent = (TR.i + 1) + '/' + TR.list.length;
+  $('trZone').textContent = T.trZone(TR.zone); $('trZone').classList.toggle('on', TR.zone); $('trMove').textContent = T.trMove(TR.move); $('trHelp').textContent = TR.move ? T.trHelpRun : T.trHelpStop;
+  gsap.killTweensOf('#trHelp'); gsap.fromTo('#trHelp', { opacity: .9 }, { opacity: 0, duration: .6, delay: 4 });
+}
+function trSet(d) { if (!TR || trBusy()) { if (TR) toast(T.trBusy); return; } const n = TR.list.length; TR.i = (TR.i + d + n) % n; G.wz = [wzOf(R)[TR.list[TR.i]]]; G.sel = 0; G.gauge = 100; hudWaza(); FX.trail.key(KEY()); trPaint(); sfx('move'); }
+function openTraining() {
+  const un = R.forms; if (!un.length) return; const first = SEL.length ? un.indexOf(SEL[SEL.length - 1]) : -1;
+  TR = { move: true, zone: true, ang: 0, pit: .3, rad: 14, list: un.slice(), i: first < 0 ? un.length - 1 : first, re: 0, n: 0, busy: null, lock: 0 };
+  $('pick').hidden = true; ac(); const go = () => { if (ST !== 'pick' || !TR) return; SEL = [TR.list[TR.i]]; newRun(); trPaint(); };
+  if (R.oni) { if (!KISHI) toast(T.loadM); loadModels().then(go).catch(go); } else go();
+}
+function closeTraining() { if (!TR) return; TR = null; for (const sc of SCEN) sc.m.visible = true; G.fx = null; G.pend.length = 0; G.slowT = 0; FX.dragon.stop(); BGM.stop(); gsap.killTweensOf('#tint'); gsap.set('#tint', { opacity: 0 }); $('hud').classList.remove('tr'); $('trBar').hidden = true; zoneStep(); openPick(); }
+document.querySelectorAll('#trBar button').forEach(b => b.addEventListener('click', () => b.blur())); // 押したあとにスペースキーで同じボタンが押されないように
+$('trBtn').onclick = openTraining; $('trExit').onclick = closeTraining; $('trPrev').onclick = () => trSet(-1); $('trNext').onclick = () => trSet(1);
+$('trZone').onclick = () => { if (!TR) return; TR.zone = !TR.zone; trPaint(); };
+$('trMove').onclick = () => { if (!TR) return; if (trBusy()) { toast(T.trBusy); return; } TR.move = !TR.move; TR.ang = 0; TR.pit = .3; TR.rad = 14; G.slowT = 0; trEnts(); trPaint(); };
+// 当たり判定：技がとどく範囲を地面に出す（黄＝当たる範囲、水色＝相手を探しに行く範囲）
+const ZN = [0, 0].map(() => { const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0xffe14a, transparent: true, opacity: .24, depthWrite: false, fog: false, side: THREE.DoubleSide })); m.rotation.x = -Math.PI / 2; m.visible = false; m.renderOrder = 3; const ed = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), new THREE.LineBasicMaterial({ color: 0xffe14a, transparent: true, opacity: .95, fog: false, depthWrite: false })); m.add(ed); scene.add(m); return m; });
+function zoneStep() {
+  ZN[0].visible = ZN[1].visible = false; if (!TR || !TR.zone || ST !== 'run' || !G.wz.length) return; const p = G.wz[0][3], F = G.fx;
+  const rect = (m, l0, l1, zn, zf, col, op) => { m.visible = true; m.position.set((lx(l0) + lx(l1)) / 2, .05, (zn + zf) / 2); m.scale.set((l1 - l0 + 1) * LW, zn - zf, 1); m.material.color.set(col); m.material.opacity = op; m.children[0].material.color.set(col); };
+  const span = Lw => (Lw >= 9 ? [0, 4] : [Math.max(0, G.lane - Lw), Math.min(4, G.lane + Lw)]), Y = '#ffe14a', B = '#4ad2ff';
+  if (p.k === 'inst' || p.k === 'aura') { const s = span(p.L); rect(ZN[0], s[0], s[1], 1, -p.R, Y, .24); }
+  else if (p.k === 'flow') { const Lw = p.grow ? (F ? Math.min(2, Math.floor(F.t / F.D * 3)) : 0) : p.L, s = span(Lw); rect(ZN[0], s[0], s[1], 1, -7, Y, .3); rect(ZN[1], 0, 4, -1, -34, B, .1); }
+  else if (p.k === 'multi') rect(ZN[0], 0, 4, 1, -p.R, Y, .2);
+  else if (p.k === 'rain') rect(ZN[0], 0, 4, -2.5, -p.R, Y, .22);
+}
 // ---------- 握る（前作「色変わりの刀」の場面をそのまま使う） ----------
 function prep(name) { R = judge(name); R.name = name; R.akaDone = false; if (R.key === 'nezuko' || oniHas(name)) return setOni(R); R.kk = R.ot ? otSch(R.ot, L) : kk(R.key); R.forms = usable(R); R.slots = R.den >= 100 && R.forms.length >= 2 ? 2 : (R.forms.length ? 1 : 0); return R; }
 // 鬼：原作の鬼は原作の血鬼術、鬼になった人は名前で決まる血鬼術。体の強さ（再生力）も名前で決まる
@@ -463,7 +515,7 @@ gripInvite(r => r.oni ? null : humanOf(r.name, r.ch) ? 'hum' : r.key === 'none' 
 const killsT = n => (R && R.oni ? T.killsO(n) : T.kills(n)), artName = w => (R && R.oni ? w[1] : w[0] + ' ' + w[1]), descT = p => (L !== 'ja' ? descL(p, L, !!(R && R.oni)) : R && R.oni ? desc(p).replace(/鬼/g, '隊士').replace(/切れ味/g, '再生力').replace(/斬撃/g, '血鬼術').replace(/(\d)体/g, '$1人').replace(/一気に斬る/g, '一気になぎ払う').replace(/斬り続ける/g, '倒し続ける').replace(/斬り進む/g, '倒し進む').replace(/を斬る/g, 'を倒す') : desc(p));
 // 鬼と隊士のモデル（Blender で作ったもの）。鬼で遊ぶときだけ読みこむ
 let MODELS = null, KISHI = null;
-function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11271745', res, undefined, rej));
+function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11271800', res, undefined, rej));
   MODELS = Promise.all([one('oni'), one('kishi')]).then(([o, k]) => { RIG.setOniModel(o); const g = {}; k.scene.traverse(n => { if (n.isMesh) g[n.name] = n; }); KISHI = g; return true; }).catch(e => { MODELS = null; throw e; }); return MODELS; }
 function grip() {
   const name = $('nm').value.trim(); if (!name) { $('nmNote').textContent = T.needName; $('nmNote').classList.add('err'); gsap.fromTo('#nm', { x: -8 }, { x: 0, duration: .4, ease: 'elastic.out(1,.3)' }); return; }
@@ -483,7 +535,7 @@ function openPick() {
   const box = $('pkList'); box.innerHTML = W.map((w, i) => { const ok = un.includes(i), wl = lw(w); return `<button class="wl${ok ? '' : ' lock'}" data-i="${i}"${ok ? '' : ' disabled'}>${ok ? '' : `<em>${R.ch ? '—' : T.lockAt(needDen(i, W.length))}</em>`}<b>${R.oni ? '' : esc(wl[0]) + '　'}${esc(wl[1])}</b>${R.oni ? `<small style="opacity:.75">${esc(wl[0])}｜${esc(wl[2])}</small>` : R.ot ? `<small style="opacity:.75">${esc(wl[2])}</small>` : ''}<small>${esc(descT(w[3]))}</small></button>`; }).join('');
   const paint = () => box.querySelectorAll('.wl').forEach(b => b.classList.toggle('on', SEL.includes(+b.dataset.i)));
   box.querySelectorAll('.wl:not(.lock)').forEach(b => b.onclick = () => { const i = +b.dataset.i; if (SEL.includes(i)) { if (R.slots === 2 && SEL.length === 2) SEL = SEL.filter(v => v !== i); } else { SEL.push(i); while (SEL.length > R.slots) SEL.shift(); } paint(); sfx('move'); });
-  paint(); $('pkHow').innerHTML = (R.oni ? T.howO : T.how) + (R.slots === 2 ? '<br>' + T.how2 : ''); $('pick').hidden = false; $('pick').scrollTop = 0;
+  $('trBtn').hidden = !un.length; paint(); $('pkHow').innerHTML = (R.oni ? T.howO : T.how) + (R.slots === 2 ? '<br>' + T.how2 : ''); $('pick').hidden = false; $('pick').scrollTop = 0;
 }
 $('goBtn').onclick = () => { if (R.slots && SEL.length < R.slots) { for (const i of R.forms.slice().reverse()) if (SEL.length < R.slots && !SEL.includes(i)) SEL.push(i); } const s = ls.get('onikiri_sel', {}); s[R.n] = SEL; ls.set('onikiri_sel', s); $('pick').hidden = true; ac(); if (R.oni) { if (!KISHI) toast(T.loadM); loadModels().then(() => { if (ST === 'pick') newRun(); }).catch(() => { if (ST === 'pick') newRun(); }); } else newRun(); };
 $('pkBack').onclick = () => { $('pick').hidden = true; toTitle(); };
