@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272130';
+import { EXTRA } from './i18n.js?v=11272140';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -1006,6 +1006,51 @@ export const OTHERS = [
     t(['水遁', 'Water Release', '水遁', '수둔'], ['水鉄砲の術', 'Water Gun Jutsu', '水鐵砲之術', '물총술'], ['指先から、弾のような水を撃つ', 'Fires water like a bullet from his fingertip', '從指尖射出子彈般的水', '손끝에서 총알 같은 물을 쏜다'], { k: 'inst', L: 0, R: 50, v: 'thrust', sty: 'x_shigure' }),
     t(['首斬り包丁', "Executioner's Blade", '斬首大刀', '참수대도'], ['首斬り', 'Beheading', '斬首', '참수'], ['大刀のひと振りで両断する', 'Cleaves in two with one swing of the great blade', '大刀一揮，一刀兩斷', '대도의 한 번 휘두름으로 양단한다'], { k: 'inst', L: 2, R: 16, O: 1, v: 'arcH', sty: 'x_kiri' }),
   ], ['鬼燈水月']),
+  // ---------- 17回目：Fate・ソードアート・オンライン・ワールドトリガー ----------
+  c('アルテラ', '', ['Altera', '阿提拉', '알테라'], 'fate', 'white', 98, ['軍神の剣', 'Photon Ray', '軍神之劍', '군신의 검'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['文明侵食', 'Civilization Erosion', '文明侵蝕', '문명침식'], ['手にしたものを、自分に合うものへ作りかえながら進む', 'Remakes whatever she takes up into something that suits her as she advances', '將到手之物改造成適合自己的東西並前進', '손에 쥔 것을 자신에게 맞는 것으로 바꿔 가며 나아간다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_counter' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['軍神の剣', 'Photon Ray', '軍神之劍', '군신의 검'], ['三色の光の剣を回転させ、突進してすべてを壊す', 'Spins the tricolor blade of light and charges, destroying everything', '旋轉三色光之劍突進，破壞一切', '삼색의 빛의 검을 회전시켜 돌진해 모든 것을 부순다'], { k: 'inst', L: 1, R: 60, O: 1, I: .8, v: 'mega', sty: 'x_counter' }),
+  ], [], ['アルテラ']),
+  c('ベディヴィエール', '', ['Bedivere', '貝德維爾', '베디비어'], 'fate', 'white', 92, ['銀色の腕', 'Airgetlám', '銀色之臂', '은빛 팔'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['守護の誓約', 'Oath of Protection', '守護的誓約', '수호의 서약'], ['王を守るという誓いが、攻めをはじく', 'His oath to protect the king turns attacks aside', '守護王的誓言將攻擊彈開', '왕을 지키겠다는 맹세가 공격을 튕겨 낸다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_hyun' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['剣を摂れ、銀色の腕', 'Switch On - Airgetlám', '一閃吧，銀色之臂', '검을 잡아라, 은빛 팔'], ['銀の義手を光の刃に変えて、断ちわる', 'Turns his silver arm into a blade of light and cleaves', '將銀色義手化為光刃斬斷', '은빛 의수를 빛의 칼날로 바꿔 가른다'], { k: 'inst', L: 1, R: 45, O: 1, I: .6, v: 'arcH', sty: 'x_hyun' }),
+  ], [], ['ベディヴィエール']),
+  c('柳生但馬守宗矩', 'やぎゅうたじまのかみむねのり', ['Yagyu Munenori', '柳生但馬守宗矩', '야규 타지마노카미 무네노리'], 'fate', 'gray', 98, ['柳生新陰流', 'Yagyu Shinkage Style', '柳生新陰流', '야규 신카게류'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['水月', 'Suigetsu', '水月', '수월'], ['水にうつる月のように、相手の動きを読みきる', "Reads the foe's every move like the moon reflected in water", '如映於水面的月亮般讀透對手的動作', '물에 비친 달처럼 상대의 움직임을 읽어 낸다'], { k: 'slow', D: 5, S: .35, v: 'eye', sty: 'x_toyako' }),
+    t(['スキル', 'Skill', '技能', '스킬'], ['無刀取り', 'Mutodori', '無刀取', '무도 빼앗기'], ['素手で、相手の刀をうばいとる', "Takes the foe's sword away with bare hands", '徒手奪下對手的刀', '맨손으로 상대의 칼을 빼앗는다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_toyako' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['剣術無双・剣禅一如', 'Kenjutsu Muso: Kenzen Ichinyo', '劍術無雙・劍禪一如', '검술무쌍·검선일여'], ['剣と禅を一つにした、ただひと太刀', 'A single stroke in which sword and Zen are one', '劍禪合一的唯一一刀', '검과 선을 하나로 한, 오직 한 칼'], { k: 'inst', L: 1, R: 40, O: 1, I: .8, v: 'bolt', a: 'iai', sty: 'x_toyako' }),
+  ], ['柳生宗矩', 'やぎゅうむねのり']),
+  c('千子村正', 'せんじむらまさ', ['Senji Muramasa', '千子村正', '센지 무라마사'], 'fate', 'red', 97, ['刀鍛冶', 'Swordsmith', '刀匠', '도공'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['焔', 'Homura', '焰', '불꽃'], ['鍛冶場の炎を、刀にやどして振るう', 'Wields a blade that holds the fire of the forge', '將鍛冶場的火焰寄宿於刀中揮舞', '대장간의 불꽃을 칼에 깃들여 휘두른다'], { k: 'aura', L: 1, R: 8, D: 4, v: 'vortex', sty: 'x_ubw' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['無元の剣製', 'Tsumukari Muramasa', '無元劍製', '츠무카리 무라마사'], ['業も因果も断ちきる、究極のひと振りをきたえて放つ', 'Forges and looses the ultimate stroke that severs karma and fate', '鍛造並揮出斬斷業與因果的終極一刀', '업도 인과도 끊어 내는 궁극의 한 칼을 벼려 휘두른다'], { k: 'inst', L: 9, R: 65, O: 1, I: 1, v: 'mega', sty: 'x_ubw' }),
+  ]),
+  c('源頼光', 'みなもとのらいこう', ['Minamoto-no-Raikou', '源賴光', '미나모토노 라이코'], 'fate', 'purple', 98, ['童子切安綱', 'Dojigiri Yasutsuna', '童子切安綱', '도지기리 야스츠나'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['神秘殺し', 'Mystic Slayer', '神秘殺手', '신비 살해'], ['魔性のものを斬ることにかけては、右に出るものがいない太刀', 'A blade without equal when it comes to cutting down things of the supernatural', '在斬殺魔性之物上無人能出其右的太刀', '마성의 것을 베는 데에는 따를 자가 없는 태도'], { k: 'inst', L: 2, R: 30, O: 1, v: 'arcH', sty: 'x_susanoo' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['牛王招雷・天網恢々', 'Vengeful Lightning of the Ox-King', '牛王招雷・天網恢恢', '우왕초뢰·천망회회'], ['雷でできた分身たちと、いっせいに斬りかかる', 'Attacks all at once together with doubles made of lightning', '與雷電形成的分身們一齊斬擊', '번개로 된 분신들과 함께 일제히 베어 든다'], { k: 'multi', N: 14, R: 40, v: 'arcs', sty: 'x_susanoo' }),
+  ], ['みなもとのよりみつ', '源賴光']),
+  // ---------- ソードアート・オンライン ----------
+  c('ヒースクリフ', '', ['Heathcliff', '希茲克利夫', '히스클리프'], 'sao', 'red', 99, ['神聖剣', 'Holy Sword', '神聖劍', '신성검'], [
+    t(['ユニークスキル', 'Unique Skill', '獨特技能', '유니크 스킬'], ['神聖剣', 'Holy Sword', '神聖劍', '신성검'], ['十字の盾と長剣で、攻めも守りもすきがない', 'With a cross shield and long sword, flawless in both attack and defense', '以十字盾與長劍，攻守皆無破綻', '십자 방패와 장검으로 공격도 방어도 빈틈이 없다'], { k: 'aura', L: 1, R: 8, D: 5, G: 1, v: 'spin', sty: 'x_erza' }),
+    t(['システム', 'System', '系統', '시스템'], ['不死属性', 'Immortal Object', '不死屬性', '불사 속성'], ['体力が半分より下にへらない、管理者だけの守り', "An administrator's protection: his HP never drops below half", '體力不會低於一半的管理者專屬防護', '체력이 절반 아래로 줄지 않는, 관리자만의 보호'], { k: 'inst', L: 1, R: 20, H: 80, v: 'rain', sty: 'x_erza' }),
+  ], ['茅場晶彦', 'かやばあきひこ'], ['ヒースクリフ']),
+  c('ベルクーリ・シンセシス・ワン', 'べるくーりしんせしすわん', ['Bercouli Synthesis One', '貝爾庫利・辛賽西斯・萬', '베르쿨리 신세시스 원'], 'sao', 'blue', 99, ['時穿剣', 'Time Piercing Sword', '時穿劍', '시천검'], [
+    t(['武装完全支配術', 'Enhance Armament', '武裝完全支配術', '무장완전지배술'], ['空斬', 'Kuzan', '空斬', '공참'], ['未来を斬る。斬った場所に、斬撃がしばらく残る', 'Cuts the future: the slash lingers for a while in the place he cut', '斬斷未來。斬過之處會暫時殘留斬擊', '미래를 벤다. 벤 자리에 참격이 한동안 남는다'], { k: 'aura', L: 2, R: 9, D: 5, v: 'spin', sty: 'x_getsuga' }),
+    t(['記憶解放術', 'Release Recollection', '記憶解放術', '기억해방술'], ['裏斬', 'Urazan', '裏斬', '이참'], ['過去を斬る。少し前にそこにいた相手を斬る', 'Cuts the past: strikes the foe who stood there a moment ago', '斬斷過去。斬擊片刻之前還在那裡的對手', '과거를 벤다. 조금 전에 그곳에 있던 상대를 벤다'], { k: 'inst', L: 9, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_getsuga' }),
+  ]),
+  c('クライン', '', ['Klein', '克萊因', '클라인'], 'sao', 'red', 88, ['刀', 'Katana', '刀', '도'], [
+    t(['曲刀', 'Curved Sword', '曲刀', '곡도'], ['リーバー', 'Reaver', '掠奪者', '리버'], ['突進しながら斬りぬける', 'Cuts through in a charge', '一邊突進一邊斬穿而過', '돌진하며 베고 지나간다'], { k: 'inst', L: 0, R: 24, I: .5, v: 'dash', a: 'iai', sty: 'x_hiten' }),
+    t(['刀', 'Katana', '刀', '도'], ['辻風', 'Tsujikaze', '辻風', '츠지카제'], ['さやから一気に抜きはなつ、居合いの一撃', 'A quick-draw strike loosed from the scabbard in one motion', '從鞘中一口氣拔出的居合一擊', '칼집에서 단숨에 뽑아 내는 발도의 일격'], { k: 'inst', L: 1, R: 30, I: .5, v: 'bolt', a: 'iai', sty: 'x_hiten' }),
+  ], ['壺井遼太郎', 'つぼいりょうたろう'], ['クライン']),
+  // ---------- ワールドトリガー ----------
+  c('村上鋼', 'むらかみこう', ['Ko Murakami', '村上鋼', '무라카미 코'], 'wtrigger', 'gray', 93, ['弧月とレイガスト', 'Kogetsu & Raygust', '弧月與雷伽斯特', '호월과 레이가스트'], [
+    t(['サイドエフェクト', 'Side Effect', '副作用', '사이드 이펙트'], ['強化睡眠記憶', 'Enhanced Sleep Memory', '強化睡眠記憶', '강화 수면 기억'], ['一度見た動きは、ねむればすべて身につく', 'Any move he has seen once is fully learned after a sleep', '看過一次的動作，睡一覺就能完全學會', '한 번 본 움직임은 자고 나면 모두 몸에 익는다'], { k: 'slow', D: 5, S: .4, v: 'eye', sty: 'x_kogetsu' }),
+    t(['レイガスト', 'Raygust', '雷伽斯特', '레이가스트'], ['スラスター', 'Thruster', '推進器', '스러스터'], ['盾を噴射で加速させて、叩きこむ', 'Accelerates the shield with a jet and slams it in', '以噴射加速盾牌並砸入', '방패를 분사로 가속시켜 꽂아 넣는다'], { k: 'inst', L: 1, R: 30, O: 1, v: 'thrust', sty: 'x_kogetsu' }),
+    t(['弧月', 'Kogetsu', '弧月', '호월'], ['旋空弧月', 'Senku Kogetsu', '旋空弧月', '선공호월'], ['一瞬だけ刃をのばし、遠くまでまとめて斬る', 'Extends the blade for an instant and cuts everything far ahead', '只在一瞬間伸長刀刃，將遠處一併斬斷', '한순간만 칼날을 늘여 멀리까지 한꺼번에 벤다'], { k: 'inst', L: 2, R: 32, v: 'arcH', sty: 'x_kogetsu' }),
+  ]),
+  c('生駒達人', 'いこまたつひと', ['Tatsuhito Ikoma', '生駒達人', '이코마 타츠히토'], 'wtrigger', 'blue', 94, ['弧月', 'Kogetsu', '弧月', '호월'], [
+    t(['弧月', 'Kogetsu', '弧月', '호월'], ['居合', 'Iai', '居合', '거합'], ['実戦の居合いで、近づいたものを抜きうちに斬る', 'Cuts down whatever comes near with a combat quick-draw', '以實戰居合拔刀斬擊靠近的一切', '실전 발도로 다가온 것을 뽑자마자 벤다'], { k: 'inst', L: 1, R: 16, I: .5, v: 'bolt', a: 'iai', sty: 'x_kogetsu' }),
+    t(['弧月', 'Kogetsu', '弧月', '호월'], ['生駒旋空', 'Ikoma Senku', '生駒旋空', '이코마 선공'], ['刃がのびる時間をけずって、40メートル先までとどかせる旋空', 'A Senku that trades duration for reach, cutting forty meters away', '縮短刀刃伸長的時間，使其達到四十公尺遠的旋空', '칼날이 늘어나는 시간을 줄여 40미터 앞까지 닿게 하는 선공'], { k: 'inst', L: 2, R: 45, O: 1, I: .4, v: 'arcH', sty: 'x_kogetsu' }),
+  ]),
 ];
 
 // ---------- 名前で引く ----------

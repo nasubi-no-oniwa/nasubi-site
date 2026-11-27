@@ -1,8 +1,8 @@
 import { THREE, RoomEnvironment } from './lib.js?v=11241806';
 import { COLORS, ORDER, CHARS } from './data.js?v=11241806';
-import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11272130';
-import { locW, oniNameL } from '../onikiri/i18n.js?v=11272130';
-import { varNorm, otherOf, otSch, otWord } from '../onikiri/others.js?v=11272130';
+import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11272140';
+import { locW, oniNameL } from '../onikiri/i18n.js?v=11272140';
+import { varNorm, otherOf, otSch, otWord } from '../onikiri/others.js?v=11272140';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
