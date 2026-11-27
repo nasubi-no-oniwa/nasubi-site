@@ -1,12 +1,12 @@
-import { THREE, GLTFLoader } from './lib.js?v=11272120';
-import { COLORS, CHARS, ORDER } from './data.js?v=11272120';
-import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11272120';
-import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11272120';
-import { makeFx, STY } from './fx.js?v=11272120';
-import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11272120';
-import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd , genNameL } from './oni.js?v=11272120';
-import { locW, descL, nameL, oniNameL } from './i18n.js?v=11272120';
-import { OT_STY, ETC, varNorm, otherOf, otherByName, otName, otSch, otWork } from './others.js?v=11272120';
+import { THREE, GLTFLoader } from './lib.js?v=11272130';
+import { COLORS, CHARS, ORDER } from './data.js?v=11272130';
+import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11272130';
+import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11272130';
+import { makeFx, STY } from './fx.js?v=11272130';
+import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11272130';
+import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd , genNameL } from './oni.js?v=11272130';
+import { locW, descL, nameL, oniNameL } from './i18n.js?v=11272130';
+import { OT_STY, ETC, varNorm, otherOf, otherByName, otName, otSch, otWork } from './others.js?v=11272130';
 Object.assign(STY, ONI_STY, OT_STY); COLORS.etc = ETC; COLORS.oni = { hex: '#b3122a', name: { ja: '鬼', en: 'Demon', zh: '鬼', ko: '귀신' }, kokyu: { ja: '血鬼術', en: 'Blood Demon Art', zh: '血鬼術', ko: '혈귀술' } };
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
@@ -219,7 +219,7 @@ function mkKishi() { // 隊士：体（色は頂点）＋羽織（1体ごとに�
 }
 // 敵の鬼（Blender で作った鬼。自分が鬼になったときと同じ姿。頸を斬ると頭が飛ぶ）。読みこみが終わるまでは前の鬼を出す
 let OLO = null, OM = null;
-new GLTFLoader().load('models/oni_lo.glb?v=11272120', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
+new GLTFLoader().load('models/oni_lo.glb?v=11272130', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
 function mkOni2() {
   OM = OM || { body: vtoon(), glow: new THREE.MeshBasicMaterial({ vertexColors: true }) }; const g = new THREE.Group(), body = new THREE.Group(), head = new THREE.Group(), K = OLO; g.add(body, head);
   body.add(withOut(K.body.geometry, OM.body)); if (K.marks) body.add(new THREE.Mesh(K.marks.geometry, OM.glow));
@@ -518,7 +518,7 @@ gripInvite(r => r.oni ? null : humanOf(r.name, r.ch) ? 'hum' : r.key === 'none' 
 const killsT = n => (R && R.oni ? T.killsO(n) : T.kills(n)), artName = w => (R && R.oni ? w[1] : w[0] + ' ' + w[1]), descT = p => (L !== 'ja' ? descL(p, L, !!(R && R.oni)) : R && R.oni ? desc(p).replace(/鬼/g, '隊士').replace(/切れ味/g, '再生力').replace(/斬撃/g, '血鬼術').replace(/(\d)体/g, '$1人').replace(/一気に斬る/g, '一気になぎ払う').replace(/斬り続ける/g, '倒し続ける').replace(/斬り進む/g, '倒し進む').replace(/を斬る/g, 'を倒す') : desc(p));
 // 鬼と隊士のモデル（Blender で作ったもの）。鬼で遊ぶときだけ読みこむ
 let MODELS = null, KISHI = null;
-function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11272120', res, undefined, rej));
+function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11272130', res, undefined, rej));
   MODELS = Promise.all([one('oni'), one('kishi')]).then(([o, k]) => { RIG.setOniModel(o); const g = {}; k.scene.traverse(n => { if (n.isMesh) g[n.name] = n; }); KISHI = g; return true; }).catch(e => { MODELS = null; throw e; }); return MODELS; }
 function grip() {
   const name = $('nm').value.trim(); if (!name) { $('nmNote').textContent = T.needName; $('nmNote').classList.add('err'); gsap.fromTo('#nm', { x: -8 }, { x: 0, duration: .4, ease: 'elastic.out(1,.3)' }); return; }

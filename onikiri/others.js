@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272120';
+import { EXTRA } from './i18n.js?v=11272130';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -959,6 +959,53 @@ export const OTHERS = [
     t(['聖文字', 'Schrift', '聖文字', '슈리프트'], ['世界調和', 'The Balance', '世界調和', '세계조화'], ['自分にふりかかる不運を、相手の幸運にぶつけてつり合わせる', "Balances the misfortune that befalls him against the foe's good fortune", '將降臨自身的不幸與對手的幸運相抵以取得平衡', '자신에게 닥친 불운을 상대의 행운에 부딪쳐 균형을 맞춘다'], { k: 'aura', L: 1, R: 8, D: 5, G: 1, v: 'calm', sty: 'x_excalibur' }),
     t(['剣技', 'Sword Technique', '劍技', '검기'], ['星十字騎士団長の剣', "The Sternritter Grandmaster's Sword", '星十字騎士團長之劍', '성십자기사단장의 검'], ['身代わりの盾と長剣で、すきなく斬りふせる', 'Cuts down without an opening, with a long sword and a shield that takes his wounds', '以替身之盾與長劍毫無破綻地斬倒對手', '대신 받아 주는 방패와 장검으로 빈틈없이 베어 넘긴다'], { k: 'multi', N: 10, R: 30, v: 'arcs', sty: 'x_excalibur' }),
   ], ['ユーグラム・ハッシュバルト']),
+  // ---------- 16回目：ONE PIECE・NARUTO ----------
+  c('ディアマンテ', '', ['Diamante', '迪亞曼鐵', '디아만테'], 'onepiece', 'red', 90, ['ヒラヒラの実', 'Hira Hira no Mi', '飄飄果實', '펄럭펄럭 열매'], [
+    t(['ヒラヒラの実', 'Hira Hira no Mi', '飄飄果實', '펄럭펄럭 열매'], ['蛇の剣', 'Vipera Glaive', '蛇之劍', '비페라 글레이브'], ['剣を旗のようにはためかせ、まがる刃で斬る', 'Makes the sword flutter like a flag and cuts with the bending blade', '讓劍如旗幟般飄動，以彎曲的刀刃斬擊', '검을 깃발처럼 펄럭여 휘는 칼날로 벤다'], { k: 'multi', N: 7, R: 30, v: 'arcs', sty: 'x_hiten' }),
+    t(['ヒラヒラの実', 'Hira Hira no Mi', '飄飄果實', '펄럭펄럭 열매'], ['陸軍旗', 'Army Bandera', '陸軍旗', '아미 반데라'], ['地面を旗のように波うたせ、足をとる', 'Makes the ground ripple like a flag and takes away all footing', '讓地面如旗幟般起伏，使人站不穩', '땅을 깃발처럼 출렁이게 해 발을 묶는다'], { k: 'slow', D: 5, S: .4, v: 'eye', sty: 'x_hiten' }),
+    t(['ヒラヒラの実', 'Hira Hira no Mi', '飄飄果實', '펄럭펄럭 열매'], ['半月グレイブ', 'Half-Moon Glaive', '半月劍', '반달 글레이브'], ['地面ごと、半月の形に斬りあげる', 'Cuts upward in a half-moon, ground and all', '連同地面一起斬出半月形', '땅째 반달 모양으로 올려 벤다'], { k: 'inst', L: 2, R: 24, O: 1, v: 'arcUp', sty: 'x_hiten' }),
+  ], [], ['ディアマンテ']),
+  c('ダズ・ボーネス', 'だずぼーねす', ['Daz Bonez', '達茲・波尼斯', '다즈 본즈'], 'onepiece', 'gray', 90, ['スパスパの実', 'Supa Supa no Mi', '快斬果實', '싹둑싹둑 열매'], [
+    t(['スパスパの実', 'Supa Supa no Mi', '快斬果實', '싹둑싹둑 열매'], ['螺旋抜斬', 'Spiral Hollow', '螺旋拔斬', '스파이럴 할로우'], ['腕の刃を回転させて、えぐりぬく', 'Spins the blades on his arms and gouges through', '旋轉手臂上的刀刃剜穿對手', '팔의 칼날을 회전시켜 도려낸다'], { k: 'inst', L: 0, R: 20, O: 1, v: 'thrust', sty: 'x_shinso' }),
+    t(['スパスパの実', 'Supa Supa no Mi', '快斬果實', '싹둑싹둑 열매'], ['滅裂斬', 'Atomic Spurt', '滅裂斬', '아토믹 스퍼트'], ['全身を刃に変えて、続けざまに斬りかかる', 'Turns his whole body into blades and attacks in rapid succession', '將全身化為刀刃接連斬擊', '온몸을 칼날로 바꿔 잇달아 베어 든다'], { k: 'multi', N: 9, R: 28, v: 'arcs', sty: 'x_shinso' }),
+    t(['スパスパの実', 'Supa Supa no Mi', '快斬果實', '싹둑싹둑 열매'], ['微塵斬速力', 'Sparkling Daisy', '微塵斬速力', '스파클링 데이지'], ['すれ違いざまに、建物ごと斬りきざむ', 'Dices everything, buildings and all, as he rushes past', '擦身而過時連同建築物一起切碎', '스쳐 지나가며 건물째 썰어 낸다'], { k: 'inst', L: 1, R: 36, O: 1, I: .5, v: 'dash', a: 'iai', sty: 'x_shinso' }),
+  ], [], ['Mr.1']),
+  c('ハチ', '', ['Hatchan', '小八', '핫찬'], 'onepiece', 'pink', 78, ['六刀流', 'Six Sword Style', '六刀流', '육도류'], [
+    t(['六刀流', 'Six Sword Style', '六刀流', '육도류'], ['蛸足奇剣', 'Octopus Leg Strange Sword', '章魚足奇劍', '문어발 기검'], ['六本の腕で、六本の刀をいっせいに振りおろす', 'Brings down six swords at once with six arms', '以六隻手臂同時揮下六把刀', '여섯 개의 팔로 여섯 자루의 칼을 일제히 내리친다'], { k: 'multi', N: 6, R: 24, v: 'arcs', sty: 'x_katen' }),
+    t(['六刀流', 'Six Sword Style', '六刀流', '육도류'], ['六刀の円舞曲', 'Six-Sword Waltz', '六刀圓舞曲', '육도의 왈츠'], ['六本の刀を回して、近づくものを斬る', 'Whirls six swords and cuts whatever comes near', '旋轉六把刀斬擊靠近的一切', '여섯 자루의 칼을 돌려 다가오는 것을 벤다'], { k: 'aura', L: 1, R: 8, D: 4, v: 'spin', sty: 'x_katen' }),
+  ], [], ['ハチ', 'はっちゃん']),
+  c('カク', '', ['Kaku', '卡古', '카쿠'], 'onepiece', 'yellow', 93, ['四刀流', 'Four Sword Style', '四刀流', '사도류'], [
+    t(['四刀流', 'Four Sword Style', '四刀流', '사도류'], ['四刀流', 'Four Sword Style', '四刀流', '사도류'], ['両手の刀と、両足の飛ぶ斬撃で斬る', 'Cuts with a sword in each hand and flying slashes from both legs', '以雙手的刀與雙腳的飛行斬擊斬敵', '양손의 칼과 양발의 날아가는 참격으로 벤다'], { k: 'multi', N: 8, R: 28, v: 'arcs', sty: 'x_nozarashi' }),
+    t(['六式', 'Rokushiki', '六式', '육식'], ['嵐脚「周断」', 'Rankyaku: Amane Dachi', '嵐腳「周斷」', '람각 「주단」'], ['その場で回り、全方位に斬撃を飛ばす', 'Spins on the spot and sends slashes in every direction', '原地旋轉，朝全方位放出斬擊', '제자리에서 돌며 모든 방향으로 참격을 날린다'], { k: 'aura', L: 9, R: 10, D: 3, v: 'spin', sty: 'x_nozarashi' }),
+    t(['四刀流', 'Four Sword Style', '四刀流', '사도류'], ['麒麟漫雨', 'Kiri Manjaro', '麒麟漫雨', '기린만우'], ['キリンの姿で、雨のような突きをあびせる', 'In giraffe form, showers the foe with thrusts like rain', '以長頸鹿之姿降下如雨般的突刺', '기린의 모습으로 비 같은 찌르기를 퍼붓는다'], { k: 'rain', D: 4, R: 36, v: 'rainfall', sty: 'x_nozarashi' }),
+  ], [], ['カク']),
+  c('T・ボーン', 'てぃーぼーん', ['T-Bone', 'T・彭恩', '티본'], 'onepiece', 'white', 85, ['直角剣', 'Right-Angle Sword', '直角劍', '직각검'], [
+    t(['直角閃光', 'Right-Angle Flash', '直角閃光', '직각섬광'], ['ボーン空割', 'Bone Soir', '骨空割', '본 수아르'], ['直角にまがる太刀すじで、すれ違いざまに斬る', 'Cuts in passing with a sword path that turns at right angles', '以直角轉折的刀路擦身而過時斬擊', '직각으로 꺾이는 칼길로 스쳐 지나가며 벤다'], { k: 'inst', L: 0, R: 36, I: .5, v: 'dash', a: 'iai', sty: 'x_shuku' }),
+    t(['直角飛鳥', 'Right-Angle Bird', '直角飛鳥', '직각비조'], ['ボーン大鳥', 'Bone Odori', '骨大鳥', '본 오도리'], ['直角にまがりながら飛ぶ、鳥の形の斬撃', 'A bird-shaped slash that flies while turning at right angles', '一邊直角轉彎一邊飛行的鳥形斬擊', '직각으로 꺾이며 나는 새 모양의 참격'], { k: 'inst', L: 1, R: 45, O: 1, v: 'thrust', sty: 'x_shuku' }),
+  ], ['Tボーン']),
+  c('イヌアラシ', '', ['Inuarashi', '犬嵐', '이누아라시'], 'onepiece', 'blue', 96, ['昼の王', 'Ruler of Day', '晝之王', '낮의 왕'], [
+    t(['エレクトロ', 'Electro', '電氣', '일렉트로'], ['エレクトロ', 'Electro', '電氣', '일렉트로'], ['ミンク族の電気を、剣にまとわせて斬る', 'Cuts with the electricity of the Mink Tribe wrapped around his sword', '將毛皮族的電流纏繞於劍上斬擊', '밍크족의 전기를 검에 둘러 벤다'], { k: 'aura', L: 1, R: 8, D: 4, v: 'spin', sty: 'x_chidori' }),
+    t(['月の獅子', 'Sulong', '月獅子', '술롱'], ['月の獅子', 'Sulong', '月獅子', '술롱'], ['満月を見て大きな狼の姿になり、暴れまわる', 'Sees the full moon, becomes a great wolf, and runs wild', '望見滿月後化為巨狼大鬧一場', '보름달을 보고 커다란 늑대의 모습이 되어 날뛴다'], { k: 'flow', L: 2, D: 6, O: 1, v: 'dragon', sty: 'x_chidori' }),
+  ], [], ['イヌアラシ']),
+  c('黄猿', 'きざる', ['Kizaru', '黃猿', '키자루'], 'onepiece', 'yellow', 99, ['ピカピカの実', 'Pika Pika no Mi', '閃光果實', '번쩍번쩍 열매'], [
+    t(['ピカピカの実', 'Pika Pika no Mi', '閃光果實', '번쩍번쩍 열매'], ['八咫鏡', 'Yata no Kagami', '八咫鏡', '야타노 카가미'], ['光の速さで、はねかえりながら移動する', 'Moves at the speed of light, bouncing from point to point', '以光速反射移動', '빛의 속도로 반사되며 이동한다'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_excalibur' }),
+    t(['ピカピカの実', 'Pika Pika no Mi', '閃光果實', '번쩍번쩍 열매'], ['天叢雲剣', 'Ama no Murakumo', '天叢雲劍', '천총운검'], ['光で剣をつくって斬る', 'Forms a sword out of light and cuts', '以光形成劍斬擊', '빛으로 검을 만들어 벤다'], { k: 'inst', L: 1, R: 30, O: 1, v: 'arcH', sty: 'x_excalibur' }),
+    t(['ピカピカの実', 'Pika Pika no Mi', '閃光果實', '번쩍번쩍 열매'], ['八尺瓊勾玉', 'Yasakani no Magatama', '八尺瓊勾玉', '야사카니노 마가타마'], ['光の弾を、雨のように降らせる', 'Rains down bullets of light', '讓光彈如雨般降下', '빛의 탄을 비처럼 내린다'], { k: 'rain', D: 4, R: 44, O: 1, v: 'rainfall', sty: 'x_excalibur' }),
+  ], [], ['ボルサリーノ']),
+  c('大蛇丸', 'おろちまる', ['Orochimaru', '大蛇丸', '오로치마루'], 'naruto', 'purple', 98, ['草薙の剣', 'Sword of Kusanagi', '草薙劍', '쿠사나기의 검'], [
+    t(['忍術', 'Ninjutsu', '忍術', '인술'], ['潜影蛇手', 'Hidden Shadow Snake Hands', '潛影蛇手', '잠영사수'], ['そでから蛇を飛ばして、かみつかせる', 'Sends snakes shooting from his sleeves to bite', '從袖中射出蛇咬住對手', '소매에서 뱀을 날려 물게 한다'], { k: 'multi', N: 8, R: 30, v: 'arcs', sty: 'x_kyoka' }),
+    t(['口寄せ', 'Summoning', '通靈', '소환'], ['草薙の剣', 'Sword of Kusanagi', '草薙劍', '쿠사나기의 검'], ['口から出した剣を、どこまでも伸ばして貫く', 'Draws the sword from his mouth and extends it without limit to pierce', '從口中取出劍，無限伸長貫穿對手', '입에서 꺼낸 검을 끝없이 늘여 꿰뚫는다'], { k: 'inst', L: 0, R: 60, O: 1, v: 'thrust', sty: 'x_kyoka' }),
+    t(['禁術', 'Forbidden Jutsu', '禁術', '금술'], ['八岐の術', 'Eight Branches Technique', '八岐之術', '팔기술'], ['八つの頭を持つ大蛇になって暴れる', 'Becomes a great serpent with eight heads and rampages', '化為八頭大蛇肆虐', '여덟 개의 머리를 가진 큰 뱀이 되어 날뛴다'], { k: 'flow', L: 2, D: 6, O: 1, v: 'dragon', sty: 'x_kyoka' }),
+  ]),
+  c('長十郎', 'ちょうじゅうろう', ['Chojuro', '長十郎', '쵸쥬로'], 'naruto', 'blue', 90, ['双刀「ヒラメカレイ」', 'Twin Sword: Hiramekarei', '雙刀「鮃鰈」', '쌍도 「히라메카레이」'], [
+    t(['ヒラメカレイ解放', 'Hiramekarei Unleashing', '鮃鰈解放', '히라메카레이 해방'], ['チャクラの大槌', 'Chakra Hammer', '查克拉大槌', '차크라의 큰 망치'], ['刀にためたチャクラを大きな槌の形にして、叩きつける', 'Shapes the chakra stored in the sword into a great hammer and slams it down', '將蓄於刀中的查克拉化為大槌砸下', '칼에 모은 차크라를 큰 망치 모양으로 만들어 내리친다'], { k: 'inst', L: 1, R: 20, O: 1, v: 'fall', sty: 'x_shigure' }),
+    t(['ヒラメカレイ解放', 'Hiramekarei Unleashing', '鮃鰈解放', '히라메카레이 해방'], ['チャクラの長刀', 'Chakra Long Sword', '查克拉長刀', '차크라의 장도'], ['チャクラを長い刃の形にのばして、遠くまで斬る', 'Extends the chakra into a long blade and cuts far ahead', '將查克拉延伸成長刃，斬向遠處', '차크라를 긴 칼날 모양으로 늘여 멀리까지 벤다'], { k: 'inst', L: 1, R: 50, v: 'arcH', sty: 'x_shigure' }),
+  ]),
+  c('鬼灯水月', 'ほおずきすいげつ', ['Suigetsu Hozuki', '鬼燈水月', '호즈키 스이게츠'], 'naruto', 'white', 88, ['首斬り包丁', "Executioner's Blade", '斬首大刀', '참수대도'], [
+    t(['秘術', 'Secret Jutsu', '秘術', '비술'], ['水化の術', 'Hydrification Jutsu', '水化之術', '수화의 술'], ['体を水に変えて、攻めをすり抜ける', 'Turns his body to water and lets attacks pass through', '將身體化為水，讓攻擊穿過', '몸을 물로 바꿔 공격을 흘려 보낸다'], { k: 'aura', L: 1, R: 7, D: 4.5, G: 1, v: 'calm', sty: 'x_shigure' }),
+    t(['水遁', 'Water Release', '水遁', '수둔'], ['水鉄砲の術', 'Water Gun Jutsu', '水鐵砲之術', '물총술'], ['指先から、弾のような水を撃つ', 'Fires water like a bullet from his fingertip', '從指尖射出子彈般的水', '손끝에서 총알 같은 물을 쏜다'], { k: 'inst', L: 0, R: 50, v: 'thrust', sty: 'x_shigure' }),
+    t(['首斬り包丁', "Executioner's Blade", '斬首大刀', '참수대도'], ['首斬り', 'Beheading', '斬首', '참수'], ['大刀のひと振りで両断する', 'Cleaves in two with one swing of the great blade', '大刀一揮，一刀兩斷', '대도의 한 번 휘두름으로 양단한다'], { k: 'inst', L: 2, R: 16, O: 1, v: 'arcH', sty: 'x_kiri' }),
+  ], ['鬼燈水月']),
 ];
 
 // ---------- 名前で引く ----------
