@@ -1,8 +1,8 @@
 import { THREE, RoomEnvironment } from './lib.js?v=11241806';
 import { COLORS, ORDER, CHARS } from './data.js?v=11241806';
-import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11272105';
-import { locW, oniNameL } from '../onikiri/i18n.js?v=11272105';
-import { otherOf, otSch, otWord } from '../onikiri/others.js?v=11272105';
+import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11272110';
+import { locW, oniNameL } from '../onikiri/i18n.js?v=11272110';
+import { varNorm, otherOf, otSch, otWord } from '../onikiri/others.js?v=11272110';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -81,7 +81,7 @@ const toHira = s => s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeA
 const norm = s => toHira(String(s).normalize('NFKC').replace(/[\s　・･]/g, '').toLowerCase());
 function hash(s, seed) { let h = (2166136261 ^ seed) >>> 0; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13; h = Math.imul(h, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
 // 原作キャラは、漢字・ひらがな・カタカナ、名字のあるなし、名字と名前の漢字／よみの組みあわせを同じに扱う（解放戦力と同じ決まり）。名字だけは対象外。色を決める計算に使う名前（norm）は変えない
-const charKey = s => norm(s).replace(/[\uFE00-\uFE0F]/g, '').replace(/竃/g, '竈').replace(/祢/g, '禰').replace(/髓/g, '髄').replace(/を/g, 'お');
+const charKey = s => varNorm(norm(s).replace(/[\uFE00-\uFE0F\u{E0100}-\u{E01EF}]/gu, '')).replace(/を/g, 'お');
 const CHMAP = new Map();
 CHARS.forEach(c => { const n = c.n, v = n.slice(); if (n.length >= 4 && n[0].endsWith(n[2]) && n[1].endsWith(n[3])) { const s = n[0].slice(0, -n[2].length), sy = n[1].slice(0, -n[3].length); if (s && sy) v.push(s + n[3], sy + n[2]); } v.forEach(x => { const k = charKey(x); if (!CHMAP.has(k)) CHMAP.set(k, c); }); });
 ONI_TITLES.forEach(([al, nm]) => { const c = CHARS.find(c => c.n[0] === nm); if (c) { const k = charKey(al); if (!CHMAP.has(k)) CHMAP.set(k, c); } }); // 「上弦の参」→ 猗窩座 など
