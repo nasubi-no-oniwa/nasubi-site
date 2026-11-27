@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272200';
+import { EXTRA } from './i18n.js?v=11272210';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -126,6 +126,7 @@ export const WORKS = {
   sailormoon: ['美少女戦士セーラームーン', 'Sailor Moon', '美少女戰士', '미소녀 전사 세일러 문'],
   csm: ['チェンソーマン', 'Chainsaw Man', '鏈鋸人', '체인소 맨'],
   mha: ['僕のヒーローアカデミア', 'My Hero Academia', '我的英雄學院', '나의 히어로 아카데미아'],
+  kingdom: ['キングダム', 'Kingdom', '王者天下', '킹덤'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -1155,6 +1156,49 @@ export const OTHERS = [
     t(['巨人の力', 'Power of the Titans', '巨人之力', '거인의 힘'], ['硬質化', 'Hardening', '硬質化', '경질화'], ['体をかたい結晶でおおって、攻めをはじく', 'Covers his body in hard crystal that turns attacks aside', '以堅硬的結晶覆蓋身體，彈開攻擊', '몸을 단단한 결정으로 덮어 공격을 튕겨 낸다'], { k: 'aura', L: 1, R: 7, D: 4.5, G: 1, v: 'calm', sty: 'x_odm' }),
     t(['巨人の力', 'Power of the Titans', '巨人之力', '거인의 힘'], ['進撃の巨人', 'Attack Titan', '進擊的巨人', '진격의 거인'], ['巨人になって、まとめて叩きつぶしながら進む', 'Becomes a Titan and advances, crushing everything in his way', '化為巨人，一路擊潰一切前進', '거인이 되어 한꺼번에 때려 부수며 나아간다'], { k: 'flow', L: 2, D: 6, O: 1, v: 'dragon', sty: 'x_bazooka' }),
   ], ['エレン・イエーガー']),
+  // ---------- 20回目：ブラッククローバー・FAIRY TAIL・REBORN!・ダイの大冒険・キングダム ----------
+  c('リヒト', '', ['Licht', '理希特', '리히트'], 'bclover', 'yellow', 100, ['光魔法と剣魔法', 'Light Magic & Sword Magic', '光魔法與劍魔法', '빛 마법과 검 마법'], [
+    t(['光魔法', 'Light Magic', '光魔法', '빛 마법'], ['断罪の光剣', 'Light Sword of Conviction', '斷罪的光劍', '단죄의 광검'], ['光の剣を、数えきれないほど降らせる', 'Rains down countless swords of light', '降下數不清的光之劍', '빛의 검을 셀 수 없이 내린다'], { k: 'rain', D: 4, R: 40, O: 1, v: 'rainfall', sty: 'x_excalibur' }),
+    t(['剣魔法', 'Sword Magic', '劍魔法', '검 마법'], ['オリジンフラッシュ', 'Origin Flash', '起源閃光', '오리진 플래시'], ['剣から光の流れを撃ち出す', 'Fires a torrent of light from the sword', '從劍中射出光之洪流', '검에서 빛의 급류를 쏘아 낸다'], { k: 'inst', L: 9, R: 60, O: 1, I: .8, v: 'mega', sty: 'x_excalibur' }),
+  ], [], ['リヒト']),
+  c('ジャック・ザ・リッパー', 'じゃっくざりっぱー', ['Jack the Ripper', '開膛手傑克', '잭 더 리퍼'], 'bclover', 'green', 96, ['裂断魔法', 'Slash Magic', '裂斷魔法', '열단 마법'], [
+    t(['裂断魔法', 'Slash Magic', '裂斷魔法', '열단 마법'], ['デスサイズ', 'Death Scythe', '死神鐮刀', '데스 사이즈'], ['腕から生やした刃が、相手に合わせて何でも斬れるようになっていく', 'The blades growing from his arms adapt until they can cut anything the foe has', '從手臂長出的刀刃會配合對手逐漸變得無所不斬', '팔에서 돋은 칼날이 상대에 맞춰 무엇이든 벨 수 있게 되어 간다'], { k: 'flow', L: 1, D: 5.5, grow: 1, v: 'dragon', sty: 'x_santoryu' }),
+    t(['裂断魔法', 'Slash Magic', '裂斷魔法', '열단 마법'], ['デスサイズ・乱刃', 'Death Scythe: Lunatic Slash', '死神鐮刀・亂刃', '데스 사이즈·난인'], ['飛ぶ斬撃を、乱れうちにする', 'Fires a wild barrage of flying slashes', '亂射飛行的斬擊', '날아가는 참격을 마구 쏜다'], { k: 'multi', N: 10, R: 34, v: 'arcs', sty: 'x_santoryu' }),
+  ]),
+  c('カグラ・ミカヅチ', 'かぐらみかづち', ['Kagura Mikazuchi', '神樂・米卡茲奇', '카구라 미카즈치'], 'fairytail', 'purple', 97, ['怨刀「不倶戴天」', 'Blade of Resentment: Archenemy', '怨刀「不俱戴天」', '원도 「불구대천」'], [
+    t(['重力変化', 'Gravity Change', '重力變化', '중력 변화'], ['重力変化', 'Gravity Change', '重力變化', '중력 변화'], ['まわりの重力を重くして、動きをにぶらせる', 'Makes gravity heavier all around and dulls all movement', '加重周圍的重力使動作遲鈍', '주위의 중력을 무겁게 해 움직임을 둔하게 한다'], { k: 'slow', D: 5, S: .35, v: 'eye', sty: 'x_gravity' }),
+    t(['抜かぬ太刀', 'Unsheathed Blade', '不拔之太刀', '뽑지 않는 태도'], ['強の型', 'Strong Form', '強之型', '강의 형'], ['さやにおさめたまま、力まかせに叩き斬る', 'Cuts with brute force without ever leaving the scabbard', '刀不出鞘，憑蠻力劈斬', '칼집에 넣은 채 힘으로 내리친다'], { k: 'inst', L: 1, R: 20, O: 1, v: 'arcDown', sty: 'x_gravity' }),
+    t(['抜かぬ太刀', 'Unsheathed Blade', '不拔之太刀', '뽑지 않는 태도'], ['斬の型', 'Slashing Form', '斬之型', '참의 형'], ['さやのままで、すれ違いざまに斬りぬける', 'Cuts through in passing, still sheathed', '刀不出鞘，擦身而過時斬穿', '칼집째로 스쳐 지나가며 베고 지나간다'], { k: 'inst', L: 1, R: 36, I: .5, v: 'dash', a: 'iai', sty: 'x_gravity' }),
+  ]),
+  c('パンサーリリー', '', ['Pantherlily', '潘薩・利利', '팬서릴리'], 'fairytail', 'black', 88, ['バスターマァム', 'Bustermarm', '巴斯特瑪姆', '버스터 맘'], [
+    t(['戦闘モード', 'Battle Mode', '戰鬥模式', '전투 모드'], ['戦闘モード', 'Battle Mode', '戰鬥模式', '전투 모드'], ['小さな体から、大きな戦士の姿に変わって斬りこむ', 'Changes from a small body into a towering warrior and cuts in', '從小小的身體變為高大戰士之姿斬入', '작은 몸에서 커다란 전사의 모습으로 변해 베어 들어간다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_kuro' }),
+    t(['大剣', 'Great Sword', '大劍', '대검'], ['バスターマァム', 'Bustermarm', '巴斯特瑪姆', '버스터 맘'], ['大きさを自在に変えられる大剣で、まとめて薙ぐ', 'Sweeps them all with a great sword that changes size at will', '以能隨意改變大小的大劍一併橫掃', '크기를 자유자재로 바꾸는 대검으로 한꺼번에 휩쓴다'], { k: 'inst', L: 2, R: 24, O: 1, v: 'arcH', sty: 'x_kuro' }),
+  ], [], ['パンサーリリー', 'パンサー・リリー']),
+  c('幻騎士', 'げんきし', ['Genkishi', '幻騎士', '겐키시'], 'reborn', 'white', 95, ['霧の幻剣士', 'Phantom Knight of the Mist', '霧之幻劍士', '안개의 환검사'], [
+    t(['霧の炎', 'Mist Flame', '霧之炎', '안개의 불꽃'], ['幻覚の空間', 'Space of Illusion', '幻覺空間', '환각의 공간'], ['あたりを幻でつつみ、目も感覚もくるわせる', 'Wraps the area in illusion and throws off both sight and senses', '以幻覺籠罩四周，擾亂視覺與感官', '주위를 환상으로 감싸 눈도 감각도 어지럽힌다'], { k: 'slow', D: 5, S: .35, v: 'eye', sty: 'x_kiri' }),
+    t(['四剣', 'Four Swords', '四劍', '사검'], ['幻剣舞', 'Danza Spettro Spada', '幻劍舞', '환검무'], ['四本の剣で、幻とまぜた見えない斬撃を放つ', 'With four swords, fires unseen slashes mixed in with illusions', '以四把劍放出混入幻覺的無形斬擊', '네 자루의 검으로 환상에 섞은 보이지 않는 참격을 날린다'], { k: 'multi', N: 12, R: 34, v: 'arcs', sty: 'x_kiri' }),
+  ]),
+  c('ロン・ベルク', 'ろんべるく', ['Lon Berk', '隆・貝爾克', '론 베르크'], 'dai', 'gray', 99, ['魔界の名工', 'Master Smith of the Demon World', '魔界的名匠', '마계의 명공'], [
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['名工の二刀', "The Master Smith's Twin Blades", '名匠的雙刀', '명공의 쌍검'], ['自分できたえた二本の剣で、すきなく斬りむすぶ', 'Fights without an opening using two swords he forged himself', '以親手鍛造的兩把劍毫無破綻地交鋒', '직접 벼린 두 자루의 검으로 빈틈없이 맞붙는다'], { k: 'multi', N: 9, R: 28, v: 'arcs', sty: 'x_bugi' }),
+    t(['最強の剣技', 'Ultimate Sword Technique', '最強劍技', '최강의 검기'], ['星皇十字剣', 'Star Emperor Cross Sword', '星皇十字劍', '성황십자검'], ['二刀で十字に斬る。自分の腕がこわれるほどの奥義', 'Cuts a cross with two swords: a secret technique strong enough to wreck his own arms', '以雙刀斬出十字。強到會毀掉自己雙臂的奧義', '쌍검으로 십자로 벤다. 자신의 팔이 망가질 정도의 오의'], { k: 'inst', L: 9, R: 55, O: 1, I: .8, v: 'claws', sty: 'x_bugi' }),
+  ], ['ロンベルク']),
+  c('ノヴァ', '', ['Nova', '諾瓦', '노바'], 'dai', 'white', 88, ['闘気剣', 'Aura Blade', '鬥氣劍', '오라 블레이드'], [
+    t(['闘気剣', 'Aura Blade', '鬥氣劍', '오라 블레이드'], ['オーラブレード', 'Aura Blade', '鬥氣劍', '오라 블레이드'], ['闘気を剣にまとわせて、斬れ味を上げる', 'Wraps the sword in aura to sharpen its edge', '讓鬥氣纏繞於劍上提升鋒利度', '투기를 검에 둘러 예리함을 높인다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_hyorin' }),
+    t(['必殺技', 'Finishing Move', '必殺技', '필살기'], ['ノーザングランブレード', 'Northern Grand Blade', '北方大十字劍', '노던 그랜드 블레이드'], ['闘気の剣を、高く跳んで十字に振りおろす', 'Leaps high and brings the aura blade down in a cross', '高高躍起，將鬥氣之劍揮下十字', '높이 뛰어 투기의 검을 십자로 내리친다'], { k: 'inst', L: 2, R: 30, O: 1, v: 'fall', sty: 'x_hyorin' }),
+  ], [], ['ノヴァ']),
+  c('ハドラー', '', ['Hadlar', '哈德拉', '하들러'], 'dai', 'red', 98, ['覇者の剣', 'Sword of Champions', '霸者之劍', '패자의 검'], [
+    t(['地獄の爪', "Hell's Claw", '地獄之爪', '지옥의 발톱'], ['ヘルズクロー', "Hell's Claw", '地獄之爪', '헬즈 클로'], ['手からのばした爪で、つらぬく', 'Pierces with claws extended from his hands', '以從手中伸出的爪子貫穿', '손에서 뻗은 발톱으로 꿰뚫는다'], { k: 'inst', L: 0, R: 24, O: 1, v: 'thrust', sty: 'x_homura' }),
+    t(['魔炎気', 'Demonic Flame Aura', '魔炎氣', '마염기'], ['超魔爆炎覇', 'Choma Bakuenha', '超魔爆炎霸', '초마폭염패'], ['魔炎気をまとった覇者の剣で、全力で斬りこむ', 'Cuts in at full power with the Sword of Champions wreathed in demonic flame', '以纏繞魔炎氣的霸者之劍全力斬入', '마염기를 두른 패자의 검으로 전력을 다해 베어 들어간다'], { k: 'inst', L: 1, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_homura' }),
+  ], [], ['ハドラー']),
+  // ---------- キングダム ----------
+  c('羌瘣', 'きょうかい', ['Kyokai', '羌瘣', '강외'], 'kingdom', 'green', 97, ['蚩尤の剣「緑穂」', 'Blade of the Shiyu: Ryokusui', '蚩尤之劍「綠穗」', '치우의 검 「녹수」'], [
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['緑穂の一閃', 'A Flash of Ryokusui', '綠穗一閃', '녹수의 일섬'], ['ふわりと跳んで、相手の首だけを斬る', 'Leaps lightly and cuts only the neck', '輕盈躍起，只斬對手的頸項', '가볍게 뛰어 상대의 목만을 벤다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_ariel' }),
+    t(['巫舞', 'Priestess Dance', '巫舞', '무무'], ['巫舞', 'Fubu', '巫舞', '무무'], ['呼吸を深くして神をおろし、舞うように斬りきざむ', 'Deepens her breath to bring down the god and cuts as if dancing', '加深呼吸使神降臨，如舞蹈般切割', '호흡을 깊게 해 신을 내리고 춤추듯 썰어 낸다'], { k: 'flow', L: 1, D: 6, v: 'dragon', sty: 'x_ariel' }),
+  ]),
+  c('李信', 'りしん', ['Li Xin', '李信', '이신'], 'kingdom', 'red', 95, ['飛信隊 隊長', 'Captain of the Hi Shin Unit', '飛信隊 隊長', '비신대 대장'], [
+    t(['剣', 'Sword', '劍', '검'], ['跳躍の一撃', 'Leaping Strike', '跳躍一擊', '도약의 일격'], ['高く跳び、全体重をのせて叩き斬る', 'Leaps high and cuts down with his whole weight behind it', '高高躍起，以全身重量劈斬', '높이 뛰어 온 체중을 실어 내리친다'], { k: 'inst', L: 1, R: 16, O: 1, v: 'fall', sty: 'x_hiten' }),
+    t(['大将軍の矛', "The Great General's Glaive", '大將軍之矛', '대장군의 창'], ['王騎の矛', "Ouki's Glaive", '王騎之矛', '왕기의 창'], ['受けついだ重い矛で、まとめてなぎ払う', 'Sweeps them all aside with the heavy glaive he inherited', '以繼承而來的沉重長矛一併橫掃', '물려받은 무거운 창으로 한꺼번에 휩쓴다'], { k: 'inst', L: 2, R: 26, O: 1, v: 'arcH', sty: 'x_hiten' }),
+  ]),
 ];
 
 // ---------- 名前で引く ----------
