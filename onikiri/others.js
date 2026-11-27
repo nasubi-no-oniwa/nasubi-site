@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272005';
+import { EXTRA } from './i18n.js?v=11272015';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -622,6 +622,51 @@ export const OTHERS = [
     t(BANKAI, ['金色疋殺地蔵', 'Konjiki Ashisogi Jizo', '金色疋殺地藏', '금색 아시소기 지조'], ['巨大な赤子の像が毒をまき、刃をはやして突進する', 'A giant infant-like figure spreads poison and charges with blades bared', '巨大的嬰兒像散播毒氣，並長出刀刃突進', '거대한 아기의 상이 독을 뿌리고 칼날을 돋워 돌진한다'], { k: 'flow', L: 2, D: 6, O: 1, v: 'dragon', sty: 'x_kyoka' }),
     t(BANKAI, ['金色疋殺地蔵・魔胎伏印症体', 'Konjiki Ashisogi Jizo: Matai Fukuin Shotai', '金色疋殺地藏・魔胎伏印症體', '금색 아시소기 지조·마태복인증체'], ['戦う相手に合わせて、その場で作りなおした卍解', 'A bankai rebuilt on the spot to suit the foe in front of it', '配合交戰對手當場重新改造的卍解', '싸우는 상대에 맞춰 그 자리에서 다시 만든 만해'], { k: 'inst', L: 9, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_kyoka' }),
   ]),
+  // ---------- 9回目：BLEACH（破面・完現術者）・ONE PIECE ----------
+  c('ティア・ハリベル', 'てぃあはりべる', ['Tier Harribel', '蒂雅・赫麗貝爾', '티아 할리벨'], 'bleach', 'blue', 97, ['帰刃「皇鮫后」', 'Resurrección: Tiburón', '歸刃「皇鮫后」', '레스렉시온 「티부론」'], [
+    t(['帰刃', 'Resurrección', '歸刃', '레스렉시온'], ['皇鮫后', 'Tiburón', '皇鮫后', '티부론'], ['水をあやつる鮫の女帝の姿になり、近づくものを斬る', 'Takes the form of a shark empress who commands water and cuts whatever comes near', '化為操縱水的鯊魚女帝之姿，斬擊靠近的一切', '물을 다루는 상어 여제의 모습이 되어 다가오는 것을 벤다'], { k: 'aura', L: 2, R: 9, D: 5, v: 'vortex', sty: 'x_shigure' }),
+    t(['帰刃', 'Resurrección', '歸刃', '레스렉시온'], ['戦雫', 'La Gota', '戰雫', '라 고타'], ['剣先から水の弾を撃つ', 'Fires a bullet of water from the tip of the blade', '從劍尖射出水彈', '칼끝에서 물의 탄을 쏜다'], { k: 'inst', L: 0, R: 45, v: 'thrust', sty: 'x_shigure' }),
+    t(['帰刃', 'Resurrección', '歸刃', '레스렉시온'], ['断瀑', 'Cascada', '斷瀑', '카스카다'], ['巨大な滝を落として、すべて押し流す', 'Brings down a gigantic waterfall that sweeps everything away', '降下巨大瀑布沖走一切', '거대한 폭포를 떨어뜨려 모두 휩쓸어 버린다'], { k: 'inst', L: 9, R: 50, O: 1, v: 'storm', sty: 'x_shigure' }),
+  ]),
+  c('グリムジョー・ジャガージャック', 'ぐりむじょーじゃがーじゃっく', ['Grimmjow Jaegerjaquez', '葛力姆喬・賈卡傑克', '그림죠 재거잭'], 'bleach', 'blue', 98, ['帰刃「豹王」', 'Resurrección: Pantera', '歸刃「豹王」', '레스렉시온 「판테라」'], [
+    t(['帰刃', 'Resurrección', '歸刃', '레스렉시온'], ['豹王', 'Pantera', '豹王', '판테라'], ['豹のような姿になり、すばやく飛びかかって爪で裂く', 'Takes a panther-like form, pouncing fast and rending with claws', '化為豹一般的姿態，迅速撲上以爪撕裂', '표범 같은 모습이 되어 재빨리 덮쳐 발톱으로 찢는다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_getsuga' }),
+    t(['帰刃', 'Resurrección', '歸刃', '레스렉시온'], ['豹鉤', 'Garra de la Pantera', '豹鉤', '가라 데 라 판테라'], ['ひじから、爆発する針を撃ち出す', 'Fires explosive darts from his elbows', '從手肘射出會爆炸的針', '팔꿈치에서 폭발하는 침을 쏜다'], { k: 'inst', L: 1, R: 40, O: 1, v: 'thrust', sty: 'x_getsuga' }),
+    t(['帰刃', 'Resurrección', '歸刃', '레스렉시온'], ['豹王の爪', 'Desgarrón', '豹王之爪', '데스가론'], ['霊圧でできた巨大な爪で、まとめて引き裂く', 'Tears everything apart with gigantic claws of spirit energy', '以靈壓形成的巨大爪子一併撕裂', '영압으로 된 거대한 발톱으로 한꺼번에 찢는다'], { k: 'inst', L: 9, R: 55, O: 1, I: .8, v: 'claws', sty: 'x_getsuga' }),
+  ]),
+  c('ウルキオラ・シファー', 'うるきおらしふぁー', ['Ulquiorra Cifer', '烏爾奇奧拉・西法', '우르키오라 쉬퍼'], 'bleach', 'green', 99, ['帰刃「黒翼大魔」', 'Resurrección: Murciélago', '歸刃「黑翼大魔」', '레스렉시온 「무르시엘라고」'], [
+    t(['帰刃', 'Resurrección', '歸刃', '레스렉시온'], ['黒翼大魔', 'Murciélago', '黑翼大魔', '무르시엘라고'], ['黒い翼で飛び、光の槍で斬りつける', 'Flies on black wings and strikes with a lance of light', '以黑翼飛行，用光之槍斬擊', '검은 날개로 날며 빛의 창으로 벤다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_yoru' }),
+    t(['帰刃', 'Resurrección', '歸刃', '레스렉시온'], ['黒虚閃', 'Cero Oscuras', '黑虛閃', '세로 오스쿠라스'], ['解放した十刃だけが撃てる、黒い虚閃', 'The black Cero only a released Espada can fire', '只有解放後的十刃才能發射的黑色虛閃', '해방한 에스파다만 쏠 수 있는 검은 세로'], { k: 'inst', L: 1, R: 55, O: 1, v: 'thrust', sty: 'x_yoru' }),
+    t(['刀剣解放第二階層', 'Segunda Etapa', '刀劍解放第二階層', '세군다 에타파'], ['雷霆の槍', 'Lanza del Relámpago', '雷霆之槍', '란사 델 렐람파고'], ['投げれば、あたり一帯が吹き飛ぶ槍', 'A lance that blows away the whole area when thrown', '一擲出去就會炸飛整片區域的槍', '던지면 일대가 날아가는 창'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_yoru' }),
+  ]),
+  c('ノイトラ・ジルガ', 'のいとらじるが', ['Nnoitra Gilga', '諾伊特拉・吉爾加', '노이트라 질가'], 'bleach', 'yellow', 95, ['帰刃「聖哭螳蜋」', 'Resurrección: Santa Teresa', '歸刃「聖哭螳螂」', '레스렉시온 「산타 테레사」'], [
+    t(['鋼皮', 'Hierro', '鋼皮', '이에로'], ['最硬の鋼皮', 'The Hardest Hierro', '最硬的鋼皮', '가장 단단한 이에로'], ['十刃でいちばん硬い体。斬りつけた刃のほうがこぼれる', 'The hardest body among the Espada. It is the attacking blade that chips', '十刃中最堅硬的身體。砍上來的刀反而會崩口', '에스파다 중 가장 단단한 몸. 벤 칼날 쪽이 이가 빠진다'], { k: 'aura', L: 1, R: 7, D: 5, G: 1, v: 'calm', sty: 'x_nozarashi' }),
+    t(['帰刃', 'Resurrección', '歸刃', '레스렉시온'], ['聖哭螳蜋', 'Santa Teresa', '聖哭螳螂', '산타 테레사'], ['六本の腕すべてに大鎌を持ち、いっせいに斬りつける', 'Wields a great scythe in each of six arms and strikes with all at once', '六隻手臂全都握著大鐮刀，一齊斬擊', '여섯 개의 팔 모두에 큰 낫을 들고 일제히 벤다'], { k: 'multi', N: 12, R: 34, v: 'arcs', sty: 'x_nozarashi' }),
+  ]),
+  c('銀城空吾', 'ぎんじょうくうご', ['Kugo Ginjo', '銀城空吾', '긴죠 쿠고'], 'bleach', 'black', 96, ['完現術「クロス・オブ・スキャッフォルド」', 'Fullbring: Cross of Scaffold', '完現術「絞刑架十字」', '풀브링 「크로스 오브 스캐폴드」'], [
+    t(['完現術', 'Fullbring', '完現術', '풀브링'], ['クロス・オブ・スキャッフォルド', 'Cross of Scaffold', '絞刑架十字', '크로스 오브 스캐폴드'], ['十字架の首かざりを大剣に変えて叩き斬る', 'Turns a cross pendant into a great sword and cuts down', '將十字架項鍊化為大劍劈斬', '십자가 목걸이를 대검으로 바꿔 내리친다'], { k: 'inst', L: 1, R: 20, O: 1, v: 'arcDown', sty: 'x_meido' }),
+    t(BANKAI, ['月牙天衝', 'Getsuga Tensho', '月牙天衝', '월아천충'], ['うばった力で放つ、紫がかった月牙', 'A violet-tinged Getsuga fired with stolen power', '以奪來的力量放出的紫色月牙', '빼앗은 힘으로 쏘는 보랏빛 월아'], { k: 'inst', L: 1, R: 45, O: 1, v: 'arcH', sty: 'x_meido' }),
+  ]),
+  c('月島秀九郎', 'つきしましゅうくろう', ['Shukuro Tsukishima', '月島秀九郎', '츠키시마 슈쿠로'], 'bleach', 'ainezu', 94, ['完現術「ブック・オブ・ジ・エンド」', 'Fullbring: Book of the End', '完現術「終結之書」', '풀브링 「북 오브 디 엔드」'], [
+    t(['完現術', 'Fullbring', '完現術', '풀브링'], ['ブック・オブ・ジ・エンド', 'Book of the End', '終結之書', '북 오브 디 엔드'], ['斬った相手の過去に、自分の存在をはさみこむ', 'Inserts his own presence into the past of whoever he cuts', '將自己的存在插入被斬對手的過去', '벤 상대의 과거에 자신의 존재를 끼워 넣는다'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_kodachi' }),
+    t(['完現術', 'Fullbring', '完現術', '풀브링'], ['はさみこまれた過去', 'An Inserted Past', '被插入的過去', '끼워 넣은 과거'], ['「その技はもう知っている」。相手の技をすべて見切る', '"I already know that technique." Reads every move the foe makes', '「那一招我早就知道了」。看穿對手所有招式', '"그 기술은 이미 알고 있다." 상대의 기술을 모두 간파한다'], { k: 'aura', L: 1, R: 8, D: 5, G: 1, v: 'spin', sty: 'x_kodachi' }),
+  ]),
+  c('ビスタ', '', ['Vista', '比斯塔', '비스타'], 'onepiece', 'sakura', 95, ['花剣', 'Flower Sword', '花劍', '화검'], [
+    t(['花剣', 'Flower Sword', '花劍', '화검'], ['薔薇ロンド', 'Rose Rondo', '薔薇迴旋曲', '장미 론도'], ['バラの花びらを舞わせながら、二刀で斬りまわる', 'Cuts with two swords amid a whirl of rose petals', '讓玫瑰花瓣飛舞，以雙刀四處斬擊', '장미 꽃잎을 흩날리며 쌍검으로 베고 다닌다'], { k: 'aura', L: 2, R: 9, D: 4, v: 'spin', sty: 'x_senbon' }),
+    t(['花剣', 'Flower Sword', '花劍', '화검'], ['二刀の花剣', 'Twin Flower Swords', '雙刀花劍', '쌍검의 화검'], ['世界一の大剣豪とも打ち合える、白ひげ海賊団の二刀', 'The twin blades of the Whitebeard Pirates, able to trade blows with the world\'s greatest swordsman', '能與世界第一大劍豪交鋒的白鬍子海賊團雙刀', '세계 제일의 대검호와도 맞설 수 있는 흰 수염 해적단의 쌍검'], { k: 'multi', N: 9, R: 30, v: 'arcs', sty: 'x_senbon' }),
+  ], [], ['ビスタ']),
+  c('霜月リューマ', 'しもつきりゅーま', ['Shimotsuki Ryuma', '霜月龍馬', '시모츠키 류마'], 'onepiece', 'black', 99, ['黒刀「秋水」', 'Black Blade "Shusui"', '黑刀「秋水」', '흑도 「슈스이」'], [
+    t(ITTO, ['鼻唄三丁 矢筈斬り', 'Hanauta Sancho: Yahazu Giri', '鼻歌三丁 矢筈斬', '콧노래 세 가락 화살깃 베기'], ['斬られたことに気づかせない、すれ違いざまの居合い', 'A passing quick-draw so fast the foe does not notice being cut', '擦身而過的居合，讓人察覺不到已被斬', '베였다는 것조차 모르게 하는, 스쳐 지나가는 발도술'], { k: 'inst', L: 0, R: 34, I: .5, v: 'bolt', a: 'iai', sty: 'x_yoru' }),
+    t(['秋水', 'Shusui', '秋水', '슈스이'], ['竜斬り', 'Dragon Slaying', '斬龍', '용 베기'], ['空を飛ぶ竜を一太刀で両断した、伝説のひと振り', 'The legendary stroke that cleaved a flying dragon in two', '一刀將飛天之龍斬成兩半的傳說一揮', '하늘을 나는 용을 한 칼에 양단한 전설의 일격'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', sty: 'x_yoru' }),
+  ], ['霜月龍馬']),
+  c('シルバーズ・レイリー', 'しるばーずれいりー', ['Silvers Rayleigh', '西爾巴斯・雷利', '실버즈 레일리'], 'onepiece', 'white', 100, ['冥王', 'Dark King', '冥王', '명왕'], [
+    t(['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['ひとにらみで、まわりのものが気を失う', 'One glare and everything around passes out', '一瞪之下，周圍的人全都昏厥', '한 번 노려보면 주위의 것들이 정신을 잃는다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_haoshoku' }),
+    t(['武装色の覇気', 'Armament Haki', '武裝色霸氣', '무장색 패기'], ['飛ぶ斬撃', 'Flying Slash', '飛行的斬擊', '날아가는 참격'], ['覇気をまとった斬撃を飛ばす', 'Fires a slash cloaked in Haki', '放出纏繞霸氣的斬擊', '패기를 두른 참격을 날린다'], { k: 'inst', L: 1, R: 55, O: 1, v: 'arcH', sty: 'x_shuku' }),
+    t(['異名', 'Alias', '異名', '이명'], ['冥王', 'Dark King', '冥王', '명왕'], ['海賊王の右腕。老いてなお、大将の足を止める', "The Pirate King's right hand. Even in old age he stops an Admiral in his tracks", '海賊王的右腕。即使年老依然能擋下大將', '해적왕의 오른팔. 늙어서도 대장의 발을 묶는다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_shuku' }),
+  ]),
+  c('ゴール・D・ロジャー', 'ごーるでぃーろじゃー', ['Gol D. Roger', '哥爾・D・羅傑', '골 D. 로저'], 'onepiece', 'red', 100, ['愛刀「エース」', 'Saber "Ace"', '愛刀「艾斯」', '애도 「에이스」'], [
+    t(['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['海賊王の覇気。向き合うだけで動けなくなる', "The Pirate King's Haki. Just facing him leaves you unable to move", '海賊王的霸氣。光是面對就動彈不得', '해적왕의 패기. 마주 서는 것만으로 움직일 수 없게 된다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_haoshoku' }),
+    t(['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['神避', 'Divine Departure', '神避', '신피'], ['覇王色をまとった斬撃。ふれずに相手を吹き飛ばす', "A slash cloaked in Conqueror's Haki that blows the foe away without touching", '纏繞霸王色的斬擊。不必碰觸就能把對手擊飛', '패왕색을 두른 참격. 닿지 않고도 상대를 날려 버린다'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_haoshoku' }),
+  ], ['ゴールドロジャー', 'ゴール・D・ロジャー']),
 ];
 
 // ---------- 名前で引く ----------
