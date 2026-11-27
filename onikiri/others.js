@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272015';
+import { EXTRA } from './i18n.js?v=11272025';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -667,11 +667,64 @@ export const OTHERS = [
     t(['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['海賊王の覇気。向き合うだけで動けなくなる', "The Pirate King's Haki. Just facing him leaves you unable to move", '海賊王的霸氣。光是面對就動彈不得', '해적왕의 패기. 마주 서는 것만으로 움직일 수 없게 된다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_haoshoku' }),
     t(['覇王色の覇気', "Conqueror's Haki", '霸王色霸氣', '패왕색 패기'], ['神避', 'Divine Departure', '神避', '신피'], ['覇王色をまとった斬撃。ふれずに相手を吹き飛ばす', "A slash cloaked in Conqueror's Haki that blows the foe away without touching", '纏繞霸王色的斬擊。不必碰觸就能把對手擊飛', '패왕색을 두른 참격. 닿지 않고도 상대를 날려 버린다'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_haoshoku' }),
   ], ['ゴールドロジャー', 'ゴール・D・ロジャー']),
+  // ---------- 10回目：るろうに剣心・銀魂・NARUTO ----------
+  c('比古清十郎', 'ひこせいじゅうろう', ['Seijuro Hiko', '比古清十郎', '히코 세이쥬로'], 'kenshin', 'white', 100, HITEN, [
+    t(HITEN, ['龍槌閃', 'Ryutsuisen', '龍槌閃', '용추섬'], ['高く跳び、落ちる勢いで叩き斬る', 'Leaps high and strikes down with the force of the fall', '高高躍起，藉下落之勢劈斬', '높이 뛰어올라 떨어지는 기세로 내리친다'], { k: 'inst', L: 1, R: 16, O: 1, v: 'fall', sty: 'x_hiten' }),
+    t(HITEN, ['九頭龍閃', 'Kuzuryusen', '九頭龍閃', '구두룡섬'], ['九つの斬撃を同時に打ちこむ。師匠のそれは弟子より重い', "Nine strikes landed at once. The master's hits harder than the pupil's", '同時打出九道斬擊。師父的比徒弟的更重', '아홉 줄기 참격을 동시에 꽂는다. 스승의 것은 제자보다 무겁다'], { k: 'inst', L: 2, R: 36, O: 1, I: .8, v: 'claws', sty: 'x_hiten' }),
+    t(OUGI, ['天翔龍閃', 'Amakakeru Ryu no Hirameki', '天翔龍閃', '천상용섬'], ['飛天御剣流、十三代目継承者の超神速の抜刀術', 'The beyond-godspeed sword draw of the thirteenth master of the Hiten Mitsurugi Style', '飛天御劍流第十三代傳人的超神速拔刀術', '비천어검류 13대 계승자의 초신속 발도술'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', a: 'iai', sty: 'x_hiten' }),
+  ]),
+  c('雪代縁', 'ゆきしろえにし', ['Enishi Yukishiro', '雪代緣', '유키시로 에니시'], 'kenshin', 'gray', 98, ['倭刀術', 'Watojutsu', '倭刀術', '왜도술'], [
+    t(['倭刀術', 'Watojutsu', '倭刀術', '왜도술'], ['蹴撃刀勢', 'Shugeki Tosei', '蹴擊刀勢', '축격도세'], ['刀の峰をけって、斬撃を加速させる', 'Kicks the back of the blade to accelerate the cut', '踢擊刀背使斬擊加速', '칼등을 차서 참격을 가속시킨다'], { k: 'inst', L: 0, R: 24, O: 1, v: 'arcH', sty: 'x_bugi' }),
+    t(['倭刀術', 'Watojutsu', '倭刀術', '왜도술'], ['朝天刀勢', 'Choten Tosei', '朝天刀勢', '조천도세'], ['下から突きあげ、相手を宙に浮かせる', 'Thrusts up from below and lifts the foe into the air', '由下往上突刺，將對手挑上半空', '아래에서 찔러 올려 상대를 공중에 띄운다'], { k: 'inst', L: 1, R: 14, O: 1, v: 'arcUp', sty: 'x_bugi' }),
+    t(['倭刀術', 'Watojutsu', '倭刀術', '왜도술'], ['疾空刀勢', 'Shikku Tosei', '疾空刀勢', '질공도세'], ['空中でもう一度跳び、上から斬りかかる', 'Leaps a second time in mid-air and cuts down from above', '在空中再次跳躍，由上方斬下', '공중에서 한 번 더 뛰어 위에서 베어 내린다'], { k: 'flow', L: 1, D: 3.5, v: 'ribbon', sty: 'x_bugi' }),
+    t(['絶技', 'Ultimate Technique', '絕技', '절기'], ['虎伏絶刀勢', 'Kofuku Zettosei', '虎伏絕刀勢', '호복절도세'], ['低く伏せて力をため、全身のバネで斬りあげる', 'Crouches low to gather power, then cuts upward with the spring of the whole body', '伏低身體蓄力，以全身的彈力上斬', '낮게 엎드려 힘을 모았다가 온몸의 탄력으로 올려 벤다'], { k: 'inst', L: 9, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_bugi' }),
+  ]),
+  c('鵜堂刃衛', 'うどうじんえ', ['Jin-e Udo', '鵜堂刃衛', '우도 진에'], 'kenshin', 'black', 93, ['二階堂平法', 'Nikaido Heiho', '二階堂平法', '니카이도 평법'], [
+    t(['二階堂平法', 'Nikaido Heiho', '二階堂平法', '니카이도 평법'], ['心の一方', 'Shin no Ippo', '心之一方', '심의 일방'], ['ひとにらみの気合いで、相手の体をしばる', 'Binds the foe\'s body with the force of a single glare', '以一瞪的氣勢束縛對手的身體', '한 번 노려보는 기합으로 상대의 몸을 묶는다'], { k: 'slow', D: 6, S: .25, v: 'eye', sty: 'x_murasame' }),
+    t(['二階堂平法', 'Nikaido Heiho', '二階堂平法', '니카이도 평법'], ['背車刀', 'Haishato', '背車刀', '배차도'], ['背中で刀を持ちかえ、思わぬ方から斬る', 'Switches sword hands behind his back and cuts from an unexpected side', '在背後換手持刀，從意想不到的方向斬擊', '등 뒤에서 칼을 바꿔 쥐고 뜻밖의 방향에서 벤다'], { k: 'inst', L: 1, R: 18, v: 'arcH', sty: 'x_murasame' }),
+    t(['二階堂平法', 'Nikaido Heiho', '二階堂平法', '니카이도 평법'], ['憑鬼の術', 'Hyoki no Jutsu', '憑鬼之術', '빙귀술'], ['自分に暗示をかけ、力を限界まで引きだす', 'Hypnotizes himself to draw out his full strength', '對自己施加暗示，將力量引出至極限', '자신에게 암시를 걸어 힘을 한계까지 끌어낸다'], { k: 'flow', L: 1, D: 5, v: 'dragon', sty: 'x_murasame' }),
+  ]),
+  c('沢下条張', 'さわげじょうちょう', ['Cho Sawagejo', '澤下條張', '사와게죠 쵸'], 'kenshin', 'yellow', 88, ['刀狩', 'Sword Hunter', '刀狩', '칼 사냥꾼'], [
+    t(['殺人奇剣', 'Killing Blade', '殺人奇劍', '살인기검'], ['連刃刀', 'Renbato', '連刃刀', '연인도'], ['二枚の刃をならべた刀。傷がふさがらない', 'A sword with two parallel blades. The wounds do not close', '兩片刀刃並排的刀。傷口無法癒合', '두 장의 칼날을 나란히 붙인 칼. 상처가 아물지 않는다'], { k: 'inst', L: 1, R: 16, v: 'claws', sty: 'x_zabi' }),
+    t(['殺人奇剣', 'Killing Blade', '殺人奇劍', '살인기검'], ['薄刃乃太刀', 'Hakujin no Tachi', '薄刃乃太刀', '박인내태도'], ['鞭のようにしなる、うすくて長い刃をあやつる', 'Wields a long, thin blade that bends like a whip', '操縱如鞭子般柔韌的細長薄刃', '채찍처럼 휘는 얇고 긴 칼날을 다룬다'], { k: 'multi', N: 8, R: 30, v: 'arcs', sty: 'x_zabi' }),
+    t(['我流', 'Self-Taught', '我流', '아류'], ['大蛇', 'Orochi', '大蛇', '오로치'], ['薄刃乃太刀を大蛇のようにうねらせて、まわりを薙ぐ', 'Makes the Hakujin no Tachi writhe like a great serpent and sweeps all around', '讓薄刃乃太刀如大蛇般蜿蜒，橫掃四周', '박인내태도를 큰 뱀처럼 굽이치게 해 주위를 휩쓴다'], { k: 'aura', L: 2, R: 9, D: 4, v: 'spin', sty: 'x_zabi' }),
+  ], ['澤下條張']),
+  c('明神弥彦', 'みょうじんやひこ', ['Yahiko Myojin', '明神彌彥', '묘진 야히코'], 'kenshin', 'yellow', 80, ['神谷活心流', 'Kamiya Kasshin Style', '神谷活心流', '카미야 활심류'], [
+    t(['奥義の防り', 'Secret Defense', '奧義之守', '오의의 방어'], ['刃止め', 'Hadome', '刃止', '칼날 막기'], ['交差させた両手の甲で、刃をはさんで止める', 'Catches the blade between the crossed backs of both hands', '以交叉的雙手手背夾住刀刃', '교차시킨 양 손등으로 칼날을 끼워 막는다'], { k: 'aura', L: 1, R: 7, D: 3.5, G: 1, v: 'calm', sty: 'x_toyako' }),
+    t(['奥義の攻め', 'Secret Attack', '奧義之攻', '오의의 공격'], ['刃渡り', 'Hawatari', '刃渡', '칼날 타기'], ['止めた刃をすべらせ、柄で打ちこむ', 'Slides along the caught blade and strikes with the hilt', '順著擋下的刀刃滑進，以刀柄擊打', '막은 칼날을 타고 미끄러져 손잡이로 친다'], { k: 'inst', L: 0, R: 14, O: 1, v: 'thrust', sty: 'x_toyako' }),
+    t(['見よう見まね', 'Imitation', '有樣學樣', '어깨너머'], ['龍槌閃', 'Ryutsuisen', '龍槌閃', '용추섬'], ['剣心の技を、見て覚えたとおりに放つ', "Kenshin's technique, done just as he remembered seeing it", '照著看過的樣子使出劍心的招式', '켄신의 기술을 보고 익힌 대로 쓴다'], { k: 'inst', L: 0, R: 12, O: 1, v: 'fall', sty: 'x_toyako' }),
+  ], ['明神彌彦']),
+  c('神谷薫', 'かみやかおる', ['Kaoru Kamiya', '神谷薰', '카미야 카오루'], 'kenshin', 'sakura', 75, ['神谷活心流', 'Kamiya Kasshin Style', '神谷活心流', '카미야 활심류'], [
+    t(['奥義の防り', 'Secret Defense', '奧義之守', '오의의 방어'], ['刃止め', 'Hadome', '刃止', '칼날 막기'], ['交差させた両手の甲で、刃をはさんで止める', 'Catches the blade between the crossed backs of both hands', '以交叉的雙手手背夾住刀刃', '교차시킨 양 손등으로 칼날을 끼워 막는다'], { k: 'aura', L: 1, R: 7, D: 3.5, G: 1, v: 'calm', sty: 'x_okita' }),
+    t(['柄の下段', 'Low Hilt Strike', '柄之下段', '손잡이 하단'], ['膝挫', 'Hizahishigi', '膝挫', '무릎 꺾기'], ['木刀の柄で、相手のひざを打ちくだく', "Shatters the foe's knee with the hilt of a wooden sword", '以木刀的刀柄擊碎對手的膝蓋', '목검의 손잡이로 상대의 무릎을 부순다'], { k: 'inst', L: 0, R: 10, O: 1, v: 'arcDown', sty: 'x_okita' }),
+  ]),
+  // ---------- 銀魂 ----------
+  c('志村新八', 'しむらしんぱち', ['Shinpachi Shimura', '志村新八', '시무라 신파치'], 'gintama', 'ainezu', 78, ['天堂無心流', 'Tendo Mushin Style', '天堂無心流', '천당무심류'], [
+    t(['万事屋', 'Yorozuya', '萬事屋', '해결사'], ['ツッコミ', 'The Retort', '吐槽', '태클'], ['全力のツッコミで、その場の空気を止める', 'A full-force retort that brings everything to a halt', '以全力的吐槽讓現場氣氛凝結', '전력의 태클로 그 자리의 공기를 멈춘다'], { k: 'slow', D: 4, S: .4, v: 'eye', sty: 'x_toyako' }),
+    t(['天堂無心流', 'Tendo Mushin Style', '天堂無心流', '천당무심류'], ['恒道館の剣', 'The Kodokan Sword', '恆道館之劍', '항도관의 검'], ['つぶれかけの道場を守ってきた、まっすぐな剣', 'The honest sword that has kept a failing dojo alive', '一直守護著瀕臨倒閉道場的正直之劍', '망해 가는 도장을 지켜 온 올곧은 검'], { k: 'multi', N: 5, R: 24, v: 'arcs', sty: 'x_toyako' }),
+    t(['本体', 'True Body', '本體', '본체'], ['メガネ', 'The Glasses', '眼鏡', '안경'], ['本体はメガネのほう。メガネが無事なら、やられない', 'The glasses are the real him. As long as they are safe, he cannot be beaten', '本體是眼鏡。只要眼鏡沒事就不會被打倒', '본체는 안경 쪽. 안경이 무사하면 당하지 않는다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_toyako' }),
+  ]),
+  c('柳生九兵衛', 'やぎゅうきゅうべえ', ['Kyubei Yagyu', '柳生九兵衛', '야규 큐베에'], 'gintama', 'bluepurple', 94, ['柳生陳陰流', "Yagyu Chin'in Style", '柳生陳陰流', '야규 진음류'], [
+    t(['柳生陳陰流', "Yagyu Chin'in Style", '柳生陳陰流', '야규 진음류'], ['神速の剣', 'God-Speed Blade', '神速之劍', '신속의 검'], ['柳生家はじまって以来の天才といわれる、目にもとまらぬ剣', 'The blinding swordplay of the greatest prodigy in the history of the Yagyu clan', '被譽為柳生家有史以來的天才，快得看不見的劍', '야규 가문 사상 최고의 천재라 불리는, 눈에도 보이지 않는 검'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_katsura' }),
+    t(['体質', 'Reflex', '體質', '체질'], ['男にふれられると投げとばす', 'Throws Any Man Who Touches Her', '被男人碰到就會摔出去', '남자가 닿으면 내던진다'], ['ふれた相手を、考えるより先に投げとばしてしまう', 'Throws whoever touches her before she even thinks', '碰到她的人，她還來不及思考就摔了出去', '닿은 상대를 생각하기도 전에 내던져 버린다'], { k: 'aura', L: 1, R: 7, D: 4, O: 1, v: 'spin', sty: 'x_katsura' }),
+  ]),
+  // ---------- NARUTO ----------
+  c('干柿鬼鮫', 'ほしがききさめ', ['Kisame Hoshigaki', '干柿鬼鮫', '호시가키 키사메'], 'naruto', 'blue', 97, ['大刀「鮫肌」', 'Samehada', '大刀「鮫肌」', '대도 「사메하다」'], [
+    t(['鮫肌', 'Samehada', '鮫肌', '사메하다'], ['削りとる', 'Shave', '削取', '깎아 내기'], ['斬るのではなく削り、相手のチャクラを喰う', "Does not cut but shaves, devouring the foe's chakra", '不是斬而是削，並吞噬對手的查克拉', '베는 것이 아니라 깎아 내며 상대의 차크라를 먹는다'], { k: 'inst', L: 1, R: 16, H: 50, v: 'arcH', sty: 'x_shigure' }),
+    t(['水遁', 'Water Release', '水遁', '수둔'], ['水鮫弾の術', 'Water Shark Bullet Jutsu', '水鮫彈之術', '수교탄술'], ['鮫の形の水を撃ち出す', 'Fires water in the shape of a shark', '射出鯊魚形狀的水', '상어 모양의 물을 쏘아 낸다'], { k: 'inst', L: 1, R: 45, O: 1, v: 'thrust', sty: 'x_shigure' }),
+    t(['水遁', 'Water Release', '水遁', '수둔'], ['千食鮫', 'Thousand Feeding Sharks', '千食鮫', '천식교'], ['千匹の水の鮫が、いっせいに食らいつく', 'A thousand sharks of water bite down all at once', '千條水鯊一齊撲咬', '천 마리의 물 상어가 일제히 물어뜯는다'], { k: 'multi', N: 14, R: 40, v: 'arcs', sty: 'x_shigure' }),
+    t(['水遁', 'Water Release', '水遁', '수둔'], ['大爆水衝波', 'Great Exploding Water Shock Wave', '大爆水衝波', '대폭수충파'], ['口から大量の水をはき、あたりを水で満たす', 'Spews a vast volume of water and floods the whole area', '從口中吐出大量的水，淹沒四周', '입에서 대량의 물을 토해 주위를 물로 채운다'], { k: 'aura', L: 9, R: 10, D: 5, v: 'calm', sty: 'x_shigure' }),
+  ]),
+  c('キラービー', '', ['Killer B', '奇拉比', '킬러 비'], 'naruto', 'purple', 98, ['七本の刀', 'Seven Swords', '七把刀', '일곱 자루의 칼'], [
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['アクロバット', 'Acrobat', '特技劍法', '아크로바트'], ['体じゅうに七本の刀をはさみ、読めない動きで斬る', 'Grips seven swords all over his body and cuts with unreadable moves', '全身夾著七把刀，以無法預測的動作斬擊', '온몸에 일곱 자루의 칼을 끼우고 읽을 수 없는 움직임으로 벤다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_chidori' }),
+    t(['雷遁', 'Lightning Release', '雷遁', '뇌둔'], ['超ビブラート雷遁刀', 'Super Vibrato Lightning Release Blade', '超顫音雷遁刀', '초 비브라토 뇌둔도'], ['高速でふるえる雷の刃で、何でも貫く', 'A lightning blade vibrating at high speed pierces anything', '以高速震動的雷之刃貫穿一切', '고속으로 떨리는 번개의 칼날로 무엇이든 꿰뚫는다'], { k: 'inst', L: 0, R: 40, O: 1, v: 'thrust', sty: 'x_chidori' }),
+    t(['尾獣', 'Tailed Beast', '尾獸', '미수'], ['尾獣玉', 'Tailed Beast Ball', '尾獸玉', '미수옥'], ['八尾のチャクラを黒い玉に固めて撃つ', 'Compresses the chakra of the Eight-Tails into a black ball and fires it', '將八尾的查克拉凝聚成黑色球體射出', '팔미의 차크라를 검은 구슬로 뭉쳐 쏜다'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_susanoo' }),
+  ], [], ['キラービー', 'キラー・ビー']),
 ];
 
 // ---------- 名前で引く ----------
 // 同じ人として扱う字（旧字・異体字）。登録した名前にも、入力された名前にも同じ直しをかける
-const VAR = { '齋': '斎', '斉': '斎', '齊': '斎', '劍': '剣', '劔': '剣', '剱': '剣', '國': '国', '眞': '真', '實': '実', '澤': '沢', '邊': '辺', '邉': '辺', '髙': '高', '﨑': '崎', '龍': '竜', '瀧': '滝', '櫻': '桜', '條': '条', '廣': '広', '濱': '浜', '嶋': '島', '嶌': '島', '惠': '恵', '藏': '蔵', '壽': '寿', '彌': '弥', '禮': '礼', '靜': '静', '曉': '暁', '樂': '楽', '戀': '恋', '瀨': '瀬', '姬': '姫', '黑': '黒', '德': '徳', '榮': '栄', '圓': '円', '兒': '児', '將': '将', '豐': '豊', '淺': '浅', '傳': '伝', '櫻': '桜', '鐵': '鉄', '燈': '灯', '彈': '弾', '發': '発', '續': '続', '學': '学', '氣': '気', '靈': '霊', '龜': '亀', '萬': '万', '與': '与', '禪': '禅', '眞': '真', '總': '総', '晉': '晋', '驒': '騨', '嶽': '岳', '槇': '槙', '遙': '遥', '顯': '顕', '壹': '壱', '條': '条' };
+const VAR = { '齋': '斎', '斉': '斎', '齊': '斎', '劍': '剣', '劔': '剣', '剱': '剣', '國': '国', '眞': '真', '實': '実', '澤': '沢', '邊': '辺', '邉': '辺', '髙': '高', '﨑': '崎', '龍': '竜', '瀧': '滝', '櫻': '桜', '條': '条', '廣': '広', '濱': '浜', '嶋': '島', '嶌': '島', '惠': '恵', '藏': '蔵', '壽': '寿', '彌': '弥', '禮': '礼', '靜': '静', '曉': '暁', '樂': '楽', '戀': '恋', '瀨': '瀬', '姬': '姫', '黑': '黒', '德': '徳', '榮': '栄', '圓': '円', '兒': '児', '將': '将', '豐': '豊', '淺': '浅', '傳': '伝', '櫻': '桜', '鐵': '鉄', '燈': '灯', '彈': '弾', '發': '発', '續': '続', '學': '学', '氣': '気', '靈': '霊', '龜': '亀', '萬': '万', '與': '与', '禪': '禅', '眞': '真', '總': '総', '晉': '晋', '驒': '騨', '嶽': '岳', '槇': '槙', '遙': '遥', '顯': '顕', '壹': '壱', '條': '条', '彥': '彦', '薰': '薫', '緣': '縁', '鬪': '闘', '鬥': '闘', '獸': '獣', '黃': '黄', '賴': '頼', '惡': '悪', '亞': '亜', '佛': '仏', '拜': '拝', '濤': '涛', '莊': '荘', '顏': '顔', '寶': '宝', '雙': '双', '藥': '薬', '譽': '誉', '櫛': '櫛' };
 export const okey = s => String(s).normalize('NFKC').replace(/[\s　・･=＝\-‐—.,、。「」『』'’]/g, '').toLowerCase().replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60)).replace(/[︀-️]/g, '').replace(/[^\u0000-\u007f]/g, ch => VAR[ch] || ch);
 const OMAP = new Map(), OEX = new Map(), exkey = s => String(s).normalize('NFKC').replace(/[\s　・･]/g, '').toLowerCase();
 for (const o of OTHERS) {
