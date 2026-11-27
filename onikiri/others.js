@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272035';
+import { EXTRA } from './i18n.js?v=11272045';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -106,6 +106,10 @@ export const WORKS = {
   dgray: ['D.Gray-man', 'D.Gray-man', 'D.Gray-man 驅魔少年', '디 그레이맨'],
   toaru: ['とある魔術の禁書目録', 'A Certain Magical Index', '魔法禁書目錄', '어떤 마술의 금서목록'],
   shana: ['灼眼のシャナ', 'Shakugan no Shana', '灼眼的夏娜', '작안의 샤나'],
+  aoex: ['青の祓魔師', 'Blue Exorcist', '青之驅魔師', '청의 엑소시스트'],
+  noragami: ['ノラガミ', 'Noragami', '流浪神差', '노라가미'],
+  seraph: ['終わりのセラフ', 'Seraph of the End', '終結的熾天使', '종말의 세라프'],
+  souleater: ['ソウルイーター', 'Soul Eater', '噬魂師', '소울 이터'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -763,6 +767,51 @@ export const OTHERS = [
     t(['武装完全支配術', 'Enhance Armament', '武裝完全支配術', '무장완전지배술'], ['エンハンス・アーマメント', 'Enhance Armament', '武裝完全支配', '인핸스 아머먼트'], ['刀身が数百の金の花びらに分かれ、自在に飛ぶ', 'The blade splits into hundreds of golden petals that fly at will', '刀身分成數百片金色花瓣，自在飛舞', '칼날이 수백 장의 금빛 꽃잎으로 나뉘어 자유자재로 난다'], { k: 'rain', D: 5, R: 40, O: 1, v: 'rainfall', sty: 'x_excalibur' }),
     t(['記憶解放術', 'Release Recollection', '記憶解放術', '기억해방술'], ['リリース・リコレクション', 'Release Recollection', '記憶解放', '릴리스 리컬렉션'], ['花びらを一つにまとめ、光の柱にして撃つ', 'Gathers the petals into one and fires them as a pillar of light', '將花瓣匯聚為一，化為光柱射出', '꽃잎을 하나로 모아 빛의 기둥으로 쏜다'], { k: 'inst', L: 9, R: 65, O: 1, I: 1, v: 'mega', sty: 'x_excalibur' }),
   ], ['アリス・ツーベルク', 'ありすつーべるく']),
+  // ---------- 12回目：D.Gray-man・青の祓魔師・ノラガミ・終わりのセラフ・ソウルイーター・七つの大罪 ----------
+  c('アレン・ウォーカー', 'あれんうぉーかー', ['Allen Walker', '亞連・沃克', '알렌 워커'], 'dgray', 'white', 96, ['神ノ道化', 'Crown Clown', '神之道化', '신의 광대'], [
+    t(['神ノ道化', 'Crown Clown', '神之道化', '신의 광대'], ['道化ノ帯', 'Clown Belt', '道化之帶', '광대의 띠'], ['白い帯をのばして、相手をしばりあげる', 'Extends a white belt and binds the foe', '伸出白色帶子捆住對手', '하얀 띠를 뻗어 상대를 묶는다'], { k: 'slow', D: 4, S: .4, v: 'eye', sty: 'x_shuku' }),
+    t(['神ノ道化', 'Crown Clown', '神之道化', '신의 광대'], ['破滅ノ爪', 'Edge End', '破滅之爪', '엣지 엔드'], ['左手の巨大な爪で引き裂く', 'Rends with the giant claws of his left hand', '以左手的巨大爪子撕裂', '왼손의 거대한 발톱으로 찢는다'], { k: 'inst', L: 2, R: 20, O: 1, v: 'claws', sty: 'x_shuku' }),
+    t(['神ノ道化', 'Crown Clown', '神之道化', '신의 광대'], ['退魔ノ剣', 'Sword of Exorcism', '退魔之劍', '퇴마의 검'], ['左腕を大剣に変える。人は斬らず、悪だけを斬る', 'Turns his left arm into a great sword that cuts only evil, never people', '將左臂化為大劍。不斬人，只斬惡', '왼팔을 대검으로 바꾼다. 사람은 베지 않고 악만을 벤다'], { k: 'inst', L: 1, R: 45, O: 1, I: .6, v: 'thrust', sty: 'x_shuku' }),
+  ]),
+  c('奥村燐', 'おくむらりん', ['Rin Okumura', '奧村燐', '오쿠무라 린'], 'aoex', 'blue', 95, ['降魔剣「倶利伽羅」', 'Koma Sword: Kurikara', '降魔劍「俱利伽羅」', '항마검 「쿠리카라」'], [
+    t(['青い炎', 'Blue Flames', '青焰', '푸른 불꽃'], ['抜刀', 'Unsheathe', '拔刀', '발도'], ['刀を抜くと、サタンの青い炎が体をつつむ', "Draws the sword and Satan's blue flames wrap his body", '一拔刀，撒旦的青焰便包覆全身', '칼을 뽑으면 사탄의 푸른 불꽃이 몸을 감싼다'], { k: 'aura', L: 1, R: 8, D: 5, v: 'vortex', sty: 'x_getsuga' }),
+    t(['青い炎', 'Blue Flames', '青焰', '푸른 불꽃'], ['青い炎の斬撃', 'Blue Flame Slash', '青焰斬擊', '푸른 불꽃의 참격'], ['青い炎を刃にのせて飛ばす', 'Sends blue flames flying off the blade', '將青焰附於刀刃上放出', '푸른 불꽃을 칼날에 실어 날린다'], { k: 'inst', L: 1, R: 36, O: 1, v: 'arcH', sty: 'x_getsuga' }),
+    t(['必殺技', 'Finishing Move', '必殺技', '필살기'], ['サタンスラッシュ', 'Satan Slash', '撒旦斬', '사탄 슬래시'], ['全力の青い炎で、まっすぐ断ちわる', 'Cleaves straight through with blue flames at full power', '以全力的青焰筆直劈開', '전력의 푸른 불꽃으로 곧장 가른다'], { k: 'inst', L: 9, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_getsuga' }),
+  ]),
+  c('霧隠シュラ', 'きりがくれしゅら', ['Shura Kirigakure', '霧隱修羅', '키리가쿠레 슈라'], 'aoex', 'red', 93, ['霧隠流魔剣技', 'Kirigakure-Style Demon Sword Technique', '霧隱流魔劍技', '키리가쿠레류 마검기'], [
+    t(['霧隠流魔剣技', 'Kirigakure Style', '霧隱流魔劍技', '키리가쿠레류 마검기'], ['蛇牙', 'Snake Fang', '蛇牙', '사아'], ['魔剣を振り、牙のような斬撃を飛ばす', 'Swings the demon sword and fires fang-like slashes', '揮動魔劍，放出如牙般的斬擊', '마검을 휘둘러 송곳니 같은 참격을 날린다'], { k: 'inst', L: 1, R: 36, v: 'arcH', sty: 'x_zabi' }),
+    t(['霧隠流魔剣技', 'Kirigakure Style', '霧隱流魔劍技', '키리가쿠레류 마검기'], ['蛇腹化・蛇牙', 'Snake Belly Form: Snake Fang', '蛇腹化・蛇牙', '사복화·사아'], ['刀を蛇腹のようにのばして、広く斬りはらう', 'Extends the sword like a segmented whip and sweeps wide', '將刀如蛇腹般伸長，大範圍橫掃', '칼을 뱀의 배처럼 늘여 넓게 휩쓴다'], { k: 'inst', L: 2, R: 30, O: 1, v: 'claws', sty: 'x_zabi' }),
+  ]),
+  c('夜ト', 'やと', ['Yato', '夜斗', '야토'], 'noragami', 'blue', 96, ['神器「雪器」', 'Regalia: Sekki', '神器「雪器」', '신기 「세키」'], [
+    t(['祝詞', 'Incantation', '祝詞', '축사'], ['斬', 'Rend', '斬', '참'], ['「我 夜ト神、来たり降り…」ととなえ、妖を祓い斬る', 'Chants "I, the god Yato, have descended..." and cuts the phantom away', '吟誦「吾乃夜斗神，降臨於此…」，祓除並斬斷妖物', '"나, 야토신이 강림하여…"를 외고 요괴를 베어 정화한다'], { k: 'inst', L: 1, R: 36, O: 1, v: 'arcH', sty: 'x_sao' }),
+    t(['祝の器', 'Blessed Regalia', '祝器', '축기'], ['雪器・二刀', 'Sekki: Twin Blades', '雪器・雙刀', '세키·쌍검'], ['祝の器になって二本にふえた刀で、斬りきざむ', 'Cuts with the blade that became two when it turned into a Blessed Regalia', '以成為祝器後化為兩把的刀切碎對手', '축기가 되어 두 자루로 늘어난 칼로 썰어 낸다'], { k: 'multi', N: 9, R: 30, v: 'arcs', sty: 'x_sao' }),
+  ], ['夜斗']),
+  c('百夜優一郎', 'ひゃくやゆういちろう', ['Yuichiro Hyakuya', '百夜優一郎', '햐쿠야 유이치로'], 'seraph', 'green', 94, ['鬼呪装備「阿朱羅丸」', 'Cursed Gear: Asuramaru', '鬼咒裝備「阿朱羅丸」', '귀주장비 「아슈라마루」'], [
+    t(['鬼呪', 'Demon Curse', '鬼咒', '귀주'], ['憑依', 'Possession', '憑依', '빙의'], ['刀にやどる鬼の力を、自分の体に引きこむ', 'Draws the power of the demon in the sword into his own body', '將寄宿於刀中的鬼之力引入自己體內', '칼에 깃든 귀신의 힘을 자신의 몸에 끌어들인다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_yoru' }),
+    t(['鬼呪', 'Demon Curse', '鬼咒', '귀주'], ['阿朱羅観音', 'Asura Kannon', '阿朱羅觀音', '아슈라 관음'], ['たくさんの刀を呼び出してまわりにならべ、いっせいに撃つ', 'Summons many swords around him and fires them all at once', '喚出許多刀排列於四周，一齊射出', '수많은 칼을 불러내 주위에 늘어놓고 일제히 쏜다'], { k: 'rain', D: 4, R: 36, v: 'rainfall', sty: 'x_yoru' }),
+  ]),
+  c('一瀬グレン', 'いちのせぐれん', ['Guren Ichinose', '一瀨紅蓮', '이치노세 구렌'], 'seraph', 'red', 97, ['鬼呪装備「真昼ノ夜」', 'Cursed Gear: Mahiru-no-Yo', '鬼咒裝備「真晝之夜」', '귀주장비 「마히루노요」'], [
+    t(['鬼呪', 'Demon Curse', '鬼咒', '귀주'], ['憑依', 'Possession', '憑依', '빙의'], ['刀にやどる鬼の力を、自分の体に引きこむ', 'Draws the power of the demon in the sword into his own body', '將寄宿於刀中的鬼之力引入自己體內', '칼에 깃든 귀신의 힘을 자신의 몸에 끌어들인다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_kuro' }),
+    t(['鬼呪', 'Demon Curse', '鬼咒', '귀주'], ['真昼ノ夜', 'Mahiru-no-Yo', '真晝之夜', '마히루노요'], ['黒い斬撃を広く飛ばす', 'Fires a wide black slash', '大範圍放出黑色斬擊', '검은 참격을 넓게 날린다'], { k: 'inst', L: 2, R: 40, O: 1, v: 'arcH', sty: 'x_kuro' }),
+  ], ['一瀬紅蓮']),
+  c('クロナ', '', ['Crona', '克羅納', '크로나'], 'souleater', 'black', 90, ['魔剣「ラグナロク」', 'Demon Sword: Ragnarok', '魔劍「諸神黃昏」', '마검 「라그나로크」'], [
+    t(['黒血', 'Black Blood', '黑血', '흑혈'], ['黒血の硬化', 'Black Blood Hardening', '黑血硬化', '흑혈 경화'], ['体を流れる黒い血を固めて、刃を通さなくする', 'Hardens the black blood in the body so no blade gets through', '將體內流動的黑血硬化，使刀刃無法穿透', '몸에 흐르는 검은 피를 굳혀 칼날이 통하지 않게 한다'], { k: 'aura', L: 1, R: 7, D: 4.5, G: 1, v: 'calm', sty: 'x_meido' }),
+    t(['悲鳴共鳴', 'Scream Resonance', '悲鳴共鳴', '비명 공명'], ['スクリーチα', 'Screech Alpha', '尖嘯α', '스크리치 알파'], ['剣が悲鳴をあげ、ふるえる刃から斬撃を飛ばす', 'The sword screams and fires a slash from its vibrating edge', '劍發出悲鳴，從震動的刀刃放出斬擊', '검이 비명을 지르고 떨리는 칼날에서 참격을 날린다'], { k: 'inst', L: 1, R: 40, O: 1, v: 'arcH', sty: 'x_meido' }),
+    t(['黒血', 'Black Blood', '黑血', '흑혈'], ['ブラッディニードル', 'Bloody Needle', '血針', '블러디 니들'], ['流れた黒い血を針に変えて、突き立てる', 'Turns spilled black blood into needles that stab upward', '將流出的黑血化為針刺出', '흘린 검은 피를 바늘로 바꿔 꽂는다'], { k: 'rain', D: 3, R: 30, v: 'rainfall', sty: 'x_meido' }),
+  ], [], ['クロナ']),
+  c('ブラック☆スター', '', ['Black Star', '布萊克☆斯塔', '블랙☆스타'], 'souleater', 'blue', 94, ['魔暗器「中務椿」', 'Dark Arm: Tsubaki Nakatsukasa', '魔暗器「中務椿」', '마암기 「나카츠카사 츠바키」'], [
+    t(['魂威', 'Soul Force', '魂威', '혼위'], ['黒☆星ビッグウェーブ', 'Black Star Big Wave', '黑☆星巨浪', '블랙☆스타 빅 웨이브'], ['魂の波長を、手のひらから直接うちこむ', 'Drives his soul wavelength straight in through the palm', '將靈魂波長從手掌直接打入', '혼의 파장을 손바닥에서 직접 꽂는다'], { k: 'inst', L: 1, R: 20, O: 1, v: 'thrust', sty: 'x_chidori' }),
+    t(['妖刀モード', 'Enchanted Sword Mode', '妖刀模式', '요도 모드'], ['影☆星', 'Shadow Star', '影☆星', '그림자☆별'], ['影をあやつる妖刀で、足もとの影から斬る', 'With the shadow-wielding enchanted sword, cuts from the shadows underfoot', '以操縱影子的妖刀，從腳下的影子斬擊', '그림자를 다루는 요도로 발밑의 그림자에서 벤다'], { k: 'multi', N: 8, R: 30, v: 'arcs', sty: 'x_meido' }),
+  ], ['Black☆Star'], ['ブラック☆スター', 'ブラックスター']),
+  c('アーサー・ペンドラゴン', 'あーさーぺんどらごん', ['Arthur Pendragon', '亞瑟・潘德拉貢', '아서 펜드래건'], 'nanatsu', 'yellow', 95, ['聖剣エクスカリバー', 'Holy Sword Excalibur', '聖劍 Excalibur', '성검 엑스칼리버'], [
+    t(['聖剣', 'Holy Sword', '聖劍', '성검'], ['エクスカリバー', 'Excalibur', 'Excalibur', '엑스칼리버'], ['歴代の王の技がやどる剣。にぎるだけで達人になる', 'A sword holding the skills of every king before him. Just gripping it makes him a master', '寄宿歷代國王技藝的劍。只要握住就能成為高手', '역대 왕들의 기술이 깃든 검. 쥐는 것만으로 달인이 된다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_excalibur' }),
+    t(['混沌', 'Chaos', '混沌', '혼돈'], ['混沌の力', 'Power of Chaos', '混沌之力', '혼돈의 힘'], ['思いえがいたものを、そのまま現実にする', 'Makes whatever he imagines real', '將心中所想直接化為現實', '떠올린 것을 그대로 현실로 만든다'], { k: 'inst', L: 9, R: 60, O: 1, I: .8, v: 'mega', sty: 'x_excalibur' }),
+  ]),
+  c('ギルサンダー', '', ['Gilthunder', '吉爾桑達', '길선더'], 'nanatsu', 'yellow', 92, ['魔力「雷帝」', 'Power: Thunderbolt', '魔力「雷帝」', '마력 「뇌제」'], [
+    t(['魔力', 'Power', '魔力', '마력'], ['雷帝の重鎧', "Thunder Emperor's Heavy Armor", '雷帝的重鎧', '뇌제의 중갑'], ['雷を鎧としてまとう', 'Wears lightning as armor', '將雷電作為鎧甲披上', '번개를 갑옷으로 두른다'], { k: 'aura', L: 1, R: 7, D: 4.5, v: 'spin', sty: 'x_suzume' }),
+    t(['魔力', 'Power', '魔力', '마력'], ['雷帝の鉄槌', 'Iron Hammer of the Thunder Emperor', '雷帝的鐵鎚', '뇌제의 철퇴'], ['雷を落として叩きつぶす', 'Brings down lightning to crush the foe', '降下雷電擊潰對手', '번개를 떨어뜨려 때려 부순다'], { k: 'rain', D: 3, R: 34, O: 1, v: 'rainfall', sty: 'x_suzume' }),
+    t(['魔力', 'Power', '魔力', '마력'], ['雷帝の粛清', 'Purge of the Thunder Emperor', '雷帝的肅清', '뇌제의 숙청'], ['雷をまとった剣で、ひと息に突進する', 'Charges in a single breath with a sword wreathed in lightning', '以纏繞雷電的劍一口氣突進', '번개를 두른 검으로 단숨에 돌진한다'], { k: 'inst', L: 1, R: 50, O: 1, I: .6, v: 'thrust', sty: 'x_suzume' }),
+  ], [], ['ギルサンダー']),
 ];
 
 // ---------- 名前で引く ----------
