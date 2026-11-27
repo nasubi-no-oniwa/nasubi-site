@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272332';
+import { EXTRA } from './i18n.js?v=11280638';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -127,6 +127,7 @@ export const WORKS = {
   csm: ['チェンソーマン', 'Chainsaw Man', '鏈鋸人', '체인소 맨'],
   mha: ['僕のヒーローアカデミア', 'My Hero Academia', '我的英雄學院', '나의 히어로 아카데미아'],
   kingdom: ['キングダム', 'Kingdom', '王者天下', '킹덤'],
+  saber: ['仮面ライダーセイバー', 'Kamen Rider Saber', '假面騎士聖刃', '가면라이더 세이버'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -141,6 +142,7 @@ const c = (name, yomi, nm, w, k, den, sch, wz, alt, x) => ({ n: (yomi ? [name, y
 const SHIKAI = ['始解', 'Shikai', '始解', '시해'], BANKAI = ['卍解', 'Bankai', '卍解', '만해'], OUGI = ['奥義', 'Secret Technique', '奧義', '오의'];
 const SANTO = ['三刀流', 'Three Sword Style', '三刀流', '삼도류'], ITTO = ['一刀流', 'One Sword Style', '一刀流', '일도류'], KYUTO = ['九刀流', 'Nine Sword Style', '九刀流', '구도류'];
 const HITEN = ['飛天御剣流', 'Hiten Mitsurugi Style', '飛天御劍流', '비천어검류'], GATOTSU = ['牙突', 'Gatotsu', '牙突', '아돌'], HIKEN = ['秘剣', 'Secret Sword', '秘劍', '비검'];
+const HIS = ['必殺技', 'Finisher', '必殺技', '필살기'], DOKUHA = ['必殺読破', 'Finishing Read', '必殺讀破', '필살독파'], KURAYAMI = ['闇黒剣月闇', 'Ankokuken Kurayami', '闇黑劍月闇', '암흑검 월암'], MOJI = ['シンケンマル', 'Shinkenmaru', '真劍丸', '신켄마루'];
 const ZANKA = ['残火の太刀', 'Zanka no Tachi', '殘火太刀', '잔화의 태도'], ZANJUTSU = ['斬術', 'Swordsmanship', '斬術', '참술'];
 
 export const OTHERS = [
@@ -1199,6 +1201,53 @@ export const OTHERS = [
     t(['剣', 'Sword', '劍', '검'], ['跳躍の一撃', 'Leaping Strike', '跳躍一擊', '도약의 일격'], ['高く跳び、全体重をのせて叩き斬る', 'Leaps high and cuts down with his whole weight behind it', '高高躍起，以全身重量劈斬', '높이 뛰어 온 체중을 실어 내리친다'], { k: 'inst', L: 1, R: 16, O: 1, v: 'fall', sty: 'x_hiten' }),
     t(['大将軍の矛', "The Great General's Glaive", '大將軍之矛', '대장군의 창'], ['王騎の矛', "Ouki's Glaive", '王騎之矛', '왕기의 창'], ['受けついだ重い矛で、まとめてなぎ払う', 'Sweeps them all aside with the heavy glaive he inherited', '以繼承而來的沉重長矛一併橫掃', '물려받은 무거운 창으로 한꺼번에 휩쓴다'], { k: 'inst', L: 2, R: 26, O: 1, v: 'arcH', sty: 'x_hiten' }),
   ]),
+  // ---------- 21回目：仮面ライダーセイバー ----------
+  c('神山飛羽真', 'かみやまとうま', ['Touma Kamiyama', '神山飛羽真', '카미야마 토우마'], 'saber', 'red', 100, ['火炎剣烈火', 'Kaenken Rekka', '火炎劍烈火', '화염검 열화'], [
+    t(DOKUHA, ['火炎十字斬', 'Kaen Jujizan', '火炎十字斬', '화염십자참'], ['炎をまとった剣で、十字に斬り裂く', 'Cuts a cross with a blade wrapped in flame', '以纏繞火焰之劍斬出十字', '불꽃을 두른 검으로 십자로 벤다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_homura' }),
+    t(['エレメンタルドラゴン', 'Elemental Dragon', '元素龍', '엘리멘탈 드래곤'], ['森羅万象斬', 'Shinra Bansho Zan', '森羅萬象斬', '삼라만상참'], ['火・水・風・土の力をまとめて叩きこむ', 'Drives in the power of fire, water, wind and earth all at once', '將火、水、風、土之力一併斬入', '불·물·바람·땅의 힘을 한데 모아 내리친다'], { k: 'multi', N: 10, R: 34, v: 'arcs', sty: 'x_ryujin' }),
+    t(['刃王剣十聖刃', 'Haouken Xross Saber', '刃王劍十聖刃', '인왕검 십성인'], ['刃王クロス星烈斬', 'Haou Xross Seiretsuzan', '刃王交叉星烈斬', '인왕 크로스 성렬참'], ['すべての聖剣の力を束ねた、星の斬撃', 'A starlight slash that binds the power of every holy sword', '匯聚所有聖劍之力的星之斬擊', '모든 성검의 힘을 묶은 별의 참격'], { k: 'inst', L: 2, R: 44, v: 'mega', sty: 'x_strash' }),
+  ], ['仮面ライダーセイバー']),
+  c('新堂倫太郎', 'しんどうりんたろう', ['Rintaro Shindo', '新堂倫太郎', '신도 린타로'], 'saber', 'blue', 92, ['水勢剣流水', 'Suiseiken Nagare', '水勢劍流水', '수세검 유수'], [
+    t(DOKUHA, ['ハイドロ・ストリーム', 'Hydro Stream', '水流奔湧', '하이드로 스트림'], ['水をまとった剣で、流れるように斬りつづける', 'Keeps cutting in a flowing chain with a water-clad blade', '以纏水之劍如流水般連續斬擊', '물을 두른 검으로 흐르듯 연이어 벤다'], { k: 'multi', N: 7, R: 24, v: 'arcs', sty: 'x_shigure' }),
+    t(DOKUHA, ['ハイドロ・ボーテックス', 'Hydro Vortex', '水流漩渦', '하이드로 볼텍스'], ['水の渦で巻きこみ、まとめて斬る', 'Sweeps them into a whirlpool and cuts them together', '以水之漩渦捲入後一併斬斷', '물의 소용돌이로 휘말아 한꺼번에 벤다'], { k: 'inst', L: 2, R: 26, v: 'vortex', sty: 'x_shigure' }),
+    t(['タテガミ氷獣戦記', 'Tategami Hyoujuu Senki', '鬃毛冰獸戰記', '타테가미 빙수전기'], ['レオ・ブリザード・グランド', 'Leo Blizzard Ground', '獅子暴雪大地', '레오 블리자드 그라운드'], ['剣を突いて地面を凍らせ、駆けぬけて斬る', 'Stabs the ground to freeze it, then dashes through and cuts', '以劍刺地使其凍結，疾馳而過斬擊', '검을 꽂아 땅을 얼리고 달려 나가며 벤다'], { k: 'inst', L: 2, R: 32, v: 'dash', sty: 'x_hyorin' }),
+  ], ['仮面ライダーブレイズ']),
+  c('富加宮賢人', 'ふかみやけんと', ['Kento Fukamiya', '富加宮賢人', '후카미야 켄토'], 'saber', 'yellow', 93, ['雷鳴剣黄雷', 'Raimeiken Ikazuchi', '雷鳴劍黃雷', '뇌명검 황뢰'], [
+    t(DOKUHA, ['トルエノ・デストローダ', 'Trueno Destroda', '雷霆毀滅', '트루에노 데스트로다'], ['稲妻をまとった居合の一閃', 'A single iai flash wrapped in lightning', '纏繞閃電的居合一閃', '번개를 두른 발도의 일섬'], { k: 'inst', L: 1, R: 28, v: 'bolt', a: 'iai', sty: 'x_trunks' }),
+    t(['ゴールデンアランジーナ', 'Golden Alangina', '黃金阿蘭吉納', '골든 알랑지나'], ['トルエノ・デル・ソル', 'Trueno del Sol', '太陽雷霆', '트루에노 델 솔'], ['金色の雷を太陽のように輝かせて斬る', 'Cuts with golden lightning blazing like the sun', '讓金色雷電如太陽般閃耀而斬', '금빛 번개를 태양처럼 빛내며 벤다'], { k: 'inst', L: 2, R: 36, v: 'mega', sty: 'x_trunks' }),
+    t(KURAYAMI, ['月闇居合', 'Kurayami Iai', '月闇居合', '월암 발도'], ['闇をまとった居合の一閃', 'A single iai flash wrapped in darkness', '纏繞黑暗的居合一閃', '어둠을 두른 발도의 일섬'], { k: 'inst', L: 1, R: 30, v: 'arcH', a: 'iai', sty: 'x_yami' }),
+  ], ['仮面ライダーエスパーダ']),
+  c('尾上亮', 'おがみりょう', ['Ryo Ogami', '尾上亮', '오가미 료'], 'saber', 'gray', 90, ['土豪剣激土', 'Dogouken Gekido', '土豪劍激土', '토호검 격토'], [
+    t(['激土乱読撃', 'Gekido Randoku Geki', '激土亂讀擊', '격토 난독격'], ['大断断', 'Dai Dan Dan', '大斷斷', '대단단'], ['巨大にした大剣を、まっすぐ振りおろす', 'Brings the giant-grown greatsword straight down', '將巨大化的大劍筆直劈下', '거대해진 대검을 곧게 내리친다'], { k: 'inst', L: 1, R: 30, O: 1, v: 'fall', sty: 'x_gravity' }),
+    t(['激土乱読撃', 'Gekido Randoku Geki', '激土亂讀擊', '격토 난독격'], ['大旋断', 'Dai Sen Dan', '大旋斷', '대선단'], ['大剣を振りまわし、まわりを薙ぎはらう', 'Swings the greatsword around and mows down everything nearby', '揮舞大劍橫掃四周', '대검을 휘둘러 주위를 쓸어버린다'], { k: 'inst', L: 2, R: 24, v: 'spin', sty: 'x_gravity' }),
+  ], ['仮面ライダーバスター']),
+  c('緋道蓮', 'あかみちれん', ['Ren Akamichi', '緋道蓮', '아카미치 렌'], 'saber', 'green', 88, ['風双剣翠風', 'Fuusouken Hayate', '風雙劍翠風', '풍쌍검 취풍'], [
+    t(['翠風速読撃', 'Hayate Sokudoku Geki', '翠風速讀擊', '취풍 속독격'], ['疾風剣舞・二連', 'Shippu Kenbu: Niren', '疾風劍舞・二連', '질풍검무・이련'], ['二刀に分けた剣で、風のように斬りつける', 'Splits the sword in two and cuts like the wind', '將劍分為雙刀，如風般斬擊', '둘로 나눈 검으로 바람처럼 벤다'], { k: 'multi', N: 8, R: 24, v: 'arcs', sty: 'x_santoryu' }),
+    t(['翠風速読撃', 'Hayate Sokudoku Geki', '翠風速讀擊', '취풍 속독격'], ['疾風剣舞・回転', 'Shippu Kenbu: Kaiten', '疾風劍舞・迴轉', '질풍검무・회전'], ['手裏剣の形にして回し、まとめて斬る', 'Turns it into a shuriken and spins it to cut them all', '化為手裏劍形態旋轉，一併斬斷', '수리검 모양으로 돌려 한꺼번에 벤다'], { k: 'inst', L: 2, R: 26, v: 'spin', sty: 'x_kaze' }),
+  ], ['仮面ライダー剣斬', '仮面ライダーけんざん']),
+  c('大秦寺哲雄', 'だいしんじてつお', ['Tetsuo Daishinji', '大秦寺哲雄', '다이신지 테츠오'], 'saber', 'pink', 86, ['音銃剣錫音', 'Onjuuken Suzune', '音銃劍錫音', '음총검 석음'], [
+    t(['錫音音読撃', 'Suzune Ondoku Geki', '錫音音讀擊', '석음 음독격'], ['スナック・音・ザ・チョッパー', 'Snack Oto the Chopper', '零食・音・切刀', '스낵・음・더・초퍼'], ['音にのせて、お菓子のように細かく刻む', 'Rides the sound and chops them up like sweets', '乘著聲音如切點心般細細斬碎', '소리에 실어 과자처럼 잘게 썬다'], { k: 'multi', N: 6, R: 22, v: 'arcs', sty: 'x_katen' }),
+    t(['銃奏', 'Gun Mode', '銃奏', '총주'], ['ガンズ・アンド・ミュージック', 'Guns and Music', '槍與音樂', '건즈 앤드 뮤직'], ['銃に変えた剣で、音の弾を降らせる', 'Turns the sword into a gun and rains bullets of sound', '將劍化為槍，降下音之子彈', '총으로 바꾼 검으로 소리의 탄환을 퍼붓는다'], { k: 'rain', D: 5, R: 40, O: 1, v: 'rainfall', sty: 'x_katen' }),
+  ], ['仮面ライダースラッシュ']),
+  c('ユーリ', '', ['Yuri', '尤里', '유리'], 'saber', 'white', 96, ['光剛剣最光', 'Kougouken Saikou', '光剛劍最光', '광강검 최광'], [
+    t(['光剛剣最光', 'Kougouken Saikou', '光剛劍最光', '광강검 최광'], ['最光発光', 'Saikou Hakkou', '最光發光', '최광 발광'], ['まばゆい光で、敵の動きを止める', 'Stops the enemy in their tracks with a blinding light', '以耀眼光芒止住敵人的行動', '눈부신 빛으로 적의 움직임을 멈춘다'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_excalibur' }),
+    t(['エックスソードマン', 'X-Swordman', 'X劍士', '엑스 소드맨'], ['光の一閃', 'Flash of Light', '光之一閃', '빛의 일섬'], ['自分が剣そのものとなり、光の速さで斬る', 'Becomes the sword itself and cuts at the speed of light', '自身化為劍，以光速斬擊', '스스로 검이 되어 빛의 속도로 벤다'], { k: 'inst', L: 1, R: 34, v: 'bolt', sty: 'x_excalibur' }),
+  ], ['仮面ライダー最光', '仮面ライダーさいこう'], ['ユーリ']),
+  c('上條大地', 'かみじょうだいち', ['Daichi Kamijo', '上條大地', '카미조 다이치'], 'saber', 'purple', 93, KURAYAMI, [
+    t(KURAYAMI, ['月闇居合', 'Kurayami Iai', '月闇居合', '월암 발도'], ['闇をまとった居合の一閃', 'A single iai flash wrapped in darkness', '纏繞黑暗的居合一閃', '어둠을 두른 발도의 일섬'], { k: 'inst', L: 1, R: 30, v: 'arcH', a: 'iai', sty: 'x_yami' }),
+    t(['月闇必殺撃', 'Kurayami Hissatsu Geki', '月闇必殺擊', '월암 필살격'], ['習得一閃', 'Shutoku Issen', '習得一閃', '습득일섬'], ['本の力を刃に読みこみ、闇の斬撃を飛ばす', 'Reads a book into the blade and sends out a slash of darkness', '將書之力讀入刀刃，放出黑暗斬擊', '책의 힘을 칼날에 읽혀 어둠의 참격을 날린다'], { k: 'inst', L: 1, R: 36, v: 'arcUp', sty: 'x_yami' }),
+    t(['月闇必殺撃', 'Kurayami Hissatsu Geki', '月闇必殺擊', '월암 필살격'], ['習得三閃', 'Shutoku Sansen', '習得三閃', '습득삼섬'], ['三冊の力を重ねた、闇の連撃', 'A chain of dark strikes layered with the power of three books', '疊加三本書之力的黑暗連擊', '세 권의 힘을 겹친 어둠의 연격'], { k: 'multi', N: 9, R: 30, v: 'arcs', sty: 'x_kuro' }),
+  ], ['上条大地', '仮面ライダーカリバー']),
+  c('神代玲花', 'しんだいれいか', ['Reika Shindai', '神代玲花', '신다이 레이카'], 'saber', 'ainezu', 88, ['煙叡剣狼煙', 'Eneiken Noroshi', '煙叡劍狼煙', '연예검 낭연'], [
+    t(['煙叡剣狼煙', 'Eneiken Noroshi', '煙叡劍狼煙', '연예검 낭연'], ['狼煙霧虫', 'Noroshi Muchu', '狼煙霧蟲', '낭연무충'], ['煙になってすり抜け、死角から斬る', 'Turns to smoke, slips past, and cuts from the blind spot', '化為煙霧穿過，自死角斬擊', '연기가 되어 빠져나가 사각에서 벤다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_kiri' }),
+    t(['昆虫大百科', 'Konchuu Daihyakka', '昆蟲大百科', '곤충대백과'], ['インセクトショット', 'Insect Shot', '昆蟲射擊', '인섹트 샷'], ['煙の中から、蜂のように鋭く突く', 'Thrusts out of the smoke as sharply as a wasp', '自煙霧中如蜂般銳利刺出', '연기 속에서 벌처럼 날카롭게 찌른다'], { k: 'inst', L: 1, R: 26, v: 'thrust', sty: 'x_kiri' }),
+    t(['煙叡剣狼煙', 'Eneiken Noroshi', '煙叡劍狼煙', '연예검 낭연'], ['煙幕幻想撃', 'Enmaku Gensou Geki', '煙幕幻想擊', '연막환상격'], ['煙幕でつつみ、敵の動きをにぶらせる', 'Wraps them in a smokescreen and dulls their movement', '以煙幕包圍，使敵人動作遲鈍', '연막으로 감싸 적의 움직임을 둔하게 한다'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_kiri' }),
+  ], ['仮面ライダーサーベラ']),
+  c('神代凌牙', 'しんだいりょうが', ['Ryoga Shindai', '神代凌牙', '신다이 료가'], 'saber', 'bluepurple', 92, ['時国剣界時', 'Jikokuken Kaiji', '時國劍界時', '시국검 계시'], [
+    t(['時国剣界時', 'Jikokuken Kaiji', '時國劍界時', '시국검 계시'], ['界時抹消', 'Kaiji Massho', '界時抹消', '계시말소'], ['時を削りとり、止まった世界を進む', 'Shaves time away and walks through a stopped world', '削去時間，在靜止的世界中前進', '시간을 깎아내고 멈춘 세계를 나아간다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_room' }),
+    t(['必殺時国', 'Hissatsu Jikoku', '必殺時國', '필살시국'], ['一時一閃', 'Ichiji Issen', '一時一閃', '일시일섬'], ['時の裂け目から現れて、一閃する', 'Appears out of a rift in time and cuts in a single flash', '自時間裂縫現身，一閃而過', '시간의 틈에서 나타나 일섬한다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_room' }),
+    t(['オーシャンヒストリー', 'Ocean History', '海洋歷史', '오션 히스토리'], ['オーシャン三刻突き', 'Ocean Three-Moment Thrust', '海洋三刻突', '오션 삼각 찌르기'], ['海の力をのせた、槍の三段突き', 'A triple spear thrust carrying the force of the sea', '承載海洋之力的長槍三段突', '바다의 힘을 실은 창의 삼단 찌르기'], { k: 'inst', L: 1, R: 32, v: 'thrust', sty: 'x_shigure' }),
+  ], ['仮面ライダーデュランダル']),
 ];
 
 // ---------- 名前で引く ----------
