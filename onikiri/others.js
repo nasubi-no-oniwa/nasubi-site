@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11280638';
+import { EXTRA } from './i18n.js?v=11280645';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -128,6 +128,11 @@ export const WORKS = {
   mha: ['僕のヒーローアカデミア', 'My Hero Academia', '我的英雄學院', '나의 히어로 아카데미아'],
   kingdom: ['キングダム', 'Kingdom', '王者天下', '킹덤'],
   saber: ['仮面ライダーセイバー', 'Kamen Rider Saber', '假面騎士聖刃', '가면라이더 세이버'],
+  kr_blade: ['仮面ライダー剣', 'Kamen Rider Blade', '假面騎士劍', '가면라이더 블레이드'],
+  kr_exaid: ['仮面ライダーエグゼイド', 'Kamen Rider Ex-Aid', '假面騎士Ex-Aid', '가면라이더 에그제이드'],
+  kr_gaim: ['仮面ライダー鎧武', 'Kamen Rider Gaim', '假面騎士鎧武', '가면라이더 가이무'],
+  kr_ryuki: ['仮面ライダー龍騎', 'Kamen Rider Ryuki', '假面騎士龍騎', '가면라이더 류우키'],
+  kr_kabuto: ['仮面ライダーカブト', 'Kamen Rider Kabuto', '假面騎士Kabuto', '가면라이더 카부토'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -1248,6 +1253,52 @@ export const OTHERS = [
     t(['必殺時国', 'Hissatsu Jikoku', '必殺時國', '필살시국'], ['一時一閃', 'Ichiji Issen', '一時一閃', '일시일섬'], ['時の裂け目から現れて、一閃する', 'Appears out of a rift in time and cuts in a single flash', '自時間裂縫現身，一閃而過', '시간의 틈에서 나타나 일섬한다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_room' }),
     t(['オーシャンヒストリー', 'Ocean History', '海洋歷史', '오션 히스토리'], ['オーシャン三刻突き', 'Ocean Three-Moment Thrust', '海洋三刻突', '오션 삼각 찌르기'], ['海の力をのせた、槍の三段突き', 'A triple spear thrust carrying the force of the sea', '承載海洋之力的長槍三段突', '바다의 힘을 실은 창의 삼단 찌르기'], { k: 'inst', L: 1, R: 32, v: 'thrust', sty: 'x_shigure' }),
   ], ['仮面ライダーデュランダル']),
+  // ---------- 22回目：仮面ライダーセイバー（残り）・ほかの仮面ライダー ----------
+  c('富加宮隼人', 'ふかみやはやと', ['Hayato Fukamiya', '富加宮隼人', '후카미야 하야토'], 'saber', 'purple', 88, KURAYAMI, [
+    t(KURAYAMI, ['月闇居合', 'Kurayami Iai', '月闇居合', '월암 발도'], ['闇をまとった居合の一閃', 'A single iai flash wrapped in darkness', '纏繞黑暗的居合一閃', '어둠을 두른 발도의 일섬'], { k: 'inst', L: 1, R: 30, v: 'arcH', a: 'iai', sty: 'x_yami' }),
+    t(['月闇必殺撃', 'Kurayami Hissatsu Geki', '月闇必殺擊', '월암 필살격'], ['習得一閃', 'Shutoku Issen', '習得一閃', '습득일섬'], ['本の力を刃に読みこみ、闇の斬撃を飛ばす', 'Reads a book into the blade and sends out a slash of darkness', '將書之力讀入刀刃，放出黑暗斬擊', '책의 힘을 칼날에 읽혀 어둠의 참격을 날린다'], { k: 'inst', L: 1, R: 36, v: 'arcUp', sty: 'x_yami' }),
+  ]),
+  c('バハト', '', ['Bahato', '巴哈特', '바하토'], 'saber', 'orange', 95, ['無銘剣虚無', 'Mumeiken Kyomu', '無銘劍虛無', '무명검 허무'], [
+    t(['必殺黙読', 'Finishing Silent Read', '必殺默讀', '필살묵독'], ['不死鳥無双斬り', 'Phoenix Peerless Slash', '不死鳥無雙斬', '불사조 무쌍베기'], ['不死鳥の炎をまとった、大きな一太刀', 'One great stroke wreathed in the flames of the phoenix', '纏繞不死鳥之焰的巨大一刀', '불사조의 불꽃을 두른 커다란 일격'], { k: 'inst', L: 2, R: 38, v: 'mega', sty: 'x_ryujin' }),
+    t(['エターナルフェニックス', 'Eternal Phoenix', '永恆不死鳥', '이터널 피닉스'], ['不滅の炎', 'Undying Flame', '不滅之焰', '불멸의 불꽃'], ['何度でもよみがえる炎で、近づくものを焼く', 'Burns whatever comes near with a flame that rises again and again', '以不斷復甦之焰焚燒靠近之物', '몇 번이고 되살아나는 불꽃으로 다가오는 것을 태운다'], { k: 'aura', L: 1, R: 8, D: 5, v: 'calm', sty: 'x_ryujin' }),
+  ], ['仮面ライダーファルシオン'], ['バハト']),
+  c('マスターロゴス', '', ['Master Logos', '真理之主', '마스터 로고스'], 'saber', 'black', 97, ['カラドボルグ', 'Caladbolg', '卡拉德波加', '칼라드볼그'], [
+    t(['オムニフォース', 'Omni Force', '全能之力', '옴니포스'], ['ソロモンブレイク', 'Solomon Break', '所羅門破壞', '솔로몬 브레이크'], ['全知全能の力をこめた、重い一撃', 'A heavy blow charged with the power of omniscience', '灌注全知全能之力的沉重一擊', '전지전능의 힘을 담은 무거운 일격'], { k: 'inst', L: 1, R: 34, O: 1, v: 'fall', sty: 'x_kuro' }),
+    t(['オムニフォース', 'Omni Force', '全能之力', '옴니포스'], ['ソロモンストラッシュ', 'Solomon Stlash', '所羅門斬擊', '솔로몬 스트래시'], ['巨大な剣の幻で、まとめてなぎ払う', 'Sweeps them all away with a phantom of a giant sword', '以巨劍幻影一併橫掃', '거대한 검의 환영으로 한꺼번에 쓸어버린다'], { k: 'inst', L: 2, R: 40, v: 'mega', sty: 'x_kuro' }),
+    t(['オムニフォース', 'Omni Force', '全能之力', '옴니포스'], ['ソロモンゾーン', 'Solomon Zone', '所羅門領域', '솔로몬 존'], ['空に並べた無数の剣を、いっせいに降らせる', 'Lines the sky with countless swords and drops them all at once', '將排列於空中的無數之劍一齊降下', '하늘에 늘어선 무수한 검을 일제히 떨어뜨린다'], { k: 'rain', D: 6, R: 44, O: 1, v: 'rainfall', sty: 'x_kuro' }),
+  ], ['仮面ライダーソロモン'], ['マスターロゴス', 'イザク']),
+  c('デザスト', '', ['Desast', '迪札斯特', '데자스트'], 'saber', 'purple', 90, ['グラッジデント', 'Grudgedent', '怨恨之牙', '그러지덴트'], [
+    t(HIS, ['カラミティ・ストライク', 'Calamity Strike', '災厄打擊', '캘러미티 스트라이크'], ['マフラーをなびかせ、獣のように斬りつける', 'Scarf streaming, he slashes like a beast', '圍巾飄揚，如野獸般斬擊', '목도리를 휘날리며 짐승처럼 벤다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_murasame' }),
+    t(['二刀', 'Two Swords', '雙刀', '이도'], ['無銘剣との二刀', 'Paired with the Nameless Sword', '與無銘劍並用的雙刀', '무명검과의 이도'], ['愛刀と無銘剣虚無の二刀で斬りきざむ', 'Carves them up with his own blade and the Mumeiken Kyomu together', '以愛刀與無銘劍虛無雙刀斬碎', '애검과 무명검 허무의 이도로 난도질한다'], { k: 'multi', N: 9, R: 28, v: 'arcs', sty: 'x_murasame' }),
+  ], null, ['デザスト']),
+  c('剣崎一真', 'けんざきかずま', ['Kazuma Kenzaki', '劍崎一真', '켄자키 카즈마'], 'kr_blade', 'blue', 95, ['醒剣ブレイラウザー', 'Blay Rouzer', '醒劍Blay Rouzer', '성검 블레이라우저'], [
+    t(['ラウズカード', 'Rouse Card', '覺醒卡', '라우즈 카드'], ['ライトニングスラッシュ', 'Lightning Slash', '閃電斬', '라이트닝 슬래시'], ['雷をまとった剣で斬りぬける', 'Cuts through with a blade wrapped in lightning', '以纏雷之劍斬過', '번개를 두른 검으로 베어 나간다'], { k: 'inst', L: 1, R: 28, v: 'bolt', sty: 'x_chidori' }),
+    t(['キングフォーム', 'King Form', '王者形態', '킹 폼'], ['ストレートフラッシュ', 'Straight Flush', '同花順', '스트레이트 플러시'], ['五枚のカードの力を重ねて斬る', 'Cuts with the power of five cards stacked together', '疊加五張卡之力而斬', '다섯 장의 카드의 힘을 겹쳐 벤다'], { k: 'inst', L: 1, R: 36, v: 'arcH', sty: 'x_excalibur' }),
+    t(['キングフォーム', 'King Form', '王者形態', '킹 폼'], ['ロイヤルストレートフラッシュ', 'Royal Straight Flush', '皇家同花順', '로열 스트레이트 플러시'], ['金色のカードの門をくぐり、光の斬撃を放つ', 'Passes through gates of golden cards and looses a slash of light', '穿過金色卡牌之門，放出光之斬擊', '금빛 카드의 문을 지나 빛의 참격을 날린다'], { k: 'inst', L: 2, R: 46, v: 'mega', sty: 'x_excalibur' }),
+  ], ['仮面ライダーブレイド', '仮面ライダー剣', '剣崎一眞']),
+  c('鏡飛彩', 'かがみひいろ', ['Hiiro Kagami', '鏡飛彩', '카가미 히이로'], 'kr_exaid', 'blue', 92, ['ガシャコンソード', 'Gashacon Sword', 'Gashacon劍', '가샤콘 소드'], [
+    t(['タドルクエスト', 'Taddle Quest', 'Taddle Quest', '타들 퀘스트'], ['タドルクリティカルフィニッシュ', 'Taddle Critical Finish', 'Taddle致命終結', '타들 크리티컬 피니시'], ['炎をまとった剣で、敵を切除する', 'Excises the enemy with a blade wrapped in flame', '以纏繞火焰之劍切除敵人', '불꽃을 두른 검으로 적을 절제한다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_homura' }),
+    t(['タドルファンタジー', 'Taddle Fantasy', 'Taddle Fantasy', '타들 판타지'], ['タドルクリティカルスラッシュ', 'Taddle Critical Slash', 'Taddle致命斬擊', '타들 크리티컬 슬래시'], ['魔王の力をこめた斬撃を飛ばす', 'Sends out a slash charged with the power of a demon king', '放出灌注魔王之力的斬擊', '마왕의 힘을 담은 참격을 날린다'], { k: 'inst', L: 2, R: 38, v: 'mega', sty: 'x_yami' }),
+    t(['氷剣モード', 'Ice Sword Mode', '冰劍模式', '빙검 모드'], ['コ・チーン', 'Ko-Chiin', '冰凍', '코・치인'], ['剣を氷に切りかえ、まわりを凍らせる', 'Switches the blade to ice and freezes everything around', '將劍切換為冰，凍結四周', '검을 얼음으로 바꿔 주위를 얼린다'], { k: 'aura', L: 1, R: 8, D: 5, v: 'calm', sty: 'x_hyorin' }),
+  ], ['仮面ライダーブレイブ']),
+  c('葛葉紘汰', 'かずらばこうた', ['Kota Kazuraba', '葛葉紘汰', '카즈라바 코타'], 'kr_gaim', 'orange', 98, ['大橙丸・無双セイバー', 'Daidaimaru & Musou Saber', '大橙丸・無雙軍刀', '다이다이마루・무소 세이버'], [
+    t(['オレンジスカッシュ', 'Orange Squash', '柳橙榨汁', '오렌지 스쿼시'], ['大橙一刀', 'Daidai Itto', '大橙一刀', '대등일도'], ['オレンジの果汁をまとった一太刀', 'A single stroke bursting with orange juice', '纏繞柳橙果汁的一刀', '오렌지 과즙을 두른 한칼'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_homura' }),
+    t(['ナギナタモード', 'Naginata Mode', '薙刀模式', '나기나타 모드'], ['ナギナタ無双スライサー', 'Naginata Musou Slicer', '薙刀無雙切片', '나기나타 무소 슬라이서'], ['二本をつないだ薙刀で、輪切りにする', 'Joins the two blades into a naginata and slices them into rounds', '將雙刀連接成薙刀，切成圓片', '두 자루를 이은 나기나타로 통썰기한다'], { k: 'inst', L: 2, R: 28, v: 'spin', sty: 'x_homura' }),
+    t(['極アームズ', 'Kiwami Arms', '極Arms', '극 암즈'], ['火縄大橙無双斬', 'Hinawa Daidai Musou Zan', '火繩大橙無雙斬', '화승대등무쌍참'], ['すべての武器の力を束ねた、最後の一太刀', 'The final stroke, binding the power of every weapon', '匯聚所有武器之力的最後一刀', '모든 무기의 힘을 묶은 마지막 한칼'], { k: 'inst', L: 2, R: 44, v: 'mega', sty: 'x_excalibur' }),
+  ], ['仮面ライダー鎧武', '仮面ライダーガイム', '葛葉絋汰']),
+  c('呉島貴虎', 'くれしまたかとら', ['Takatora Kureshima', '吳島貴虎', '쿠레시마 타카토라'], 'kr_gaim', 'white', 94, ['無双セイバー', 'Musou Saber', '無雙軍刀', '무소 세이버'], [
+    t(['メロンアームズ', 'Melon Arms', '哈密瓜Arms', '멜론 암즈'], ['メロンスカッシュ', 'Melon Squash', '哈密瓜榨汁', '멜론 스쿼시'], ['メロンの力をこめて、まっすぐ斬る', 'Cuts straight through with the power of the melon', '灌注哈密瓜之力筆直斬下', '멜론의 힘을 담아 곧게 벤다'], { k: 'inst', L: 1, R: 30, v: 'arcDown', sty: 'x_santoryu' }),
+    t(['メロンアームズ', 'Melon Arms', '哈密瓜Arms', '멜론 암즈'], ['メロンオーレ', 'Melon Au Lait', '哈密瓜歐蕾', '멜론 오레'], ['盾で受けながら、斬撃を重ねる', 'Takes the blow on his shield and layers slash upon slash', '以盾承受的同時疊加斬擊', '방패로 받아내며 참격을 겹친다'], { k: 'multi', N: 7, R: 26, v: 'arcs', sty: 'x_santoryu' }),
+  ], ['仮面ライダー斬月', '仮面ライダーざんげつ']),
+  c('秋山蓮', 'あきやまれん', ['Ren Akiyama', '秋山蓮', '아키야마 렌'], 'kr_ryuki', 'bluepurple', 92, ['翼召剣ダークバイザー', 'Dark Visor', '翼召劍Dark Visor', '익소검 다크바이저'], [
+    t(['ソードベント', 'Sword Vent', 'Sword Vent', '소드 벤트'], ['ウイングランサー', 'Wing Lancer', '飛翼長槍', '윙 랜서'], ['呼びだした大きな槍剣で、なぎ払う', 'Sweeps with the great lance-sword he calls down', '以召喚出的巨大槍劍橫掃', '불러낸 커다란 창검으로 휩쓴다'], { k: 'inst', L: 2, R: 28, v: 'arcH', sty: 'x_getsuga' }),
+    t(['トリックベント', 'Trick Vent', 'Trick Vent', '트릭 벤트'], ['シャドーイリュージョン', 'Shadow Illusion', '影之幻象', '섀도 일루전'], ['分身を生みだし、四方から斬りかかる', 'Creates copies of himself and attacks from every side', '製造分身自四方斬來', '분신을 만들어 사방에서 베어 든다'], { k: 'multi', N: 8, R: 28, v: 'arcs', sty: 'x_yami' }),
+    t(['ファイナルベント', 'Final Vent', 'Final Vent', '파이널 벤트'], ['飛翔斬', 'Hishozan', '飛翔斬', '비상참'], ['コウモリの翼をマントのように巻き、錐になって貫く', 'Wraps the bat wings around himself like a cloak and drills straight through', '將蝙蝠之翼如披風般捲起，化為錐刺貫穿', '박쥐의 날개를 망토처럼 두르고 송곳이 되어 꿰뚫는다'], { k: 'inst', L: 1, R: 40, v: 'dragon', sty: 'x_yami' }),
+  ], ['仮面ライダーナイト']),
+  c('神代剣', 'かみしろつるぎ', ['Tsurugi Kamishiro', '神代劍', '카미시로 츠루기'], 'kr_kabuto', 'purple', 90, ['サソードヤイバー', 'Sasword Yaiver', 'Sasword Yaiver', '사소드 야이버'], [
+    t(HIS, ['ライダースラッシュ', 'Rider Slash', '騎士斬', '라이더 슬래시'], ['毒をまとった刃で斬りさく', 'Cuts them open with a venom-coated blade', '以纏毒之刃斬裂', '독을 두른 칼날로 베어 가른다'], { k: 'inst', L: 1, R: 32, v: 'arcH', sty: 'x_oden' }),
+    t(['マスクドライダーシステム', 'Masked Rider System', '假面騎士系統', '마스크드 라이더 시스템'], ['クロックアップ', 'Clock Up', '時間加速', '클록 업'], ['自分だけが速い時の流れに入る', 'Enters a flow of time in which only he moves fast', '只有自己進入加速的時間流', '자신만 빠른 시간의 흐름에 들어간다'], { k: 'slow', D: 6, S: .2, v: 'eye', sty: 'x_sao' }),
+  ], ['仮面ライダーサソード']),
 ];
 
 // ---------- 名前で引く ----------
@@ -1261,6 +1312,7 @@ for (const o of OTHERS) {
   if (o.x) for (const x of o.x) OEX.set(exkey(x), o);
   const v = o.n.concat(o.nm.slice(1)), en = o.nm[1].split(' ');
   if (en.length === 2) v.push(en[1] + ' ' + en[0]); // 英語は「名 姓」「姓 名」のどちらでも
+  for (const x of o.n) if (x.startsWith('仮面ライダー')) v.push('かめんらいだー' + x.slice(6)); // ライダー名は、ひらがなでも
   for (const x of v) { const k = okey(x); if (k && !OMAP.has(k)) OMAP.set(k, o); }
   for (const w of o.wz) EXTRA[w[0] + ' ' + w[1]] = w[4]; // 記録に残った技名（「見出し 技名」）を、ほかの言葉で出せるように
 }
