@@ -1,7 +1,7 @@
 // 「色変わりの刀」の握る場面をそのまま移したもの（刀の3D・長押しで色づく・赫刀・伝令の烏）。katana/game.js から機械的に切り出している
-import { THREE, RoomEnvironment } from './lib.js?v=11272210';
-import { COLORS, ORDER, CHARS } from './data.js?v=11272210';
-import { oniInvite, oniText } from './oni.js?v=11272210';
+import { THREE, RoomEnvironment } from './lib.js?v=11272332';
+import { COLORS, ORDER, CHARS } from './data.js?v=11272332';
+import { oniInvite, oniText } from './oni.js?v=11272332';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -254,6 +254,7 @@ function fxLoop(now) { const dt = Math.min(.05, (now - fxLast) / 1000); fxLast =
 let LAST = null, busy = false;
 function cap(t, hold) { const c = $('cap'); c.textContent = t; gsap.killTweensOf(c); gsap.fromTo(c, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .35 }); if (hold) gsap.to(c, { opacity: 0, duration: .4, delay: hold }); }
 let DONE = () => { };
+function capOff() { const c = $('cap'); gsap.killTweensOf(c); gsap.set(c, { opacity: 0 }); }
 export function gripOnDone(f) { DONE = f; }
 export function gripStart(R) {
   if (busy) return; busy = true; LAST = R; const C = COLORS[R.oni ? 'nezuko' : R.key];
@@ -282,11 +283,11 @@ function holdStep(dt) {
 function finish(R) {
   const C = COLORS[R.oni ? 'nezuko' : R.key];
   if ((R.key === 'nezuko' || R.oni)) {
-    sfx('thud'); sfx('zap'); flash('#ff3048'); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3048') }); cap(T.capNez);
+    sfx('thud'); sfx('zap'); flash('#ff3048'); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3048') }); cap(T.capNez, 1.6);
     const tl = gsap.timeline();
     tl.to(katana.rotation, { z: '+=' + (Math.PI * 1.5), duration: .7, ease: 'power2.out' });
     tl.to(katana.position, { y: -VH * .9, duration: .7, ease: 'power2.in' }, '<');
-    tl.add(() => { crow(T.crowOni(R.name)).then(() => { katana.position.y = VH; setPose('top', .9, 'back.out(1.2)').call(() => { busy = false; ST = 'title'; DONE(R); }); }); }, '+=.2');
+    tl.add(() => { crow(T.crowOni(R.name)).then(() => { katana.position.y = VH; setPose('top', .9, 'back.out(1.2)').call(() => { busy = false; ST = 'title'; capOff(); DONE(R); }); }); }, '+=.2');
     return;
   }
   U.uProg.value = 1.06;
@@ -319,10 +320,10 @@ function proceed() {
   const C = COLORS[R.oni ? 'nezuko' : R.key];
   document.documentElement.style.setProperty('--tint', R.key === 'none' ? '#8a8f96' : (R.key === 'white' ? '#9aa3ad' : C.hex));
   const say = R.key === 'none' ? T.crowNone(R.name) : T.crow(R.name, C.name[L], R.ot ? R.kk : kokyu(R.key));
-  const go = () => crow(say).then(() => { busy = false; ST = 'done'; DONE(R); });
+  const go = () => crow(say).then(() => { busy = false; ST = 'done'; capOff(); DONE(R); });
   // 才能のある人・ない人・鬼になる前の名前には、ここで「鬼にならないか」と誘いが来る
   const kind = INV(R); if (!kind) { go(); return; }
-  setTimeout(() => oniInvite(L, kind).then(yes => { if (!yes) { go(); return; } R.becameOni = true; turnOni(R).then(() => { busy = false; ST = 'done'; DONE(R); }); }), 500);
+  setTimeout(() => oniInvite(L, kind).then(yes => { if (!yes) { go(); return; } R.becameOni = true; turnOni(R).then(() => { busy = false; ST = 'done'; capOff(); DONE(R); }); }), 500);
 }
 let INV = () => null;
 export function gripInvite(f) { INV = f; }
@@ -434,6 +435,6 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) press
 function flash(hex) { const f = $('flash'); f.style.background = hex; gsap.fromTo(f, { opacity: .85 }, { opacity: 0, duration: .7, ease: 'power2.out' }); }
 
 // 題名の画面にもどす（刀を上に、色を消す）
-export function gripReset() { busy = false; HOLD = null; REV = null; holding = false; emitAt = -1; shake = 0; humStop(); $('hold').hidden = true; $('crow').hidden = true; $('crowSay').hidden = true; U.uProg.value = 0; U.uGlow.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0; gsap.killTweensOf(katana.position); gsap.killTweensOf(katana.scale); gsap.killTweensOf(katana.rotation); setPose('top', 0); ST = 'title'; }
+export function gripReset() { capOff(); busy = false; HOLD = null; REV = null; holding = false; emitAt = -1; shake = 0; humStop(); $('hold').hidden = true; $('crow').hidden = true; $('crowSay').hidden = true; U.uProg.value = 0; U.uGlow.value = 0; U.uAura.value = 0; U.uAmt.value = 0; bgMat.uniforms.uMix.value = 0; gsap.killTweensOf(katana.position); gsap.killTweensOf(katana.scale); gsap.killTweensOf(katana.rotation); setPose('top', 0); ST = 'title'; }
 resize(); setPose('top', 0); ST = 'title';
 export { renderer, fxAdd, ramp };

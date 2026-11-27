@@ -1,8 +1,8 @@
 import { THREE, RoomEnvironment } from './lib.js?v=11241806';
 import { COLORS, ORDER, CHARS } from './data.js?v=11241806';
-import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11272210';
-import { locW, oniNameL } from '../onikiri/i18n.js?v=11272210';
-import { varNorm, otherOf, otSch, otWord } from '../onikiri/others.js?v=11272210';
+import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11272332';
+import { locW, oniNameL } from '../onikiri/i18n.js?v=11272332';
+import { varNorm, otherOf, otSch, otWord } from '../onikiri/others.js?v=11272332';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -300,7 +300,7 @@ function holdStep(dt) {
 function finish(R) {
   const C = COLORS[R.key];
   if (R.key === 'nezuko') {
-    sfx('thud'); sfx('zap'); flash('#ff3048'); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3048') }); cap(T.capNez);
+    sfx('thud'); sfx('zap'); flash('#ff3048'); fxAdd(PFX && PFX.fx.burst, { x: 80, y: 80, seed: 7, palette: ramp('#ff3048') }); cap(T.capNez, 1.6);
     const tl = gsap.timeline();
     tl.to(katana.rotation, { z: '+=' + (Math.PI * 1.5), duration: .7, ease: 'power2.out' });
     tl.to(katana.position, { y: -VH * .9, duration: .7, ease: 'power2.in' }, '<');
