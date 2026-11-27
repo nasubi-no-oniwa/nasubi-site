@@ -41,6 +41,7 @@ addEventListener('resize', resize); resize();
 const MATS = new Map(); const mat = c => { if (!MATS.has(c)) MATS.set(c, new THREE.MeshLambertMaterial({ color: c })); return MATS.get(c); };
 function tex(draw, w = 256, h = 256, rep = 1) { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep, rep); t.anisotropy = 4; return t; }
 const box = (w, h, d, c) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c));
+const FADE = []; // 自分と視点のあいだにある木は、すけさせる
 function buildWorld() {
   // 石だたみ
   const g = tex((x, w, h) => { x.fillStyle = '#cfc6b6'; x.fillRect(0, 0, w, h); const n = 8, s = w / n; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { const k = (i * 7 + j * 13) % 5; x.fillStyle = ['#d7cebf', '#c8bfae', '#d2c9b9', '#bfb6a5', '#dcd4c6'][k]; x.fillRect(i * s + 1, j * s + 1, s - 2, s - 2); } }, 256, 256, 16);
@@ -64,7 +65,7 @@ function buildWorld() {
   for (const b of W.BENCH) { const gr = new THREE.Group(); const seat = box(2.2, .12, .6, '#9a6b42'); seat.position.y = .48; gr.add(seat); const back = box(2.2, .5, .1, '#8a5d38'); back.position.set(0, .8, -.3); gr.add(back); for (const s of [-.95, .95]) { const l = box(.1, .48, .5, '#3a3a40'); l.position.set(s, .24, 0); gr.add(l); } gr.position.set(b.x, 0, b.z); gr.rotation.y = b.ry; SC.add(gr); }
   const AW = ['#d9534f', '#4a7bd0', '#e8b33a', '#5aa469', '#8e6bc4', '#e07b39'];
   for (const s of W.STALL) { const gr = new THREE.Group(); const c = box(3.2, 1, 1.6, '#a8774e'); c.position.y = .5; gr.add(c); const top = box(3.4, .1, 1.8, '#e9e2d6'); top.position.y = 1.02; gr.add(top); for (const x of [-1.5, 1.5]) for (const z of [-.7, .7]) { const p = box(.08, 2.4, .08, '#6b4f3a'); p.position.set(x, 1.2, z); gr.add(p); } const aw = box(3.6, .18, 2.2, AW[s.c]); aw.position.y = 2.45; aw.rotation.x = -.18; gr.add(aw); for (let i = 0; i < 6; i++) { const it = box(.35, .3, .35, ['#f2c94c', '#e86a5a', '#7bc96f', '#ffffff', '#f29e4c'][i % 5]); it.position.set(-1.2 + i * .48, 1.2, .2); gr.add(it); } gr.position.set(s.x, 0, s.z); gr.rotation.y = s.ry; SC.add(gr); }
-  for (const t of W.TREE) { const tr = new THREE.Mesh(new THREE.CylinderGeometry(.18, .25, 2, 8), mat('#6b4a2e')); tr.position.set(t.x, 1, t.z); SC.add(tr); const lf = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5 * t.s, 0), mat('#5c9a48')); lf.position.set(t.x, 2.7 * t.s + .4, t.z); SC.add(lf); }
+  for (const t of W.TREE) { const tr = new THREE.Mesh(new THREE.CylinderGeometry(.18, .25, 2, 8), mat('#6b4a2e')); tr.position.set(t.x, 1, t.z); SC.add(tr); const fm = new THREE.MeshLambertMaterial({ color: '#5c9a48', transparent: true }); const lf = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5 * t.s, 0), fm); FADE.push({ x: t.x, z: t.z, r: 1.7 * t.s, ms: [fm, tr.material = tr.material.clone()], o: 1 }); tr.material.transparent = true; lf.position.set(t.x, 2.7 * t.s + .4, t.z); SC.add(lf); }
   for (const l of W.LAMP) { const p = new THREE.Mesh(new THREE.CylinderGeometry(.08, .12, 3.6, 8), mat('#2f3542')); p.position.set(l.x, 1.8, l.z); SC.add(p); const h = new THREE.Mesh(new THREE.SphereGeometry(.28, 12, 8), mat('#fff6d8')); h.position.set(l.x, 3.75, l.z); SC.add(h); }
   const sky = new THREE.Mesh(new THREE.SphereGeometry(150, 16, 8), new THREE.MeshBasicMaterial({ color: '#bfd9ee', side: THREE.BackSide, fog: false })); SC.add(sky);
 }
@@ -150,6 +151,8 @@ function camUpdate(dt) {
   const cp = Math.cos(VIEW.pitch), d = VIEW.dist;
   CAM.position.set(VIEW.tx - Math.sin(VIEW.yaw) * cp * d, ty + Math.sin(VIEW.pitch) * d, VIEW.tz - Math.cos(VIEW.yaw) * cp * d);
   CAM.lookAt(VIEW.tx, ty, VIEW.tz);
+  const ax = CAM.position.x, az = CAM.position.z, bx = VIEW.tx - ax, bz = VIEW.tz - az, L2 = bx * bx + bz * bz || 1;
+  for (const f of FADE) { const u = ((f.x - ax) * bx + (f.z - az) * bz) / L2; let want = 1; if (u > -.05 && u < 1) { const px = ax + bx * u - f.x, pz = az + bz * u - f.z; if (px * px + pz * pz < f.r * f.r && d < 20) want = .22; } f.o += (want - f.o) * Math.min(1, dt * 8); for (const m of f.ms) { m.opacity = f.o; m.depthWrite = f.o > .95; } }
 }
 const PT = { id: null, x: 0, y: 0, drag: false, multi: 0 };
 cv.addEventListener('pointerdown', e => { if (!G || G.over) return; PT.multi++; if (PT.id != null) return; PT.id = e.pointerId; PT.x = PT.sx = e.clientX; PT.y = PT.sy = e.clientY; PT.drag = false; cv.setPointerCapture(e.pointerId); });
@@ -421,3 +424,7 @@ if (DEV) window.__tap = (x, z) => send({ k: 'go', x, z });
 if (DEV) window.__arr = id => { G.sel = id; G.cd = 0; $('bArr').onclick(); };
 if (DEV) window.__demo = (seed = 123) => { ME = 'me'; HOST = true; MEM = ['me']; NAMES = { me: 'demo' }; SIM = new W.Sim(seed, [{ pid: 'me', n: 'demo' }]); MESH = { all() { }, send() { }, P: {}, close() { } }; startLocal({ seed, you: SIM.H.me.eid, N: SIM.E.length, mem: ['me'], names: NAMES, h: 'me' }); show(''); $('hud').hidden = true; $('banner').hidden = true; };
 if (DEV) window.__view = v => Object.assign(VIEW, v);
+// PV撮影用（dev=1 のときだけ）
+if (DEV) window.__demo2 = (seed, bots) => { ME = 'me'; HOST = true; const hs = [{ pid: 'me', n: 'あなた' }, ...bots.map(b => ({ pid: b, n: b }))]; MEM = hs.map(h => h.pid); NAMES = {}; hs.forEach(h => NAMES[h.pid] = h.n); SIM = new W.Sim(seed, hs); MESH = { all() { }, send() { }, P: {}, close() { } }; startLocal({ seed, you: SIM.H.me.eid, N: SIM.E.length, mem: MEM, names: NAMES, h: 'me' }); show(''); return true; };
+if (DEV) window.__S = () => SIM;
+if (DEV) window.__sel = id => { G.sel = id; updHud(); };
