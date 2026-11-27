@@ -1,12 +1,12 @@
-import { THREE, GLTFLoader } from './lib.js?v=11271800';
-import { COLORS, CHARS, ORDER } from './data.js?v=11271800';
-import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11271800';
-import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11271800';
-import { makeFx, STY } from './fx.js?v=11271800';
-import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11271800';
-import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd , genNameL } from './oni.js?v=11271800';
-import { locW, descL, nameL, oniNameL } from './i18n.js?v=11271800';
-import { OT_STY, ETC, otherOf, otherByName, otName, otSch, otWork } from './others.js?v=11271800';
+import { THREE, GLTFLoader } from './lib.js?v=11271810';
+import { COLORS, CHARS, ORDER } from './data.js?v=11271810';
+import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11271810';
+import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11271810';
+import { makeFx, STY } from './fx.js?v=11271810';
+import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11271810';
+import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd , genNameL } from './oni.js?v=11271810';
+import { locW, descL, nameL, oniNameL } from './i18n.js?v=11271810';
+import { OT_STY, ETC, otherOf, otherByName, otName, otSch, otWork } from './others.js?v=11271810';
 Object.assign(STY, ONI_STY, OT_STY); COLORS.etc = ETC; COLORS.oni = { hex: '#b3122a', name: { ja: '鬼', en: 'Demon', zh: '鬼', ko: '귀신' }, kokyu: { ja: '血鬼術', en: 'Blood Demon Art', zh: '血鬼術', ko: '혈귀술' } };
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
@@ -27,7 +27,7 @@ const TX = {
     post: (R, d, k) => `「${R.name}」の日輪刀（${R.kk}・才能${R.den}%${R.akaDone ? '・赫刀' : ''}）で ${d.toLocaleString()}m 走り、鬼を${k}体斬った。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: '全体', rkToday: '今日', rkNone: '才能なし', rkOni: '鬼', howO: '・画面の左側／右側をタップ、または指を横にスライドでレーン移動（PCは ← →）<br>・隊士のレーンに入ると倒す。そのたびに斬られて再生力が減り、斬られずにいると戻る<br>・再生力がないまま隊士に当たるか、障害物に当たると終わり<br>・オーラのある隊士は手ごわい。倒すと10人分の再生力を一気に失う<br>・赤い小瓶（稀血）を拾うと再生力が戻る<br>・右下の丸がたまったら押して血鬼術（PCはスペース）', regen: '再生力', killsO: n => `隊士 ${n}人`, whoOni: n => `「<b>${esc(n)}</b>」は、鬼`, oniAs: n => `鬼としての名：<b style="color:#fff">${esc(n)}</b>`, oniTier: t => `血鬼術の強さ：<b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `隊士に${Math.max(1, Math.floor(m / c))}回斬られるまで耐える（斬られずにいると戻る）`, pickO1: n => n > 1 ? `血鬼術を1つ選ぶ（${n}個）` : 'この鬼の血鬼術', pickO2: n => `血鬼術を2つ選ぶ（${n}個）`, whyO: { dull: '再生が追いつかず、頸を斬られた', obs: '障害物に足を取られ、頸を斬られた' }, loadM: '鬼の体を作っています…',
     rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」は、鬼${R.oni.as && R.oni.as !== R.name ? '（' + esc(oniNameL(R.oni.as, L)) + '）' : ''}<br>血鬼術：<b>${esc(wz)}</b><br>倒した隊士 <b>${k}</b>人`, postO: (R, d, k, wz) => `「${R.name}」は鬼になった。\n血鬼術「${wz}」で ${d.toLocaleString()}m 走り、隊士を${k}人倒した。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '名前1つにつき1件（その名前でいちばん走った記録）・上位100', loading: '読みこみ中…', rkErr: '読みこめませんでした', rkEmpty: 'まだ記録がありません', nogl: 'この端末では3Dを表示できませんでした', capCol: (c, k) => `${c}　${k}`,
-    tr: 'トレーニング場', trZone: v => '当たり判定：' + (v ? '表示' : '非表示'), trMove: v => '動き：' + (v ? '走る' : '止まる'), trHelpRun: '走りながら技を出す。タップ／スライドでレーン移動', trHelpStop: '止まって技を出す。画面をなぞると360度まわせる（2本指で近づく・はなれる）。タップでレーン移動', trBusy: '技が終わってから',
+    tr: 'トレーニング場', trZone: v => '当たり判定：' + (v ? '表示' : '非表示'), trMove: v => '動き：' + (v ? '走る' : '止まる'), trHelpRun: '走りながら技を出す。タップ／スライドでレーン移動', trHelpStop: '止まって技を出す。画面をなぞると360度まわせる（2本指で近づく・はなれる）。タップでレーン移動', trBusy: '技が終わってから', trAuto: v => '自動で連続：' + (v ? 'オン' : 'オフ'), trHelpAuto: '自動で技を出しつづける。画面をなぞると360度まわせる（2本指で近づく・はなれる）。タップでレーン移動',
     akaS: '赫刀', cardO: as => '鬼' + (as ? '・' + as : '') + '・血鬼術', sepW: '、' },
   en: { lang: 'English', ttl: 'MUGEN ONIKIRI', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: 'Your name decides your Nichirin Blade.<br>Run, slash demons, and mind the chipping edge.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', rank: 'Ranking', prev: 'See your blade color',
     hold: 'Hold to grip', keep: 'Keep holding…?', aka: 'The blade burns crimson', isOni: "You're a demon. The blade won't let you hold it", who: n => `<b>${esc(n)}</b>'s Nichirin Blade`, den: 'Talent', sharpInfo: (c, m) => c < .2 ? 'Never chips' : `Chips out after ${Math.max(1, Math.floor(m / c))} demons`, akaInfo: 'Crimson blade: chips slower',
@@ -38,7 +38,7 @@ const TX = {
     post: (R, d, k) => `"${R.name}"'s Nichirin Blade (${R.kk}, talent ${R.den}%${R.akaDone ? ', crimson' : ''}) ran ${d.toLocaleString()}m and slew ${k} demons.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: 'All', rkToday: 'Today', rkNone: 'No talent', rkOni: 'Demons', howO: '・Tap the left / right side, or slide your finger sideways, to change lanes (PC: ← →)<br>・Enter a slayer\'s lane to take them down. Each one cuts you and drains regeneration; it recovers when you are not cut<br>・Hitting a slayer with no regeneration left, or any obstacle, ends the run<br>・Slayers with an aura are tough: taking one down costs 10 slayers\' worth of regeneration<br>・Red vials (rare blood) restore regeneration<br>・When the circle fills, press it for your Blood Demon Art (PC: Space)', regen: 'Regeneration', killsO: n => `${n} slayers`, whoOni: n => `<b>${esc(n)}</b> is a demon`, oniAs: n => `Demon name: <b style="color:#fff">${esc(n)}</b>`, oniTier: t => `Art strength: <b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `Survives ${Math.max(1, Math.floor(m / c))} cuts from slayers (recovers when not cut)`, pickO1: n => n > 1 ? `Choose 1 art (${n})` : "This demon's art", pickO2: n => `Choose 2 arts (${n})`, whyO: { dull: 'Regeneration could not keep up', obs: 'Tripped on an obstacle and was beheaded' }, loadM: 'Shaping the demon…',
     rInfoO: (R, k, wz) => `<b>${esc(R.name)}</b> is a demon${R.oni.as && R.oni.as !== R.name ? ' (' + esc(oniNameL(R.oni.as, L)) + ')' : ''}<br>Blood Demon Art: <b>${esc(wz)}</b><br>Slayers defeated: <b>${k}</b>`, postO: (R, d, k, wz) => `${R.name} became a demon.\nRan ${d.toLocaleString()}m with the Blood Demon Art "${wz}" and defeated ${k} slayers.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: 'One entry per name (its best run). Top 100', loading: 'Loading…', rkErr: 'Could not load', rkEmpty: 'No records yet', nogl: "This device can't show 3D", capCol: (c, k) => `${c}  ${k}`,
-    tr: 'Training Ground', trZone: v => 'Hit area: ' + (v ? 'shown' : 'hidden'), trMove: v => 'Mode: ' + (v ? 'running' : 'standing'), trHelpRun: 'Use techniques while running. Tap / slide to change lanes', trHelpStop: 'Use techniques while standing. Drag to rotate 360° (pinch to zoom). Tap to change lanes', trBusy: 'Wait until the technique ends',
+    tr: 'Training Ground', trZone: v => 'Hit area: ' + (v ? 'shown' : 'hidden'), trMove: v => 'Mode: ' + (v ? 'running' : 'standing'), trHelpRun: 'Use techniques while running. Tap / slide to change lanes', trHelpStop: 'Use techniques while standing. Drag to rotate 360° (pinch to zoom). Tap to change lanes', trBusy: 'Wait until the technique ends', trAuto: v => 'Auto-repeat: ' + (v ? 'on' : 'off'), trHelpAuto: 'The technique repeats automatically. Drag to rotate 360° (pinch to zoom). Tap to change lanes',
     akaS: 'Crimson', cardO: as => 'Demon' + (as ? ' · ' + as : '') + ' · Blood Demon Art', sepW: ', ' },
   zh: { lang: '繁體中文', ttl: '無限鬼斬', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: '以名字決定的日輪刀，邊跑邊斬鬼。<br>斬得越多刀刃越鈍。你能跑多遠？', ph: '輸入名字', start: '握住日輪刀', needName: '請輸入名字', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', rank: '排行榜', prev: '看看刀的顏色（前作）',
     hold: '長按握住', keep: '就這樣繼續緊握的話…？', aka: '燒成了赫紅', isOni: '因為是鬼，握不住日輪刀', who: n => `「<b>${esc(n)}</b>」的日輪刀`, den: '才能', sharpInfo: (c, m) => c < .2 ? '不會捲刃' : `斬${Math.max(1, Math.floor(m / c))}隻鬼就會捲刃`, akaInfo: '赫刀：不容易捲刃',
@@ -49,7 +49,7 @@ const TX = {
     post: (R, d, k) => `用「${R.name}」的日輪刀（${R.kk}・才能${R.den}%${R.akaDone ? '・赫刀' : ''}）跑了 ${d.toLocaleString()}m，斬了${k}隻鬼。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: '全體', rkToday: '今天', rkNone: '沒有才能', rkOni: '鬼', howO: '・點擊畫面左側／右側，或手指橫向滑動來換跑道（電腦為 ← →）<br>・進入隊士所在的跑道就會打倒對方。每次都會被砍而減少再生力，沒被砍的時候會恢復<br>・在沒有再生力的狀態下撞到隊士，或撞到障礙物就結束<br>・有氣場的隊士很難纏，打倒會一口氣失去10人份的再生力<br>・撿到紅色小瓶（稀血）就能恢復再生力<br>・右下的圓圈集滿後按下就能使出血鬼術（電腦為空白鍵）', regen: '再生力', killsO: n => `隊士 ${n}人`, whoOni: n => `「<b>${esc(n)}</b>」是鬼`, oniAs: n => `作為鬼的名字：<b style="color:#fff">${esc(n)}</b>`, oniTier: t => `血鬼術的強度：<b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `能承受隊士${Math.max(1, Math.floor(m / c))}次斬擊（沒被砍的時候會恢復）`, pickO1: n => n > 1 ? `選1個血鬼術（${n}個）` : '這隻鬼的血鬼術', pickO2: n => `選2個血鬼術（${n}個）`, whyO: { dull: '再生跟不上，被斬下了頸項', obs: '被障礙物絆住，被斬下了頸項' }, loadM: '正在製作鬼的身體…',
     rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」是鬼${R.oni.as && R.oni.as !== R.name ? '（' + esc(oniNameL(R.oni.as, L)) + '）' : ''}<br>血鬼術：<b>${esc(wz)}</b><br>打倒的隊士 <b>${k}</b>人`, postO: (R, d, k, wz) => `「${R.name}」成為了鬼。\n以血鬼術「${wz}」跑了 ${d.toLocaleString()}m，打倒了${k}名隊士。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '每個名字1筆（該名字跑得最遠的紀錄）・前100名', loading: '讀取中…', rkErr: '無法讀取', rkEmpty: '還沒有紀錄', nogl: '這台裝置無法顯示3D', capCol: (c, k) => `${c}　${k}`,
-    tr: '訓練場', trZone: v => '攻擊判定：' + (v ? '顯示' : '隱藏'), trMove: v => '動作：' + (v ? '奔跑' : '靜止'), trHelpRun: '邊跑邊使出招式。點擊／滑動來換跑道', trHelpStop: '站著使出招式。滑動畫面可旋轉360度（雙指縮放）。點擊來換跑道', trBusy: '請等招式結束',
+    tr: '訓練場', trZone: v => '攻擊判定：' + (v ? '顯示' : '隱藏'), trMove: v => '動作：' + (v ? '奔跑' : '靜止'), trHelpRun: '邊跑邊使出招式。點擊／滑動來換跑道', trHelpStop: '站著使出招式。滑動畫面可旋轉360度（雙指縮放）。點擊來換跑道', trBusy: '請等招式結束', trAuto: v => '自動連發：' + (v ? '開' : '關'), trHelpAuto: '自動不斷使出招式。滑動畫面可旋轉360度（雙指縮放）。點擊來換跑道',
     akaS: '赫刀', cardO: as => '鬼' + (as ? '・' + as : '') + '・血鬼術', sepW: '、' },
   ko: { lang: '한국어', ttl: '무한 귀신 베기', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: '이름으로 정해지는 일륜도로 귀신을 베며 달려라.<br>벨수록 칼날이 무뎌진다. 어디까지 갈 수 있을까.', ph: '이름을 입력', start: '일륜도를 쥔다', needName: '이름을 입력해 주세요', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', rank: '랭킹', prev: '칼의 색 보기(전작)',
     hold: '길게 눌러 쥐기', keep: '그대로 꽉 쥐고 있으면…?', aka: '붉게 달아올랐다', isOni: '귀신이라 일륜도를 쥘 수 없었다', who: n => `「<b>${esc(n)}</b>」의 일륜도`, den: '재능', sharpInfo: (c, m) => c < .2 ? '이가 빠지지 않는다' : `귀신을 ${Math.max(1, Math.floor(m / c))}마리 베면 이가 빠진다`, akaInfo: '혁도: 이가 잘 빠지지 않는다',
@@ -60,7 +60,7 @@ const TX = {
     post: (R, d, k) => `「${R.name}」의 일륜도(${R.kk}・재능 ${R.den}%${R.akaDone ? '・혁도' : ''})로 ${d.toLocaleString()}m를 달려 귀신을 ${k}마리 벴다.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: '전체', rkToday: '오늘', rkNone: '재능 없음', rkOni: '귀신', howO: '・화면 왼쪽/오른쪽을 탭하거나 손가락을 옆으로 밀어 레인 이동(PC는 ← →)<br>・대원이 있는 레인에 들어가면 쓰러뜨린다. 그때마다 베여서 재생력이 줄고, 베이지 않으면 회복된다<br>・재생력이 없는 채로 대원에 부딪히거나 장애물에 부딪히면 끝<br>・오라가 있는 대원은 만만치 않다. 쓰러뜨리면 10명분의 재생력을 한 번에 잃는다<br>・붉은 작은 병(희귀혈)을 주우면 재생력이 회복된다<br>・오른쪽 아래 원이 차면 눌러서 혈귀술(PC는 스페이스)', regen: '재생력', killsO: n => `대원 ${n}명`, whoOni: n => `「<b>${esc(n)}</b>」은(는) 귀신`, oniAs: n => `귀신으로서의 이름: <b style="color:#fff">${esc(n)}</b>`, oniTier: t => `혈귀술의 강함: <b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `대원에게 ${Math.max(1, Math.floor(m / c))}번 베일 때까지 버틴다(베이지 않으면 회복된다)`, pickO1: n => n > 1 ? `혈귀술을 1개 고른다(${n}개)` : '이 귀신의 혈귀술', pickO2: n => `혈귀술을 2개 고른다(${n}개)`, whyO: { dull: '재생이 따라가지 못해 목이 베였다', obs: '장애물에 발이 걸려 목이 베였다' }, loadM: '귀신의 몸을 만드는 중…',
     rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」은(는) 귀신${R.oni.as && R.oni.as !== R.name ? '(' + esc(oniNameL(R.oni.as, L)) + ')' : ''}<br>혈귀술: <b>${esc(wz)}</b><br>쓰러뜨린 대원 <b>${k}</b>명`, postO: (R, d, k, wz) => `「${R.name}」은(는) 귀신이 되었다.\n혈귀술 「${wz}」(으)로 ${d.toLocaleString()}m를 달려 대원을 ${k}명 쓰러뜨렸다.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '이름 하나당 1건(그 이름으로 가장 멀리 달린 기록)・상위 100', loading: '불러오는 중…', rkErr: '불러올 수 없었습니다', rkEmpty: '아직 기록이 없습니다', nogl: '이 기기에서는 3D를 표시할 수 없었습니다', capCol: (c, k) => `${c}　${k}`,
-    tr: '훈련장', trZone: v => '타격 판정: ' + (v ? '표시' : '숨김'), trMove: v => '움직임: ' + (v ? '달리기' : '멈춤'), trHelpRun: '달리면서 기술을 쓴다. 탭/슬라이드로 레인 이동', trHelpStop: '멈춰서 기술을 쓴다. 화면을 문지르면 360도 돌릴 수 있다(두 손가락으로 확대·축소). 탭으로 레인 이동', trBusy: '기술이 끝난 뒤에',
+    tr: '훈련장', trZone: v => '타격 판정: ' + (v ? '표시' : '숨김'), trMove: v => '움직임: ' + (v ? '달리기' : '멈춤'), trHelpRun: '달리면서 기술을 쓴다. 탭/슬라이드로 레인 이동', trHelpStop: '멈춰서 기술을 쓴다. 화면을 문지르면 360도 돌릴 수 있다(두 손가락으로 확대·축소). 탭으로 레인 이동', trBusy: '기술이 끝난 뒤에', trAuto: v => '자동 연속: ' + (v ? '켬' : '끔'), trHelpAuto: '자동으로 기술을 계속 쓴다. 화면을 문지르면 360도 돌릴 수 있다(두 손가락으로 확대·축소). 탭으로 레인 이동',
     akaS: '혁도', cardO: as => '귀신' + (as ? '・' + as : '') + '・혈귀술', sepW: ', ' },
 };
 function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || [])[1]; if (TX[q]) return q; const s = ls.get('onikiri_lang', null) || ls.get('katana_lang', null); if (TX[s]) return s; const n = (navigator.language || 'ja').toLowerCase(); return n.startsWith('ja') ? 'ja' : n.startsWith('zh') ? 'zh' : n.startsWith('ko') ? 'ko' : 'en'; }
@@ -219,7 +219,7 @@ function mkKishi() { // 隊士：体（色は頂点）＋羽織（1体ごとに�
 }
 // 敵の鬼（Blender で作った鬼。自分が鬼になったときと同じ姿。頸を斬ると頭が飛ぶ）。読みこみが終わるまでは前の鬼を出す
 let OLO = null, OM = null;
-new GLTFLoader().load('models/oni_lo.glb?v=11271800', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
+new GLTFLoader().load('models/oni_lo.glb?v=11271810', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
 function mkOni2() {
   OM = OM || { body: vtoon(), glow: new THREE.MeshBasicMaterial({ vertexColors: true }) }; const g = new THREE.Group(), body = new THREE.Group(), head = new THREE.Group(), K = OLO; g.add(body, head);
   body.add(withOut(K.body.geometry, OM.body)); if (K.marks) body.add(new THREE.Mesh(K.marks.geometry, OM.glow));
@@ -416,7 +416,7 @@ function frame(now) {
   const pulse = .85 + .15 * Math.sin(tAll * 5); P.aura.scale.set(3.0 * pulse, 4.0 * pulse, 1);
   FX.step(dt, mv);
   if (inRun) { G.shake = Math.max(0, G.shake - dt * 1.8); hudStep(); }
-  const sh = inRun ? G.shake : 0, cx = inRun ? G.x * .35 : 0; if (inRun && still) { const cp = Math.cos(TR.pit), r = TR.rad; camera.position.set(G.x + Math.sin(TR.ang) * cp * r + (Math.random() - .5) * sh, 1.1 + Math.sin(TR.pit) * r + (Math.random() - .5) * sh, -4 + Math.cos(TR.ang) * cp * r); camera.lookAt(G.x, 1.1, -4); } // トレーニング場で止まっているときは、まわりを回って見られる
+  const sh = inRun ? G.shake : 0, cx = inRun ? G.x * .35 : 0; if (inRun && TR && (!TR.move || TR.auto)) { const cp = Math.cos(TR.pit), r = TR.rad; camera.position.set(G.x + Math.sin(TR.ang) * cp * r + (Math.random() - .5) * sh, 1.1 + Math.sin(TR.pit) * r + (Math.random() - .5) * sh, -4 + Math.cos(TR.ang) * cp * r); camera.lookAt(G.x, 1.1, -4); } // トレーニング場で止まっているとき・自動で出しているときは、まわりを回って見られる
   else { camera.position.set(CAM.x + cx + (Math.random() - .5) * sh, CAM.y + (Math.random() - .5) * sh, CAM.z); camera.lookAt(cx, 1.1, -10); }
   zoneStep();
   renderer.render(scene, camera);
@@ -452,7 +452,7 @@ function hudWaza() { if (!G.wz.length) return; const set = (id, t, sz) => { cons
 function swapWaza() { if (ST !== 'run' || TR || G.wz.length < 2 || G.fx) return; G.sel = 1 - G.sel; hudWaza(); sfx('move'); gsap.fromTo('#wzA', { scale: .8 }, { scale: 1, duration: .15 }); }
 function move(d) { if (ST !== 'run' || G.over) return; if (G.fx && G.fx.p.k === 'flow') return; const l = clamp(G.lane + d, 0, 4); if (l !== G.lane) { G.lane = l; sfx('move'); } }
 // 移動：タップ（左半分・右半分）でも、指を横にスライドでも動ける。スライドは指を動かした分だけレーンを移る
-{ const gl = $('gl'), PT = new Map(), stepW = () => clamp(innerWidth * .14, 34, 70), orbit = () => ST === 'run' && TR && !TR.move; let pin = 0;
+{ const gl = $('gl'), PT = new Map(), stepW = () => clamp(innerWidth * .14, 34, 70), orbit = () => ST === 'run' && TR && (!TR.move || TR.auto); let pin = 0;
   gl.addEventListener('pointerdown', e => { if (ST !== 'run') return; e.preventDefault(); PT.set(e.pointerId, { x: e.clientX, y: e.clientY, x0: e.clientX, slid: false }); pin = 0; try { gl.setPointerCapture(e.pointerId); } catch (_) { } });
   gl.addEventListener('pointermove', e => { const p = PT.get(e.pointerId); if (!p || ST !== 'run') return;
     if (orbit()) { // 止まっているとき：なぞると回る、2本指で近づく・はなれる
@@ -473,29 +473,32 @@ const trBusy = () => !!(G.fx || G.pend.length || TR.lock > 0); // 技が出て�
 const trCell = (k, l) => ((k === 2 && (l === 0 || l === 4)) || (k === 6 && (l === 1 || l === 3)) ? 'obs' : 'oni'); // 的のならび（障害物も少し置く）
 function trRow(z) { TR.n = (TR.n || 0) + 1; const ob = TR.n % 4 === 0 ? (TR.n % 8 === 0 ? [0, 4] : [1, 3]) : []; for (let l = 0; l < 5; l++) spawn(ob.includes(l) ? 'obs' : 'oni', l, z, TR.n % 5 === 0 && l === 2); }
 function trFill() { for (let k = 0; k < 9; k++) { const z = -6 - 8 * k; for (let l = 0; l < 5; l++) { if (ENT.some(e => e.lane === l && Math.abs(e.z - z) < 1)) continue; spawn(trCell(k, l), l, z, k === 4 && l === 2); } } }
-function trEnts() { for (const e of ENT) { e.m.visible = false; FREE[e.pk || e.type].push(e.m); } ENT.length = 0; TR.re = 0; TR.n = 0; for (const sc of SCEN) sc.m.visible = TR.move; /* 止まって見るときは、まわりの建物をどかす */ if (TR.move) { for (let z = -22; z > -124; z -= 9) trRow(z); G.next = 9; } else trFill(); }
+function trEnts() { for (const e of ENT) { e.m.visible = false; FREE[e.pk || e.type].push(e.m); } ENT.length = 0; TR.re = 0; TR.n = 0; for (const sc of SCEN) sc.m.visible = TR.move && !TR.auto; /* まわして見るときは、まわりの建物をどかす */ if (TR.move) { for (let z = -22; z > -124; z -= 9) trRow(z); G.next = 9; } else trFill(); }
 function trStep(dt) {
   if (TR.lock > 0) TR.lock -= dt; G.sharp = G.max; const busy = trBusy(); if (!busy) G.gauge = 100;
   if (!TR.move) { if (busy) TR.re = 0; else { TR.re += dt; if (TR.re > .8) { TR.re = 0; trFill(); } } } // 止まっているとき：技が終わったら的を補充
-  if (busy !== TR.busy) { TR.busy = busy; for (const id of ['trPrev', 'trNext', 'trMove']) $(id).disabled = busy; }
+  if (!busy && TR.q) { const f = TR.q; TR.q = null; f(); }
+  if (TR.auto && !busy) { TR.at = (TR.at || 0) + dt; if (TR.at > (TR.move ? .7 : 1.4)) { TR.at = 0; useWaza(); } } else TR.at = 0; // 自動：技が終わるたびに、少し間をおいて次を出す
+  const dis = busy && !TR.auto; if (dis !== TR.busy) { TR.busy = dis; for (const id of ['trPrev', 'trNext', 'trMove']) $(id).disabled = dis; }
 }
 function trPaint() {
   const w = G.wz[0], wl = lw(w), nm = $('trName'); $('trBar').classList.toggle('lat', L === 'en'); nm.children[0].textContent = (R.oni || (R.ot && wl[0] === R.kk) ? '' : wl[0] + '　') + wl[1]; nm.children[1].textContent = descT(w[3]); nm.children[2].textContent = (TR.i + 1) + '/' + TR.list.length;
-  $('trZone').textContent = T.trZone(TR.zone); $('trZone').classList.toggle('on', TR.zone); $('trMove').textContent = T.trMove(TR.move); $('trHelp').textContent = TR.move ? T.trHelpRun : T.trHelpStop;
+  $('trZone').textContent = T.trZone(TR.zone); $('trZone').classList.toggle('on', TR.zone); $('trMove').textContent = T.trMove(TR.move); $('trAuto').textContent = T.trAuto(TR.auto); $('trAuto').classList.toggle('on', TR.auto); $('trHelp').textContent = TR.auto ? T.trHelpAuto : TR.move ? T.trHelpRun : T.trHelpStop;
   gsap.killTweensOf('#trHelp'); gsap.fromTo('#trHelp', { opacity: .9 }, { opacity: 0, duration: .6, delay: 4 });
 }
-function trSet(d) { if (!TR || trBusy()) { if (TR) toast(T.trBusy); return; } const n = TR.list.length; TR.i = (TR.i + d + n) % n; G.wz = [wzOf(R)[TR.list[TR.i]]]; G.sel = 0; G.gauge = 100; hudWaza(); FX.trail.key(KEY()); trPaint(); sfx('move'); }
+function trSet(d) { if (!TR) return; if (trBusy()) { toast(T.trBusy); if (TR.auto) TR.q = () => trSet(d); return; } /* 自動のときは、技が終わったら切りかえる */ const n = TR.list.length; TR.i = (TR.i + d + n) % n; G.wz = [wzOf(R)[TR.list[TR.i]]]; G.sel = 0; G.gauge = 100; hudWaza(); FX.trail.key(KEY()); trPaint(); sfx('move'); }
 function openTraining() {
   const un = R.forms; if (!un.length) return; const first = SEL.length ? un.indexOf(SEL[SEL.length - 1]) : -1;
-  TR = { move: true, zone: true, ang: 0, pit: .3, rad: 14, list: un.slice(), i: first < 0 ? un.length - 1 : first, re: 0, n: 0, busy: null, lock: 0 };
+  TR = { move: true, zone: true, ang: 0, pit: .3, rad: 14, list: un.slice(), i: first < 0 ? un.length - 1 : first, re: 0, n: 0, busy: null, lock: 0, auto: false, at: 0 };
   $('pick').hidden = true; ac(); const go = () => { if (ST !== 'pick' || !TR) return; SEL = [TR.list[TR.i]]; newRun(); trPaint(); };
   if (R.oni) { if (!KISHI) toast(T.loadM); loadModels().then(go).catch(go); } else go();
 }
 function closeTraining() { if (!TR) return; TR = null; for (const sc of SCEN) sc.m.visible = true; G.fx = null; G.pend.length = 0; G.slowT = 0; FX.dragon.stop(); BGM.stop(); gsap.killTweensOf('#tint'); gsap.set('#tint', { opacity: 0 }); $('hud').classList.remove('tr'); $('trBar').hidden = true; zoneStep(); openPick(); }
 document.querySelectorAll('#trBar button').forEach(b => b.addEventListener('click', () => b.blur())); // 押したあとにスペースキーで同じボタンが押されないように
 $('trBtn').onclick = openTraining; $('trExit').onclick = closeTraining; $('trPrev').onclick = () => trSet(-1); $('trNext').onclick = () => trSet(1);
+$('trAuto').onclick = () => { if (!TR) return; TR.auto = !TR.auto; TR.at = 0; TR.q = null; if (!TR.auto && TR.move) { TR.ang = 0; TR.pit = .3; TR.rad = 14; } for (const sc of SCEN) sc.m.visible = TR.move && !TR.auto; trPaint(); };
 $('trZone').onclick = () => { if (!TR) return; TR.zone = !TR.zone; trPaint(); };
-$('trMove').onclick = () => { if (!TR) return; if (trBusy()) { toast(T.trBusy); return; } TR.move = !TR.move; TR.ang = 0; TR.pit = .3; TR.rad = 14; G.slowT = 0; trEnts(); trPaint(); };
+const trMode = () => { if (!TR) return; if (trBusy()) { toast(T.trBusy); if (TR.auto) TR.q = trMode; return; } TR.move = !TR.move; TR.ang = 0; TR.pit = .3; TR.rad = 14; G.slowT = 0; trEnts(); trPaint(); }; $('trMove').onclick = trMode;
 // 当たり判定：技がとどく範囲を地面に出す（黄＝当たる範囲、水色＝相手を探しに行く範囲）
 const ZN = [0, 0].map(() => { const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0xffe14a, transparent: true, opacity: .24, depthWrite: false, fog: false, side: THREE.DoubleSide })); m.rotation.x = -Math.PI / 2; m.visible = false; m.renderOrder = 3; const ed = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), new THREE.LineBasicMaterial({ color: 0xffe14a, transparent: true, opacity: .95, fog: false, depthWrite: false })); m.add(ed); scene.add(m); return m; });
 function zoneStep() {
@@ -515,7 +518,7 @@ gripInvite(r => r.oni ? null : humanOf(r.name, r.ch) ? 'hum' : r.key === 'none' 
 const killsT = n => (R && R.oni ? T.killsO(n) : T.kills(n)), artName = w => (R && R.oni ? w[1] : w[0] + ' ' + w[1]), descT = p => (L !== 'ja' ? descL(p, L, !!(R && R.oni)) : R && R.oni ? desc(p).replace(/鬼/g, '隊士').replace(/切れ味/g, '再生力').replace(/斬撃/g, '血鬼術').replace(/(\d)体/g, '$1人').replace(/一気に斬る/g, '一気になぎ払う').replace(/斬り続ける/g, '倒し続ける').replace(/斬り進む/g, '倒し進む').replace(/を斬る/g, 'を倒す') : desc(p));
 // 鬼と隊士のモデル（Blender で作ったもの）。鬼で遊ぶときだけ読みこむ
 let MODELS = null, KISHI = null;
-function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11271800', res, undefined, rej));
+function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11271810', res, undefined, rej));
   MODELS = Promise.all([one('oni'), one('kishi')]).then(([o, k]) => { RIG.setOniModel(o); const g = {}; k.scene.traverse(n => { if (n.isMesh) g[n.name] = n; }); KISHI = g; return true; }).catch(e => { MODELS = null; throw e; }); return MODELS; }
 function grip() {
   const name = $('nm').value.trim(); if (!name) { $('nmNote').textContent = T.needName; $('nmNote').classList.add('err'); gsap.fromTo('#nm', { x: -8 }, { x: 0, duration: .4, ease: 'elastic.out(1,.3)' }); return; }
