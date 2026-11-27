@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272025';
+import { EXTRA } from './i18n.js?v=11272035';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -720,6 +720,49 @@ export const OTHERS = [
     t(['雷遁', 'Lightning Release', '雷遁', '뇌둔'], ['超ビブラート雷遁刀', 'Super Vibrato Lightning Release Blade', '超顫音雷遁刀', '초 비브라토 뇌둔도'], ['高速でふるえる雷の刃で、何でも貫く', 'A lightning blade vibrating at high speed pierces anything', '以高速震動的雷之刃貫穿一切', '고속으로 떨리는 번개의 칼날로 무엇이든 꿰뚫는다'], { k: 'inst', L: 0, R: 40, O: 1, v: 'thrust', sty: 'x_chidori' }),
     t(['尾獣', 'Tailed Beast', '尾獸', '미수'], ['尾獣玉', 'Tailed Beast Ball', '尾獸玉', '미수옥'], ['八尾のチャクラを黒い玉に固めて撃つ', 'Compresses the chakra of the Eight-Tails into a black ball and fires it', '將八尾的查克拉凝聚成黑色球體射出', '팔미의 차크라를 검은 구슬로 뭉쳐 쏜다'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_susanoo' }),
   ], [], ['キラービー', 'キラー・ビー']),
+  // ---------- 11回目：Fate・ソードアート・オンライン ----------
+  c('モードレッド', '', ['Mordred', '莫德雷德', '모드레드'], 'fate', 'red', 97, ['燦然と輝く王剣', 'Clarent', '燦然輝耀的王劍', '찬란히 빛나는 왕검'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['魔力放出', 'Mana Burst', '魔力放出', '마력 방출'], ['赤い雷をまとって、力まかせに斬りこむ', 'Cloaked in red lightning, cuts in with brute force', '身纏紅色雷電，憑蠻力斬入', '붉은 번개를 두르고 힘으로 베어 들어간다'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_haoshoku' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['我が麗しき父への叛逆', 'Clarent Blood Arthur', '對吾華麗父王的叛逆', '나의 아름다운 아버지에 대한 반역'], ['王剣にためた赤い雷を、まっすぐ撃ち出す', 'Fires the red lightning stored in the royal sword straight ahead', '將蓄積於王劍的紅色雷電筆直射出', '왕검에 모은 붉은 번개를 곧장 쏘아 낸다'], { k: 'inst', L: 9, R: 65, O: 1, I: 1, v: 'mega', sty: 'x_haoshoku' }),
+  ], [], ['モードレッド']),
+  c('ランスロット', '', ['Lancelot', '蘭斯洛特', '랜슬롯'], 'fate', 'blue', 99, ['無毀なる湖光', 'Arondight', '無毀的湖光', '무훼의 호광'], [
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['騎士は徒手にて死せず', 'Knight of Owner', '騎士不死於徒手', '기사는 맨손으로 죽지 않는다'], ['手にしたものは、何でも自分の宝具にして戦う', 'Whatever he picks up becomes his own Noble Phantasm', '任何到手的東西都能化為自己的寶具戰鬥', '손에 쥔 것은 무엇이든 자신의 보구로 삼아 싸운다'], { k: 'multi', N: 9, R: 30, v: 'arcs', sty: 'x_getsuga' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['縛鎖全断・過重湖光', 'Arondight Overload', '縛鎖全斷・過重湖光', '박쇄전단·과중호광'], ['剣にこめすぎた魔力を、斬った切り口から解きはなつ', 'Overloads the sword with mana and releases it through the cut', '將過量灌注於劍中的魔力從斬開的切口釋放', '검에 지나치게 담은 마력을 벤 자리에서 풀어 놓는다'], { k: 'inst', L: 1, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_getsuga' }),
+  ], [], ['ランスロット']),
+  c('ガウェイン', '', ['Gawain', '高文', '가웨인'], 'fate', 'orange', 98, ['転輪する勝利の剣', 'Excalibur Galatine', '轉輪勝利之劍', '전륜하는 승리의 검'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['聖者の数字', 'Numeral of the Saint', '聖者的數字', '성자의 숫자'], ['太陽が出ているあいだ、力が三倍になる', 'While the sun is up, his strength is tripled', '太陽當空之時，力量變為三倍', '태양이 떠 있는 동안 힘이 세 배가 된다'], { k: 'flow', L: 1, D: 5, v: 'dragon', sty: 'x_ryujin' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['転輪する勝利の剣', 'Excalibur Galatine', '轉輪勝利之劍', '전륜하는 승리의 검'], ['太陽の熱をやどした剣で、あたりを焼きはらう', 'Scorches the area with a sword that holds the heat of the sun', '以寄宿太陽之熱的劍焚燒四周', '태양의 열을 품은 검으로 주위를 불태운다'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', sty: 'x_ryujin' }),
+  ], [], ['ガウェイン']),
+  c('ネロ・クラウディウス', 'ねろくらうでぃうす', ['Nero Claudius', '尼祿・克勞狄烏斯', '네로 클라우디우스'], 'fate', 'red', 95, ['原初の火', 'Aestus Estus', '原初之火', '원초의 불'], [
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['招き蕩う黄金劇場', 'Aestus Domus Aurea', '招蕩的黃金劇場', '초탕의 황금극장'], ['自分に都合のいい黄金の劇場を作り、相手を弱らせる', 'Raises a golden theater that favors her and weakens the foe', '建起對自己有利的黃金劇場，削弱對手', '자신에게 유리한 황금 극장을 세워 상대를 약하게 한다'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_excalibur' }),
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['童女謳う華の帝政', 'Laus Saint Claudius', '童女謳歌的華之帝政', '동녀가 노래하는 꽃의 제정'], ['劇場の中で放つ、花ふぶきの一閃', 'A flash amid a storm of petals, delivered inside her theater', '在劇場中放出的花吹雪一閃', '극장 안에서 펼치는 꽃보라의 일섬'], { k: 'inst', L: 2, R: 40, O: 1, I: .6, v: 'arcH', sty: 'x_senbon' }),
+  ]),
+  c('ジークフリート', '', ['Siegfried', '齊格飛', '지크프리트'], 'fate', 'ainezu', 97, ['幻想大剣・天魔失墜', 'Balmung', '幻想大劍・天魔失墜', '환상대검·천마실추'], [
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['悪竜の血鎧', 'Armor of Fafnir', '惡龍的血鎧', '악룡의 피갑옷'], ['竜の血をあびた体は、ほとんどの攻めを通さない', 'A body bathed in dragon blood turns away nearly every attack', '沐浴過龍血的身體幾乎能擋下所有攻擊', '용의 피를 뒤집어쓴 몸은 거의 모든 공격을 통하지 않게 한다'], { k: 'aura', L: 1, R: 7, D: 5, G: 1, v: 'calm', sty: 'x_strash' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['幻想大剣・天魔失墜', 'Balmung', '幻想大劍・天魔失墜', '환상대검·천마실추'], ['竜殺しの剣から、たそがれ色の波を放つ', 'Releases a twilight-colored wave from the dragon-slaying sword', '從屠龍之劍放出黃昏色的波濤', '용을 죽인 검에서 황혼빛의 파도를 쏜다'], { k: 'inst', L: 9, R: 65, O: 1, I: 1, v: 'mega', sty: 'x_strash' }),
+  ], [], ['ジークフリート']),
+  c('岡田以蔵', 'おかだいぞう', ['Izo Okada', '岡田以藏', '오카다 이조'], 'fate', 'black', 92, ['人斬り', 'Hitokiri', '人斬', '히토키리'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['人斬り', 'Hitokiri', '人斬', '히토키리'], ['人を斬ることだけをきわめた剣', 'A sword honed for one thing only: cutting people down', '只精通斬人的劍', '사람을 베는 것만을 갈고닦은 검'], { k: 'inst', L: 1, R: 20, O: 1, v: 'arcH', sty: 'x_murasame' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['始末剣', 'Shimatsuken', '始末劍', '시말검'], ['一度見た剣技を、そっくり自分のものにして斬る', 'Makes any swordplay he has seen once entirely his own', '只要看過一次的劍技，就能完全化為己用', '한 번 본 검기를 고스란히 제 것으로 삼아 벤다'], { k: 'multi', N: 9, R: 30, v: 'arcs', sty: 'x_murasame' }),
+  ]),
+  c('宮本武蔵', 'みやもとむさし', ['Musashi Miyamoto', '宮本武藏', '미야모토 무사시'], 'fate', 'blue', 100, ['二天一流', 'Niten Ichi-ryu', '二天一流', '이천일류'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['第五勢', 'Fifth Form', '第五勢', '제5세'], ['二刀のかまえから、すきなく斬りこむ', 'Cuts in without an opening from a two-sword stance', '由雙刀架勢毫無破綻地斬入', '쌍검의 자세에서 빈틈없이 베어 들어간다'], { k: 'multi', N: 8, R: 28, v: 'arcs', sty: 'x_strash' }),
+    t(['スキル', 'Skill', '技能', '스킬'], ['天眼', 'Tengan', '天眼', '천안'], ['斬ると決めた一点に、すべてをしぼりこむ', 'Narrows everything down to the single point she has decided to cut', '將一切集中於決定要斬的那一點', '베겠다고 정한 한 점에 모든 것을 모은다'], { k: 'slow', D: 5, S: .35, v: 'eye', sty: 'x_strash' }),
+    t(['宝具', 'Noble Phantasm', '寶具', '보구'], ['六道五輪・倶利伽羅天象', 'Rikudo Gorin: Kurikara Tensho', '六道五輪・俱利伽羅天象', '육도오륜·구리가라 천상'], ['仁王の気迫で斬りきざみ、最後のひと太刀で「空」にいたる', 'Cuts with the spirit of the Nio, and the final stroke reaches "the Void"', '以仁王的氣魄斬擊，最後一刀抵達「空」', '인왕의 기백으로 베어 내고 마지막 한 칼로 "공"에 이른다'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', sty: 'x_strash' }),
+  ], ['宮本武藏']),
+  c('紺野木綿季', 'こんのゆうき', ['Yuuki Konno', '紺野木綿季', '콘노 유우키'], 'sao', 'purple', 98, ['絶剣', 'Absolute Sword', '絕劍', '절검'], [
+    t(['異名', 'Alias', '異名', '이명'], ['絶剣', 'Zekken', '絕劍', '절검'], ['だれにも負けなかった、速すぎる剣', 'A sword too fast for anyone to beat', '從未敗給任何人的極速之劍', '누구에게도 지지 않은, 너무나 빠른 검'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_tsubame' }),
+    t(['オリジナル・ソードスキル', 'Original Sword Skill', '原創劍技', '오리지널 소드 스킬'], ['マザーズ・ロザリオ', "Mother's Rosario", '聖母聖詠', '마더즈 로자리오'], ['十字をえがく十連突きと、とどめの一突き。自分で作りあげた十一連撃', 'Ten thrusts tracing a cross and one finishing thrust: the eleven-hit combo she created herself', '畫出十字的十連刺加上最後一刺。自己創出的十一連擊', '십자를 그리는 10연속 찌르기와 마지막 일격. 스스로 만들어 낸 11연격'], { k: 'multi', N: 11, R: 36, v: 'arcs', sty: 'x_tsubame' }),
+  ]),
+  c('ユージオ', '', ['Eugeo', '尤吉歐', '유지오'], 'sao', 'blue', 95, ['青薔薇の剣', 'Blue Rose Sword', '藍薔薇之劍', '푸른 장미의 검'], [
+    t(['アインクラッド流', 'Aincrad Style', '艾恩葛朗特流', '아인크라드류'], ['バーチカル', 'Vertical', '垂直斬', '버티컬'], ['キリトに教わった、まっすぐな縦斬り', 'The straight vertical cut he learned from Kirito', '向桐人學來的筆直縱斬', '키리토에게 배운 곧은 세로 베기'], { k: 'inst', L: 0, R: 14, O: 1, v: 'arcDown', sty: 'x_hyorin' }),
+    t(['武装完全支配術', 'Enhance Armament', '武裝完全支配術', '무장완전지배술'], ['咲け、青薔薇', 'Bloom, Blue Rose', '綻放吧，藍薔薇', '피어라, 푸른 장미'], ['氷のつるで相手をしばり、凍らせる', 'Binds the foe with vines of ice and freezes them', '以冰之藤蔓束縛對手並凍結', '얼음 덩굴로 상대를 묶어 얼린다'], { k: 'slow', D: 6, S: .25, v: 'eye', sty: 'x_hyorin' }),
+    t(['記憶解放術', 'Release Recollection', '記憶解放術', '기억해방술'], ['リリース・リコレクション', 'Release Recollection', '記憶解放', '릴리스 리컬렉션'], ['氷の薔薇が命を吸いあげ、花を咲かせる', 'Roses of ice drain life and burst into bloom', '冰之薔薇吸取生命並綻放', '얼음 장미가 생명을 빨아올려 꽃을 피운다'], { k: 'aura', L: 9, R: 10, D: 5, v: 'calm', sty: 'x_hyorin' }),
+  ], [], ['ユージオ']),
+  c('アリス・シンセシス・サーティ', 'ありすしんせしすさーてぃ', ['Alice Synthesis Thirty', '愛麗絲・辛賽西斯・薩提', '앨리스 신세시스 서티'], 'sao', 'yellow', 99, ['金木犀の剣', 'Osmanthus Blade', '金木犀之劍', '금목서의 검'], [
+    t(['武装完全支配術', 'Enhance Armament', '武裝完全支配術', '무장완전지배술'], ['エンハンス・アーマメント', 'Enhance Armament', '武裝完全支配', '인핸스 아머먼트'], ['刀身が数百の金の花びらに分かれ、自在に飛ぶ', 'The blade splits into hundreds of golden petals that fly at will', '刀身分成數百片金色花瓣，自在飛舞', '칼날이 수백 장의 금빛 꽃잎으로 나뉘어 자유자재로 난다'], { k: 'rain', D: 5, R: 40, O: 1, v: 'rainfall', sty: 'x_excalibur' }),
+    t(['記憶解放術', 'Release Recollection', '記憶解放術', '기억해방술'], ['リリース・リコレクション', 'Release Recollection', '記憶解放', '릴리스 리컬렉션'], ['花びらを一つにまとめ、光の柱にして撃つ', 'Gathers the petals into one and fires them as a pillar of light', '將花瓣匯聚為一，化為光柱射出', '꽃잎을 하나로 모아 빛의 기둥으로 쏜다'], { k: 'inst', L: 9, R: 65, O: 1, I: 1, v: 'mega', sty: 'x_excalibur' }),
+  ], ['アリス・ツーベルク', 'ありすつーべるく']),
 ];
 
 // ---------- 名前で引く ----------

@@ -1,5 +1,5 @@
 // エフェクト：呼吸ごとに絵を作り分ける（水＝浮世絵の波、炎、雷、風、岩、月、霞、恋、花、蛇、蟲、音、獣、日）
-import { THREE } from './lib.js?v=11272025';
+import { THREE } from './lib.js?v=11272035';
 export const STY = {
   blue: { kind: 'wave', c: '#2a78e6', c2: '#cdeaff', shape: 'drop' }, red: { kind: 'flame', c: '#ff5a1e', c2: '#ffd24a', shape: 'ember' }, yellow: { kind: 'bolt', c: '#ffcf1e', c2: '#fff7c0', shape: 'spark' },
   green: { kind: 'wind', c: '#3fd07a', c2: '#e6fff0', shape: 'streak' }, gray: { kind: 'rock', c: '#a39686', c2: '#e6dccc', shape: 'rock' }, purple: { kind: 'moon', c: '#8a4be0', c2: '#ffe9a0', shape: 'crescent' },
