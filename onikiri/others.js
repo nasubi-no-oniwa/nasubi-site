@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272140';
+import { EXTRA } from './i18n.js?v=11272150';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -117,6 +117,13 @@ export const WORKS = {
   hxh: ['HUNTER×HUNTER', 'Hunter × Hunter', 'HUNTER×HUNTER 獵人', '헌터×헌터'],
   jojo: ['ジョジョの奇妙な冒険', "JoJo's Bizarre Adventure", 'JoJo的奇妙冒險', '죠죠의 기묘한 모험'],
   fma: ['鋼の錬金術師', 'Fullmetal Alchemist', '鋼之鍊金術師', '강철의 연금술사'],
+  yaiba: ['YAIBA', 'Yaiba', '城市風雲兒', '야이바'],
+  blackcat: ['BLACK CAT', 'Black Cat', '黑貓', '블랙 캣'],
+  slayers: ['スレイヤーズ', 'Slayers', '秀逗魔導士', '슬레이어즈'],
+  zero: ['ゼロの使い魔', 'The Familiar of Zero', '零之使魔', '제로의 사역마'],
+  sakurawars: ['サクラ大戦', 'Sakura Wars', '櫻花大戰', '사쿠라 대전'],
+  madoka: ['魔法少女まどか☆マギカ', 'Puella Magi Madoka Magica', '魔法少女小圓', '마법소녀 마도카☆마기카'],
+  sailormoon: ['美少女戦士セーラームーン', 'Sailor Moon', '美少女戰士', '미소녀 전사 세일러 문'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -1050,6 +1057,51 @@ export const OTHERS = [
   c('生駒達人', 'いこまたつひと', ['Tatsuhito Ikoma', '生駒達人', '이코마 타츠히토'], 'wtrigger', 'blue', 94, ['弧月', 'Kogetsu', '弧月', '호월'], [
     t(['弧月', 'Kogetsu', '弧月', '호월'], ['居合', 'Iai', '居合', '거합'], ['実戦の居合いで、近づいたものを抜きうちに斬る', 'Cuts down whatever comes near with a combat quick-draw', '以實戰居合拔刀斬擊靠近的一切', '실전 발도로 다가온 것을 뽑자마자 벤다'], { k: 'inst', L: 1, R: 16, I: .5, v: 'bolt', a: 'iai', sty: 'x_kogetsu' }),
     t(['弧月', 'Kogetsu', '弧月', '호월'], ['生駒旋空', 'Ikoma Senku', '生駒旋空', '이코마 선공'], ['刃がのびる時間をけずって、40メートル先までとどかせる旋空', 'A Senku that trades duration for reach, cutting forty meters away', '縮短刀刃伸長的時間，使其達到四十公尺遠的旋空', '칼날이 늘어나는 시간을 줄여 40미터 앞까지 닿게 하는 선공'], { k: 'inst', L: 2, R: 45, O: 1, I: .4, v: 'arcH', sty: 'x_kogetsu' }),
+  ]),
+  // ---------- 18回目：るろうに剣心・YAIBA・BLACK CAT・スレイヤーズ・ゼロの使い魔・サクラ大戦・まどか☆マギカ・セーラームーン・幽☆遊☆白書 ----------
+  c('石動雷十太', 'いするぎらいじゅうた', ['Raijuta Isurugi', '石動雷十太', '이스루기 라이쥬타'], 'kenshin', 'green', 82, ['真古流', 'Shinko Style', '真古流', '진고류'], [
+    t(['秘剣', 'Secret Sword', '秘劍', '비검'], ['纏飯綱', 'Matoi Izuna', '纏飯綱', '마토이 이즈나'], ['刀に真空の波をまとわせて、何でも断つ', 'Wraps the blade in a vacuum wave that cuts through anything', '讓刀纏繞真空波，斬斷一切', '칼에 진공의 파도를 둘러 무엇이든 끊는다'], { k: 'inst', L: 1, R: 16, O: 1, v: 'arcDown', sty: 'x_odm' }),
+    t(['秘剣', 'Secret Sword', '秘劍', '비검'], ['飛飯綱', 'Tobi Izuna', '飛飯綱', '토비 이즈나'], ['真空の波を、はなれた相手へ飛ばす', 'Sends the vacuum wave flying at a distant foe', '將真空波射向遠處的對手', '진공의 파도를 떨어진 상대에게 날린다'], { k: 'inst', L: 0, R: 45, v: 'thrust', sty: 'x_odm' }),
+  ]),
+  c('鉄刃', 'くろがねやいば', ['Yaiba Kurogane', '鐵刃', '쿠로가네 야이바'], 'yaiba', 'yellow', 95, ['雷神剣', 'Raijin Sword', '雷神劍', '뇌신검'], [
+    t(['雷神剣', 'Raijin Sword', '雷神劍', '뇌신검'], ['かみなり斬り', 'Thunder Slash', '雷斬', '번개 베기'], ['雷をまとった剣で斬りつける', 'Strikes with a sword wreathed in lightning', '以纏繞雷電的劍斬擊', '번개를 두른 검으로 벤다'], { k: 'inst', L: 1, R: 30, O: 1, v: 'arcDown', sty: 'x_suzume' }),
+    t(['龍神剣', 'Ryujin Sword', '龍神劍', '용신검'], ['龍神剣', 'Ryujin Sword', '龍神劍', '용신검'], ['七つの玉の力を、次々に使いわけて戦う', 'Fights by switching between the powers of the seven orbs', '接連切換七顆寶珠的力量戰鬥', '일곱 구슬의 힘을 잇달아 바꿔 쓰며 싸운다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_suzume' }),
+    t(['覇王剣', 'Hao Sword', '霸王劍', '패왕검'], ['覇王剣', 'Hao Sword', '霸王劍', '패왕검'], ['最強の剣の、全力のひと振り', 'One swing of the mightiest sword at full power', '最強之劍的全力一揮', '최강의 검의 전력을 다한 일격'], { k: 'inst', L: 9, R: 60, O: 1, I: 1, v: 'mega', sty: 'x_suzume' }),
+  ], ['鐵刃']),
+  c('鬼丸猛', 'おにまるたけし', ['Takeshi Onimaru', '鬼丸猛', '오니마루 타케시'], 'yaiba', 'black', 95, ['風神剣', 'Fujin Sword', '風神劍', '풍신검'], [
+    t(['風神剣', 'Fujin Sword', '風神劍', '풍신검'], ['風神剣', 'Fujin Sword', '風神劍', '풍신검'], ['風をあやつる魔剣で、かまいたちを飛ばす', 'Sends out cutting winds with a demon sword that commands the wind', '以操縱風的魔劍放出鐮鼬', '바람을 다루는 마검으로 낫바람을 날린다'], { k: 'inst', L: 2, R: 40, v: 'arcH', sty: 'x_yoru' }),
+    t(['魔王剣', 'Mao Sword', '魔王劍', '마왕검'], ['魔王剣', 'Mao Sword', '魔王劍', '마왕검'], ['魔王の力をやどした剣で、すべてをなぎ払う', 'Sweeps everything away with a sword that holds the power of the Demon King', '以寄宿魔王之力的劍橫掃一切', '마왕의 힘이 깃든 검으로 모든 것을 휩쓴다'], { k: 'inst', L: 9, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_yoru' }),
+  ]),
+  c('セフィリア＝アークス', 'せふぃりああーくす', ['Sephiria Arks', '賽菲莉亞・亞克斯', '세피리아 아크스'], 'blackcat', 'yellow', 99, ['アークス流剣術', 'Arks-Style Swordsmanship', '亞克斯流劍術', '아크스류 검술'], [
+    t(['アークス流剣術', 'Arks Style', '亞克斯流劍術', '아크스류 검술'], ['雷霆', 'Raitei', '雷霆', '뇌정'], ['目にもとまらない高速の連続斬り', 'A string of cuts too fast to see', '快得看不見的高速連續斬', '눈에도 보이지 않는 고속 연속 베기'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_excalibur' }),
+    t(['アークス流剣術', 'Arks Style', '亞克斯流劍術', '아크스류 검술'], ['滅界', 'Mekkai', '滅界', '멸계'], ['最後の第三十六手。相手を跡形もなく斬りきざむ', 'The thirty-sixth and final move, dicing the foe until nothing remains', '最終的第三十六手。將對手切碎得不留痕跡', '마지막 제36수. 상대를 흔적도 없이 썰어 낸다'], { k: 'multi', N: 14, R: 36, v: 'arcs', sty: 'x_excalibur' }),
+  ], ['セフィリア・アークス']),
+  c('ガウリイ＝ガブリエフ', 'がうりいがぶりえふ', ['Gourry Gabriev', '高里・加布列夫', '가우리 가브리에프'], 'slayers', 'yellow', 96, ['光の剣', 'Sword of Light', '光之劍', '빛의 검'], [
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['超一流の剣', 'A First-Rate Blade', '超一流的劍', '초일류의 검'], ['頭はからっぽでも、剣の腕は大陸一', 'His head may be empty, but his sword arm is the best on the continent', '腦袋空空，劍術卻是大陸第一', '머리는 비었어도 검 솜씨는 대륙 제일'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_hyun' }),
+    t(['光の剣', 'Sword of Light', '光之劍', '빛의 검'], ['光よ！', 'Light, Come Forth!', '光啊！', '빛이여!'], ['柄だけの剣から光の刃を出して、魔族さえ斬る', 'Calls a blade of light from a bare hilt and cuts down even demons', '從只有劍柄的劍中喚出光刃，連魔族都能斬斷', '손잡이뿐인 검에서 빛의 칼날을 꺼내 마족마저 벤다'], { k: 'inst', L: 1, R: 34, O: 1, v: 'arcH', sty: 'x_hyun' }),
+  ], ['ガウリイ・ガブリエフ']),
+  c('平賀才人', 'ひらがさいと', ['Saito Hiraga', '平賀才人', '히라가 사이토'], 'zero', 'blue', 90, ['デルフリンガー', 'Derflinger', '德魯弗林加', '델프링거'], [
+    t(['使い魔のルーン', 'Familiar Rune', '使魔符文', '사역마의 룬'], ['ガンダールヴ', 'Gandálfr', '岡達魯夫', '간달브'], ['武器をにぎると、どんな武器でも達人のようにあつかえる', 'Gripping any weapon lets him wield it like a master', '只要握住武器，任何武器都能像高手般運用', '무기를 쥐면 어떤 무기든 달인처럼 다룰 수 있다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_sao' }),
+    t(['デルフリンガー', 'Derflinger', '德魯弗林加', '델프링거'], ['魔法吸収', 'Spell Absorption', '吸收魔法', '마법 흡수'], ['飛んできた魔法を、しゃべる剣が吸いこむ', 'The talking sword drinks in any spell thrown at him', '會說話的劍將飛來的魔法吸收', '날아온 마법을 말하는 검이 빨아들인다'], { k: 'aura', L: 1, R: 7, D: 4.5, G: 1, v: 'calm', sty: 'x_sao' }),
+  ]),
+  c('真宮寺さくら', 'しんぐうじさくら', ['Sakura Shinguji', '真宮寺櫻', '신구지 사쿠라'], 'sakurawars', 'sakura', 93, ['北辰一刀流', 'Hokushin Itto Style', '北辰一刀流', '북진일도류'], [
+    t(['破邪剣征', 'Haja Kensei', '破邪劍征', '파사검정'], ['桜花霧翔', 'Oka Musho', '櫻花霧翔', '앵화무상'], ['桜色の霊力の霧で、傷をいやす', 'Heals wounds with a mist of cherry-colored spirit power', '以櫻色靈力之霧治癒傷勢', '벚꽃빛 영력의 안개로 상처를 치유한다'], { k: 'inst', L: 0, R: 10, H: 60, v: 'rain', sty: 'x_senbon' }),
+    t(['破邪剣征', 'Haja Kensei', '破邪劍征', '파사검정'], ['桜花放神', 'Oka Hoshin', '櫻花放神', '앵화방신'], ['桜色の霊力を、まっすぐ撃ち出す', 'Fires cherry-colored spirit power straight ahead', '將櫻色靈力筆直射出', '벚꽃빛 영력을 곧장 쏘아 낸다'], { k: 'inst', L: 1, R: 50, O: 1, v: 'thrust', sty: 'x_senbon' }),
+    t(['破邪剣征', 'Haja Kensei', '破邪劍征', '파사검정'], ['百花繚乱', 'Hyakka Ryoran', '百花繚亂', '백화요란'], ['花びらとともに突進して、まとめて斬る', 'Charges amid a swirl of petals and cuts them all down', '與花瓣一同突進，一併斬擊', '꽃잎과 함께 돌진해 한꺼번에 벤다'], { k: 'inst', L: 2, R: 40, O: 1, I: .6, v: 'mega', sty: 'x_senbon' }),
+  ], ['真宮寺櫻']),
+  c('美樹さやか', 'みきさやか', ['Sayaka Miki', '美樹沙耶香', '미키 사야카'], 'madoka', 'blue', 85, ['魔法少女の剣', "A Magical Girl's Sword", '魔法少女之劍', '마법소녀의 검'], [
+    t(['固有魔法', 'Innate Magic', '固有魔法', '고유 마법'], ['治癒', 'Healing', '治癒', '치유'], ['願いから生まれた魔法。傷がすぐにふさがる', 'Magic born of her wish: wounds close at once', '由願望誕生的魔法。傷口立刻癒合', '소원에서 태어난 마법. 상처가 곧바로 아문다'], { k: 'inst', L: 0, R: 10, H: 70, v: 'rain', sty: 'x_getsuga' }),
+    t(['魔法', 'Magic', '魔法', '마법'], ['スクワルタトーレ', 'Squartatore', '開膛手', '스콰르타토레'], ['すばやく飛びこみ、続けざまに斬りつける', 'Darts in and cuts again and again', '迅速衝入，接連斬擊', '재빨리 뛰어들어 잇달아 벤다'], { k: 'multi', N: 9, R: 28, v: 'arcs', sty: 'x_getsuga' }),
+    t(['魔法', 'Magic', '魔法', '마법'], ['スパークエッジ', 'Sparkle Edge', '火花利刃', '스파크 엣지'], ['上から叩きつけ、衝撃であたりを吹き飛ばす', 'Slams down from above, and the shock blows the area away', '由上方砸下，以衝擊炸飛四周', '위에서 내리쳐 충격으로 주위를 날려 버린다'], { k: 'inst', L: 1, R: 18, O: 1, v: 'fall', sty: 'x_getsuga' }),
+  ], ['美樹沙耶香']),
+  c('天王はるか', 'てんおうはるか', ['Haruka Tenou', '天王遙', '텐오 하루카'], 'sailormoon', 'blue', 95, ['スペース・ソード', 'Space Sword', '太空劍', '스페이스 소드'], [
+    t(['必殺技', 'Finishing Move', '必殺技', '필살기'], ['ワールド・シェイキング', 'World Shaking', '天界震', '월드 셰이킹'], ['地面をはしる光の球を撃ちこむ', 'Fires an orb of light that tears across the ground', '射出在地面奔馳的光球', '땅을 달리는 빛의 구슬을 쏜다'], { k: 'inst', L: 1, R: 45, O: 1, v: 'thrust', sty: 'x_trunks' }),
+    t(['必殺技', 'Finishing Move', '必殺技', '필살기'], ['スペース・ソード・ブラスター', 'Space Sword Blaster', '太空劍擊', '스페이스 소드 블래스터'], ['聖剣から、光の斬撃を飛ばす', 'Fires slashes of light from the holy sword', '從聖劍放出光之斬擊', '성검에서 빛의 참격을 날린다'], { k: 'inst', L: 2, R: 40, O: 1, v: 'arcH', sty: 'x_trunks' }),
+  ], ['天王遙'], ['セーラーウラヌス']),
+  c('桑原和真', 'くわばらかずま', ['Kazuma Kuwabara', '桑原和真', '쿠와바라 카즈마'], 'yuhaku', 'orange', 85, ['霊剣', 'Spirit Sword', '靈劍', '영검'], [
+    t(['霊気', 'Spirit Energy', '靈氣', '영기'], ['霊剣', 'Spirit Sword', '靈劍', '영검'], ['霊気を剣の形にして斬る', 'Shapes spirit energy into a sword and cuts', '將靈氣化為劍形斬擊', '영기를 검 모양으로 만들어 벤다'], { k: 'inst', L: 1, R: 18, v: 'arcH', sty: 'x_tessaiga' }),
+    t(['霊気', 'Spirit Energy', '靈氣', '영기'], ['のびる霊剣', 'Extending Spirit Sword', '伸長的靈劍', '늘어나는 영검'], ['霊剣を長くのばして、遠くの相手を突く', 'Extends the Spirit Sword to stab a distant foe', '將靈劍伸長刺向遠處的對手', '영검을 길게 늘여 멀리 있는 상대를 찌른다'], { k: 'inst', L: 0, R: 45, v: 'thrust', sty: 'x_tessaiga' }),
+    t(['霊気', 'Spirit Energy', '靈氣', '영기'], ['次元刀', 'Dimension Sword', '次元刀', '차원도'], ['空間そのものを斬り裂く', 'Cuts through space itself', '將空間本身斬裂', '공간 자체를 베어 가른다'], { k: 'inst', L: 9, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_tessaiga' }),
   ]),
 ];
 
