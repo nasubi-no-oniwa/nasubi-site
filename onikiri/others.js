@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11280650';
+import { EXTRA } from './i18n.js?v=11280656';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -141,6 +141,14 @@ export const WORKS = {
   kr_ooo: ['仮面ライダーオーズ', 'Kamen Rider OOO', '假面騎士OOO', '가면라이더 오즈'],
   kr_wizard: ['仮面ライダーウィザード', 'Kamen Rider Wizard', '假面騎士Wizard', '가면라이더 위자드'],
   kr_agito: ['仮面ライダーアギト', 'Kamen Rider Agito', '假面騎士Agito', '가면라이더 아기토'],
+  kr_kuuga: ['仮面ライダークウガ', 'Kamen Rider Kuuga', '假面騎士Kuuga', '가면라이더 쿠우가'],
+  kr_black: ['仮面ライダーBLACK', 'Kamen Rider Black', '假面騎士BLACK', '가면라이더 BLACK'],
+  kr_w: ['仮面ライダーW', 'Kamen Rider W', '假面騎士W', '가면라이더 더블'],
+  kr_drive: ['仮面ライダードライブ', 'Kamen Rider Drive', '假面騎士Drive', '가면라이더 드라이브'],
+  kr_ghost: ['仮面ライダーゴースト', 'Kamen Rider Ghost', '假面騎士Ghost', '가면라이더 고스트'],
+  kr_zio: ['仮面ライダージオウ', 'Kamen Rider Zi-O', '假面騎士時王', '가면라이더 지오'],
+  kr_zeroone: ['仮面ライダーゼロワン', 'Kamen Rider Zero-One', '假面騎士01', '가면라이더 제로원'],
+  kr_geats: ['仮面ライダーギーツ', 'Kamen Rider Geats', '假面騎士Geats', '가면라이더 기츠'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -1353,6 +1361,49 @@ export const OTHERS = [
     t(['フレイムフォーム', 'Flame Form', 'Flame Form', '플레임 폼'], ['セイバースラッシュ', 'Saber Slash', '軍刀斬', '세이버 슬래시'], ['鍔をひらいた剣で、炎の一太刀をあびせる', 'Opens the guard of his sword and delivers a single stroke of flame', '展開劍鍔，施以火焰一刀', '날밑을 펼친 검으로 불꽃의 한칼을 날린다'], { k: 'inst', L: 1, R: 30, v: 'arcH', a: 'iai', sty: 'x_homura' }),
     t(['シャイニングフォーム', 'Shining Form', 'Shining Form', '샤이닝 폼'], ['シャイニングクラッシュ', 'Shining Clash', '閃耀衝擊', '샤이닝 클래시'], ['二本に分けた剣で、光の速さで斬りつける', 'Splits the sword in two and cuts at the speed of light', '將劍分為兩把，以光速斬擊', '둘로 나눈 검으로 빛의 속도로 벤다'], { k: 'multi', N: 6, R: 30, v: 'arcs', sty: 'x_excalibur' }),
   ], ['仮面ライダーアギト']),
+  // ---------- 24回目：ほかの仮面ライダーの剣士（つづき） ----------
+  c('乾巧', 'いぬいたくみ', ['Takumi Inui', '乾巧', '이누이 타쿠미'], 'kr_faiz', 'red', 94, ['ファイズエッジ', 'Faiz Edge', 'Faiz Edge', '파이즈 엣지'], [
+    t(['エクシードチャージ', 'Exceed Charge', 'Exceed Charge', '익시드 차지'], ['スパークルカット', 'Sparkle Cut', '火花斬', '스파클 컷'], ['赤い光の波で敵をとらえ、斬りぬける', 'Catches the enemy in a wave of red light and cuts through', '以紅色光波捕捉敵人後斬過', '붉은 빛의 파동으로 적을 붙잡고 베어 나간다'], { k: 'inst', L: 1, R: 34, v: 'arcH', sty: 'x_haoshoku' }),
+    t(['ブラスターフォーム', 'Blaster Form', 'Blaster Form', '블래스터 폼'], ['フォトンブレイカー', 'Photon Breaker', '光子破壞', '포톤 브레이커'], ['大きな光の刃で、まとめて斬りさく', 'Cuts them all open with a great blade of light', '以巨大光刃一併斬裂', '커다란 빛의 칼날로 한꺼번에 베어 가른다'], { k: 'inst', L: 2, R: 44, v: 'mega', sty: 'x_erza' }),
+  ], ['仮面ライダーファイズ', '仮面ライダー555']),
+  c('五代雄介', 'ごだいゆうすけ', ['Yusuke Godai', '五代雄介', '고다이 유스케'], 'kr_kuuga', 'purple', 97, ['タイタンソード', 'Titan Sword', 'Titan Sword', '타이탄 소드'], [
+    t(['タイタンフォーム', 'Titan Form', 'Titan Form', '타이탄 폼'], ['カラミティタイタン', 'Calamity Titan', '災厄泰坦', '캘러미티 타이탄'], ['攻撃を受けながら歩みより、剣でつらぬく', 'Walks forward through the blows and runs them through with his sword', '承受攻擊步步逼近，以劍貫穿', '공격을 받으며 걸어가 검으로 꿰뚫는다'], { k: 'inst', L: 1, R: 28, v: 'thrust', sty: 'x_oden' }),
+    t(['ライジングタイタン', 'Rising Titan', 'Rising Titan', '라이징 타이탄'], ['ライジングカラミティタイタン', 'Rising Calamity Titan', '升華災厄泰坦', '라이징 캘러미티 타이탄'], ['雷の力をのせた大剣でつらぬく', 'Runs them through with a greatsword carrying the power of lightning', '以承載雷電之力的大劍貫穿', '번개의 힘을 실은 대검으로 꿰뚫는다'], { k: 'inst', L: 1, R: 38, v: 'thrust', sty: 'x_trunks' }),
+  ], ['仮面ライダークウガ']),
+  c('南光太郎', 'みなみこうたろう', ['Kotaro Minami', '南光太郎', '미나미 코타로'], 'kr_black', 'black', 98, ['リボルケイン', 'Revolcane', 'Revolcane', '리볼케인'], [
+    t(['仮面ライダーBLACK RX', 'Kamen Rider Black RX', '假面騎士BLACK RX', '가면라이더 BLACK RX'], ['リボルクラッシュ', 'Revol Crash', 'Revol粉碎', '리볼 크래시'], ['光の杖を突きさし、力を流しこむ', 'Drives in the staff of light and pours its power through', '刺入光之杖並注入力量', '빛의 지팡이를 꽂아 힘을 흘려 넣는다'], { k: 'inst', L: 1, R: 36, v: 'thrust', sty: 'x_excalibur' }),
+    t(['バイオライダー', 'Bio Rider', 'Bio Rider', '바이오 라이더'], ['スパークカッター', 'Spark Cutter', '火花切割', '스파크 커터'], ['水のように身をかわし、光る刃で斬る', 'Slips aside like water and cuts with a shining blade', '如水般閃身，以發光之刃斬擊', '물처럼 몸을 피하고 빛나는 칼날로 벤다'], { k: 'inst', L: 1, R: 30, v: 'arcH', sty: 'x_shigure' }),
+  ], ['仮面ライダーBLACK RX', '仮面ライダーブラックRX', '仮面ライダーBLACK', '仮面ライダーブラック']),
+  c('秋月信彦', 'あきづきのぶひこ', ['Nobuhiko Akizuki', '秋月信彥', '아키즈키 노부히코'], 'kr_black', 'gray', 96, ['サタンサーベル', 'Satan Saber', 'Satan Saber', '사탄 사벨'], [
+    t(['サタンサーベル', 'Satan Saber', 'Satan Saber', '사탄 사벨'], ['紅き魔剣', 'Crimson Demon Blade', '赤紅魔劍', '붉은 마검'], ['世紀王の赤い剣で、ゆっくりと斬りふせる', 'Cuts them down, unhurried, with the red sword of the Century King', '以世紀王的紅劍緩緩斬倒', '세기왕의 붉은 검으로 천천히 베어 넘긴다'], { k: 'inst', L: 1, R: 30, v: 'arcDown', sty: 'x_murasame' }),
+    t(['シャドームーン', 'Shadow Moon', 'Shadow Moon', '섀도 문'], ['シャドービーム', 'Shadow Beam', '暗影光束', '섀도 빔'], ['手から緑の稲妻をはなつ', 'Looses green lightning from his hands', '自手中放出綠色閃電', '손에서 녹색 번개를 내뿜는다'], { k: 'inst', L: 1, R: 40, v: 'bolt', sty: 'x_santoryu' }),
+  ], ['シャドームーン', '秋月信彥']),
+  c('照井竜', 'てるいりゅう', ['Ryu Terui', '照井龍', '테루이 류'], 'kr_w', 'red', 91, ['エンジンブレード', 'Engine Blade', 'Engine Blade', '엔진 블레이드'], [
+    t(['エンジンマキシマムドライブ', 'Engine Maximum Drive', 'Engine Maximum Drive', '엔진 맥시멈 드라이브'], ['エースラッシャー', 'A-Slasher', 'A斬擊', '에이 슬래셔'], ['「A」の字の斬撃を飛ばす', 'Sends out a slash in the shape of the letter A', '放出「A」字形斬擊', '「A」자 모양의 참격을 날린다'], { k: 'inst', L: 1, R: 36, v: 'arcUp', sty: 'x_haoshoku' }),
+    t(['エンジンマキシマムドライブ', 'Engine Maximum Drive', 'Engine Maximum Drive', '엔진 맥시멈 드라이브'], ['ダイナミックエース', 'Dynamic Ace', '動感王牌', '다이내믹 에이스'], ['重い剣で「A」の字に斬りぬける', 'Cuts through in the shape of an A with his heavy sword', '以沉重之劍斬出「A」字', '무거운 검으로 「A」자로 베어 나간다'], { k: 'inst', L: 1, R: 30, v: 'arcDown', sty: 'x_erza' }),
+  ], ['仮面ライダーアクセル', '照井龍']),
+  c('泊進ノ介', 'とまりしんのすけ', ['Shinnosuke Tomari', '泊進之介', '토마리 신노스케'], 'kr_drive', 'red', 92, ['ハンドル剣', 'Handle-Ken', '方向盤劍', '핸들검'], [
+    t(['ハンドル剣', 'Handle-Ken', '方向盤劍', '핸들검'], ['ターンスラッシュ', 'Turn Slash', '轉向斬', '턴 슬래시'], ['ハンドルを切り、回りながら斬る', 'Turns the wheel and cuts as he spins', '轉動方向盤，旋轉斬擊', '핸들을 꺾어 돌면서 벤다'], { k: 'inst', L: 2, R: 28, v: 'spin', sty: 'x_hiten' }),
+    t(['ハンドル剣', 'Handle-Ken', '方向盤劍', '핸들검'], ['ドリフトスラッシュ', 'Drift Slash', '甩尾斬', '드리프트 슬래시'], ['横すべりしながら、つづけて斬りつける', 'Slides sideways and keeps on cutting', '甩尾滑行並連續斬擊', '옆으로 미끄러지며 연이어 벤다'], { k: 'multi', N: 6, R: 24, v: 'arcs', sty: 'x_hiten' }),
+  ], ['仮面ライダードライブ', '泊進之介', '泊進の介']),
+  c('天空寺タケル', 'てんくうじたける', ['Takeru Tenkuji', '天空寺尊', '텐쿠지 타케루'], 'kr_ghost', 'orange', 93, ['ガンガンセイバー', 'Gan Gun Saber', 'Gan Gun Saber', '간간 세이버'], [
+    t(['オレ魂', 'Ore Damashii', '我魂', '오레 혼'], ['オメガブレイク', 'Omega Break', '奧米伽破壞', '오메가 브레이크'], ['命を燃やして、まっすぐ斬りおろす', 'Burns his life bright and cuts straight down', '燃燒生命，筆直劈下', '목숨을 불태워 곧게 내리벤다'], { k: 'inst', L: 1, R: 32, v: 'arcDown', sty: 'x_homura' }),
+    t(['ムサシ魂', 'Musashi Damashii', '武藏魂', '무사시 혼'], ['オメガスラッシュ', 'Omega Slash', '奧米伽斬擊', '오메가 슬래시'], ['剣豪の二刀流で、斬りきざむ', 'Carves them up with the two-sword style of a master swordsman', '以劍豪的二刀流斬碎', '검호의 이도류로 난도질한다'], { k: 'multi', N: 8, R: 28, v: 'arcs', sty: 'x_hiten' }),
+  ], ['仮面ライダーゴースト', '天空寺尊']),
+  c('常磐ソウゴ', 'ときわそうご', ['Sougo Tokiwa', '常磐莊吾', '토키와 소고'], 'kr_zio', 'pink', 99, ['ジカンギレード', 'Zikan Girade', '時間劍槍', '지칸기레이드'], [
+    t(['ジカンギレード', 'Zikan Girade', '時間劍槍', '지칸기레이드'], ['ギリギリスラッシュ', 'Giri Giri Slash', '極限斬擊', '기리기리 슬래시'], ['時計の針のように、ぐるりと斬る', 'Cuts a full circle like the hands of a clock', '如時鐘指針般繞圈斬擊', '시곗바늘처럼 빙 돌려 벤다'], { k: 'inst', L: 2, R: 30, v: 'spin', sty: 'x_erza' }),
+    t(['サイキョーギレード', 'Saikyo Girade', '最強劍', '사이쿄기레이드'], ['覇王斬り', 'Haou Giri', '霸王斬', '패왕 베기'], ['王の一太刀を、まっすぐ振りおろす', 'Brings the stroke of a king straight down', '將王者一刀筆直揮下', '왕의 한칼을 곧게 내리친다'], { k: 'inst', L: 1, R: 36, O: 1, v: 'fall', sty: 'x_excalibur' }),
+    t(['サイキョージカンギレード', 'Saikyo Zikan Girade', '最強時間劍', '사이쿄 지칸기레이드'], ['キングギリギリスラッシュ', 'King Giri Giri Slash', '王者極限斬擊', '킹 기리기리 슬래시'], ['「ジオウサイキョウ」の巨大な光の刃で斬りはらう', 'Sweeps them away with a giant blade of light that reads "Zi-O Saikyo"', '以寫著「時王最強」的巨大光刃橫掃', '「지오 사이쿄」의 거대한 빛의 칼날로 베어 넘긴다'], { k: 'inst', L: 2, R: 46, v: 'mega', sty: 'x_excalibur' }),
+  ], ['仮面ライダージオウ', '常盤ソウゴ', '常磐荘吾']),
+  c('飛電或人', 'ひでんあると', ['Aruto Hiden', '飛電或人', '히덴 아루토'], 'kr_zeroone', 'yellow', 95, ['プログライズホッパーブレード', 'Progrise Hopper Blade', 'Progrise Hopper Blade', '프로그라이즈 호퍼 블레이드'], [
+    t(['アタッシュカリバー', 'Attache Calibur', 'Attache Calibur', '어태시 칼리버'], ['カバンストラッシュ', 'Kaban Strash', '公事包斬擊', '카반 스트래시'], ['カバンから変形した剣で、斬撃を飛ばす', 'Sends out a slash from the sword that unfolds from a briefcase', '以公事包變形的劍放出斬擊', '가방에서 변형한 검으로 참격을 날린다'], { k: 'inst', L: 1, R: 32, v: 'arcH', sty: 'x_trunks' }),
+    t(['メタルクラスタホッパー', 'Metal Cluster Hopper', 'Metal Cluster Hopper', '메탈 클러스터 호퍼'], ['プログライジングストラッシュ', 'Progrising Strash', 'Progrising斬擊', '프로그라이징 스트래시'], ['銀色のバッタの群れを、斬撃にして飛ばす', 'Turns a swarm of silver grasshoppers into a flying slash', '將銀色蝗群化為斬擊放出', '은빛 메뚜기 떼를 참격으로 바꿔 날린다'], { k: 'inst', L: 2, R: 42, v: 'mega', sty: 'x_soul' }),
+  ], ['仮面ライダーゼロワン', '仮面ライダー01']),
+  c('桜井景和', 'さくらいけいわ', ['Keiwa Sakurai', '櫻井景和', '사쿠라이 케이와'], 'kr_geats', 'green', 92, ['武刃', 'Bujin Sword', '武刃', '무인'], [
+    t(['ニンジャデュアラー', 'Ninja Dueler', 'Ninja Dueler', '닌자 듀얼러'], ['タクティカルスラッシュ', 'Tactical Slash', '戰術斬擊', '택티컬 슬래시'], ['忍者の双剣で、すばやく斬りつける', 'Cuts swiftly with the twin blades of a ninja', '以忍者雙劍迅速斬擊', '닌자의 쌍검으로 재빠르게 벤다'], { k: 'multi', N: 7, R: 24, v: 'arcs', sty: 'x_santoryu' }),
+    t(['ブジンソード', 'Bujin Sword', 'Bujin Sword', '부진 소드'], ['ブジンソードストライク', 'Bujin Sword Strike', 'Bujin Sword打擊', '부진 소드 스트라이크'], ['黒い刀を抜きはなち、一閃する', 'Draws the black katana and cuts in a single flash', '拔出黑刀一閃而過', '검은 칼을 뽑아 일섬한다'], { k: 'inst', L: 1, R: 36, v: 'arcH', a: 'iai', sty: 'x_yami' }),
+    t(['ブジンソード', 'Bujin Sword', 'Bujin Sword', '부진 소드'], ['ブジンソードビクトリー', 'Bujin Sword Victory', 'Bujin Sword勝利', '부진 소드 빅토리'], ['闇をまとった大きな一太刀', 'One great stroke wrapped in darkness', '纏繞黑暗的巨大一刀', '어둠을 두른 커다란 한칼'], { k: 'inst', L: 2, R: 44, v: 'mega', sty: 'x_kuro' }),
+  ], ['仮面ライダータイクーン']),
 ];
 
 // ---------- 名前で引く ----------
