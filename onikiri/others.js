@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11271835';
+import { EXTRA } from './i18n.js?v=11271850';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -42,6 +42,17 @@ export const OT_STY = {
   x_kaze: { kind: 'wind', c: '#9fd8ff', c2: '#ffffff', shape: 'streak', fl: 'f_cross' },
   x_excalibur: { kind: 'sun', c: '#ffd24a', c2: '#fffbe0', shape: 'spark', fl: 'f_pillar' },
   x_shigure: { kind: 'wave', c: '#3f9cff', c2: '#d8f0ff', shape: 'drop', fl: 'f_fang' },
+  x_toyako: { kind: 'wind', c: '#e8ecf4', c2: '#ffffff', shape: 'streak', fl: 'f_cross' },
+  x_shinsen: { kind: 'claw', c: '#3a3a48', c2: '#ffd24a', shape: 'spark', fl: 'f_cross' },
+  x_okita: { kind: 'petal', c: '#f7a8c0', c2: '#fff4f8', shape: 'petal', fl: 'f_cross' },
+  x_bazooka: { kind: 'boom', c: '#ff8a1e', c2: '#fff0b0', shape: 'ember', fl: 'f_quake' },
+  x_katsura: { kind: 'wind', c: '#6f86ff', c2: '#e0e6ff', shape: 'streak', fl: 'f_fang' },
+  x_kihei: { kind: 'moon', c: '#8a2be2', c2: '#ffb0e8', shape: 'crescent', fl: 'f_crescent' },
+  x_hoshina: { kind: 'claw', c: '#a06cff', c2: '#f0e6ff', shape: 'streak', fl: 'f_cross' },
+  x_erza: { kind: 'bolt', c: '#ff4060', c2: '#ffe0e6', shape: 'spark', fl: 'f_fang' },
+  x_jao: { kind: 'flame', c: '#2a0a3a', c2: '#b040ff', shape: 'ember', fl: 'f_pillar' },
+  x_counter: { kind: 'ribbon', c: '#59e0c0', c2: '#ffffff', shape: 'spark', fl: 'f_crescent' },
+  x_kogetsu: { kind: 'moon', c: '#7fd0ff', c2: '#f0faff', shape: 'crescent', fl: 'f_crescent' },
 };
 
 // 作品
@@ -55,6 +66,12 @@ export const WORKS = {
   dai: ['ダイの大冒険', 'Dragon Quest: The Adventure of Dai', '勇者鬥惡龍 達伊的大冒險', '드래곤 퀘스트 다이의 대모험'],
   bclover: ['ブラッククローバー', 'Black Clover', '黑色五葉草', '블랙 클로버'],
   fate: ['Fate', 'Fate', 'Fate', '페이트'],
+  gintama: ['銀魂', 'Gintama', '銀魂', '은혼'],
+  kaiju8: ['怪獣8号', 'Kaiju No. 8', '怪獸8號', '괴수 8호'],
+  fairytail: ['FAIRY TAIL', 'Fairy Tail', 'FAIRY TAIL 魔導少年', '페어리 테일'],
+  yuhaku: ['幽☆遊☆白書', 'Yu Yu Hakusho', '幽遊白書', '유유백서'],
+  nanatsu: ['七つの大罪', 'The Seven Deadly Sins', '七大罪', '일곱 개의 대죄'],
+  wtrigger: ['ワールドトリガー', 'World Trigger', '境界觸發者', '월드 트리거'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -286,11 +303,76 @@ export const OTHERS = [
     t(['攻式', 'Offensive Form', '攻式', '공식'], ['九の型 うつし雨', '9th Form: Utsushi Ame', '九之型 映雨', '제9형 비치는 비'], ['水面に自分の姿を映して惑わせ、背後から斬る', 'Deceives with a reflection on the water and cuts from behind', '以水面映出自己的身影迷惑對手，從背後斬擊', '수면에 제 모습을 비춰 현혹하고 등 뒤에서 벤다'], { k: 'multi', N: 7, R: 30, v: 'arcs', sty: 'x_shigure' }),
     t(['特式', 'Special Form', '特式', '특식'], ['十の型 燕特攻', '10th Form: Scontro di Rondine', '十之型 燕特攻', '제10형 제비 특공'], ['雨の炎の燕とともに、水をまとって突っこむ', 'Charges cloaked in water alongside a swallow of Rain Flame', '與雨之炎的燕子一同身纏水流衝入', '비의 불꽃 제비와 함께 물을 두르고 돌진한다'], { k: 'inst', L: 2, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_shigure' }),
   ]),
+  // ---------- 4回目：銀魂・怪獣8号・FAIRY TAIL・幽☆遊☆白書・七つの大罪・ワールドトリガー ----------
+  c('坂田銀時', 'さかたぎんとき', ['Gintoki Sakata', '坂田銀時', '사카타 긴토키'], 'gintama', 'white', 99, ['木刀「洞爺湖」', 'Wooden Sword "Lake Toya"', '木刀「洞爺湖」', '목검 「도야코」'], [
+    t(['木刀', 'Wooden Sword', '木刀', '목검'], ['洞爺湖', 'Lake Toya', '洞爺湖', '도야코'], ['通販で買った木刀のひと振り。なぜか何でも叩き斬れる', 'One swing of a wooden sword bought by mail order. Somehow it cuts through anything', '郵購買來的木刀一揮。不知為何什麼都砍得斷', '통신 판매로 산 목검의 한 번 휘두르기. 어째선지 뭐든 베어 버린다'], { k: 'inst', L: 1, R: 18, O: 1, v: 'arcDown', sty: 'x_toyako' }),
+    t(['異名', 'Alias', '異名', '이명'], ['白夜叉', 'Shiroyasha', '白夜叉', '백야차'], ['攘夷戦争で敵にも味方にも恐れられた、鬼神のような戦いぶり', 'Fights like the demon god feared by friend and foe alike in the Joi War', '在攘夷戰爭中令敵我雙方都畏懼、宛如鬼神的戰鬥', '양이 전쟁에서 적도 아군도 두려워한, 귀신 같은 싸움'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_toyako' }),
+    t(['万事屋', 'Yorozuya', '萬事屋', '해결사'], ['俺の剣が届く範囲は俺の国だ', 'The Reach of My Sword Is My Country', '我的劍所及之處就是我的國家', '내 검이 닿는 범위는 내 나라다'], ['間合いに入ったものは、すべて守り、すべて斬る', 'Whatever enters his reach, he protects it all and cuts it all', '進入攻擊範圍的一切，全部守護，全部斬斷', '간격 안에 들어온 것은 모두 지키고 모두 벤다'], { k: 'aura', L: 2, R: 9, D: 5, O: 1, v: 'spin', sty: 'x_toyako' }),
+  ]),
+  c('土方十四郎', 'ひじかたとうしろう', ['Toshiro Hijikata', '土方十四郎', '히지카타 토시로'], 'gintama', 'black', 95, ['真選組 副長', 'Shinsengumi Vice-Commander', '真選組 副長', '진선조 부장'], [
+    t(['真選組', 'Shinsengumi', '真選組', '진선조'], ['御用改め', 'Official Inspection', '御用改', '어용 검문'], ['「御用改めである！」と踏みこみ、次々に斬り伏せる', 'Storms in shouting "Official inspection!" and cuts them down one after another', '大喊「御用改！」闖入，接連斬倒', '"어용 검문이다!" 하고 뛰어들어 잇달아 베어 넘긴다'], { k: 'multi', N: 7, R: 28, v: 'arcs', sty: 'x_shinsen' }),
+    t(['異名', 'Alias', '異名', '이명'], ['鬼の副長', 'Demon Vice-Commander', '鬼之副長', '귀신 부장'], ['隊の規律を破るものは斬る。近づくものも斬る', 'Cuts down anyone who breaks the rules. And anyone who comes near', '違反隊規者斬。靠近者也斬', '대의 규율을 어기는 자는 벤다. 다가오는 자도 벤다'], { k: 'aura', L: 1, R: 8, D: 4, v: 'spin', sty: 'x_shinsen' }),
+    t(['妖刀', 'Cursed Sword', '妖刀', '요도'], ['村麻紗', 'Muramasha', '村麻紗', '무라마샤'], ['持ち主をヘタレたオタクにしてしまう妖刀。まわりの空気までゆるむ', 'A cursed sword that turns its owner into a spineless otaku. Even the air around goes slack', '會把持有者變成懦弱宅男的妖刀。連周圍的氣氛都鬆懈下來', '주인을 한심한 오타쿠로 만들어 버리는 요도. 주위의 공기까지 풀어진다'], { k: 'slow', D: 5, S: .4, v: 'eye', sty: 'x_shinsen' }),
+  ]),
+  c('沖田総悟', 'おきたそうご', ['Sogo Okita', '沖田總悟', '오키타 소고'], 'gintama', 'sakura', 97, ['真選組 一番隊隊長', 'Shinsengumi 1st Division Captain', '真選組 一番隊隊長', '진선조 1번대 대장'], [
+    t(['真選組', 'Shinsengumi', '真選組', '진선조'], ['一番隊隊長', '1st Division Captain', '一番隊隊長', '1번대 대장'], ['真選組でいちばんの剣の腕。涼しい顔で斬りぬける', 'The best swordsman in the Shinsengumi. Cuts through with a cool face', '真選組首屈一指的劍術。若無其事地斬穿而過', '진선조 제일의 검 솜씨. 태연한 얼굴로 베고 지나간다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_okita' }),
+    t(['愛刀', 'Favorite Sword', '愛刀', '애도'], ['菊一文字RX-78', 'Kikuichimonji RX-78', '菊一文字RX-78', '키쿠이치몬지 RX-78'], ['柄に音楽プレーヤーがついた名刀。曲に乗って連続で斬る', 'A famed sword with a music player in the hilt. Cuts in rhythm with the song', '刀柄附有音樂播放器的名刀。隨著樂曲連續斬擊', '손잡이에 음악 플레이어가 달린 명도. 곡에 맞춰 연속으로 벤다'], { k: 'multi', N: 8, R: 28, v: 'arcs', sty: 'x_okita' }),
+    t(['真選組', 'Shinsengumi', '真選組', '진선조'], ['バズーカ', 'Bazooka', '火箭筒', '바주카'], ['土方さんをねらってぶっ放す。ついでに前のものが吹き飛ぶ', 'Fired at Hijikata. Whatever is in front gets blown away too', '瞄準土方先生發射。順便把前方的東西炸飛', '히지카타 씨를 노리고 쏜다. 덤으로 앞의 것들이 날아간다'], { k: 'inst', L: 2, R: 40, O: 1, v: 'storm', sty: 'x_bazooka' }),
+  ]),
+  c('桂小太郎', 'かつらこたろう', ['Kotaro Katsura', '桂小太郎', '카츠라 코타로'], 'gintama', 'bluepurple', 96, ['攘夷志士', 'Joi Patriot', '攘夷志士', '양이지사'], [
+    t(['異名', 'Alias', '異名', '이명'], ['狂乱の貴公子', 'Noble of Fury', '狂亂的貴公子', '광란의 귀공자'], ['攘夷戦争でそう呼ばれた、激しい剣さばき', 'The fierce swordplay that earned him that name in the Joi War', '在攘夷戰爭中贏得此名的激烈劍技', '양이 전쟁에서 그렇게 불린 격렬한 칼솜씨'], { k: 'multi', N: 9, R: 30, v: 'arcs', sty: 'x_katsura' }),
+    t(['異名', 'Alias', '異名', '이명'], ['逃げの小太郎', 'Runaway Kotaro', '逃跑小太郎', '도망자 코타로'], ['どんな包囲もすり抜けて逃げきる。誰にも捕まらない', 'Slips through any encirclement and gets away. No one can catch him', '任何包圍都能溜走逃脫。誰也抓不到', '어떤 포위도 빠져나가 달아난다. 누구에게도 잡히지 않는다'], { k: 'flow', L: 1, D: 6, v: 'ribbon', sty: 'x_katsura' }),
+    t(['攘夷志士', 'Joi Patriot', '攘夷志士', '양이지사'], ['時限爆弾', 'Time Bomb', '定時炸彈', '시한폭탄'], ['ふところから出した爆弾を転がす', 'Rolls out a bomb pulled from his robes', '從懷中掏出炸彈滾出去', '품에서 꺼낸 폭탄을 굴린다'], { k: 'inst', L: 9, R: 30, O: 1, v: 'storm', sty: 'x_bazooka' }),
+  ]),
+  c('高杉晋助', 'たかすぎしんすけ', ['Shinsuke Takasugi', '高杉晉助', '타카스기 신스케'], 'gintama', 'purple', 98, ['鬼兵隊 総督', 'Kiheitai Commander', '鬼兵隊 總督', '귀병대 총독'], [
+    t(['鬼兵隊', 'Kiheitai', '鬼兵隊', '귀병대'], ['総督の一太刀', "The Commander's Stroke", '總督的一刀', '총독의 한 칼'], ['煙管をくわえたまま、すれ違いざまに斬る', 'Cuts while passing, pipe still in his mouth', '叼著煙管，擦身而過時斬擊', '곰방대를 문 채 스쳐 지나가며 벤다'], { k: 'inst', L: 1, R: 30, I: .5, v: 'dash', a: 'iai', sty: 'x_kihei' }),
+    t(['鬼兵隊', 'Kiheitai', '鬼兵隊', '귀병대'], ['黒い獣', 'The Black Beast', '黑色野獸', '검은 짐승'], ['「俺の中の黒い獣」が止まるまで、斬りつづける', 'Keeps cutting until "the black beast inside me" goes quiet', '直到「我心中的黑色野獸」平息為止，不斷斬擊', '"내 안의 검은 짐승"이 멎을 때까지 계속 벤다'], { k: 'flow', L: 1, D: 5, v: 'dragon', sty: 'x_kihei' }),
+    t(['鬼兵隊', 'Kiheitai', '鬼兵隊', '귀병대'], ['ぶっ壊すだけだ', "I'll Just Destroy It", '只管破壞', '부술 뿐이다'], ['この腐った世界を、目の前のものからすべて壊す', 'Destroys this rotten world, starting with everything in front of him', '從眼前之物開始，破壞這個腐敗的世界', '이 썩은 세계를 눈앞의 것부터 모조리 부순다'], { k: 'inst', L: 9, R: 50, O: 1, I: .8, v: 'mega', sty: 'x_kihei' }),
+  ]),
+  // ---------- 怪獣8号 ----------
+  c('保科宗四郎', 'ほしなそうしろう', ['Soshiro Hoshina', '保科宗四郎', '호시나 소시로'], 'kaiju8', 'purple', 96, ['保科流刀伐術', 'Hoshina-Style Sword Technique', '保科流刀伐術', '호시나류 도벌술'], [
+    t(['保科流刀伐術', 'Hoshina Style', '保科流刀伐術', '호시나류 도벌술'], ['1式 空討ち', 'Form 1: Sora Uchi', '1式 空討', '1식 공중 베기'], ['刀を振って、斬撃を飛ばす', 'Swings the blade and sends the slash flying', '揮刀放出飛行的斬擊', '칼을 휘둘러 참격을 날린다'], { k: 'inst', L: 0, R: 40, v: 'thrust', sty: 'x_hoshina' }),
+    t(['保科流刀伐術', 'Hoshina Style', '保科流刀伐術', '호시나류 도벌술'], ['2式 交差討ち', 'Form 2: Kosa Uchi', '2式 交叉討', '2식 교차 베기'], ['二刀を交差させて斬る', 'Cuts with both blades crossed', '雙刀交叉斬擊', '두 칼을 교차시켜 벤다'], { k: 'inst', L: 1, R: 16, v: 'claws', sty: 'x_hoshina' }),
+    t(['保科流刀伐術', 'Hoshina Style', '保科流刀伐術', '호시나류 도벌술'], ['3式 返し討ち', 'Form 3: Kaeshi Uchi', '3式 返討', '3식 되받아 베기'], ['攻めを受け流して、そのまま斬り返す', 'Parries the attack and cuts back in the same motion', '卸開攻擊，順勢反斬', '공격을 흘리고 그대로 되받아 벤다'], { k: 'aura', L: 1, R: 7, D: 3, v: 'spin', sty: 'x_hoshina' }),
+    t(['保科流刀伐術', 'Hoshina Style', '保科流刀伐術', '호시나류 도벌술'], ['4式 乱討ち', 'Form 4: Midare Uchi', '4式 亂討', '4식 난무 베기'], ['目で追えない速さの乱れ斬り', 'A flurry of cuts too fast for the eye to follow', '肉眼追不上的亂斬', '눈으로 좇을 수 없는 속도의 난도질'], { k: 'multi', N: 8, R: 26, v: 'arcs', sty: 'x_hoshina' }),
+    t(['保科流刀伐術', 'Hoshina Style', '保科流刀伐術', '호시나류 도벌술'], ['5式 霞討ち', 'Form 5: Kasumi Uchi', '5式 霞討', '5식 안개 베기'], ['霞のようにすり抜けながら斬る', 'Cuts while slipping past like mist', '如霞霧般穿梭而過並斬擊', '안개처럼 빠져나가며 벤다'], { k: 'flow', L: 1, D: 4, v: 'ribbon', sty: 'x_hoshina' }),
+    t(['保科流刀伐術', 'Hoshina Style', '保科流刀伐術', '호시나류 도벌술'], ['6式 八重討ち', 'Form 6: Yae Uchi', '6式 八重討', '6식 여덟 겹 베기'], ['八つの斬撃を重ねて叩きこむ', 'Drives in eight layered slashes', '疊加八道斬擊打入', '여덟 줄기 참격을 겹쳐 꽂는다'], { k: 'inst', L: 2, R: 24, O: 1, v: 'claws', sty: 'x_hoshina' }),
+    t(['保科流刀伐術', 'Hoshina Style', '保科流刀伐術', '호시나류 도벌술'], ['7式 十二単', 'Form 7: Juni Hitoe', '7式 十二單', '7식 십이단'], ['十二の斬撃をひと息に重ねる', 'Layers twelve slashes in a single breath', '一口氣疊加十二道斬擊', '열두 줄기 참격을 단숨에 겹친다'], { k: 'multi', N: 12, R: 36, v: 'arcs', sty: 'x_hoshina' }),
+  ]),
+  // ---------- FAIRY TAIL ----------
+  c('エルザ・スカーレット', 'えるざすかーれっと', ['Erza Scarlet', '艾爾莎・史卡雷特', '에르자 스칼렛'], 'fairytail', 'red', 98, ['換装「騎士」', 'Requip: The Knight', '換裝「騎士」', '환장 「더 나이트」'], [
+    t(['天輪の鎧', "Heaven's Wheel Armor", '天輪之鎧', '천륜의 갑옷'], ['天輪・循環の剣', 'Circle Sword', '天輪・循環之劍', '천륜·순환의 검'], ['呼び出した剣を、まわりで輪のように回す', 'Summoned swords spin around her in a ring', '召喚出的劍在周圍如輪般旋轉', '불러낸 검을 주위에서 고리처럼 돌린다'], { k: 'aura', L: 2, R: 8, D: 4, v: 'spin', sty: 'x_erza' }),
+    t(['天輪の鎧', "Heaven's Wheel Armor", '天輪之鎧', '천륜의 갑옷'], ['天輪・繚乱の剣', 'Blumenblatt', '天輪・繚亂之劍', '천륜·요란의 검'], ['たくさんの剣とともに、いっせいに斬りぬける', 'Cuts through all at once together with a host of swords', '與眾多的劍一同一齊斬穿', '수많은 검과 함께 일제히 베고 지나간다'], { k: 'multi', N: 10, R: 34, v: 'arcs', sty: 'x_erza' }),
+    t(['天輪の鎧', "Heaven's Wheel Armor", '天輪之鎧', '천륜의 갑옷'], ['天輪・五芒星の剣', 'Pentagram Sword', '天輪・五芒星之劍', '천륜·오망성의 검'], ['五芒星の形に斬る', 'Cuts in the shape of a pentagram', '斬出五芒星的形狀', '오망성 모양으로 벤다'], { k: 'inst', L: 2, R: 20, v: 'claws', sty: 'x_erza' }),
+    t(['黒羽の鎧', 'Black Wing Armor', '黑羽之鎧', '흑우의 갑옷'], ['月閃', 'Moon Flash', '月閃', '월섬'], ['すれ違いざまに、十字に斬る', 'A cross-shaped cut delivered while rushing past', '擦身而過時斬出十字', '스쳐 지나가며 십자로 벤다'], { k: 'inst', L: 1, R: 30, I: .5, v: 'dash', a: 'iai', sty: 'x_erza' }),
+    t(['妖刀', 'Demon Blade', '妖刀', '요도'], ['紅桜', 'Benizakura', '紅櫻', '홍앵'], ['鎧を捨て、すべての魔力をひと振りにこめる', 'Casts off her armor and puts all her magic into a single swing', '捨棄鎧甲，將所有魔力注入一揮之中', '갑옷을 버리고 모든 마력을 한 번의 휘두름에 담는다'], { k: 'inst', L: 1, R: 55, O: 1, I: .8, v: 'mega', sty: 'x_erza' }),
+  ]),
+  // ---------- 幽☆遊☆白書 ----------
+  c('飛影', 'ひえい', ['Hiei', '飛影', '히에이'], 'yuhaku', 'black', 97, ['邪王炎殺拳', 'Jao Ensatsuken', '邪王炎殺拳', '사왕염살권'], [
+    t(['邪眼', 'Jagan Eye', '邪眼', '사안'], ['邪眼の呪縛', 'Jagan Bind', '邪眼的咒縛', '사안의 주박'], ['額の第三の目で、相手の動きをしばる', 'Binds the foe\'s movement with the third eye on his forehead', '以額頭上的第三隻眼束縛對手的行動', '이마의 제3의 눈으로 상대의 움직임을 묶는다'], { k: 'slow', D: 5, S: .3, v: 'eye', sty: 'x_jao' }),
+    t(['邪王炎殺拳', 'Jao Ensatsuken', '邪王炎殺拳', '사왕염살권'], ['邪王炎殺剣', 'Sword of the Darkness Flame', '邪王炎殺劍', '사왕염살검'], ['魔界の炎を剣の形にして斬る', 'Shapes the flames of the Demon World into a sword and cuts', '將魔界之炎化為劍形斬擊', '마계의 불꽃을 검 모양으로 만들어 벤다'], { k: 'inst', L: 1, R: 24, O: 1, v: 'arcH', sty: 'x_jao' }),
+    t(['邪王炎殺拳', 'Jao Ensatsuken', '邪王炎殺拳', '사왕염살권'], ['邪王炎殺煉獄焦', 'Fist of the Mortal Flame', '邪王炎殺煉獄焦', '사왕염살연옥초'], ['炎をまとった拳を、続けざまに打ちこむ', 'Drives in fists wreathed in flame one after another', '將纏繞火焰的拳頭接連打入', '불꽃을 두른 주먹을 잇달아 꽂는다'], { k: 'multi', N: 10, R: 28, v: 'arcs', sty: 'x_jao' }),
+    t(['邪王炎殺拳', 'Jao Ensatsuken', '邪王炎殺拳', '사왕염살권'], ['邪王炎殺黒龍波', 'Dragon of the Darkness Flame', '邪王炎殺黑龍波', '사왕염살흑룡파'], ['魔界の黒い炎を、龍にして撃ち出す', 'Fires the black flames of the Demon World as a dragon', '將魔界的黑炎化為龍擊出', '마계의 검은 불꽃을 용으로 만들어 쏜다'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_jao' }),
+  ]),
+  // ---------- 七つの大罪 ----------
+  c('メリオダス', '', ['Meliodas', '梅里奧達斯', '멜리오다스'], 'nanatsu', 'black', 100, ['憤怒の罪', "Dragon's Sin of Wrath", '憤怒之罪', '분노의 죄'], [
+    t(['魔力', 'Power', '魔力', '마력'], ['全反撃', 'Full Counter', '全反擊', '풀 카운터'], ['自分に向けられた魔力を、倍以上にしてはね返す', 'Reflects magic aimed at him back at more than double the power', '將朝自己而來的魔力以倍數以上反彈回去', '자신에게 향한 마력을 배 이상으로 되받아친다'], { k: 'aura', L: 1, R: 8, D: 4, G: 1, v: 'calm', sty: 'x_counter' }),
+    t(['魔神の力', 'Demon Power', '魔神之力', '마신의 힘'], ['付呪・獄炎', 'Enchant: Hellblaze', '附魔・獄炎', '인챈트 헬블레이즈'], ['消えない黒い炎を刃にまとわせて斬る', 'Cuts with unquenchable black flames wrapped around the blade', '讓不滅的黑炎纏繞刀刃斬擊', '꺼지지 않는 검은 불꽃을 칼날에 둘러 벤다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_jao' }),
+    t(['魔神の力', 'Demon Power', '魔神之力', '마신의 힘'], ['神千斬り', 'Divine Thousand Slashes', '神千斬', '신천참'], ['闇をのばした巨大な刃のひと振り', 'One swing of a gigantic blade of extended darkness', '以延伸黑暗形成的巨大刀刃一揮', '어둠을 뻗은 거대한 칼날의 한 번 휘두르기'], { k: 'inst', L: 2, R: 42, O: 1, v: 'arcDown', sty: 'x_jao' }),
+    t(['魔力', 'Power', '魔力', '마력'], ['リベンジ・カウンター', 'Revenge Counter', '復仇反擊', '리벤지 카운터'], ['受けつづけた魔力をためこみ、ひと息に解き放つ', 'Stores up all the magic he has taken and releases it in a single blast', '累積持續承受的魔力，一口氣釋放', '계속 받아 낸 마력을 모아 단숨에 풀어 놓는다'], { k: 'inst', L: 9, R: 70, O: 1, I: 1, v: 'mega', sty: 'x_counter' }),
+  ], [], ['メリオダス']),
+  // ---------- ワールドトリガー ----------
+  c('太刀川慶', 'たちかわけい', ['Kei Tachikawa', '太刀川慶', '타치카와 케이'], 'wtrigger', 'ainezu', 97, ['弧月（二刀）', 'Kogetsu (Dual Wield)', '弧月（雙刀）', '호월(쌍검)'], [
+    t(['弧月', 'Kogetsu', '弧月', '호월'], ['旋空弧月', 'Senku Kogetsu', '旋空弧月', '선공호월'], ['一瞬だけ刃をのばし、遠くまでまとめて斬る', 'Extends the blade for an instant and cuts everything far ahead', '只在一瞬間伸長刀刃，將遠處一併斬斷', '한순간만 칼날을 늘여 멀리까지 한꺼번에 벤다'], { k: 'inst', L: 2, R: 32, v: 'arcH', sty: 'x_kogetsu' }),
+    t(['弧月', 'Kogetsu', '弧月', '호월'], ['二刀の連撃', 'Dual-Blade Combo', '雙刀連擊', '쌍검 연격'], ['二本の弧月で、休みなく斬りこむ', 'Cuts in without pause with two Kogetsu', '以兩把弧月毫不停歇地斬入', '두 자루의 호월로 쉴 새 없이 베어 들어간다'], { k: 'multi', N: 8, R: 26, v: 'arcs', sty: 'x_kogetsu' }),
+    t(['オプション', 'Option Trigger', '選配觸發器', '옵션 트리거'], ['グラスホッパー', 'Grasshopper', '蚱蜢', '그래스호퍼'], ['踏むと跳ねる板を出し、ひと息に飛びこんで斬る', 'Sets a springboard, leaps in at once, and cuts', '放出踩了會彈起的板子，一口氣躍入斬擊', '밟으면 튀는 판을 꺼내 단숨에 뛰어들어 벤다'], { k: 'inst', L: 0, R: 40, I: .6, v: 'dash', a: 'iai', sty: 'x_kogetsu' }),
+    t(['オプション', 'Option Trigger', '選配觸發器', '옵션 트리거'], ['シールド', 'Shield', '護盾', '실드'], ['トリオンの盾を張って攻めを防ぐ', 'Raises a shield of Trion to block attacks', '展開觸力護盾擋下攻擊', '트리온의 방패를 펼쳐 공격을 막는다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_kogetsu' }),
+  ]),
 ];
 
 // ---------- 名前で引く ----------
 // 同じ人として扱う字（旧字・異体字）。登録した名前にも、入力された名前にも同じ直しをかける
-const VAR = { '齋': '斎', '斉': '斎', '齊': '斎', '劍': '剣', '劔': '剣', '剱': '剣', '國': '国', '眞': '真', '實': '実', '澤': '沢', '邊': '辺', '邉': '辺', '髙': '高', '﨑': '崎', '龍': '竜', '瀧': '滝', '櫻': '桜', '條': '条', '廣': '広', '濱': '浜', '嶋': '島', '嶌': '島', '惠': '恵', '藏': '蔵', '壽': '寿', '彌': '弥', '禮': '礼', '靜': '静', '曉': '暁', '樂': '楽', '戀': '恋', '瀨': '瀬', '姬': '姫', '黑': '黒', '德': '徳', '榮': '栄', '圓': '円', '兒': '児', '將': '将', '豐': '豊', '淺': '浅', '傳': '伝', '櫻': '桜', '鐵': '鉄', '燈': '灯', '彈': '弾', '發': '発', '續': '続', '學': '学', '氣': '気', '靈': '霊', '龜': '亀', '萬': '万', '與': '与', '禪': '禅', '眞': '真' };
+const VAR = { '齋': '斎', '斉': '斎', '齊': '斎', '劍': '剣', '劔': '剣', '剱': '剣', '國': '国', '眞': '真', '實': '実', '澤': '沢', '邊': '辺', '邉': '辺', '髙': '高', '﨑': '崎', '龍': '竜', '瀧': '滝', '櫻': '桜', '條': '条', '廣': '広', '濱': '浜', '嶋': '島', '嶌': '島', '惠': '恵', '藏': '蔵', '壽': '寿', '彌': '弥', '禮': '礼', '靜': '静', '曉': '暁', '樂': '楽', '戀': '恋', '瀨': '瀬', '姬': '姫', '黑': '黒', '德': '徳', '榮': '栄', '圓': '円', '兒': '児', '將': '将', '豐': '豊', '淺': '浅', '傳': '伝', '櫻': '桜', '鐵': '鉄', '燈': '灯', '彈': '弾', '發': '発', '續': '続', '學': '学', '氣': '気', '靈': '霊', '龜': '亀', '萬': '万', '與': '与', '禪': '禅', '眞': '真', '總': '総', '晉': '晋', '驒': '騨', '嶽': '岳', '槇': '槙', '遙': '遥', '顯': '顕', '壹': '壱', '條': '条' };
 export const okey = s => String(s).normalize('NFKC').replace(/[\s　・･=＝\-‐—.,、。「」『』'’]/g, '').toLowerCase().replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60)).replace(/[︀-️]/g, '').replace(/[^\u0000-\u007f]/g, ch => VAR[ch] || ch);
 const OMAP = new Map(), OEX = new Map(), exkey = s => String(s).normalize('NFKC').replace(/[\s　・･]/g, '').toLowerCase();
 for (const o of OTHERS) {
