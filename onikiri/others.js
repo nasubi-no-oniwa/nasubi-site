@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11272045';
+import { EXTRA } from './i18n.js?v=11272055';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -110,6 +110,9 @@ export const WORKS = {
   noragami: ['ノラガミ', 'Noragami', '流浪神差', '노라가미'],
   seraph: ['終わりのセラフ', 'Seraph of the End', '終結的熾天使', '종말의 세라프'],
   souleater: ['ソウルイーター', 'Soul Eater', '噬魂師', '소울 이터'],
+  tensura: ['転生したらスライムだった件', 'That Time I Got Reincarnated as a Slime', '關於我轉生變成史萊姆這檔事', '전생했더니 슬라임이었던 건에 대하여'],
+  mushoku: ['無職転生', 'Mushoku Tensei: Jobless Reincarnation', '無職轉生', '무직전생'],
+  opm: ['ワンパンマン', 'One-Punch Man', '一拳超人', '원펀맨'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -812,6 +815,51 @@ export const OTHERS = [
     t(['魔力', 'Power', '魔力', '마력'], ['雷帝の鉄槌', 'Iron Hammer of the Thunder Emperor', '雷帝的鐵鎚', '뇌제의 철퇴'], ['雷を落として叩きつぶす', 'Brings down lightning to crush the foe', '降下雷電擊潰對手', '번개를 떨어뜨려 때려 부순다'], { k: 'rain', D: 3, R: 34, O: 1, v: 'rainfall', sty: 'x_suzume' }),
     t(['魔力', 'Power', '魔力', '마력'], ['雷帝の粛清', 'Purge of the Thunder Emperor', '雷帝的肅清', '뇌제의 숙청'], ['雷をまとった剣で、ひと息に突進する', 'Charges in a single breath with a sword wreathed in lightning', '以纏繞雷電的劍一口氣突進', '번개를 두른 검으로 단숨에 돌진한다'], { k: 'inst', L: 1, R: 50, O: 1, I: .6, v: 'thrust', sty: 'x_suzume' }),
   ], [], ['ギルサンダー']),
+  // ---------- 13回目：転スラ・無職転生・ダンまち・落第騎士・ワンパンマン・ワールドトリガー ----------
+  c('ハクロウ', '', ['Hakuro', '白老', '하쿠로'], 'tensura', 'white', 96, ['朧流', 'Oboro Style', '朧流', '오보로류'], [
+    t(['スキル', 'Skill', '技能', '스킬'], ['天空眼', 'Heavenly Eye', '天空眼', '천공안'], ['ひたいの第三の目で、すべての動きを見切る', 'Reads every movement with the third eye on his forehead', '以額頭上的第三隻眼看穿所有動作', '이마의 제3의 눈으로 모든 움직임을 간파한다'], { k: 'slow', D: 5, S: .35, v: 'eye', sty: 'x_shuku' }),
+    t(['朧流', 'Oboro Style', '朧流', '오보로류'], ['朧・流水斬', 'Oboro: Flowing Water Slash', '朧・流水斬', '오보로·유수참'], ['流れる水のような足運びで、すり抜けながら斬る', 'Cuts while slipping past with footwork like flowing water', '以流水般的步法穿梭而過並斬擊', '흐르는 물 같은 발놀림으로 빠져나가며 벤다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_shuku' }),
+    t(['朧流', 'Oboro Style', '朧流', '오보로류'], ['朧・地天轟雷', 'Oboro: Chiten Gorai', '朧・地天轟雷', '오보로·지천굉뢰'], ['雷のような速さの、ひと息の居合い', 'A single-breath quick-draw as fast as lightning', '如雷電般迅速、一氣呵成的居合', '번개 같은 속도의, 단숨의 발도술'], { k: 'inst', L: 1, R: 40, O: 1, I: .6, v: 'bolt', a: 'iai', sty: 'x_shuku' }),
+  ], [], ['ハクロウ']),
+  c('ベニマル', '', ['Benimaru', '紅丸', '베니마루'], 'tensura', 'red', 98, ['朧流と黒炎', 'Oboro Style & Black Flame', '朧流與黑炎', '오보로류와 흑염'], [
+    t(['剣技', 'Sword Technique', '劍技', '검기'], ['黒炎の太刀', 'Black Flame Blade', '黑炎太刀', '흑염의 태도'], ['黒い炎を刃にまとわせて斬る', 'Cuts with black flames wrapped around the blade', '讓黑炎纏繞刀刃斬擊', '검은 불꽃을 칼날에 둘러 벤다'], { k: 'inst', L: 1, R: 36, O: 1, v: 'arcH', sty: 'x_jao' }),
+    t(['スキル', 'Skill', '技能', '스킬'], ['黒炎獄', 'Hellflare', '黑炎獄', '헬플레어'], ['黒い炎の球でつつみこみ、中のものを焼きつくす', 'Engulfs the area in a sphere of black flame and burns everything inside', '以黑炎之球包覆，燒盡其中的一切', '검은 불꽃의 구로 감싸 안의 것을 모조리 태운다'], { k: 'inst', L: 9, R: 45, O: 1, v: 'storm', sty: 'x_jao' }),
+  ], [], ['ベニマル']),
+  c('ヒナタ・サカグチ', 'ひなたさかぐち', ['Hinata Sakaguchi', '日向・坂口', '히나타 사카구치'], 'tensura', 'white', 99, ['聖騎士団長', 'Captain of the Holy Knights', '聖騎士團長', '성기사단장'], [
+    t(['細剣', 'Rapier', '細劍', '세검'], ['七彩終焉刺突撃', 'Dead End Rainbow', '七彩終焉刺突擊', '데드 엔드 레인보우'], ['七度目の突きが当たれば、かならず終わる', 'If the seventh thrust lands, it is certain to end the fight', '只要第七次突刺命中，就必定終結', '일곱 번째 찌르기가 맞으면 반드시 끝난다'], { k: 'multi', N: 7, R: 30, v: 'arcs', sty: 'x_rapier' }),
+    t(['聖剣技', 'Holy Sword Art', '聖劍技', '성검기'], ['メルトスラッシュ', 'Melt Slash', '崩魔靈子斬', '멜트 슬래시'], ['霊子をまとった剣で、何でも断ちわる', 'Cleaves anything with a sword wrapped in spirit particles', '以纏繞靈子的劍斬斷一切', '영자를 두른 검으로 무엇이든 가른다'], { k: 'inst', L: 9, R: 50, O: 1, v: 'storm', sty: 'x_excalibur' }),
+    t(['神聖魔法', 'Holy Magic', '神聖魔法', '신성 마법'], ['霊子崩壊', 'Disintegration', '靈子崩壞', '디스인티그레이션'], ['光で、相手を跡形もなく消す', 'Erases the foe without a trace with light', '以光將對手消滅得不留痕跡', '빛으로 상대를 흔적도 없이 지운다'], { k: 'inst', L: 1, R: 60, O: 1, I: .8, v: 'mega', sty: 'x_excalibur' }),
+  ], ['坂口日向', 'さかぐちひなた']),
+  c('エリス・ボレアス・グレイラット', 'えりすぼれあすぐれいらっと', ['Eris Boreas Greyrat', '艾莉絲・伯雷亞斯・格雷拉特', '에리스 보레아스 그레이랫'], 'mushoku', 'red', 96, ['剣神流', 'Sword God Style', '劍神流', '검신류'], [
+    t(['異名', 'Alias', '異名', '이명'], ['狂剣王', 'Mad Sword King', '狂劍王', '광검왕'], ['止まらずに、斬って斬って斬りつづける', 'Never stops: cuts, and cuts, and keeps on cutting', '毫不停歇地斬、斬、不斷地斬', '멈추지 않고 베고 베고 계속 벤다'], { k: 'flow', L: 1, D: 5, v: 'ribbon', sty: 'x_erza' }),
+    t(['剣神流', 'Sword God Style', '劍神流', '검신류'], ['光の太刀', 'Sword of Light', '光之太刀', '빛의 태도'], ['光の速さにとどく、剣神流の奥義', 'The secret technique of the Sword God Style, reaching the speed of light', '達到光速的劍神流奧義', '빛의 속도에 닿는 검신류의 오의'], { k: 'inst', L: 1, R: 45, O: 1, I: .6, v: 'bolt', a: 'iai', sty: 'x_erza' }),
+  ], ['エリス・グレイラット']),
+  c('ギレーヌ・デドルディア', 'ぎれーぬでどるでぃあ', ['Ghislaine Dedoldia', '基列奴・泰德路迪亞', '길레느 데돌디아'], 'mushoku', 'ainezu', 95, ['剣神流 剣王', 'Sword God Style: Sword King', '劍神流 劍王', '검신류 검왕'], [
+    t(['獣族', 'Beastfolk', '獸族', '수인'], ['獣の感覚', 'Beast Senses', '野獸的感官', '짐승의 감각'], ['鼻と耳で、見えない相手もとらえて斬る', 'Finds and cuts even unseen foes by scent and sound', '憑鼻子與耳朵捕捉看不見的對手並斬擊', '코와 귀로 보이지 않는 상대도 포착해 벤다'], { k: 'aura', L: 1, R: 8, D: 4, v: 'spin', sty: 'x_bugi' }),
+    t(['剣神流', 'Sword God Style', '劍神流', '검신류'], ['光の太刀', 'Sword of Light', '光之太刀', '빛의 태도'], ['光の速さにとどく、剣神流の奥義', 'The secret technique of the Sword God Style, reaching the speed of light', '達到光速的劍神流奧義', '빛의 속도에 닿는 검신류의 오의'], { k: 'inst', L: 1, R: 45, O: 1, I: .6, v: 'bolt', a: 'iai', sty: 'x_bugi' }),
+  ]),
+  c('リュー・リオン', 'りゅーりおん', ['Ryu Lion', '琉・里昂', '류 리온'], 'danmachi', 'green', 96, ['疾風', 'Gale Wind', '疾風', '질풍'], [
+    t(['木刀', 'Wooden Sword', '木刀', '목검'], ['疾風の剣', 'Blade of the Gale', '疾風之劍', '질풍의 검'], ['風のような速さで、すれ違いながら打ちこむ', 'Strikes in passing with the speed of the wind', '以風一般的速度擦身而過並擊打', '바람 같은 속도로 스쳐 지나가며 친다'], { k: 'flow', L: 1, D: 4.5, v: 'ribbon', sty: 'x_ariel' }),
+    t(['魔法', 'Magic', '魔法', '마법'], ['ルミノス・ウィンド', 'Luminous Wind', '光明之風', '루미노스 윈드'], ['風をまとった光の玉を、数えきれないほど撃ち出す', 'Fires countless orbs of light wrapped in wind', '射出數不清的纏繞疾風的光球', '바람을 두른 빛의 구슬을 셀 수 없이 쏘아 낸다'], { k: 'rain', D: 4, R: 40, O: 1, v: 'rainfall', sty: 'x_ariel' }),
+  ]),
+  c('ベル・クラネル', 'べるくらねる', ['Bell Cranel', '貝爾・克朗尼', '벨 크라넬'], 'danmachi', 'white', 93, ['ヘスティア・ナイフ', 'Hestia Knife', '赫斯緹雅小刀', '헤스티아 나이프'], [
+    t(['ナイフ', 'Knife', '小刀', '나이프'], ['二刀の連撃', 'Dual-Blade Combo', '雙刀連擊', '쌍검 연격'], ['二本のナイフで、すばやく斬りこむ', 'Cuts in fast with two knives', '以兩把小刀迅速斬入', '두 자루의 나이프로 재빨리 베어 들어간다'], { k: 'multi', N: 8, R: 24, v: 'arcs', sty: 'x_rapier' }),
+    t(['魔法', 'Magic', '魔法', '마법'], ['ファイアボルト', 'Firebolt', '火焰雷電', '파이어볼트'], ['となえる言葉なしで撃てる、炎の稲妻', 'A bolt of flame lightning cast without any chant', '無需詠唱就能發射的火焰雷電', '주문 없이 쏠 수 있는 불꽃의 번개'], { k: 'inst', L: 1, R: 40, O: 1, v: 'thrust', sty: 'x_homura' }),
+    t(['スキル', 'Skill', '技能', '스킬'], ['英雄願望', 'Argonaut', '英雄願望', '아르고노트'], ['力をためて、次の一撃を何倍にもする', 'Charges up to multiply the power of the next blow', '蓄力使下一擊的威力倍增', '힘을 모아 다음 일격을 몇 배로 만든다'], { k: 'inst', L: 9, R: 60, O: 1, I: .8, v: 'mega', sty: 'x_homura' }),
+  ]),
+  c('ステラ・ヴァーミリオン', 'すてらゔぁーみりおん', ['Stella Vermillion', '史黛菈・法米利昂', '스텔라 버밀리온'], 'rakudai', 'red', 98, ['固有霊装「妃竜の罪剣」', 'Device: Lævateinn', '固有靈裝「妃龍的罪劍」', '고유영장 「비룡의 죄검」'], [
+    t(['伐刀絶技', 'Noble Art', '伐刀絕技', '벌도절기'], ['妃竜の息吹', 'Dragon Breath', '妃龍的吐息', '비룡의 숨결'], ['高熱の炎を身にまとい、近づくものを焼く', 'Wears searing flames and burns whatever comes near', '身纏高熱火焰，燒灼靠近的一切', '고열의 불꽃을 몸에 둘러 다가오는 것을 태운다'], { k: 'aura', L: 1, R: 8, D: 5, O: 1, v: 'vortex', sty: 'x_shana' }),
+    t(['伐刀絶技', 'Noble Art', '伐刀絕技', '벌도절기'], ['天壌焼き焦がす竜王の焔', 'Katharterio Salamandra', '燒焦天壤的龍王之焰', '천양을 불태우는 용왕의 불꽃'], ['空までとどく巨大な炎の剣を振りおろす', 'Brings down a gigantic sword of flame that reaches the sky', '揮下直達天際的巨大火焰之劍', '하늘까지 닿는 거대한 불꽃의 검을 내리친다'], { k: 'inst', L: 9, R: 65, O: 1, I: 1, v: 'mega', sty: 'x_shana' }),
+  ], ['ステラ・バーミリオン']),
+  c('アトミック侍', 'あとみっくさむらい', ['Atomic Samurai', '原子武士', '아토믹 사무라이'], 'opm', 'gray', 95, ['S級ヒーローの剣', 'Sword of an S-Class Hero', 'S級英雄之劍', 'S급 히어로의 검'], [
+    t(['必殺', 'Killer Move', '必殺', '필살'], ['アトミック斬', 'Atomic Slash', '原子斬', '아토믹 참'], ['相手を原子の大きさまで斬りきざむ、数えきれない斬撃', 'Countless slashes that dice the foe down to the size of atoms', '將對手切碎至原子大小的無數斬擊', '상대를 원자 크기까지 썰어 내는 셀 수 없는 참격'], { k: 'inst', L: 2, R: 40, O: 1, I: .6, v: 'claws', sty: 'x_bugi' }),
+    t(['必殺', 'Killer Move', '必殺', '필살'], ['集中アトミック斬', 'Focused Atomic Slash', '集中原子斬', '집중 아토믹 참'], ['すべての斬撃を、一点に集めて撃ちこむ', 'Concentrates every slash on a single point', '將所有斬擊集中於一點打入', '모든 참격을 한 점에 모아 꽂는다'], { k: 'inst', L: 0, R: 60, O: 1, v: 'thrust', sty: 'x_bugi' }),
+  ], ['アトミックサムライ', 'あとみっくざむらい']),
+  c('迅悠一', 'じんゆういち', ['Yuichi Jin', '迅悠一', '진 유이치'], 'wtrigger', 'blue', 97, ['黒トリガー「風刃」', 'Black Trigger: Fujin', '黑觸發器「風刃」', '블랙 트리거 「후진」'], [
+    t(['サイドエフェクト', 'Side Effect', '副作用', '사이드 이펙트'], ['未来視', 'Foresight', '未來視', '미래시'], ['目の前の人の、少し先の未来が見える', 'Sees a short way into the future of whoever is in front of him', '能看見眼前之人不久後的未來', '눈앞에 있는 사람의 조금 앞의 미래가 보인다'], { k: 'slow', D: 6, S: .35, v: 'eye', sty: 'x_kogetsu' }),
+    t(['トリガー', 'Trigger', '觸發器', '트리거'], ['エスクード', 'Escudo', '盾牌', '에스쿠도'], ['地面から盾を生やして身を守る', 'Raises shields out of the ground for cover', '從地面長出盾牌保護自身', '땅에서 방패를 돋워 몸을 지킨다'], { k: 'aura', L: 1, R: 7, D: 4, G: 1, v: 'calm', sty: 'x_kogetsu' }),
+    t(['風刃', 'Fujin', '風刃', '후진'], ['風刃', 'Fujin', '風刃', '후진'], ['見える範囲のどこへでも、物を伝って斬撃を走らせる', 'Sends slashes running along surfaces to anywhere in sight', '讓斬擊沿著物體奔向視線所及的任何地方', '보이는 범위 어디로든 물체를 타고 참격을 달리게 한다'], { k: 'multi', N: 11, R: 45, v: 'arcs', sty: 'x_kogetsu' }),
+  ]),
 ];
 
 // ---------- 名前で引く ----------
