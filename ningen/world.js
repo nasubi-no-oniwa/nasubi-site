@@ -37,7 +37,9 @@ export const SHIRT = ['#d9534f', '#4a7bd0', '#5aa469', '#e8b33a', '#8e6bc4', '#e
 export const PANTS = ['#2f3542', '#55606e', '#3d5a80', '#6b4f3a', '#1e1e24', '#8a8f98'];
 export const SKIN = ['#f3d2b3', '#e6b98f', '#c98f62', '#9a6a45'];
 export const HAIR = ['#1d1b1a', '#3b2a20', '#6b4a2e', '#b8925a', '#8a8a8a', '#2b2f3a'];
-export function look(seed, id) { const R = rng((seed ^ Math.imul(id + 1, 2654435761)) >>> 0); R(); return { shirt: SHIRT[R() * SHIRT.length | 0], pants: PANTS[R() * PANTS.length | 0], skin: SKIN[R() * SKIN.length | 0], hair: HAIR[R() * HAIR.length | 0], h: .92 + R() * .16, hat: R() < .22 ? SHIRT[R() * SHIRT.length | 0] : null, bag: R() < .3 }; }
+// 見た目：全員まったく同じ服装・背格好（人間とAIで区別はつかない）
+export const LOOK = { shirt: '#4a7bd0', pants: '#2f3542', skin: '#e6b98f', hair: '#1d1b1a', h: 1, hat: null, bag: false };
+export function look(seed, id) { return LOOK; }
 
 // ---------- 試合の計算 ----------
 export class Sim {

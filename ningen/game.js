@@ -1,6 +1,6 @@
 // 人間はどこだ：画面・3D・試合の流れ
 import { THREE } from './lib.js?v=11271300';
-import * as W from './world.js?v=11271300';
+import * as W from './world.js?v=11271415';
 import { Lobby, Mesh, waiting } from './net.js?v=11271300';
 import { TX, LANGS } from './text.js?v=11271300';
 const gsap = window.gsap, PFX = window.PFX;
