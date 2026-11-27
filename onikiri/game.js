@@ -1,11 +1,12 @@
-import { THREE, GLTFLoader } from './lib.js?v=11271300';
-import { COLORS, CHARS, ORDER } from './data.js?v=11271300';
-import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11271300';
-import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11271300';
-import { makeFx, STY } from './fx.js?v=11271300';
-import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11271300';
-import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd } from './oni.js?v=11271300';
-Object.assign(STY, ONI_STY); COLORS.oni = { hex: '#b3122a', name: { ja: '鬼', en: 'Demon' }, kokyu: { ja: '血鬼術', en: 'Blood Demon Art' } };
+import { THREE, GLTFLoader } from './lib.js?v=11271700';
+import { COLORS, CHARS, ORDER } from './data.js?v=11271700';
+import { WAZA, desc, unlocked, CHAR_WAZA, CHAR_CAP } from './waza.js?v=11271700';
+import { renderer, gripFrame, gripStart, gripOnDone, gripReset, gripLang, gripSnd, gripInvite, fxAdd, ramp } from './grip.js?v=11271700';
+import { makeFx, STY } from './fx.js?v=11271700';
+import { makeRig, toon, part, OUT, OUTN, vtoon, withOut } from './rig.js?v=11271700';
+import { ONI_STY, ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd , genNameL } from './oni.js?v=11271700';
+import { locW, descL, nameL, oniNameL } from './i18n.js?v=11271700';
+Object.assign(STY, ONI_STY); COLORS.oni = { hex: '#b3122a', name: { ja: '鬼', en: 'Demon', zh: '鬼', ko: '귀신' }, kokyu: { ja: '血鬼術', en: 'Blood Demon Art', zh: '血鬼術', ko: '혈귀술' } };
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -24,7 +25,8 @@ const TX = {
     best: d => `自己ベスト ${d.toLocaleString()}m`, newBest: '自己ベスト更新！', again: 'もう一度走る', repick: '技を選びなおす', rename: '名前を変える', x: '𝕏 に投稿', img: '画像にする', xCopied: '画像をコピーしました。Xの投稿欄に貼りつけ（Ctrl+V）すると画像がつきます', xSaved: '画像を保存しました。Xの投稿に、保存した画像を追加してください', hintL: 'タップで左へ', hintR: 'タップで右へ', hintS: '指を横にスライドでも動ける', wzTip: '押して技！', fan: '※非公式のファンゲームです',
     post: (R, d, k) => `「${R.name}」の日輪刀（${R.kk}・才能${R.den}%${R.akaDone ? '・赫刀' : ''}）で ${d.toLocaleString()}m 走り、鬼を${k}体斬った。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: '全体', rkToday: '今日', rkNone: '才能なし', rkOni: '鬼', howO: '・画面の左側／右側をタップ、または指を横にスライドでレーン移動（PCは ← →）<br>・隊士のレーンに入ると倒す。そのたびに斬られて再生力が減り、斬られずにいると戻る<br>・再生力がないまま隊士に当たるか、障害物に当たると終わり<br>・オーラのある隊士は手ごわい。倒すと10人分の再生力を一気に失う<br>・赤い小瓶（稀血）を拾うと再生力が戻る<br>・右下の丸がたまったら押して血鬼術（PCはスペース）', regen: '再生力', killsO: n => `隊士 ${n}人`, whoOni: n => `「<b>${esc(n)}</b>」は、鬼`, oniAs: n => `鬼としての名：<b style="color:#fff">${esc(n)}</b>`, oniTier: t => `血鬼術の強さ：<b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `隊士に${Math.max(1, Math.floor(m / c))}回斬られるまで耐える（斬られずにいると戻る）`, pickO1: n => n > 1 ? `血鬼術を1つ選ぶ（${n}個）` : 'この鬼の血鬼術', pickO2: n => `血鬼術を2つ選ぶ（${n}個）`, whyO: { dull: '再生が追いつかず、頸を斬られた', obs: '障害物に足を取られ、頸を斬られた' }, loadM: '鬼の体を作っています…',
-    rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」は、鬼${R.oni.as && R.oni.as !== R.name ? '（' + esc(R.oni.as) + '）' : ''}<br>血鬼術：<b>${esc(wz)}</b><br>倒した隊士 <b>${k}</b>人`, postO: (R, d, k, wz) => `「${R.name}」は鬼になった。\n血鬼術「${wz}」で ${d.toLocaleString()}m 走り、隊士を${k}人倒した。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '名前1つにつき1件（その名前でいちばん走った記録）・上位100', loading: '読みこみ中…', rkErr: '読みこめませんでした', rkEmpty: 'まだ記録がありません', nogl: 'この端末では3Dを表示できませんでした', capCol: (c, k) => `${c}　${k}` },
+    rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」は、鬼${R.oni.as && R.oni.as !== R.name ? '（' + esc(oniNameL(R.oni.as, L)) + '）' : ''}<br>血鬼術：<b>${esc(wz)}</b><br>倒した隊士 <b>${k}</b>人`, postO: (R, d, k, wz) => `「${R.name}」は鬼になった。\n血鬼術「${wz}」で ${d.toLocaleString()}m 走り、隊士を${k}人倒した。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '名前1つにつき1件（その名前でいちばん走った記録）・上位100', loading: '読みこみ中…', rkErr: '読みこめませんでした', rkEmpty: 'まだ記録がありません', nogl: 'この端末では3Dを表示できませんでした', capCol: (c, k) => `${c}　${k}`,
+    akaS: '赫刀', cardO: as => '鬼' + (as ? '・' + as : '') + '・血鬼術', sepW: '、' },
   en: { lang: 'English', ttl: 'MUGEN ONIKIRI', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: 'Your name decides your Nichirin Blade.<br>Run, slash demons, and mind the chipping edge.', ph: 'Enter a name', start: 'Grip the blade', needName: 'Please enter a name', sndOn: '🔊 Sound on', sndOff: '🔇 Sound off', rank: 'Ranking', prev: 'See your blade color',
     hold: 'Hold to grip', keep: 'Keep holding…?', aka: 'The blade burns crimson', isOni: "You're a demon. The blade won't let you hold it", who: n => `<b>${esc(n)}</b>'s Nichirin Blade`, den: 'Talent', sharpInfo: (c, m) => c < .2 ? 'Never chips' : `Chips out after ${Math.max(1, Math.floor(m / c))} demons`, akaInfo: 'Crimson blade: chips slower',
     noWaza: 'No breathing aptitude. No techniques. Dodge, slash, keep going.', pick1: n => `Pick 1 technique (${n} unlocked)`, pick2: n => `Pick 2 techniques (${n} unlocked)`, lockAt: p => `Talent ${p}%+`, go: 'Go', back: 'Back',
@@ -33,13 +35,36 @@ const TX = {
     best: d => `Best ${d.toLocaleString()}m`, newBest: 'New best!', again: 'Run again', repick: 'Change technique', rename: 'Change name', x: 'Post on 𝕏', img: 'Save image', xCopied: 'Image copied. Paste it (Ctrl+V) into your post to attach it', xSaved: 'Image saved. Add the saved image to your post', hintL: 'Tap: left', hintR: 'Tap: right', hintS: 'Sliding sideways works too', wzTip: 'Tap!', fan: '※Unofficial fan game',
     post: (R, d, k) => `"${R.name}"'s Nichirin Blade (${R.kk}, talent ${R.den}%${R.akaDone ? ', crimson' : ''}) ran ${d.toLocaleString()}m and slew ${k} demons.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
     rkAll: 'All', rkToday: 'Today', rkNone: 'No talent', rkOni: 'Demons', howO: '・Tap the left / right side, or slide your finger sideways, to change lanes (PC: ← →)<br>・Enter a slayer\'s lane to take them down. Each one cuts you and drains regeneration; it recovers when you are not cut<br>・Hitting a slayer with no regeneration left, or any obstacle, ends the run<br>・Slayers with an aura are tough: taking one down costs 10 slayers\' worth of regeneration<br>・Red vials (rare blood) restore regeneration<br>・When the circle fills, press it for your Blood Demon Art (PC: Space)', regen: 'Regeneration', killsO: n => `${n} slayers`, whoOni: n => `<b>${esc(n)}</b> is a demon`, oniAs: n => `Demon name: <b style="color:#fff">${esc(n)}</b>`, oniTier: t => `Art strength: <b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `Survives ${Math.max(1, Math.floor(m / c))} cuts from slayers (recovers when not cut)`, pickO1: n => n > 1 ? `Choose 1 art (${n})` : "This demon's art", pickO2: n => `Choose 2 arts (${n})`, whyO: { dull: 'Regeneration could not keep up', obs: 'Tripped on an obstacle and was beheaded' }, loadM: 'Shaping the demon…',
-    rInfoO: (R, k, wz) => `<b>${esc(R.name)}</b> is a demon${R.oni.as && R.oni.as !== R.name ? ' (' + esc(R.oni.as) + ')' : ''}<br>Blood Demon Art: <b>${esc(wz)}</b><br>Slayers defeated: <b>${k}</b>`, postO: (R, d, k, wz) => `${R.name} became a demon.\nRan ${d.toLocaleString()}m with the Blood Demon Art "${wz}" and defeated ${k} slayers.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: 'One entry per name (its best run). Top 100', loading: 'Loading…', rkErr: 'Could not load', rkEmpty: 'No records yet', nogl: "This device can't show 3D", capCol: (c, k) => `${c}  ${k}` },
+    rInfoO: (R, k, wz) => `<b>${esc(R.name)}</b> is a demon${R.oni.as && R.oni.as !== R.name ? ' (' + esc(oniNameL(R.oni.as, L)) + ')' : ''}<br>Blood Demon Art: <b>${esc(wz)}</b><br>Slayers defeated: <b>${k}</b>`, postO: (R, d, k, wz) => `${R.name} became a demon.\nRan ${d.toLocaleString()}m with the Blood Demon Art "${wz}" and defeated ${k} slayers.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: 'One entry per name (its best run). Top 100', loading: 'Loading…', rkErr: 'Could not load', rkEmpty: 'No records yet', nogl: "This device can't show 3D", capCol: (c, k) => `${c}  ${k}`,
+    akaS: 'Crimson', cardO: as => 'Demon' + (as ? ' · ' + as : '') + ' · Blood Demon Art', sepW: ', ' },
+  zh: { lang: '繁體中文', ttl: '無限鬼斬', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: '以名字決定的日輪刀，邊跑邊斬鬼。<br>斬得越多刀刃越鈍。你能跑多遠？', ph: '輸入名字', start: '握住日輪刀', needName: '請輸入名字', sndOn: '🔊 有聲音', sndOff: '🔇 靜音', rank: '排行榜', prev: '看看刀的顏色（前作）',
+    hold: '長按握住', keep: '就這樣繼續緊握的話…？', aka: '燒成了赫紅', isOni: '因為是鬼，握不住日輪刀', who: n => `「<b>${esc(n)}</b>」的日輪刀`, den: '才能', sharpInfo: (c, m) => c < .2 ? '不會捲刃' : `斬${Math.max(1, Math.floor(m / c))}隻鬼就會捲刃`, akaInfo: '赫刀：不容易捲刃',
+    noWaza: '沒有呼吸的適性，無法使用招式。閃避、斬擊、前進。', pick1: n => `選1個要帶的招式（可用${n}個）`, pick2: n => `選2個要帶的招式（可用${n}個）`, lockAt: p => `才能${p}%起`, go: '出陣', back: '返回',
+    how: '・點擊畫面左側／右側，或手指橫向滑動來換跑道（電腦為 ← →）<br>・進入鬼所在的跑道就會斬擊。斬得越多刀刃越鈍，不斬的時候會恢復<br>・在沒有鋒利度的狀態下撞到鬼，或撞到障礙物就結束<br>・有氣場的鬼很硬，斬了會一口氣失去10隻份的鋒利度<br>・右下的圓圈集滿後按下就能使出招式（電腦為空白鍵）', how2: '・2個圓圈可滑動切換（電腦為 ↑）',
+    sharp: '鋒利度', kills: n => `鬼 ${n}隻`, why: { dull: '刀刃捲了，斬不下去', obs: '撞上了障礙物' }, rInfo: (R, k, wz) => `「<b>${esc(R.name)}</b>」的日輪刀<br>${R.kk}・才能 <b>${R.den}%</b>${R.akaDone ? '<span class="aka">赫刀</span>' : ''}<br>斬殺的鬼 <b>${k}</b>隻${wz ? '<br>招式：' + esc(wz) : ''}`,
+    best: d => `個人最佳 ${d.toLocaleString()}m`, newBest: '刷新個人最佳！', again: '再跑一次', repick: '重選招式', rename: '換名字', x: '發佈到 𝕏', img: '做成圖片', xCopied: '已複製圖片。在 X 的發文欄貼上（Ctrl+V）就能附上圖片', xSaved: '已儲存圖片。請在 X 的貼文中加入儲存的圖片', hintL: '點擊往左', hintR: '點擊往右', hintS: '手指橫向滑動也能移動', wzTip: '按下使出招式！', fan: '※這是非官方的粉絲遊戲',
+    post: (R, d, k) => `用「${R.name}」的日輪刀（${R.kk}・才能${R.den}%${R.akaDone ? '・赫刀' : ''}）跑了 ${d.toLocaleString()}m，斬了${k}隻鬼。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
+    rkAll: '全體', rkToday: '今天', rkNone: '沒有才能', rkOni: '鬼', howO: '・點擊畫面左側／右側，或手指橫向滑動來換跑道（電腦為 ← →）<br>・進入隊士所在的跑道就會打倒對方。每次都會被砍而減少再生力，沒被砍的時候會恢復<br>・在沒有再生力的狀態下撞到隊士，或撞到障礙物就結束<br>・有氣場的隊士很難纏，打倒會一口氣失去10人份的再生力<br>・撿到紅色小瓶（稀血）就能恢復再生力<br>・右下的圓圈集滿後按下就能使出血鬼術（電腦為空白鍵）', regen: '再生力', killsO: n => `隊士 ${n}人`, whoOni: n => `「<b>${esc(n)}</b>」是鬼`, oniAs: n => `作為鬼的名字：<b style="color:#fff">${esc(n)}</b>`, oniTier: t => `血鬼術的強度：<b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `能承受隊士${Math.max(1, Math.floor(m / c))}次斬擊（沒被砍的時候會恢復）`, pickO1: n => n > 1 ? `選1個血鬼術（${n}個）` : '這隻鬼的血鬼術', pickO2: n => `選2個血鬼術（${n}個）`, whyO: { dull: '再生跟不上，被斬下了頸項', obs: '被障礙物絆住，被斬下了頸項' }, loadM: '正在製作鬼的身體…',
+    rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」是鬼${R.oni.as && R.oni.as !== R.name ? '（' + esc(oniNameL(R.oni.as, L)) + '）' : ''}<br>血鬼術：<b>${esc(wz)}</b><br>打倒的隊士 <b>${k}</b>人`, postO: (R, d, k, wz) => `「${R.name}」成為了鬼。\n以血鬼術「${wz}」跑了 ${d.toLocaleString()}m，打倒了${k}名隊士。\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '每個名字1筆（該名字跑得最遠的紀錄）・前100名', loading: '讀取中…', rkErr: '無法讀取', rkEmpty: '還沒有紀錄', nogl: '這台裝置無法顯示3D', capCol: (c, k) => `${c}　${k}`,
+    akaS: '赫刀', cardO: as => '鬼' + (as ? '・' + as : '') + '・血鬼術', sepW: '、' },
+  ko: { lang: '한국어', ttl: '무한 귀신 베기', h1: '<small>MUGEN ONIKIRI</small>無限鬼斬', lead: '이름으로 정해지는 일륜도로 귀신을 베며 달려라.<br>벨수록 칼날이 무뎌진다. 어디까지 갈 수 있을까.', ph: '이름을 입력', start: '일륜도를 쥔다', needName: '이름을 입력해 주세요', sndOn: '🔊 소리 켬', sndOff: '🔇 소리 끔', rank: '랭킹', prev: '칼의 색 보기(전작)',
+    hold: '길게 눌러 쥐기', keep: '그대로 꽉 쥐고 있으면…?', aka: '붉게 달아올랐다', isOni: '귀신이라 일륜도를 쥘 수 없었다', who: n => `「<b>${esc(n)}</b>」의 일륜도`, den: '재능', sharpInfo: (c, m) => c < .2 ? '이가 빠지지 않는다' : `귀신을 ${Math.max(1, Math.floor(m / c))}마리 베면 이가 빠진다`, akaInfo: '혁도: 이가 잘 빠지지 않는다',
+    noWaza: '호흡의 적성 없음. 기술은 쓸 수 없다. 피하고, 베고, 나아가라.', pick1: n => `가져갈 기술을 1개 고른다(${n}개 사용 가능)`, pick2: n => `가져갈 기술을 2개 고른다(${n}개 사용 가능)`, lockAt: p => `재능 ${p}%부터`, go: '출진', back: '돌아가기',
+    how: '・화면 왼쪽/오른쪽을 탭하거나 손가락을 옆으로 밀어 레인 이동(PC는 ← →)<br>・귀신이 있는 레인에 들어가면 벤다. 벨수록 칼날이 무뎌지고, 베지 않으면 회복된다<br>・예리함이 없는 채로 귀신에 부딪히거나 장애물에 부딪히면 끝<br>・오라가 있는 귀신은 단단하다. 베면 10마리분의 예리함을 한 번에 잃는다<br>・오른쪽 아래 원이 차면 눌러서 기술(PC는 스페이스)', how2: '・두 원은 스와이프로 전환(PC는 ↑)',
+    sharp: '예리함', kills: n => `귀신 ${n}마리`, why: { dull: '이가 빠져 벨 수 없었다', obs: '장애물에 부딪혔다' }, rInfo: (R, k, wz) => `「<b>${esc(R.name)}</b>」의 일륜도<br>${R.kk}・재능 <b>${R.den}%</b>${R.akaDone ? '<span class="aka">혁도</span>' : ''}<br>벤 귀신 <b>${k}</b>마리${wz ? '<br>기술: ' + esc(wz) : ''}`,
+    best: d => `자기 최고 ${d.toLocaleString()}m`, newBest: '자기 최고 기록 갱신!', again: '다시 달리기', repick: '기술 다시 고르기', rename: '이름 바꾸기', x: '𝕏에 올리기', img: '이미지로 만들기', xCopied: '이미지를 복사했습니다. X 게시란에 붙여넣기(Ctrl+V)하면 이미지가 첨부됩니다', xSaved: '이미지를 저장했습니다. X 게시물에 저장한 이미지를 추가해 주세요', hintL: '탭하면 왼쪽', hintR: '탭하면 오른쪽', hintS: '손가락을 옆으로 밀어도 움직인다', wzTip: '눌러서 기술!', fan: '※비공식 팬 게임입니다',
+    post: (R, d, k) => `「${R.name}」의 일륜도(${R.kk}・재능 ${R.den}%${R.akaDone ? '・혁도' : ''})로 ${d.toLocaleString()}m를 달려 귀신을 ${k}마리 벴다.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`,
+    rkAll: '전체', rkToday: '오늘', rkNone: '재능 없음', rkOni: '귀신', howO: '・화면 왼쪽/오른쪽을 탭하거나 손가락을 옆으로 밀어 레인 이동(PC는 ← →)<br>・대원이 있는 레인에 들어가면 쓰러뜨린다. 그때마다 베여서 재생력이 줄고, 베이지 않으면 회복된다<br>・재생력이 없는 채로 대원에 부딪히거나 장애물에 부딪히면 끝<br>・오라가 있는 대원은 만만치 않다. 쓰러뜨리면 10명분의 재생력을 한 번에 잃는다<br>・붉은 작은 병(희귀혈)을 주우면 재생력이 회복된다<br>・오른쪽 아래 원이 차면 눌러서 혈귀술(PC는 스페이스)', regen: '재생력', killsO: n => `대원 ${n}명`, whoOni: n => `「<b>${esc(n)}</b>」은(는) 귀신`, oniAs: n => `귀신으로서의 이름: <b style="color:#fff">${esc(n)}</b>`, oniTier: t => `혈귀술의 강함: <b style="color:#fff">${t}</b>`, regenInfo: (c, m) => `대원에게 ${Math.max(1, Math.floor(m / c))}번 베일 때까지 버틴다(베이지 않으면 회복된다)`, pickO1: n => n > 1 ? `혈귀술을 1개 고른다(${n}개)` : '이 귀신의 혈귀술', pickO2: n => `혈귀술을 2개 고른다(${n}개)`, whyO: { dull: '재생이 따라가지 못해 목이 베였다', obs: '장애물에 발이 걸려 목이 베였다' }, loadM: '귀신의 몸을 만드는 중…',
+    rInfoO: (R, k, wz) => `「<b>${esc(R.name)}</b>」은(는) 귀신${R.oni.as && R.oni.as !== R.name ? '(' + esc(oniNameL(R.oni.as, L)) + ')' : ''}<br>혈귀술: <b>${esc(wz)}</b><br>쓰러뜨린 대원 <b>${k}</b>명`, postO: (R, d, k, wz) => `「${R.name}」은(는) 귀신이 되었다.\n혈귀술 「${wz}」(으)로 ${d.toLocaleString()}m를 달려 대원을 ${k}명 쓰러뜨렸다.\n#無限鬼斬 #ブラウザゲーム\nhttps://nasubi-no-oniwa.com/onikiri/`, rkNote: '이름 하나당 1건(그 이름으로 가장 멀리 달린 기록)・상위 100', loading: '불러오는 중…', rkErr: '불러올 수 없었습니다', rkEmpty: '아직 기록이 없습니다', nogl: '이 기기에서는 3D를 표시할 수 없었습니다', capCol: (c, k) => `${c}　${k}`,
+    akaS: '혁도', cardO: as => '귀신' + (as ? '・' + as : '') + '・혈귀술', sepW: ', ' },
 };
-function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || [])[1]; if (TX[q]) return q; const s = ls.get('onikiri_lang', null); if (TX[s]) return s; return (navigator.language || 'ja').toLowerCase().startsWith('ja') ? 'ja' : 'en'; }
+function pickLang() { const q = (/[?&]lang=([a-z]+)/.exec(location.search) || [])[1]; if (TX[q]) return q; const s = ls.get('onikiri_lang', null); if (TX[s]) return s; const n = (navigator.language || 'ja').toLowerCase(); return n.startsWith('ja') ? 'ja' : n.startsWith('zh') ? 'zh' : n.startsWith('ko') ? 'ko' : 'en'; }
 let L = pickLang(), T = TX[L];
 const cl = k => (COLORS[k].name[L] || COLORS[k].name.en), kk = k => (COLORS[k].kokyu[L] || COLORS[k].kokyu.en);
+// 技の言葉：lw=技1つをいまの言葉に、trWz=記録に残っている日本語の技名（「、」区切り）をいまの言葉に
+const lw = w => locW(w, L), trArt = s => (L === 'ja' ? s : nameL(s, L) || genNameL(s, L) || s), trWz = s => (L === 'ja' || !s ? s : String(s).split('、').map(trArt).join(T.sepW));
 function applyLang() {
-  T = TX[L]; gripLang(L); document.documentElement.lang = L; document.title = T.ttl;
+  T = TX[L]; gripLang(L); document.documentElement.lang = L === 'zh' ? 'zh-Hant' : L; document.title = T.ttl;
   $('tH1').innerHTML = T.h1; $('tLead').innerHTML = T.lead; $('nm').placeholder = T.ph; $('startBtn').textContent = T.start; $('rkBtn').textContent = T.rank; $('rkBtn2').textContent = T.rank; $('prevBtn').textContent = T.prev;
   $('goBtn').textContent = T.go; $('pkBack').textContent = T.back; $('shL').textContent = T.sharp; $('again').textContent = T.again; $('repick').textContent = T.repick; $('rename').textContent = T.rename; $('xBtn').textContent = T.x; $('imgBtn').textContent = T.img; $('hintL').textContent = T.hintL; $('hintR').textContent = T.hintR; $('hintS').textContent = T.hintS; $('wzTip').textContent = T.wzTip; $('rkT').textContent = T.rank; $('rkNote').textContent = T.rkNote; $('rkBack').textContent = T.back;
   $('tFan').textContent = T.fan; $('rFan').textContent = T.fan; sndLabel();
@@ -187,7 +212,7 @@ function mkKishi() { // 隊士：体（色は頂点）＋羽織（1体ごとに�
 }
 // 敵の鬼（Blender で作った鬼。自分が鬼になったときと同じ姿。頸を斬ると頭が飛ぶ）。読みこみが終わるまでは前の鬼を出す
 let OLO = null, OM = null;
-new GLTFLoader().load('models/oni_lo.glb?v=11271300', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
+new GLTFLoader().load('models/oni_lo.glb?v=11271700', g => { const o = {}; g.scene.traverse(n => { if (n.isMesh) o[n.name] = n; }); if (o.body && o.head) OLO = o; }, undefined, () => { });
 function mkOni2() {
   OM = OM || { body: vtoon(), glow: new THREE.MeshBasicMaterial({ vertexColors: true }) }; const g = new THREE.Group(), body = new THREE.Group(), head = new THREE.Group(), K = OLO; g.add(body, head);
   body.add(withOut(K.body.geometry, OM.body)); if (K.marks) body.add(new THREE.Mesh(K.marks.geometry, OM.glow));
@@ -315,7 +340,7 @@ function useWaza() {
   if (ST !== 'run' || G.over || !G.wz.length || G.gauge < 100 || G.fx || RIG.playing()) return;
   const w = G.wz[G.sel], p = w[3], col = hexOf(), a = actOf(p);
   G.gauge = 0; G.used[artName(w)] = 1; sfx('waza'); FX.trail.key(KEY()); flash(col, .2); if (TIPN < 3) ls.set('onikiri_tip', ++TIPN); reqSnap(2, p.k === 'inst' ? (ACTHIT[a] || .2) + .13 : .55);
-  const el = $('wz'); el.innerHTML = R.oni ? `<small>${esc(w[0])}</small>${esc(w[1])}` : `<small>${esc(kk(R.key))}</small>${esc(w[0])}　${esc(w[1])}`; el.classList.toggle('oni', !!R.oni); if (R.oni) { gsap.fromTo('#tint', { opacity: .5 }, { opacity: 0, duration: .9 }); if (p.ring) { for (let i = 0; i < 6; i++) FX.arcFlat(KEY(), G.x, -1, 6.5, p.D, { rz: i * 1.047, follow: 1, hold: 1, spin: .5, y: .08, a: .8 }); FX.ring(STY[KEY()].c2, G.x, -1, 3.2, p.D, { follow: 1, hold: 1 }); FX.ring(STY[KEY()].c, G.x, -1, 1.6, p.D, { follow: 1, hold: 1 }); } } gsap.killTweensOf(el); gsap.fromTo(el, { opacity: 0, y: 8 }, { opacity: .62, y: 0, duration: .18 }); gsap.to(el, { opacity: 0, duration: .5, delay: 1.0 });
+  const el = $('wz'), wl = lw(w); el.innerHTML = R.oni ? `<small>${esc(wl[0])}</small>${esc(wl[1])}` : `<small>${esc(kk(R.key))}</small>${esc(wl[0])}　${esc(wl[1])}`; el.classList.toggle('lat', L === 'en'); el.classList.toggle('oni', !!R.oni); if (R.oni) { gsap.fromTo('#tint', { opacity: .5 }, { opacity: 0, duration: .9 }); if (p.ring) { for (let i = 0; i < 6; i++) FX.arcFlat(KEY(), G.x, -1, 6.5, p.D, { rz: i * 1.047, follow: 1, hold: 1, spin: .5, y: .08, a: .8 }); FX.ring(STY[KEY()].c2, G.x, -1, 3.2, p.D, { follow: 1, hold: 1 }); FX.ring(STY[KEY()].c, G.x, -1, 1.6, p.D, { follow: 1, hold: 1 }); } } gsap.killTweensOf(el); gsap.fromTo(el, { opacity: 0, y: 8 }, { opacity: .62, y: 0, duration: .18 }); gsap.to(el, { opacity: 0, duration: .5, delay: 1.0 });
   if (p.H) G.sharp = Math.min(G.max, G.sharp + p.H);
   if (p.k === 'inst') { const hit = RIG.play(a) || .1; G.hit = hit + .14; G.inv = Math.max(G.inv, hit + (p.I || .45)); FX.trail.on(hit + .45); G.pend.push({ t: hit, f: () => { zoneKill(p.L, p.R, p.O); castFx(p); } }); }
   else { const D = p.k === 'multi' ? p.N * .1 + .15 : p.D; G.hit = .3; G.fx = { p, t: 0, D, tick: 0, n: 0 }; if (a) RIG.setLoop(a); FX.trail.on(D); if (p.k === 'slow') { G.slowT = p.D; G.slowS = p.S; } auraFx(p); }
@@ -400,8 +425,13 @@ let TIPN = ls.get('onikiri_tip', 0); const ACTHIT = { slashH: .2, slashH2: .16, 
 const SNAP = document.createElement('canvas'); SNAP.width = 1080; SNAP.height = 810; let snapHas = false;
 function reqSnap(pri, delay) { if (ST === 'run' && pri >= (G.snapBest || 0) && pri >= (G.snapT > 0 ? G.snapP : 0)) { G.snapT = delay; G.snapP = pri; } }
 function doSnap() { try { const c = renderer.domElement, cw = c.width, ch = c.height; let sw = Math.min(cw, ch * 1.2), sh = sw * .75; if (sh > ch) { sh = ch; sw = sh / .75; } SNAP.getContext('2d').drawImage(c, (cw - sw) / 2, clamp(ch * .5 - sh / 2, 0, ch - sh), sw, sh, 0, 0, 1080, 810); snapHas = true; } catch (e) { } }
-const wzShort = w => { if (R && R.oni) { let n = w[1]; if (n.length > 7 && n.includes(' ')) n = n.slice(n.lastIndexOf(' ') + 1); if (n.length > 7 && n.includes('・')) n = n.slice(n.lastIndexOf('・') + 1); return n; } return w[1][0] === '（' ? w[0] : w[1]; };
-function hudWaza() { if (!G.wz.length) return; const a = wzShort(G.wz[G.sel]); $('wzA').firstChild.textContent = a; $('wzA').style.fontSize = a.length > 7 ? '10.5px' : a.length > 5 ? '12px' : ''; if (G.wz.length > 1) { const b = wzShort(G.wz[1 - G.sel]); $('wzB').firstChild.textContent = b; $('wzB').style.fontSize = b.length > 5 ? '9px' : ''; } }
+const wzShort = w0 => { const w = lw(w0); let n = w[1];
+  if (L !== 'ja') { if (w0[1][0] === '（') return w[0]; for (const c of [' - ', ': ', ', ']) if (wlen(n) > 12 && n.includes(c)) n = n.slice(n.lastIndexOf(c) + c.length); if (R && R.oni && L !== 'en') for (const c of [' ', '・', '·']) if (n.length > 7 && n.includes(c)) n = n.slice(n.lastIndexOf(c) + 1); return n; }
+  if (R && R.oni) { if (n.length > 7 && n.includes(' ')) n = n.slice(n.lastIndexOf(' ') + 1); if (n.length > 7 && n.includes('・')) n = n.slice(n.lastIndexOf('・') + 1); return n; } return n[0] === '（' ? w[0] : n; };
+// 文字の幅のめやす（英数字は半分）
+const wlen = s => { let n = 0; for (const c of s) n += c.charCodeAt(0) < 0x2000 ? .52 : 1; return n; };
+function hudWaza() { if (!G.wz.length) return; const set = (id, t, sz) => { const b = $(id).firstChild, n = wlen(t); b.textContent = t; b.style.wordBreak = L === 'en' ? 'normal' : ''; b.style.fontSize = sz(n); };
+  set('wzA', wzShort(G.wz[G.sel]), n => n > 16 ? '8.5px' : n > 11 ? '9.5px' : n > 7 ? '10.5px' : n > 5 ? '12px' : ''); if (G.wz.length > 1) set('wzB', wzShort(G.wz[1 - G.sel]), n => n > 12 ? '6.5px' : n > 8 ? '7.5px' : n > 5 ? '9px' : ''); }
 function swapWaza() { if (ST !== 'run' || G.wz.length < 2 || G.fx) return; G.sel = 1 - G.sel; hudWaza(); sfx('move'); gsap.fromTo('#wzA', { scale: .8 }, { scale: 1, duration: .15 }); }
 function move(d) { if (ST !== 'run' || G.over) return; if (G.fx && G.fx.p.k === 'flow') return; const l = clamp(G.lane + d, 0, 4); if (l !== G.lane) { G.lane = l; sfx('move'); } }
 // 移動：タップ（左半分・右半分）でも、指を横にスライドでも動ける。スライドは指を動かした分だけレーンを移る
@@ -420,10 +450,10 @@ function prep(name) { R = judge(name); R.name = name; R.akaDone = false; if (R.k
 // 鬼：原作の鬼は原作の血鬼術、鬼になった人は名前で決まる血鬼術。体の強さ（再生力）も名前で決まる
 function setOni(R) { const o = oniInfo(R.name, R.ch); R.oni = o; R.was = R.key; R.key = 'oni'; R.den = o.power; R.akaDone = false; WAZA.oni = o.arts; R.kk = kk('oni'); R.forms = o.arts.map((_, i) => i); R.slots = Math.min(o.carry, o.arts.length); loadModels(); return R; }
 gripInvite(r => r.oni ? null : humanOf(r.name, r.ch) ? 'hum' : r.key === 'none' ? 'none' : r.den >= 90 ? 'tal' : null);
-const killsT = n => (R && R.oni ? T.killsO(n) : T.kills(n)), artName = w => (R && R.oni ? w[1] : w[0] + ' ' + w[1]), descT = p => (R && R.oni ? desc(p).replace(/鬼/g, '隊士').replace(/切れ味/g, '再生力').replace(/斬撃/g, '血鬼術').replace(/(\d)体/g, '$1人').replace(/一気に斬る/g, '一気になぎ払う').replace(/斬り続ける/g, '倒し続ける').replace(/斬り進む/g, '倒し進む').replace(/を斬る/g, 'を倒す') : desc(p));
+const killsT = n => (R && R.oni ? T.killsO(n) : T.kills(n)), artName = w => (R && R.oni ? w[1] : w[0] + ' ' + w[1]), descT = p => (L !== 'ja' ? descL(p, L, !!(R && R.oni)) : R && R.oni ? desc(p).replace(/鬼/g, '隊士').replace(/切れ味/g, '再生力').replace(/斬撃/g, '血鬼術').replace(/(\d)体/g, '$1人').replace(/一気に斬る/g, '一気になぎ払う').replace(/斬り続ける/g, '倒し続ける').replace(/斬り進む/g, '倒し進む').replace(/を斬る/g, 'を倒す') : desc(p));
 // 鬼と隊士のモデル（Blender で作ったもの）。鬼で遊ぶときだけ読みこむ
 let MODELS = null, KISHI = null;
-function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11271300', res, undefined, rej));
+function loadModels() { if (MODELS) return MODELS; const ld = new GLTFLoader(), one = f => new Promise((res, rej) => ld.load('models/' + f + '.glb?v=11271700', res, undefined, rej));
   MODELS = Promise.all([one('oni'), one('kishi')]).then(([o, k]) => { RIG.setOniModel(o); const g = {}; k.scene.traverse(n => { if (n.isMesh) g[n.name] = n; }); KISHI = g; return true; }).catch(e => { MODELS = null; throw e; }); return MODELS; }
 function grip() {
   const name = $('nm').value.trim(); if (!name) { $('nmNote').textContent = T.needName; $('nmNote').classList.add('err'); gsap.fromTo('#nm', { x: -8 }, { x: 0, duration: .4, ease: 'elastic.out(1,.3)' }); return; }
@@ -436,11 +466,11 @@ function openPick() {
   ST = 'pick'; clearEnts(); RIG.setLoop('idle'); setLook(1); $('hud').hidden = true; $('title').hidden = true; const W = WAZA[R.key] || [], C = COLORS[R.key], un = R.forms;
   $('pkWho').innerHTML = (R.oni ? T.whoOni : T.who)(R.name); const pc = $('pkCol'); pc.textContent = cl(R.key) + '　' + R.kk; pc.style.background = R.key === 'none' ? '#b9bec4' : C.hex; pc.style.color = new THREE.Color(R.key === 'none' ? '#b9bec4' : C.hex).getHSL({}).l > .55 ? '#14131c' : '#fff';
   const cost = costOf(R), mx = 70 + 30 * R.den / 100;
-  if (R.oni) $('pkInfo').innerHTML = [R.oni.as && R.oni.as !== R.name ? T.oniAs(R.oni.as) : '', R.oni.tier >= 0 ? T.oniTier((TIER[L] || TIER.en)[R.oni.tier]) : '', `${T.regen}：${T.regenInfo(cost, mx)}`].filter(Boolean).join('<br>');
+  if (R.oni) $('pkInfo').innerHTML = [R.oni.as && R.oni.as !== R.name ? T.oniAs(oniNameL(R.oni.as, L)) : '', R.oni.tier >= 0 ? T.oniTier((TIER[L] || TIER.en)[R.oni.tier]) : '', `${T.regen}：${T.regenInfo(cost, mx)}`].filter(Boolean).join('<br>');
   else $('pkInfo').innerHTML = `${T.den} <b style="color:#fff">${R.den}%</b>${R.akaDone ? '<span class="aka">' + T.aka + '</span>' : ''}<br>${T.sharp}：${T.sharpInfo(cost, mx)}${R.akaDone && cost >= .2 ? '（' + T.akaInfo + '）' : ''}`;
   const saved = ls.get('onikiri_sel', {})[R.n]; SEL = (Array.isArray(saved) ? saved.filter(i => un.includes(i)) : []).slice(0, R.slots); for (let i = un.length - 1; i >= 0 && SEL.length < R.slots; i--) if (!SEL.includes(un[i])) SEL.push(un[i]);
   $('pkT').textContent = R.oni ? (R.slots === 2 ? T.pickO2(un.length) : T.pickO1(un.length)) : !un.length ? T.noWaza : (R.slots === 2 ? T.pick2(un.length) : T.pick1(un.length));
-  const box = $('pkList'); box.innerHTML = W.map((w, i) => { const ok = un.includes(i); return `<button class="wl${ok ? '' : ' lock'}" data-i="${i}"${ok ? '' : ' disabled'}>${ok ? '' : `<em>${R.ch ? '—' : T.lockAt(needDen(i, W.length))}</em>`}<b>${R.oni ? '' : esc(w[0]) + '　'}${esc(w[1])}</b>${R.oni ? `<small style="opacity:.75">${esc(w[0])}｜${esc(L === 'ja' || R.oni.canon ? w[2] : R.oni.en)}</small>` : ''}<small>${esc(descT(w[3]))}</small></button>`; }).join('');
+  const box = $('pkList'); box.innerHTML = W.map((w, i) => { const ok = un.includes(i), wl = lw(w); return `<button class="wl${ok ? '' : ' lock'}" data-i="${i}"${ok ? '' : ' disabled'}>${ok ? '' : `<em>${R.ch ? '—' : T.lockAt(needDen(i, W.length))}</em>`}<b>${R.oni ? '' : esc(wl[0]) + '　'}${esc(wl[1])}</b>${R.oni ? `<small style="opacity:.75">${esc(wl[0])}｜${esc(wl[2])}</small>` : ''}<small>${esc(descT(w[3]))}</small></button>`; }).join('');
   const paint = () => box.querySelectorAll('.wl').forEach(b => b.classList.toggle('on', SEL.includes(+b.dataset.i)));
   box.querySelectorAll('.wl:not(.lock)').forEach(b => b.onclick = () => { const i = +b.dataset.i; if (SEL.includes(i)) { if (R.slots === 2 && SEL.length === 2) SEL = SEL.filter(v => v !== i); } else { SEL.push(i); while (SEL.length > R.slots) SEL.shift(); } paint(); sfx('move'); });
   paint(); $('pkHow').innerHTML = (R.oni ? T.howO : T.how) + (R.slots === 2 ? '<br>' + T.how2 : ''); $('pick').hidden = false; $('pick').scrollTop = 0;
@@ -457,8 +487,8 @@ let LAST = null, POST = '';
 function showResult() {
   ST = 'result'; $('hud').hidden = true; $('hint').hidden = true; const d = Math.floor(G.dist), k = G.kills, wz = Object.keys(G.used).join('、') || G.wz.map(artName).join('、');
   LAST = { d, k, wz }; const nb = d > BEST; if (nb) { BEST = d; ls.set('onikiri_best', d); }
-  $('rWhy').textContent = (R.oni ? T.whyO : T.why)[G.why] || ''; $('rDist').innerHTML = d.toLocaleString() + '<small>m</small>'; $('rBest').textContent = nb ? T.newBest : T.best(BEST); $('rInfo').innerHTML = R.oni ? T.rInfoO(R, k, wz) : T.rInfo(R, k, wz);
-  POST = R.oni ? T.postO(R, d, k, G.wz.map(w => w[1]).join('・')) : T.post(R, d, k); $('result').hidden = false; $('result').scrollTop = 0; gsap.fromTo('#result .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .4, ease: 'power3.out' });
+  $('rWhy').textContent = (R.oni ? T.whyO : T.why)[G.why] || ''; $('rDist').innerHTML = d.toLocaleString() + '<small>m</small>'; $('rBest').textContent = nb ? T.newBest : T.best(BEST); $('rInfo').innerHTML = R.oni ? T.rInfoO(R, k, trWz(wz)) : T.rInfo(R, k, trWz(wz));
+  POST = R.oni ? T.postO(R, d, k, G.wz.map(w => lw(w)[1]).join(L === 'en' ? ' / ' : '・')) : T.post(R, d, k); $('result').hidden = false; $('result').scrollTop = 0; gsap.fromTo('#result .card', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .4, ease: 'power3.out' });
   if (nb) fxAdd(PFX && PFX.fx.confetti, { x: 80, y: 60, seed: 11 });
   LAST.card = makeCard(R, d, k, wz).catch(() => null);
   try { if (typeof gtag === 'function') gtag('event', 'run_end', { game: 'onikiri', dist: d, kills: k, kokyu: R.key }); } catch (e) { }
@@ -479,10 +509,10 @@ async function makeCard(R, d, k, wz) {
   const who = (R.oni ? T.whoOni : T.who)(R.name).replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
   x.shadowColor = '#000'; x.shadowBlur = 12; x.fillStyle = '#e9e2cf'; fit(who, 44, 700, W - 160); x.fillText(who, W / 2, 800);
   const ds = d.toLocaleString() + 'm'; fit(ds, 190, 900, W - 200); x.shadowColor = tint; x.shadowBlur = 44; x.fillStyle = '#f6efdc'; x.fillText(ds, W / 2, 985); x.shadowBlur = 0;
-  const l2 = R.oni ? (L === 'ja' ? '鬼' + (R.oni.as && R.oni.as !== R.name ? '・' + R.oni.as : '') + '・血鬼術' : 'Demon · Blood Demon Art') : R.kk + '・' + T.den + ' ' + R.den + '%' + (R.akaDone ? '・' + (L === 'ja' ? '赫刀' : 'Crimson') : ''); fit(l2, 46, 800, W - 300); const tw = Math.min(W - 160, x.measureText(l2).width + 90);
+  const l2 = R.oni ? T.cardO(R.oni.as && R.oni.as !== R.name ? oniNameL(R.oni.as, L) : '') : R.kk + '・' + T.den + ' ' + R.den + '%' + (R.akaDone ? '・' + T.akaS : ''); fit(l2, 46, 800, W - 300); const tw = Math.min(W - 160, x.measureText(l2).width + 90);
   x.fillStyle = R.key === 'none' ? '#b9bec4' : C.hex; x.shadowColor = tint; x.shadowBlur = 26; x.fillRect(W / 2 - tw / 2, 1020, tw, 76); x.shadowBlur = 0; x.strokeStyle = '#ffffff66'; x.lineWidth = 2; x.strokeRect(W / 2 - tw / 2, 1020, tw, 76);
   x.fillStyle = new THREE.Color(R.key === 'none' ? '#b9bec4' : C.hex).getHSL({}).l > .55 ? '#14131c' : '#ffffff'; x.fillText(l2, W / 2, 1074);
-  const l3 = killsT(k) + (wz ? '　' + wz : ''); x.fillStyle = '#cfc6b3'; fit(l3, 36, 600, W - 160); x.fillText(l3, W / 2, 1150);
+  const l3 = killsT(k) + (wz ? '　' + trWz(wz) : ''); x.fillStyle = '#cfc6b3'; fit(l3, 36, 600, W - 160); x.fillText(l3, W / 2, 1150);
   x.fillStyle = '#6d6680'; x.font = F(22, 600); x.fillText(T.fan, W / 2, 1196);
   x.fillStyle = '#c9a14a'; x.font = F(52); x.fillText(T.ttl, W / 2, 1262); x.fillStyle = '#9a93a8'; x.font = '600 28px ui-monospace,Menlo,monospace'; x.fillText('nasubi-no-oniwa.com/onikiri', W / 2, 1304);
   return await new Promise(r => c.toBlob(b => r(b), 'image/png'));
@@ -537,7 +567,7 @@ async function submitOni(d, k, wz) { // 鬼の記録は「鬼」のランキン�
 let rkFrom = 'title', rkTab = 'all';
 async function openRank(from) {
   rkFrom = from; $('title').hidden = true; $('result').hidden = true; $('rank').hidden = false; $('rank').scrollTop = 0;
-  const ks = ORDER.filter(x => WAZA[x]), short = x => (COLORS[x].kokyu[L] || COLORS[x].kokyu.en).replace(/の呼吸$| Breathing$/, '');
+  const ks = ORDER.filter(x => WAZA[x]), short = x => (COLORS[x].kokyu[L] || COLORS[x].kokyu.en).replace(/の呼吸$| Breathing$|之呼吸$|의 호흡$/, '');
   $('rkTabs').innerHTML = [['all', T.rkAll], ['today', T.rkToday]].map(t => `<button data-t="${t[0]}" class="${t[0] === rkTab ? 'on' : ''}">${esc(t[1])}</button>`).join('');
   $('rkK').innerHTML = ks.map(x => `<button data-t="${x}" class="${x === rkTab ? 'on' : ''}"><i style="background:${COLORS[x].hex}"></i>${esc(short(x))}</button>`).join('') + `<button data-t="none" class="${rkTab === 'none' ? 'on' : ''}"><i style="background:#b9bec4"></i>${esc(T.rkNone)}</button><button data-t="oni" class="${rkTab === 'oni' ? 'on' : ''}"><i style="background:#c8142c"></i>${esc(T.rkOni)}</button>`; // 才能なしだけ・鬼だけのランキング
   document.querySelectorAll('#rkTabs button,#rkK button').forEach(b => b.onclick = () => { rkTab = b.dataset.t; openRank(rkFrom); });
@@ -545,7 +575,7 @@ async function openRank(from) {
   try { const r = await fx(DBU(tab === 'all' ? 'n' : tab === 'today' ? 't/' + dayKey() : 'k/' + tab) + '?orderBy=%22d%22&limitToLast=100'); if (!r.ok) throw 0; const j = (await r.json()) || {}; const me = R ? nameKey(R) : '';
     const rows = Object.entries(j).map(([u, v]) => Object.assign({ u }, v)).filter(v => v && typeof v.d === 'number').sort((a, b) => b.d - a.d).slice(0, 100);
     if ($('rank').hidden || tab !== rkTab) return; if (!rows.length) { box.innerHTML = '<p class="note">' + T.rkEmpty + '</p>'; return; }
-    box.innerHTML = '<table class="rk">' + rows.map((v, i) => { const C = COLORS[v.k] || COLORS.none; return `<tr${v.u === me ? ' class="me"' : ''}><td class="n">${i + 1}</td><td>${esc(v.n || '')}${v.a ? '<span class="aka">' + (L === 'ja' ? '赫刀' : 'Crimson') + '</span>' : ''}<small><i style="background:${C.hex}"></i>${esc(C.kokyu[L] || C.kokyu.en)}${v.k === 'oni' ? '' : '・' + T.den + (+v.t || 0) + '%'}${v.w ? '・' + esc(String(v.w)) : ''}</small></td><td class="d">${(+v.d).toLocaleString()}m<small>${(v.k === 'oni' ? T.killsO : T.kills)(+v.c || 0)}</small></td></tr>`; }).join('') + '</table>';
+    box.innerHTML = '<table class="rk">' + rows.map((v, i) => { const C = COLORS[v.k] || COLORS.none; return `<tr${v.u === me ? ' class="me"' : ''}><td class="n">${i + 1}</td><td>${esc(v.n || '')}${v.a ? '<span class="aka">' + T.akaS + '</span>' : ''}<small><i style="background:${C.hex}"></i>${esc(C.kokyu[L] || C.kokyu.en)}${v.k === 'oni' ? '' : '・' + T.den + (+v.t || 0) + '%'}${v.w ? '・' + esc(trWz(String(v.w))) : ''}</small></td><td class="d">${(+v.d).toLocaleString()}m<small>${(v.k === 'oni' ? T.killsO : T.kills)(+v.c || 0)}</small></td></tr>`; }).join('') + '</table>';
   } catch (e) { if (tab === rkTab) box.innerHTML = '<p class="note err">' + T.rkErr + '</p>'; }
 }
 $('rkBtn').onclick = () => openRank('title'); $('rkBtn2').onclick = () => openRank('result');
@@ -563,6 +593,6 @@ applyLang(); gripSnd(SND); $('nm').value = ls.get('onikiri_name', '') || ''; $('
 if (DEV) { window.__oni = n => { prep(n); if (!R.oni) setOni(R); return loadModels().then(() => { openPick(); return R.oni.arts.map(a => a[1]); }); }; window.__G = () => ({ ST, G, R, SEL, LAST, QL, ENT: ENT.length, FXL: FX.count() }); window.__spawnT = (t, lane, z) => spawn(t, lane, z); window.__bgm = BGM; window.__lg = laneGlow; }
 if (DEV) window.__cast = (key, i) => { R.key = key; R.kk = kk(key); setLook(1); G.wz = [WAZA[key][i]]; G.sel = 0; G.gauge = 100; G.fx = null; G.over = 0; G.sharp = G.max; G.inv = 9; RIG.setLoop(null); useWaza(); return WAZA[key][i][1]; };
 if (DEV) window.__castO = i => { G.wz = [WAZA.oni[i]]; G.sel = 0; G.gauge = 100; G.fx = null; G.over = 0; G.sharp = G.max; G.inv = 9; RIG.setLoop(null); hudWaza(); useWaza(); return WAZA.oni[i][1]; };
-if (DEV) window.__W = WAZA; if (DEV) window.__spawn = (lane, z, hard) => spawn('oni', lane, z, hard);
+if (DEV) window.__pk = n => { prep(n); openPick(); return R.key; }; if (DEV) window.__W = WAZA; if (DEV) window.__spawn = (lane, z, hard) => spawn('oni', lane, z, hard);
 if (DEV) { window.__E = ENT; let fk = 0; window.__tick = () => { if (!fk) { fk = performance.now(); try { gsap.ticker.remove(gsap.updateRoot); } catch (e) { } } fk += 1000 / 30; window.__ticking = 1; try { gsap.updateRoot(fk / 1000); frame(fk); } finally { window.__ticking = 0; } }; window.__judge = n => { const r = judge(n); return [r.key, r.den, usable(r).length]; }; }
 requestAnimationFrame(frame);

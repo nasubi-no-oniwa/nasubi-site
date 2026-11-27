@@ -1,6 +1,7 @@
 import { THREE, RoomEnvironment } from './lib.js?v=11241806';
 import { COLORS, ORDER, CHARS } from './data.js?v=11241806';
-import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11271300';
+import { ONI_TITLES, TIER, oniInfo, humanOf, oniHas, oniAdd, oniInvite, oniText } from '../onikiri/oni.js?v=11271700';
+import { locW, oniNameL } from '../onikiri/i18n.js?v=11271700';
 const $ = id => document.getElementById(id);
 const gsap = window.gsap, PFX = window.PFX;
 const DEV = /[?&]dev=1/.test(location.search);
@@ -455,7 +456,7 @@ function fillResult(R) {
   $('rSch').textContent = kokyu(R.key); $('rRank').innerHTML = esc(T.kyu + '：' + rankOf(R)) + (R.akaDone ? ' <span class="aka">' + esc(T.aka) + '</span>' : '');
   $('rDenL').textContent = T.den; $('rDenV').textContent = R.den + '%'; $('rDen').hidden = $('rBar').parentNode.hidden = R.key === 'nezuko';
   $('rWord').textContent = wordOf(R); $('rFan').textContent = T.fan; $('oniBtn').hidden = false; $('oniBtn').textContent = R.oni ? T.oniGo : T.oni;
-  const ra = $('rArt'); ra.hidden = !R.oni; if (R.oni) { const o = R.oni, a = o.arts, ja = L === 'ja' || L === 'zh'; ra.innerHTML = `<small>${esc(T.artL)}${o.as && o.as !== R.name ? '　' + esc(T.oniAs(o.as)) : ''}</small><b>${a.slice(0, 4).map(w => esc(w[1])).join('<br>')}${a.length > 4 ? '<i>' + esc(T.more(a.length - 4)) + '</i>' : ''}</b>${o.canon ? '' : `<p>${esc(ja ? a[0][2] : o.en)}</p><em>${esc(T.tierL)}：${esc((TIER[L] || (ja ? TIER.ja : TIER.en))[o.tier])}</em>`}`; if (R.becameOni) { $('rWho').innerHTML = T.whoOni(R.name); } }
+  const ra = $('rArt'); ra.hidden = !R.oni; if (R.oni) { const o = R.oni, a = o.arts.map(w => locW(w, L)), sep = L === 'en' || L === 'ko' ? ': ' : '：'; ra.innerHTML = `<small>${esc(T.artL)}${o.as && o.as !== R.name ? '　' + esc(T.oniAs(oniNameL(o.as, L))) : ''}</small><b>${a.slice(0, 4).map(w => esc(w[1])).join('<br>')}${a.length > 4 ? '<i>' + esc(T.more(a.length - 4)) + '</i>' : ''}</b>${o.canon ? '' : `<p>${esc(a[0][2])}</p><em>${esc(T.tierL)}${sep}${esc((TIER[L] || TIER.en)[o.tier])}</em>`}`; if (R.becameOni) { $('rWho').innerHTML = T.whoOni(R.name); } }
   shareLine();
 }
 let COUNTS = null, countErr = false;
@@ -473,7 +474,7 @@ function showResult() {
   gsap.fromTo('#rBar', { width: '0%' }, { width: R.den + '%', duration: 1.1, delay: .3, ease: 'power2.out' });
   gsap.fromTo('#rCol', { scale: .6, opacity: 0 }, { scale: 1, opacity: 1, duration: .6, delay: .1, ease: 'back.out(2)' });
   R.card = makeCard(R);
-  POST = R.key === 'none' ? T.postNone(R.name) : R.oni ? T.postOni(R.name, R.oni.arts.slice(0, 3).map(w => w[1]).join('・') + (R.oni.arts.length > 3 ? T.more(R.oni.arts.length - 3) : ''), !!R.becameOni || !R.oni.canon) : R.key === 'nezuko' ? T.postNez(R.name) : T.post(R.name, COLORS[R.key].name[L], kokyu(R.key), rankOf(R), R.den); if (R.akaDone) POST = POST.replace('#色変わりの刀', T.akaPost + '\n#色変わりの刀');
+  POST = R.key === 'none' ? T.postNone(R.name) : R.oni ? T.postOni(R.name, R.oni.arts.slice(0, 3).map(w => locW(w, L)[1]).join(L === 'en' ? ' / ' : '・') + (R.oni.arts.length > 3 ? T.more(R.oni.arts.length - 3) : ''), !!R.becameOni || !R.oni.canon) : R.key === 'nezuko' ? T.postNez(R.name) : T.post(R.name, COLORS[R.key].name[L], kokyu(R.key), rankOf(R), R.den); if (R.akaDone) POST = POST.replace('#色変わりの刀', T.akaPost + '\n#色変わりの刀');
   count(R).catch(() => { }).then(loadCounts).then(shareLine).catch(() => { });
 }
 $('startBtn').onclick = grip;
@@ -548,7 +549,7 @@ async function makeCard(R) {
   if (R.key !== 'nezuko') {
     const bw = 640; x.fillStyle = '#1b1a24'; x.fillRect(W / 2 - bw / 2, y, bw, 18); x.fillStyle = R.key === 'none' ? '#b9bec4' : C.hex; x.fillRect(W / 2 - bw / 2, y, bw * R.den / 100, 18);
     x.fillStyle = '#cfc6b3'; x.font = F(30, 600); x.fillText(T.den + '  ' + R.den + '%', W / 2, y + 62); y += 130;
-  } else { y += 40; if (R.oni) { const an = R.oni.arts.slice(0, 2).map(w => w[1]).join('・') + (R.oni.arts.length > 2 ? T.more(R.oni.arts.length - 2) : ''); x.fillStyle = '#ff8a8a'; x.font = F(30, 700); x.fillText(T.artL, W / 2, y); x.fillStyle = '#ffffff'; x.shadowColor = '#ff1030'; x.shadowBlur = 26; fit(an, 60, 900, W - 160); x.fillText(an, W / 2, y + 76); x.shadowBlur = 0; y += 150; } }
+  } else { y += 40; if (R.oni) { const an = R.oni.arts.slice(0, 2).map(w => locW(w, L)[1]).join(L === 'en' ? ' / ' : '・') + (R.oni.arts.length > 2 ? T.more(R.oni.arts.length - 2) : ''); x.fillStyle = '#ff8a8a'; x.font = F(30, 700); x.fillText(T.artL, W / 2, y); x.fillStyle = '#ffffff'; x.shadowColor = '#ff1030'; x.shadowBlur = 26; fit(an, 60, 900, W - 160); x.fillText(an, W / 2, y + 76); x.shadowBlur = 0; y += 150; } }
   x.fillStyle = '#f2ead6'; x.font = F(40, 600); wrap(wordOf(R), W - 180).slice(0, 3).forEach((l, i) => x.fillText(l, W / 2, y + i * 58));
   x.fillStyle = '#6d6680'; x.font = F(24, 600); x.fillText(T.fan, W / 2, H - 150);
   x.fillStyle = '#c9a14a'; x.font = F(48); x.fillText(T.ttl, W / 2, H - 92); x.fillStyle = '#9a93a8'; x.font = '600 28px ui-monospace,Menlo,monospace'; x.fillText('nasubi-no-oniwa.com/katana', W / 2, H - 52);

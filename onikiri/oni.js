@@ -2,7 +2,8 @@
 // ・原作の鬼：原作どおりの血鬼術（名前・動き）
 // ・鬼になった人：名前で決まる、このゲームだけの血鬼術
 // ・鬼になったことは、その端末にだけ覚える（ランキングの剣士の記録は消さない）
-import { WAZA } from './waza.js?v=11271300';
+import { WAZA } from './waza.js?v=11271700';
+import { genArt, TIERL } from './i18n.js?v=11271700';
 
 // ---------- 見た目（色と形）----------
 export const ONI_STY = {
@@ -137,14 +138,19 @@ const FM = [ // [名前の後半×3, 説明（日）, 説明（英）, 強さ(0�
   [['大災', '終焉', '天変'], '{e}で前のすべてを吹き飛ばす', 'Blows away everything ahead with {e}', t => ({ k: 'inst', L: T5([1, 2, 9, 9, 9], t), R: T5([16, 24, 36, 50, 70], t), O: 1, I: t >= 3 ? 1 : .5, v: t >= 2 ? 'mega' : 'storm' })],
   [['再生', '喰らい', '脈動'], '{e}で喰らい、再生の力を取りもどす', 'Feeds with {e} and restores its regeneration', t => ({ k: 'inst', L: T5([0, 0, 1, 1, 2], t), R: T5([8, 10, 12, 14, 18], t), H: T5([15, 25, 40, 60, 100], t), v: 'rain' })],
 ];
-export const TIER = { ja: ['かすり傷ていど', '並', '強い', '凶悪', '災厄'], en: ['A scratch', 'Average', 'Strong', 'Vicious', 'Calamity'] };
+export const TIER = { ja: ['かすり傷ていど', '並', '強い', '凶悪', '災厄'], en: ['A scratch', 'Average', 'Strong', 'Vicious', 'Calamity'], zh: TIERL.zh, ko: TIERL.ko };
 const norm0 = s => String(s).normalize('NFKC').replace(/[\s　・･]/g, '').toLowerCase().replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
 // 名前から、その人だけの血鬼術を作る（同じ名前なら必ず同じ）
 export function artOf(name) {
-  const n = norm0(name), r = k => hash(n, 0x6f6e69 + k * 7919), e = EL[Math.floor(r(1) * EL.length)], f = FM[Math.floor(r(2) * FM.length)];
-  const x = r(3) * 100, tier = x < 15 ? 0 : x < 45 ? 1 : x < 75 ? 2 : x < 93 ? 3 : 4;
-  const nm = e[1][Math.floor(r(4) * 3)] + '・' + f[0][Math.floor(r(5) * 3)], p = Object.assign(f[3](tier), { sty: e[0] });
-  return { art: ['血鬼術', nm, f[1].replace('{e}', e[2]), p], en: f[2].replace('{e}', e[3]), tier, power: Math.round(35 + 65 * r(6)) };
+  const n = norm0(name), r = k => hash(n, 0x6f6e69 + k * 7919), ei = Math.floor(r(1) * EL.length), fi = Math.floor(r(2) * FM.length), e = EL[ei], f = FM[fi];
+  const x = r(3) * 100, tier = x < 15 ? 0 : x < 45 ? 1 : x < 75 ? 2 : x < 93 ? 3 : 4, a = Math.floor(r(4) * 3), b = Math.floor(r(5) * 3);
+  const nm = e[1][a] + '・' + f[0][b], p = Object.assign(f[3](tier), { sty: e[0] });
+  return { art: ['血鬼術', nm, f[1].replace('{e}', e[2]), p, { en: genArt('en', ei, fi, a, b), zh: genArt('zh', ei, fi, a, b), ko: genArt('ko', ei, fi, a, b) }], en: f[2].replace('{e}', e[3]), tier, power: Math.round(35 + 65 * r(6)) };
+}
+// 名前で決まる血鬼術の日本語名（「灼熱・蛇行」）を、その言葉の名前にする（ランキングの表示用）
+export function genNameL(nm, lang) {
+  const i = nm.indexOf('・'); if (i < 0) return null; const x = nm.slice(0, i), y = nm.slice(i + 1), ei = EL.findIndex(e => e[1].includes(x)), fi = FM.findIndex(f => f[0].includes(y)); if (ei < 0 || fi < 0) return null;
+  const g = genArt(lang, ei, fi, EL[ei][1].indexOf(x), FM[fi][0].indexOf(y)); return g ? g[0] : null;
 }
 // その名前の鬼としての中身。cn=原作のキャラなら、そのいちばん正式な名前
 export function oniInfo(name, cn) {
