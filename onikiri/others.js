@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11280645';
+import { EXTRA } from './i18n.js?v=11280650';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -133,6 +133,14 @@ export const WORKS = {
   kr_gaim: ['仮面ライダー鎧武', 'Kamen Rider Gaim', '假面騎士鎧武', '가면라이더 가이무'],
   kr_ryuki: ['仮面ライダー龍騎', 'Kamen Rider Ryuki', '假面騎士龍騎', '가면라이더 류우키'],
   kr_kabuto: ['仮面ライダーカブト', 'Kamen Rider Kabuto', '假面騎士Kabuto', '가면라이더 카부토'],
+  kr_faiz: ['仮面ライダー555', 'Kamen Rider 555', '假面騎士555', '가면라이더 파이즈'],
+  kr_kiva: ['仮面ライダーキバ', 'Kamen Rider Kiva', '假面騎士Kiva', '가면라이더 키바'],
+  kr_deno: ['仮面ライダー電王', 'Kamen Rider Den-O', '假面騎士電王', '가면라이더 덴오'],
+  kr_decade: ['仮面ライダーディケイド', 'Kamen Rider Decade', '假面騎士Decade', '가면라이더 디케이드'],
+  kr_hibiki: ['仮面ライダー響鬼', 'Kamen Rider Hibiki', '假面騎士響鬼', '가면라이더 히비키'],
+  kr_ooo: ['仮面ライダーオーズ', 'Kamen Rider OOO', '假面騎士OOO', '가면라이더 오즈'],
+  kr_wizard: ['仮面ライダーウィザード', 'Kamen Rider Wizard', '假面騎士Wizard', '가면라이더 위자드'],
+  kr_agito: ['仮面ライダーアギト', 'Kamen Rider Agito', '假面騎士Agito', '가면라이더 아기토'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -1299,6 +1307,52 @@ export const OTHERS = [
     t(HIS, ['ライダースラッシュ', 'Rider Slash', '騎士斬', '라이더 슬래시'], ['毒をまとった刃で斬りさく', 'Cuts them open with a venom-coated blade', '以纏毒之刃斬裂', '독을 두른 칼날로 베어 가른다'], { k: 'inst', L: 1, R: 32, v: 'arcH', sty: 'x_oden' }),
     t(['マスクドライダーシステム', 'Masked Rider System', '假面騎士系統', '마스크드 라이더 시스템'], ['クロックアップ', 'Clock Up', '時間加速', '클록 업'], ['自分だけが速い時の流れに入る', 'Enters a flow of time in which only he moves fast', '只有自己進入加速的時間流', '자신만 빠른 시간의 흐름에 들어간다'], { k: 'slow', D: 6, S: .2, v: 'eye', sty: 'x_sao' }),
   ], ['仮面ライダーサソード']),
+  // ---------- 23回目：ほかの仮面ライダーの剣士 ----------
+  c('木場勇治', 'きばゆうじ', ['Yuji Kiba', '木場勇治', '키바 유지'], 'kr_faiz', 'gray', 90, ['魔剣', 'Demon Sword', '魔劍', '마검'], [
+    t(['ホースオルフェノク', 'Horse Orphnoch', '馬奧菲以諾', '호스 오르페녹'], ['魔剣の一閃', 'Flash of the Demon Sword', '魔劍一閃', '마검의 일섬'], ['灰色の大剣で、ためらいなく斬る', 'Cuts without hesitation with his ashen greatsword', '以灰色大劍毫不猶豫地斬下', '잿빛 대검으로 망설임 없이 벤다'], { k: 'inst', L: 1, R: 28, v: 'arcH', sty: 'x_kiri' }),
+    t(['仮面ライダーオーガ', 'Kamen Rider Orga', '假面騎士Orga', '가면라이더 오거'], ['オーガストラッシュ', 'Orga Stlash', 'Orga斬擊', '오거 스트래시'], ['長くのびた光の刃で、まとめて斬りふせる', 'Cuts them all down with a blade of light stretched far out', '以伸長的光刃一併斬倒', '길게 뻗은 빛의 칼날로 한꺼번에 베어 넘긴다'], { k: 'inst', L: 2, R: 46, v: 'mega', sty: 'x_excalibur' }),
+  ], ['仮面ライダーオーガ']),
+  c('名護啓介', 'なごけいすけ', ['Keisuke Nago', '名護啓介', '나고 케이스케'], 'kr_kiva', 'white', 88, ['イクサカリバー', 'Ixa Calibur', 'Ixa Calibur', '익사 칼리버'], [
+    t(['カリバーフエッスル', 'Calibur Fuestle', 'Calibur笛哨', '칼리버 퓨에슬'], ['イクサ・ジャッジメント', 'Ixa Judgment', 'Ixa審判', '익사 저지먼트'], ['太陽を背に、裁きの一太刀を振りおろす', 'With the sun at his back, he brings down the stroke of judgment', '背對太陽，揮下審判的一刀', '태양을 등지고 심판의 한칼을 내리친다'], { k: 'inst', L: 1, R: 32, v: 'arcDown', sty: 'x_excalibur' }),
+    t(['ライジングイクサ', 'Rising Ixa', 'Rising Ixa', '라이징 익사'], ['ファイナルライジングブラスト', 'Final Rising Blast', '最終升華爆破', '파이널 라이징 블래스트'], ['最大出力の光弾を撃ちこむ', 'Fires a bolt of light at maximum output', '射出最大輸出的光彈', '최대 출력의 빛의 탄환을 쏜다'], { k: 'inst', L: 1, R: 40, v: 'bolt', sty: 'x_excalibur' }),
+  ], ['仮面ライダーイクサ']),
+  c('野上良太郎', 'のがみりょうたろう', ['Ryotaro Nogami', '野上良太郎', '노가미 료타로'], 'kr_deno', 'red', 93, ['デンガッシャー', 'DenGasher', 'DenGasher', '덴가셔'], [
+    t(['エクストリームスラッシュ', 'Extreme Slash', '極限斬', '익스트림 슬래시'], ['俺の必殺技 パート2', 'My Finishing Move, Part 2', '本大爺的必殺技 第二部', '나의 필살기 파트 2'], ['飛ばした刃先を振りまわし、横から斬る', 'Swings the detached blade tip around and cuts from the side', '揮舞飛出的刀尖自橫向斬擊', '날린 칼끝을 휘둘러 옆에서 벤다'], { k: 'inst', L: 2, R: 34, v: 'arcH', sty: 'x_hiten' }),
+    t(['エクストリームスラッシュ', 'Extreme Slash', '極限斬', '익스트림 슬래시'], ['俺の必殺技 パート3', 'My Finishing Move, Part 3', '本大爺的必殺技 第三部', '나의 필살기 파트 3'], ['飛ばした刃先を、まっすぐ縦に振りおろす', 'Brings the detached blade tip straight down', '將飛出的刀尖筆直縱向劈下', '날린 칼끝을 곧게 세로로 내리친다'], { k: 'inst', L: 1, R: 38, O: 1, v: 'fall', sty: 'x_hiten' }),
+    t(['ライナーフォーム', 'Liner Form', 'Liner Form', '라이너 폼'], ['電車斬り', 'Densha Giri', '電車斬', '전철 베기'], ['線路の上をすべり、電車の勢いで斬りぬける', 'Slides along the rails and cuts through with the force of a train', '在鐵軌上滑行，以電車之勢斬過', '선로 위를 미끄러져 전철의 기세로 베어 나간다'], { k: 'inst', L: 1, R: 42, v: 'dash', sty: 'x_trunks' }),
+  ], ['仮面ライダー電王', '仮面ライダーでんおう']),
+  c('桜井侑斗', 'さくらいゆうと', ['Yuto Sakurai', '櫻井侑斗', '사쿠라이 유우토'], 'kr_deno', 'green', 90, ['ゼロガッシャー', 'ZeroGasher', 'ZeroGasher', '제로가셔'], [
+    t(['サーベルモード', 'Saber Mode', '軍刀模式', '사벨 모드'], ['スプレンデッドエンド', 'Splendid End', '華麗終結', '스플렌디드 엔드'], ['大剣で「A」の字に斬りさく', 'Carves the letter A with his greatsword', '以大劍斬出「A」字', '대검으로 「A」자로 베어 가른다'], { k: 'inst', L: 1, R: 34, v: 'arcDown', sty: 'x_santoryu' }),
+    t(['ボウガンモード', 'Bowgun Mode', '弩模式', '보우건 모드'], ['グランドストライク', 'Grand Strike', '宏偉打擊', '그랜드 스트라이크'], ['光の矢を撃ちこむ', 'Fires a bolt of light', '射出光之箭', '빛의 화살을 쏜다'], { k: 'inst', L: 1, R: 40, v: 'bolt', sty: 'x_santoryu' }),
+  ], ['仮面ライダーゼロノス', '桜井侑人']),
+  c('門矢士', 'かどやつかさ', ['Tsukasa Kadoya', '門矢士', '카도야 츠카사'], 'kr_decade', 'pink', 96, ['ライドブッカー', 'Ride Booker', 'Ride Booker', '라이드 부커'], [
+    t(['アタックライド', 'Attack Ride', 'Attack Ride', '어택 라이드'], ['スラッシュ', 'Slash', '斬擊', '슬래시'], ['刃をいくつにも分けて、重ねて斬る', 'Splits the blade into many and layers the cuts', '將刀刃分為數道重疊斬擊', '칼날을 여럿으로 나눠 겹쳐 벤다'], { k: 'multi', N: 6, R: 24, v: 'arcs', sty: 'x_erza' }),
+    t(['アタックライド', 'Attack Ride', 'Attack Ride', '어택 라이드'], ['イリュージョン', 'Illusion', '幻象', '일루전'], ['分身して、いっせいに斬りかかる', 'Splits into copies that all attack at once', '分身後一齊斬來', '분신해 일제히 베어 든다'], { k: 'multi', N: 9, R: 30, v: 'arcs', sty: 'x_erza' }),
+    t(['ファイナルアタックライド', 'Final Attack Ride', 'Final Attack Ride', '파이널 어택 라이드'], ['ディメンションスラッシュ', 'Dimension Slash', '次元斬', '디멘션 슬래시'], ['並んだカードの門をくぐり、一気に斬りぬける', 'Passes through a row of card gates and cuts through in one go', '穿過排列的卡牌之門，一口氣斬過', '늘어선 카드의 문을 지나 단숨에 베어 나간다'], { k: 'inst', L: 1, R: 42, v: 'dash', sty: 'x_erza' }),
+  ], ['仮面ライダーディケイド']),
+  c('天道総司', 'てんどうそうじ', ['Souji Tendou', '天道總司', '텐도 소지'], 'kr_kabuto', 'red', 99, ['パーフェクトゼクター', 'Perfect Zecter', 'Perfect Zecter', '퍼펙트 젝터'], [
+    t(['カブトクナイガン', 'Kabuto Kunai Gun', 'Kabuto苦無槍', '카부토 쿠나이건'], ['アバランチスラッシュ', 'Avalanche Slash', '雪崩斬', '애벌랜치 슬래시'], ['すれちがいざまに、クナイで斬りさく', 'Cuts them open with the kunai as he passes', '擦身而過時以苦無斬裂', '스쳐 지나가며 쿠나이로 베어 가른다'], { k: 'inst', L: 1, R: 28, v: 'arcH', sty: 'x_hiten' }),
+    t(['マスクドライダーシステム', 'Masked Rider System', '假面騎士系統', '마스크드 라이더 시스템'], ['クロックアップ', 'Clock Up', '時間加速', '클록 업'], ['自分だけが速い時の流れに入る', 'Enters a flow of time in which only he moves fast', '只有自己進入加速的時間流', '자신만 빠른 시간의 흐름에 들어간다'], { k: 'slow', D: 6, S: .2, v: 'eye', sty: 'x_sao' }),
+    t(['ハイパーフォーム', 'Hyper Form', 'Hyper Form', '하이퍼 폼'], ['マキシマムハイパータイフーン', 'Maximum Hyper Typhoon', '極限超級颱風', '맥시멈 하이퍼 타이푼'], ['四つのゼクターの力を束ねた、巨大な光の刃', 'A giant blade of light binding the power of four Zecters', '匯聚四個Zecter之力的巨大光刃', '네 젝터의 힘을 묶은 거대한 빛의 칼날'], { k: 'inst', L: 2, R: 46, v: 'mega', sty: 'x_excalibur' }),
+  ], ['仮面ライダーカブト']),
+  c('日高仁志', 'ひだかひとし', ['Hitoshi Hidaka', '日高仁志', '히다카 히토시'], 'kr_hibiki', 'purple', 95, ['装甲声刃', 'Armed Saber', '裝甲聲刃', '아머드 세이버'], [
+    t(['鬼棒術', 'Oni Staff Art', '鬼棒術', '귀봉술'], ['烈火剣', 'Rekka Ken', '烈火劍', '열화검'], ['音撃棒の先に炎の刃をのばして斬る', 'Extends a blade of flame from the tip of his drumstick and cuts', '自音擊棒前端伸出火焰之刃斬擊', '음격봉 끝에 불꽃의 칼날을 뻗어 벤다'], { k: 'inst', L: 1, R: 28, v: 'arcH', sty: 'x_homura' }),
+    t(['鬼棒術', 'Oni Staff Art', '鬼棒術', '귀봉술'], ['烈火弾', 'Rekka Dan', '烈火彈', '열화탄'], ['音撃棒から火の玉を撃ちだす', 'Fires balls of flame from his drumsticks', '自音擊棒射出火球', '음격봉에서 불덩이를 쏜다'], { k: 'rain', D: 4, R: 40, O: 1, v: 'rainfall', sty: 'x_homura' }),
+    t(['音撃刃', 'Ongeki Blade', '音擊刃', '음격인'], ['鬼神覚声', 'Kishin Kakusei', '鬼神覺聲', '귀신각성'], ['声を刃にのせ、炎の大太刀で清める', 'Lays his voice upon the blade and purifies with a great sword of flame', '將聲音附於刀刃，以火焰大太刀淨化', '목소리를 칼날에 실어 불꽃의 대태도로 정화한다'], { k: 'inst', L: 2, R: 44, v: 'mega', sty: 'x_ryujin' }),
+  ], ['仮面ライダー響鬼', '仮面ライダーひびき'], ['ヒビキ']),
+  c('火野映司', 'ひのえいじ', ['Eiji Hino', '火野映司', '히노 에이지'], 'kr_ooo', 'yellow', 94, ['メダジャリバー', 'Medajalibur', 'Medajalibur', '메다자리버'], [
+    t(['トリプル・スキャニングチャージ', 'Triple Scanning Charge', '三重掃描充能', '트리플 스캐닝 차지'], ['オーズバッシュ', 'OOO Bash', 'OOO猛擊', '오즈 배시'], ['まわりの空間ごと、まとめて斬りさく', 'Cuts everything open, the very space around them included', '連同周圍空間一併斬裂', '주위의 공간째 한꺼번에 베어 가른다'], { k: 'inst', L: 2, R: 42, v: 'arcH', sty: 'x_room' }),
+    t(['プトティラコンボ', 'Putotyra Combo', 'Putotyra聯組', '푸토티라 콤보'], ['グランド・オブ・レイジ', 'Ground of Rage', '憤怒大地', '그라운드 오브 레이지'], ['恐竜の力をこめた斧で、叩きわる', 'Smashes them apart with an axe charged with the power of dinosaurs', '以灌注恐龍之力的斧頭劈碎', '공룡의 힘을 담은 도끼로 내리쳐 부순다'], { k: 'inst', L: 1, R: 34, O: 1, v: 'fall', sty: 'x_gravity' }),
+  ], ['仮面ライダーオーズ']),
+  c('操真晴人', 'そうまはると', ['Haruto Soma', '操真晴人', '소마 하루토'], 'kr_wizard', 'red', 95, ['ウィザーソードガン', 'WizarSwordGun', 'WizarSwordGun', '위자소드건'], [
+    t(['ソードモード', 'Sword Mode', '劍模式', '소드 모드'], ['スラッシュストライク', 'Slash Strike', '斬擊打擊', '슬래시 스트라이크'], ['炎の魔法をこめた斬撃を飛ばす', 'Sends out a slash charged with fire magic', '放出灌注火焰魔法的斬擊', '불꽃 마법을 담은 참격을 날린다'], { k: 'inst', L: 1, R: 34, v: 'arcH', sty: 'x_homura' }),
+    t(['ガンモード', 'Gun Mode', '槍模式', '건 모드'], ['シューティングストライク', 'Shooting Strike', '射擊打擊', '슈팅 스트라이크'], ['魔法の弾をまとめて撃ちこむ', 'Fires a volley of magic bullets', '將魔法子彈一併射出', '마법의 탄환을 한꺼번에 쏜다'], { k: 'rain', D: 4, R: 40, O: 1, v: 'rainfall', sty: 'x_homura' }),
+    t(['インフィニティースタイル', 'Infinity Style', 'Infinity Style', '인피니티 스타일'], ['シャイニングストライク', 'Shining Strike', '閃耀打擊', '샤이닝 스트라이크'], ['巨大にした斧を振りおろし、叩きわる', 'Brings down the giant-grown axe and smashes them apart', '揮下巨大化的斧頭劈碎', '거대해진 도끼를 내리쳐 부순다'], { k: 'inst', L: 2, R: 44, O: 1, v: 'fall', sty: 'x_soul' }),
+  ], ['仮面ライダーウィザード']),
+  c('津上翔一', 'つがみしょういち', ['Shouichi Tsugami', '津上翔一', '츠가미 쇼이치'], 'kr_agito', 'yellow', 96, ['フレイムセイバー', 'Flame Saber', 'Flame Saber', '플레임 세이버'], [
+    t(['フレイムフォーム', 'Flame Form', 'Flame Form', '플레임 폼'], ['セイバースラッシュ', 'Saber Slash', '軍刀斬', '세이버 슬래시'], ['鍔をひらいた剣で、炎の一太刀をあびせる', 'Opens the guard of his sword and delivers a single stroke of flame', '展開劍鍔，施以火焰一刀', '날밑을 펼친 검으로 불꽃의 한칼을 날린다'], { k: 'inst', L: 1, R: 30, v: 'arcH', a: 'iai', sty: 'x_homura' }),
+    t(['シャイニングフォーム', 'Shining Form', 'Shining Form', '샤이닝 폼'], ['シャイニングクラッシュ', 'Shining Clash', '閃耀衝擊', '샤이닝 클래시'], ['二本に分けた剣で、光の速さで斬りつける', 'Splits the sword in two and cuts at the speed of light', '將劍分為兩把，以光速斬擊', '둘로 나눈 검으로 빛의 속도로 벤다'], { k: 'multi', N: 6, R: 30, v: 'arcs', sty: 'x_excalibur' }),
+  ], ['仮面ライダーアギト']),
 ];
 
 // ---------- 名前で引く ----------
