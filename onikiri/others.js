@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11281340';
+import { EXTRA } from './i18n.js?v=11282232';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -153,6 +153,7 @@ export const WORKS = {
   donbro: ['暴太郎戦隊ドンブラザーズ', 'Avataro Sentai Donbrothers', '暴太郎戰隊DON桃樂隊', '아바타로전대 돈브라더즈'],
   kingoh: ['王様戦隊キングオージャー', 'Ohsama Sentai King-Ohger', '王樣戰隊KING-OHGER', '왕님전대 킹오저'],
   touhou: ['東方Project', 'Touhou Project', '東方Project', '동방 프로젝트'],
+  wistoria: ['杖と剣のウィストリア', 'Wistoria: Wand and Sword', '杖與劍的Wistoria', '지팡이와 검의 위스토리아'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -1510,6 +1511,12 @@ export const OTHERS = [
     t(['氷符', 'Ice Sign', '冰符', '빙부'], ['アイシクルフォール', 'Icicle Fall', '冰瀑', '아이시클 폴'], ['つららを滝のように降らせる', 'Rains icicles down like a waterfall', '如瀑布般降下冰柱', '고드름을 폭포처럼 쏟아붓는다'], { k: 'rain', D: 5, R: 40, O: 1, v: 'rainfall', sty: 'x_hyorin' }),
     t(['凍符', 'Freeze Sign', '凍符', '동부'], ['パーフェクトフリーズ', 'Perfect Freeze', '完美凍結', '퍼펙트 프리즈'], ['まわりのものを、ぴたりと凍らせて止める', 'Freezes everything around her stock-still', '將周圍一切瞬間凍結靜止', '주위의 것을 딱 얼려 멈춘다'], { k: 'slow', D: 6, S: .2, v: 'eye', sty: 'x_hyorin' }),
   ], null, ['チルノ']),
+  // ---------- 27回目：杖と剣のウィストリア ----------
+  c('ウィル・セルフォルト', 'うぃるせるふぉると', ['Will Serfort', '威爾・賽爾佛特', '윌 셀폴트'], 'wistoria', 'red', 93, ['ウィース', 'Wis', '維斯', '위스'], [
+    t(['戦士の剣', 'Sword of the Warrior', '戰士之劍', '전사의 검'], ['戦士の一閃', 'Flash of the Warrior', '戰士一閃', '전사의 일섬'], ['魔法にたよらず、きたえぬいた体と剣だけで斬る', 'Cuts with nothing but a trained body and a sword, no magic at all', '不靠魔法，僅憑鍛鍊至極的身體與劍斬擊', '마법에 기대지 않고 단련한 몸과 검만으로 벤다'], { k: 'inst', L: 1, R: 30, v: 'dash', sty: 'x_hiten' }),
+    t(['ウィース', 'Wis', '維斯', '위스'], ['魔法装填', 'Magic Loading', '魔法裝填', '마법 장전'], ['仲間の魔法を剣に吸いこみ、刃にまとわせる', 'Draws his friends\' magic into the sword and wraps the blade in it', '將夥伴的魔法吸入劍中，纏繞於刀刃', '동료의 마법을 검에 빨아들여 칼날에 두른다'], { k: 'aura', L: 1, R: 8, D: 5, v: 'calm', sty: 'x_strash' }),
+    t(['フルチャージ', 'Fully Charged', '全彈裝填', '풀 차지'], ['イグニス・ウィース', 'Ignis Wis', '伊格尼斯・維斯', '이그니스 위스'], ['炎の魔法をこめた剣で、まとめて斬りはらう', 'Sweeps them all away with a sword loaded with fire magic', '以裝填火焰魔法之劍一併橫掃', '불꽃 마법을 담은 검으로 한꺼번에 베어 넘긴다'], { k: 'inst', L: 2, R: 44, v: 'mega', sty: 'x_homura' }),
+  ]),
 ];
 
 // ---------- 名前で引く ----------
