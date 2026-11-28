@@ -3,7 +3,7 @@
 // ・刀の色は、その剣士の属性どおり（わかりにくい人は雰囲気）。才能は、その剣士の強さ
 // ・技は原作の技。見出し・技名・説明は [日本語, 英語, 中国語（繁体字）, 韓国語] の順
 // ・鬼になったら、ほかの名前と同じく「名前で決まる血鬼術」になる
-import { EXTRA } from './i18n.js?v=11280702';
+import { EXTRA } from './i18n.js?v=11281340';
 
 // 技の見た目（色と形）。fl は、技を出したときに足す演出の種類
 export const OT_STY = {
@@ -152,6 +152,7 @@ export const WORKS = {
   shinken: ['侍戦隊シンケンジャー', 'Samurai Sentai Shinkenger', '侍戰隊真劍者', '사무라이전대 신켄저'],
   donbro: ['暴太郎戦隊ドンブラザーズ', 'Avataro Sentai Donbrothers', '暴太郎戰隊DON桃樂隊', '아바타로전대 돈브라더즈'],
   kingoh: ['王様戦隊キングオージャー', 'Ohsama Sentai King-Ohger', '王樣戰隊KING-OHGER', '왕님전대 킹오저'],
+  touhou: ['東方Project', 'Touhou Project', '東方Project', '동방 프로젝트'],
   reborn: ['家庭教師ヒットマンREBORN!', 'Katekyo Hitman Reborn!', '家庭教師HITMAN REBORN!', '가정교사 히트맨 리본!'],
 };
 const LI = { ja: 0, en: 1, zh: 2, ko: 3 }, pick = (a, lang) => a[LI[lang]] || a[1] || a[0];
@@ -1449,6 +1450,66 @@ export const OTHERS = [
     t(['オージャカリバー', 'Ohger Calibur', 'Ohger Calibur', '오저 칼리버'], ['ロードフィニッシュ', 'Lord Finish', '領主終結', '로드 피니시'], ['王の剣で、まっすぐ斬りぬける', 'Cuts straight through with the sword of a king', '以王者之劍筆直斬過', '왕의 검으로 곧게 베어 나간다'], { k: 'inst', L: 1, R: 32, v: 'arcH', sty: 'x_hiten' }),
     t(['オージャカリバー', 'Ohger Calibur', 'Ohger Calibur', '오저 칼리버'], ['オージャフィニッシュ', 'Ohger Finish', 'Ohger終結', '오저 피니시'], ['邪悪の王を名乗り、全力の一太刀を放つ', 'Names himself the king of evil and looses a stroke with all his might', '自稱邪惡之王，放出全力一刀', '사악한 왕을 자처하며 전력의 한칼을 날린다'], { k: 'inst', L: 2, R: 42, v: 'mega', sty: 'x_haoshoku' }),
   ], ['クワガタオージャー', 'ギラ・ハスティ'], ['ギラ']),
+  // ---------- 26回目：東方Project ----------
+  c('魂魄妖夢', 'こんぱくようむ', ['Youmu Konpaku', '魂魄妖夢', '콘파쿠 요우무'], 'touhou', 'green', 92, ['楼観剣・白楼剣', 'Roukanken & Hakurouken', '樓觀劍・白樓劍', '누관검・백루검'], [
+    t(['人符', 'Human Sign', '人符', '인부'], ['現世斬', 'Slash of Present', '現世斬', '현세참'], ['一瞬で踏みこみ、すれちがいざまに斬る', 'Steps in within an instant and cuts as she passes', '瞬間踏入，擦身而過時斬擊', '순식간에 파고들어 스쳐 지나가며 벤다'], { k: 'inst', L: 1, R: 34, v: 'dash', a: 'iai', sty: 'x_soul' }),
+    t(['人鬼', 'Human Oni', '人鬼', '인귀'], ['未来永劫斬', 'Slash of Eternity', '未來永劫斬', '미래영겁참'], ['打ちあげた相手を、数えきれないほど斬りきざむ', 'Launches the foe and carves them up more times than can be counted', '將對手打上空中，斬上無數刀', '띄워 올린 상대를 셀 수 없이 난도질한다'], { k: 'multi', N: 12, R: 30, v: 'arcs', sty: 'x_soul' }),
+    t(['獄界剣', 'Hell Realm Sword', '獄界劍', '옥계검'], ['二百由旬の一閃', '200 Yojana in 1 Slash', '二百由旬之一閃', '이백 유순의 일섬'], ['はるか遠くまで届く、ただ一度の居合', 'A single iai that reaches far, far away', '直達遙遠彼方的唯一一次居合', '아득히 먼 곳까지 닿는 단 한 번의 발도'], { k: 'inst', L: 2, R: 46, v: 'mega', a: 'iai', sty: 'x_santoryu' }),
+  ]),
+  c('魂魄妖忌', 'こんぱくようき', ['Youki Konpaku', '魂魄妖忌', '콘파쿠 요우키'], 'touhou', 'gray', 96, ['魂魄流', 'Konpaku Style', '魂魄流', '콘파쿠류'], [
+    t(['魂魄流', 'Konpaku Style', '魂魄流', '콘파쿠류'], ['雨を斬る', 'Cutting the Rain', '斬雨', '비를 벤다'], ['三十年の修行で、降る雨のひとつぶを斬る', 'Thirty years of training, to cut a single drop of falling rain', '三十年修行，斬下落雨的一滴', '삼십 년의 수행으로 내리는 비 한 방울을 벤다'], { k: 'inst', L: 1, R: 32, v: 'arcH', a: 'iai', sty: 'x_soul' }),
+    t(['魂魄流', 'Konpaku Style', '魂魄流', '콘파쿠류'], ['時を斬る', 'Cutting Time', '斬時', '시간을 벤다'], ['二百年の修行のはてに、時そのものを斬る', 'At the end of two hundred years of training, he cuts time itself', '二百年修行的盡頭，斬斷時間本身', '이백 년 수행의 끝에 시간 그 자체를 벤다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_soul' }),
+  ]),
+  c('比那名居天子', 'ひなないてんし', ['Tenshi Hinanawi', '比那名居天子', '히나나위 텐시'], 'touhou', 'red', 95, ['緋想の剣', 'Sword of Hisou', '緋想之劍', '비상의 검'], [
+    t(['剣技', 'Sword Skill', '劍技', '검기'], ['気炎万丈の剣', 'Sword of Fervor', '氣炎萬丈之劍', '기염만장의 검'], ['緋色の剣で、息もつかせず斬りつづける', 'Keeps on cutting with her scarlet sword, leaving no room to breathe', '以緋紅之劍不容喘息地連續斬擊', '비색의 검으로 숨 돌릴 틈 없이 계속 벤다'], { k: 'multi', N: 9, R: 28, v: 'arcs', sty: 'x_haoshoku' }),
+    t(['地符', 'Earth Sign', '地符', '지부'], ['不譲土壌の剣', 'Sword of Unletting Soil', '不讓土壤之劍', '불양토양의 검'], ['剣を大地に突きたて、岩を突きあげる', 'Drives the sword into the earth and thrusts up rock', '將劍刺入大地，使岩石突起', '검을 대지에 꽂아 바위를 솟구치게 한다'], { k: 'inst', L: 2, R: 28, O: 1, v: 'fall', sty: 'x_gravity' }),
+    t(['緋想の剣', 'Sword of Hisou', '緋想之劍', '비상의 검'], ['全人類の緋想天', 'Scarlet Weather Rhapsody of All Humankind', '全人類的緋想天', '전 인류의 비상천'], ['集めた気質を、緋色の光にして撃ちだす', 'Fires the gathered temperaments as a beam of scarlet light', '將聚集的氣質化為緋紅光芒射出', '모은 기질을 비색의 빛으로 바꿔 쏜다'], { k: 'inst', L: 2, R: 48, v: 'mega', sty: 'x_haoshoku' }),
+  ], ['ひななゐてんし', '比那名居天子']),
+  c('綿月依姫', 'わたつきのよりひめ', ['Watatsuki no Yorihime', '綿月依姬', '와타츠키노 요리히메'], 'touhou', 'purple', 99, ['祇園様の剣', 'Sword of Gion', '祇園大人之劍', '기온님의 검'], [
+    t(['神降ろし', 'Divine Descent', '降神', '신내림'], ['祇園様の力', 'Power of Lord Gion', '祇園大人之力', '기온님의 힘'], ['剣を地に突きたて、無数の刃で相手をかこむ', 'Plants her sword in the ground and cages the foe in countless blades', '將劍刺入地面，以無數刀刃包圍對手', '검을 땅에 꽂아 무수한 칼날로 상대를 에워싼다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_oden' }),
+    t(['神降ろし', 'Divine Descent', '降神', '신내림'], ['愛宕様の火', 'Fire of Lord Atago', '愛宕大人之火', '아타고님의 불'], ['腕に神の火をやどし、ふれるものを焼きつくす', 'Takes divine fire into her arm and burns away all it touches', '手臂寄宿神火，燒盡所觸之物', '팔에 신의 불을 깃들여 닿는 것을 태워 없앤다'], { k: 'aura', L: 2, R: 9, D: 5, v: 'calm', sty: 'x_ryujin' }),
+    t(['神降ろし', 'Divine Descent', '降神', '신내림'], ['火雷神', 'Honoikazuchi', '火雷神', '호노이카즈치'], ['七柱の兄弟をしたがえた雷を落とす', 'Brings down lightning attended by its seven brothers', '降下率領七柱兄弟的雷電', '일곱 형제를 거느린 번개를 떨어뜨린다'], { k: 'rain', D: 6, R: 44, O: 1, v: 'rainfall', sty: 'x_trunks' }),
+  ], ['綿月依姬', 'わたつきよりひめ']),
+  c('犬走椛', 'いぬばしりもみじ', ['Momiji Inubashiri', '犬走椛', '이누바시리 모미지'], 'touhou', 'white', 82, ['白狼天狗の剣と盾', 'Sword and Shield of the White Wolf Tengu', '白狼天狗的劍與盾', '백랑텐구의 검과 방패'], [
+    t(['狗符', 'Dog Sign', '狗符', '구부'], ['レイビーズバイト', 'Rabies Bite', '狂犬咬', '레이비즈 바이트'], ['上下から牙のようにはさみこんで斬る', 'Closes in from above and below like fangs', '自上下如獠牙般夾擊斬下', '위아래에서 송곳니처럼 물어 벤다'], { k: 'inst', L: 1, R: 28, v: 'claws', sty: 'x_gatotsu' }),
+    t(['山窩', 'Mountain Nomad', '山窩', '산와'], ['エクスペリーズカナン', 'Expellees\' Canaan', '被驅逐者的迦南', '익스펠리즈 가난'], ['山を守る剣で、侵入者を追いはらう', 'Drives intruders off with the sword that guards the mountain', '以守護山嶺之劍驅逐入侵者', '산을 지키는 검으로 침입자를 쫓아낸다'], { k: 'multi', N: 7, R: 26, v: 'arcs', sty: 'x_gatotsu' }),
+    t(['千里先まで見通す程度の能力', 'Ability to See a Thousand Ri Ahead', '看透千里之外程度的能力', '천 리 앞을 내다보는 정도의 능력'], ['千里眼', 'Clairvoyance', '千里眼', '천리안'], ['遠くまで見通し、相手の動きを先に読む', 'Sees far ahead and reads the enemy\'s moves first', '看透遠方，預先讀出對手動作', '멀리까지 내다보고 상대의 움직임을 먼저 읽는다'], { k: 'slow', D: 6, S: .3, v: 'eye', sty: 'x_kaze' }),
+  ]),
+  c('豊聡耳神子', 'とよさとみみのみこ', ['Toyosatomimi no Miko', '豐聰耳神子', '토요사토미미노 미코'], 'touhou', 'yellow', 97, ['七星剣', 'Seven-Star Sword', '七星劍', '칠성검'], [
+    t(['仙符', 'Hermit Sign', '仙符', '선부'], ['日出ずる処の天子', 'Emperor of the Land of the Rising Sun', '日出處天子', '해 뜨는 곳의 천자'], ['剣をかかげ、太陽のような光をあびせる', 'Raises her sword and bathes them in light like the sun', '舉起劍，灑下如太陽般的光芒', '검을 치켜들어 태양 같은 빛을 퍼붓는다'], { k: 'inst', L: 2, R: 34, v: 'arcUp', sty: 'x_excalibur' }),
+    t(['眼光', 'Eye Light', '眼光', '안광'], ['十七条のレーザー', 'Seventeen-Article Lasers', '十七條雷射', '십칠조의 레이저'], ['十七本の光のすじを降らせる', 'Rains down seventeen streaks of light', '降下十七道光線', '열일곱 줄기의 빛을 내리꽂는다'], { k: 'rain', D: 5, R: 44, O: 1, v: 'rainfall', sty: 'x_excalibur' }),
+    t(['光符', 'Light Sign', '光符', '광부'], ['グセフラッシュ', 'Guse Flash', '救世閃光', '구세 플래시'], ['救世の光で、あたり一面を照らしつくす', 'Floods everything around with the light of salvation', '以救世之光照遍四周', '구세의 빛으로 주위를 온통 비춘다'], { k: 'inst', L: 2, R: 46, v: 'mega', sty: 'x_excalibur' }),
+  ], ['豐聰耳神子', 'とよさとみみみこ']),
+  c('フランドール・スカーレット', 'ふらんどーるすかーれっと', ['Flandre Scarlet', '芙蘭朵露・斯卡雷特', '플랑드르 스칼렛'], 'touhou', 'red', 98, ['レーヴァテイン', 'Lævateinn', '萊瓦汀', '레바테인'], [
+    t(['禁忌', 'Taboo', '禁忌', '금기'], ['レーヴァテイン', 'Lævateinn', '萊瓦汀', '레바테인'], ['炎の大剣で、あたりをまとめてなぎ払う', 'Sweeps everything around with a greatsword of flame', '以火焰大劍將四周一併橫掃', '불꽃의 대검으로 주위를 한꺼번에 휩쓴다'], { k: 'inst', L: 2, R: 40, v: 'arcH', sty: 'x_ryujin' }),
+    t(['禁忌', 'Taboo', '禁忌', '금기'], ['フォーオブアカインド', 'Four of a Kind', '四重存在', '포 오브 어 카인드'], ['四人に分かれて、いっせいに襲いかかる', 'Splits into four and attacks all at once', '分為四人一齊襲來', '넷으로 나뉘어 일제히 덮친다'], { k: 'multi', N: 12, R: 32, v: 'arcs', sty: 'x_haoshoku' }),
+    t(['QED', 'Q.E.D.', 'QED', 'QED'], ['495年の波紋', 'Ripples of 495 Years', '495年的波紋', '495년의 파문'], ['広がる波紋のような弾で、すべてを壊す', 'Destroys everything with shots that spread like ripples', '以如波紋擴散的彈幕破壞一切', '퍼지는 파문 같은 탄으로 모든 것을 부순다'], { k: 'rain', D: 6, R: 46, O: 1, v: 'rainfall', sty: 'x_erza' }),
+  ], ['フランドール＝スカーレット']),
+  c('杖刀偶磨弓', 'じょうとうぐうまゆみ', ['Mayumi Joutouguu', '杖刀偶磨弓', '조토구 마유미'], 'touhou', 'orange', 88, ['埴輪兵長', 'Haniwa Lance Corporal', '埴輪兵長', '하니와 병장'], [
+    t(['埴輪', 'Haniwa', '埴輪', '하니와'], ['剣士埴輪', 'Fencer Haniwa', '劍士埴輪', '검사 하니와'], ['埴輪の剣士たちとともに斬りこむ', 'Charges in alongside her haniwa swordsmen', '與埴輪劍士們一同斬入', '하니와 검사들과 함께 베어 든다'], { k: 'multi', N: 8, R: 26, v: 'arcs', sty: 'x_excalibur' }),
+    t(['埴輪', 'Haniwa', '埴輪', '하니와'], ['弓兵埴輪', 'Archer Haniwa', '弓兵埴輪', '궁병 하니와'], ['埴輪の弓兵たちが、矢を降らせる', 'Her haniwa archers rain down arrows', '埴輪弓兵們降下箭雨', '하니와 궁병들이 화살을 퍼붓는다'], { k: 'rain', D: 5, R: 40, O: 1, v: 'rainfall', sty: 'x_excalibur' }),
+    t(['埴安神の兵', 'Soldiers of Haniyasushin', '埴安神之兵', '하니야스신의 병사'], ['不敗の無尽兵団', 'Undefeated Inexhaustible Legion', '不敗的無盡兵團', '불패의 무진병단'], ['こわれてもよみがえる兵団で、押しつぶす', 'Crushes them with a legion that rises again however often it breaks', '以即使破碎也會復甦的兵團碾壓', '부서져도 되살아나는 병단으로 짓누른다'], { k: 'multi', N: 14, R: 36, v: 'arcs', sty: 'x_gravity' }),
+  ]),
+  c('少名針妙丸', 'すくなしんみょうまる', ['Shinmyoumaru Sukuna', '少名針妙丸', '스쿠나 신묘마루'], 'touhou', 'pink', 80, ['輝針剣', 'Shining Needle Sword', '輝針劍', '휘침검'], [
+    t(['妖剣', 'Bewitched Sword', '妖劍', '요검'], ['輝針剣', 'Shining Needle Sword', '輝針劍', '휘침검'], ['針の剣で、まっすぐ突く', 'Thrusts straight out with her needle of a sword', '以針之劍筆直刺出', '바늘의 검으로 곧게 찌른다'], { k: 'inst', L: 1, R: 30, v: 'thrust', sty: 'x_katen' }),
+    t(['輝針', 'Shining Needle', '輝針', '휘침'], ['鬼ごろし両目突きの針', 'Needle That Slew the Oni, Piercing Both Eyes', '殺鬼雙目刺之針', '오니를 죽이는 양 눈 찌르기 바늘'], ['鬼の目をねらい、つづけて突く', 'Aims for the oni\'s eyes and thrusts again and again', '瞄準鬼之眼連續刺擊', '오니의 눈을 노려 연이어 찌른다'], { k: 'multi', N: 8, R: 26, v: 'arcs', sty: 'x_katen' }),
+    t(['小槌', 'Mallet', '小槌', '작은 망치'], ['大きくなあれ', 'Grow Bigger!', '變大吧', '커져라'], ['打ち出の小槌で大きくなり、たたきつぶす', 'Grows huge with the Miracle Mallet and smashes them flat', '以萬寶槌變大後砸扁', '요술 망치로 커져서 내리쳐 뭉갠다'], { k: 'inst', L: 2, R: 36, O: 1, v: 'fall', sty: 'x_excalibur' }),
+  ]),
+  c('十六夜咲夜', 'いざよいさくや', ['Sakuya Izayoi', '十六夜咲夜', '이자요이 사쿠야'], 'touhou', 'ainezu', 93, ['銀のナイフ', 'Silver Knives', '銀製小刀', '은 나이프'], [
+    t(['幻符', 'Illusion Sign', '幻符', '환부'], ['殺人ドール', 'Killing Doll', '殺人人偶', '살인 돌'], ['空にならべたナイフを、いっせいに降らせる', 'Lines the air with knives and drops them all at once', '將排列於空中的小刀一齊降下', '하늘에 늘어놓은 나이프를 일제히 떨어뜨린다'], { k: 'rain', D: 5, R: 42, O: 1, v: 'rainfall', sty: 'x_bugi' }),
+    t(['傷魂', 'Scarred Soul', '傷魂', '상혼'], ['ソウルスカルプチュア', 'Soul Sculpture', '靈魂雕刻', '소울 스컬프처'], ['両手のナイフで、目にもとまらず斬りきざむ', 'Carves them up with a knife in each hand, too fast to see', '以雙手小刀快得看不見地斬碎', '양손의 나이프로 눈에 보이지 않게 난도질한다'], { k: 'multi', N: 12, R: 28, v: 'arcs', sty: 'x_bugi' }),
+    t(['幻世', 'Illusion World', '幻世', '환세'], ['ザ・ワールド', 'The World', '世界', '더 월드'], ['時を止め、そのあいだにナイフをならべる', 'Stops time and sets out her knives in the meantime', '停止時間，趁機排列小刀', '시간을 멈추고 그 사이에 나이프를 늘어놓는다'], { k: 'slow', D: 7, S: .2, v: 'eye', sty: 'x_room' }),
+  ]),
+  c('秦こころ', 'はたのこころ', ['Hata no Kokoro', '秦心', '하타노 코코로'], 'touhou', 'sakura', 90, ['薙刀', 'Naginata', '薙刀', '나기나타'], [
+    t(['怒面', 'Angry Mask', '怒面', '노면'], ['怒れる忌狼の面', 'Mask of the Enraged Wolf', '憤怒的忌狼之面', '성난 기랑의 가면'], ['狼の面をかぶり、牙をむいて突っこむ', 'Dons the wolf mask and charges in with fangs bared', '戴上狼面露出獠牙衝入', '늑대 가면을 쓰고 송곳니를 드러내며 돌진한다'], { k: 'inst', L: 1, R: 32, v: 'dash', sty: 'x_gatotsu' }),
+    t(['喜符', 'Joy Sign', '喜符', '희부'], ['昂揚の神楽獅子', 'Kagura Lion of Elation', '昂揚的神樂獅子', '고양의 가구라 사자'], ['獅子の面から、炎を吹きだす', 'Breathes out flame from the lion mask', '自獅子面具噴出火焰', '사자 가면에서 불꽃을 내뿜는다'], { k: 'inst', L: 2, R: 30, v: 'arcH', sty: 'x_homura' }),
+    t(['ラストワード', 'Last Word', 'Last Word', '라스트 워드'], ['仮面喪心舞 暗黒能楽', 'Masked Dance of Lost Heart: Dark Noh', '假面喪心舞 暗黑能樂', '가면상심무 암흑 노가쿠'], ['つぎつぎに面をかえ、薙刀で舞うように斬る', 'Changes mask after mask and cuts as she dances with her naginata', '不斷更換面具，以薙刀如舞蹈般斬擊', '차례로 가면을 바꾸며 나기나타로 춤추듯 벤다'], { k: 'multi', N: 14, R: 34, v: 'arcs', sty: 'x_katen' }),
+  ], ['秦心']),
+  c('チルノ', '', ['Cirno', '琪露諾', '치르노'], 'touhou', 'blue', 90, ['氷の剣', 'Sword of Ice', '冰之劍', '얼음의 검'], [
+    t(['氷符', 'Ice Sign', '冰符', '빙부'], ['ソードフリーザー', 'Sword Freezer', '冰凍劍', '소드 프리저'], ['氷でつくった剣で斬りつける', 'Cuts with a sword made of ice', '以冰製成的劍斬擊', '얼음으로 만든 검으로 벤다'], { k: 'inst', L: 1, R: 28, v: 'arcH', sty: 'x_hyorin' }),
+    t(['氷符', 'Ice Sign', '冰符', '빙부'], ['アイシクルフォール', 'Icicle Fall', '冰瀑', '아이시클 폴'], ['つららを滝のように降らせる', 'Rains icicles down like a waterfall', '如瀑布般降下冰柱', '고드름을 폭포처럼 쏟아붓는다'], { k: 'rain', D: 5, R: 40, O: 1, v: 'rainfall', sty: 'x_hyorin' }),
+    t(['凍符', 'Freeze Sign', '凍符', '동부'], ['パーフェクトフリーズ', 'Perfect Freeze', '完美凍結', '퍼펙트 프리즈'], ['まわりのものを、ぴたりと凍らせて止める', 'Freezes everything around her stock-still', '將周圍一切瞬間凍結靜止', '주위의 것을 딱 얼려 멈춘다'], { k: 'slow', D: 6, S: .2, v: 'eye', sty: 'x_hyorin' }),
+  ], null, ['チルノ']),
 ];
 
 // ---------- 名前で引く ----------
